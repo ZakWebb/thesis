@@ -14,18 +14,15 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{etoolbox}
 \usepackage[margin=1in]{geometry}
-\usepackage{lipsum}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Print/Online Version
 
 \newtoggle{print}              % Is this electronic or print?
-
 \togglefalse{print}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Page Setup
-
 
 \iftoggle{print}{
   \addtolength{\oddsidemargin}{0.125in}
@@ -33,7 +30,8 @@
 }{
 }
 
-  %ensure "pages left intentionally blank" don't have numbers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%ensure "pages left intentionally blank" don't have numbers
 \let\origdoublepage\cleardoublepage
 \newcommand{\clearemptydoublepage}{%
   \clearpage{\pagestyle{empty}\origdoublepage}}
@@ -137,96 +135,3 @@
 \newcommand{\NP}{\class{NP}}
 \newcommand{\BQP}{\class{BQP}}
 \newcommand{\QMA}{\class{QMA}}
-
-
-%======================================================================
-%   Main Text
-%======================================================================
-
-\begin{document}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Front Material
-
-\input{Thesis-FrontStuff}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Chapter 1: Introduction
-
-\chapter{Introduction}
-
-\input{chapters/introduction}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Chapter 2: Scattering on Graphs
-
-\chapter{Scattering on graphs}
-
-\input{"chapters/scattering on graphs.tex"}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Chapter 3: Universality of Single-Particle Scattering
-
-\chapter{Universality of single-particle scattering}
-
-\input{"chapters/universality of single-particle scattering.tex"}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Chapter 4: Universality of Multi-particle scattering
-
-\chapter{Universality of multi-particle scattering}
-
-\input{"chapters/universality of multi-particle scattering.tex"}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Chapter 4: Single Particle Ground Energies
-
-\chapter{Ground energy of quantum walk}
-
-\input{"chapters/single-particle ground energies.tex"}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Chapter 6: Ground energy of multi-particle quantum walk
-
-\chapter{Ground energy of multi-particle quantum walk}
-
-\input{"chapters/ground energy of multi-particle quantum walk.tex"}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Chapter 7
-
-\chapter{Ground energy of spin systems}
-
-\input{"chapters/ground energy of spin systems.tex"}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Chapter 5
-
-\chapter{Conclusions}
-
-\input{"chapters/conclusions.tex"}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Bibliography
-
-\bibliographystyle{plain}
-\cleardoublepage  % we might need to change this to \clearpage if we use "onside" instead of "twoside"
-\phantomsection
-\renewcommand*{\bibname}{References}
-\addcontentsline{toc}{chapter}{\textbf{References}}
-
-\nocite{*}
-\bibliography{Thesis-Bibliography}
-
-\end{document}
-
-
-
-
