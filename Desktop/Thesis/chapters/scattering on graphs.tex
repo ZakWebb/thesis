@@ -1,0 +1,117 @@
+%======================================================================
+%   Zak Webb
+%   Ph. D. Thesis
+%   Department of Physics and Astronomy
+%   University of Waterloo
+% 
+%   Scattering on Graphs
+%======================================================================
+
+
+Scattering has a long history of study in the physics literature.  Ranging from the classical study of colliding objects to the analysis of high energy collisions of protons, studying the interactions of particles can be very interesting.
+
+
+\section{Introduction and motivation}
+
+% I'm being rather cavalier with these definitions, I should go back over them and make sure that I'm making correct statements.
+
+Let us first take motivation from one of the most simple quantum systems: a free particle in one dimension.  Without any potential or interactions, we have that the time independent Schr\"{o}dinger equation reads
+\[
+  \frac{\partial^2}{\partial x^2} \psi(x) = -\frac{2m}{\hbar^2}E \psi(x) = -k^2 \psi(x),
+\]
+which requires the (unnormalizable) solutions,
+\[
+  \psi(x) = \exp(- i k x) 
+\]
+for real $k$.  These \textit{momentum states} correspond to particles travelling with momentum $k$ along the real line, and form a basis for the possible states of the system.
+
+
+If we now also include some finite-range potential, or a potential $V$ that is non-zero only for $|x| < d$ for some range $d$, then outside this range the eigenstates remain unchanged.  The only difference is that we will deal with a superposition of states for each energy instead of the pure momentum states.  In particular, the scattering eigenbasis for this system will become
+\[
+  \psi(x) = \begin{cases}
+    \exp(-i k x) + R(k) \exp(i k x) & x \leq -d\\
+    T(k) \exp(- i k x) & x \geq d\\
+    \phi(x,k) & |x| \leq d
+    \end{cases}
+\]
+for some functions $R(k)$, $T(k)$, and $\phi(x,k)$.  
+
+
+In addition to these scattering states, it is possible for bound states to exist.  These states are only nonzero for $|x| <d$, as the potential allows for the particles to simply sit at a particular location. One of the canonical examples is a finite well in one dimension, in which depending on the depth of the well, any number of bound states can exist.
+
+
+\subsection{Infinite path}
+
+With this motivation in mind, let us now look at the discretized system corresponding to a graph.  In particular, instead of a continuum of positions states in one dimension, we restrict the position states to integer values, with transport only between neighboring integers.  Explicitly, the Hilbert space of such a system corresponds to $n\in \NN$, with the discretized second derivative taking the form
+\[
+  \sum_{x=-\infty}^\infty (\ket{x + 1} - 2\ket{x} + \ket{x-1}) \bra{x} = 2\sum_{x=-\infty}^\infty \ket{x+1} \bra{x} - 2 \II.
+\]
+If we then rescale the energy levels, we have that the second ????
+
+Altogether, we end up with the equation
+\begin{equation}
+  \Bigg(\sum_{x=-\infty}^\infty \ketbra{x+1}{x} + \ketbra{x}{x+1} \Bigg) \ket{\psi} = E_\psi \ket{\psi}.
+\end{equation}
+We can then break this vector equation into an equation for each basis vector $\ket{x}$, to get
+\begin{equation}
+  \braket{x+1}{\psi} + \braket{x-1}{\psi} = E_\psi \braket{x}{\psi}.
+\end{equation}
+for all $x\in \ZZ$.  If we then make the ansatz that $\braket{x}{\psi} = e^{i k x}$ for some $k$, we find that
+\begin{equation}
+  \braket{x+1}{\psi} + \braket{x-1}{\psi} = e^{i k } e^{i k x} + e^{-ik} e^{ikx} = E_\psi e^{ik x} = E_\psi \braket{x}{\psi} \qquad \Rightarrow \qquad E_\psi = e^{ik} + e^{-i k} = 2 \cos(k).
+\end{equation}
+If we then use the fact that $E_\psi$ must be real, and that the amplitudes should not diverge to infinity as $x\rightarrow \pm \infty$, we find that the only possible values of $k$ are between $[-\pi,\pi)$.  
+
+Now show how these form a basis for the states.
+
+Hence, in analogy with the continuous case, our basis of states corresponds to momentum states, but where the possible momenta only range over $[-\pi,\pi)$.  (As an aside, this maximum momenta is commonly know as a Leib-Robinson bound, and corresponds to a maximum speed of information propagation.)
+
+We can then talk about the ``speed'' of these states, which is given by
+\begin{equation}
+  s = \Big| \frac{d E_k}{d k} \Big| = 2 \sin (|k|).
+\end{equation}
+Note that in the case of small $k$, we recover the linear relationship between speed and momentum.  In this way, as the distance between the vertices grows smaller, we recover the continuum case.
+
+
+
+\section{Scattering off of a graph}
+
+Now that we have an example based on a free particle, we should examine how to generalize potentials.  One method to do this is to add a potential function, with explicit potential energies at various vertices of the infinite path, but if we wish to only examine scattering on unweighted graphs, we need to be a little more clever.  The interesting way to do this is to take a finite graph $\hat{G}$, and attach two semi-infinite paths to this graph.  In this way, we get something that is similar to a finite-range potential.
+
+With this construction, the eigenvalue equation must still be satisfied along the semi-infinite paths, and thus the form of the eigenstates along the paths must still be of the form $e^{i k x}$ for some $k$ and $x$.  However, we can no longer assume that $k$ is real, as the fact that the attached semi-infinite paths are only infinite in one direction allow for an exponentially decaying amplitudes along the paths.
+
+
+\subsection{Infinite path and a Graph}
+
+In the most simple example, let us attached a graph $G$ to an infinite path.  This is probably the most analogous case to the s
+
+\subsubsection{R/T gadgets}
+
+One of the most simple cases of these scattering ideas is to simply attach a finite graph to a single vertex of an infinite path.  Note that this is a restricted model of the above case, where $1 + A(k) = B(k)$ for all $k$.  
+
+
+\subsubsection{General graphs}
+
+
+More concretely, let $\widehat{G}$ be any finite graph, with $n+m$ vertices and an adjacency matrix
+\begin{equation}
+  \widehat{M} = \begin{pmatrix}A & B^\dag\\ B & D\end{pmatrix},
+\end{equation}
+where $A$ is an $N\times N$ matrix, $B$ is an $m\times N$ matrix, and $D$ is an $m\times m$ matrix.  When examining graph scattering, we will be interested in the graph $G$ given by the graph-join of $\widehat{G}$ and $N$ semi-infinite paths, with an additional edge between each of the first $N$ vertices of $\widehat{G}$ and the first vertex of one semi-infinite path.  If each semi-infinite path is labeled as $(x,i)$, where $x\geq 2$ is an integer and $i\in[N]$, 
+
+
+
+Talk about scattering algorithms and AND trees.
+
+\subsection{Momentum switches}
+
+\subsection{Applying an encoded unitary}
+
+\section{Degree-3 graphs are sufficent}
+
+\section{Multi-particle quantum walk}
+
+\section{Two-particle scattering on an infinite path}
+
+The one thing we can actually compute
+It might be interesting to talk about what happens with spins.

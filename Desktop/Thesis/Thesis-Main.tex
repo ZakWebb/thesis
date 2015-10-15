@@ -1,0 +1,232 @@
+%======================================================================
+%   Zak Webb
+%   Ph. D. Thesis
+%   Department of Physics and Astronomy
+%   University of Waterloo
+%======================================================================
+ 
+\documentclass[12pt,oneside]{book}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Included Packages
+
+\usepackage{amsmath,amssymb,amstext}
+\usepackage[pdftex]{graphicx}
+\usepackage{etoolbox}
+\usepackage[margin=1in]{geometry}
+\usepackage{lipsum}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Print/Online Version
+
+\newtoggle{print}              % Is this electronic or print?
+
+\togglefalse{print}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Page Setup
+
+
+\iftoggle{print}{
+  \addtolength{\oddsidemargin}{0.125in}
+  \addtolength{\textwidth}{-0.125in}
+}{
+}
+
+  %ensure "pages left intentionally blank" don't have numbers
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{%
+  \clearpage{\pagestyle{empty}\origdoublepage}}
+\let\cleardoublepage\clearemptydoublepage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hyperref Macros
+
+\usepackage[pdftex,letterpaper=true,pagebackref=false]{hyperref}
+
+\hypersetup{
+    plainpages=false,       % needed if Roman numbers in frontpages
+    pdfpagelabels=true,     % adds page number as label in Acrobat's page count
+    bookmarks=true,         % show bookmarks bar
+    unicode=false,          % non-Latin characters in Acrobat€™s bookmarks
+    pdftoolbar=true,        % show Acrobat€™s toolbar
+    pdfmenubar=true,        % show Acrobats menu
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={The computational power of many-body systems},    
+    pdfauthor={Zak Webb},    % author
+    pdfsubject={Physics and Astronomy Thesis},  % subject
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=blue,         % color of internal links
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=cyan           % color of external links
+}
+
+  % if we are using paper, don't have color links 
+\iftoggle{print}{
+  \hypersetup{	
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+  }
+}{}
+
+\newcommand{\eq}[1]{\hyperref[eq:#1]{(\ref*{eq:#1})}}
+\renewcommand{\sec}[1]{\hyperref[sec:#1]{Section~\ref*{sec:#1}}}
+\newcommand{\app}[1]{\hyperref[app:#1]{Appendix~\ref*{app:#1}}}
+\newcommand{\thm}[1]{\hyperref[thm:#1]{Theorem~\ref*{thm:#1}}}
+\newcommand{\lem}[1]{\hyperref[lem:#1]{Lemma~\ref*{lem:#1}}}
+\newcommand{\defn}[1]{\hyperref[defn:#1]{Definition~\ref*{defn:#1}}}
+\newcommand{\ex}[1]{\hyperref[ex:#1]{Example~\ref*{ex:#1}}}
+\newcommand{\fct}[1]{\hyperref[fct:#1]{Fact~\ref*{fct:#1}}}
+\newcommand{\fig}[1]{\hyperref[fig:#1]{Figure~\ref*{fig:#1}}}
+\newcommand{\figs}[1]{\hyperref[fig:#1]{Figures~\ref*{fig:#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bra/Ket Macros
+
+\newcommand{\microspace}{\mspace{2mu}}
+
+\newcommand{\sket}[1]{|\microspace #1 \microspace \rangle}
+\newcommand{\sbra}[1]{\langle\microspace #1 \microspace |}
+\newcommand{\sbraket}[2]{\langle\microspace #1 \microspace | \microspace #2\microspace \rangle}
+\newcommand{\sbraMidket}[3]{\langle\microspace #1\microspace |\microspace #2
+	\microspace |\microspace #3\microspace\rangle}
+\newcommand{\sxval}[1]{\langle \microspace #1 \microspace \rangle}
+\newcommand{\sden}[1]{\sket{#1}\mspace{-2mu}\sbra{#1}}
+
+\newcommand{\ket}[1]{\left|\microspace #1 \microspace \right\rangle}
+\newcommand{\bra}[1]{\left\langle\microspace #1 \microspace \right|}
+\newcommand{\braket}[2]{\left\langle\microspace #1\microspace \middle|\microspace #2\microspace \right\rangle}
+\newcommand{\braMidket}[3]{\left\langle\microspace #1\microspace \middle|\microspace #2
+	\microspace \middle|\microspace #3\microspace \right\rangle}
+\newcommand{\xval}[1]{\left\langle\microspace #1 \microspace \right\rangle}
+\newcommand{\ketbra}[2]{\left|\microspace #1\microspace \middle\rangle\mspace{-2mu} \middle\langle\microspace #2\microspace\right|}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math Operator Macros
+
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\Sym}{Sym}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set Name Macros
+
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+
+\newcommand{\II}{\mathbb{I}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Adjusting Counter Depth  
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Complexity Class Macros
+  
+\newcommand{\class}[1]{\textsc{#1}}
+\newcommand{\PP}{\class{P}}
+\newcommand{\NP}{\class{NP}}
+\newcommand{\BQP}{\class{BQP}}
+\newcommand{\QMA}{\class{QMA}}
+
+
+%======================================================================
+%   Main Text
+%======================================================================
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Front Material
+
+\input{Thesis-FrontStuff}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter 1: Introduction
+
+\chapter{Introduction}
+
+\input{chapters/introduction}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter 2: Scattering on Graphs
+
+\chapter{Scattering on graphs}
+
+\input{"chapters/scattering on graphs.tex"}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter 3: Universality of Single-Particle Scattering
+
+\chapter{Universality of single-particle scattering}
+
+\input{"chapters/universality of single-particle scattering.tex"}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter 4: Universality of Multi-particle scattering
+
+\chapter{Universality of multi-particle scattering}
+
+\input{"chapters/universality of multi-particle scattering.tex"}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter 4: Single Particle Ground Energies
+
+\chapter{Ground energy of quantum walk}
+
+\input{"chapters/single-particle ground energies.tex"}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter 6: Ground energy of multi-particle quantum walk
+
+\chapter{Ground energy of multi-particle quantum walk}
+
+\input{"chapters/ground energy of multi-particle quantum walk.tex"}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter 7
+
+\chapter{Ground energy of spin systems}
+
+\input{"chapters/ground energy of spin systems.tex"}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter 5
+
+\chapter{Conclusions}
+
+\input{"chapters/conclusions.tex"}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliography
+
+\bibliographystyle{plain}
+\cleardoublepage  % we might need to change this to \clearpage if we use "onside" instead of "twoside"
+\phantomsection
+\renewcommand*{\bibname}{References}
+\addcontentsline{toc}{chapter}{\textbf{References}}
+
+\nocite{*}
+\bibliography{Thesis-Bibliography}
+
+\end{document}
+
+
+
+

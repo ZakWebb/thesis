@@ -1,0 +1,18 @@
+\begin{thebibliography}{1}
+
+\bibitem{Boo12}
+Adam~D. Bookatz.
+\newblock {QMA}-complete problems.
+\newblock arXiv:1212.6312.
+
+\bibitem{CGW13arxiv}
+Andrew~M. Childs, D.~Gosset, and Z.~Webb.
+\newblock The {B}ose-{H}ubbard model is {QMA}-complete.
+\newblock arXiv:1311.3297.
+
+\bibitem{CGW13}
+Andrew~M. Childs, David Gosset, and Zak Webb.
+\newblock Universal computation by multiparticle quantum walk.
+\newblock {\em Science}, 339(6121):791--794, 2013.
+
+\end{thebibliography}
