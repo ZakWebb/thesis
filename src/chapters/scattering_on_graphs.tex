@@ -102,31 +102,111 @@ I should really explain these NAND trees.
 
 More concretely, let $\widehat{G}$ be any finite graph, with $n+m$ vertices and an adjacency matrix
 \begin{equation}
-  \widehat{M} = \begin{pmatrix}A & B^\dag\\ B & D\end{pmatrix},
+  A(\widehat{G}) = \begin{pmatrix}A & B^\dag\\ B & D\end{pmatrix},
 \end{equation}
-where $A$ is an $N\times N$ matrix, $B$ is an $m\times N$ matrix, and $D$ is an $m\times m$ matrix.  When examining graph scattering, we will be interested in the graph $G$ given by the graph-join of $\widehat{G}$ and $N$ semi-infinite paths, with an additional edge between each of the first $N$ vertices of $\widehat{G}$ and the first vertex of one semi-infinite path.  If each semi-infinite path is labeled as $(x,i)$, where $x\geq 2$ is an integer and $i\in[N]$, 
+where $A$ is an $N\times N$ matrix, $B$ is an $m\times N$ matrix, and $D$ is an $m\times m$ matrix.  When examining graph scattering, we will be interested in the graph $G$ given by the graph-join of $\widehat{G}$ and $N$ semi-infinite paths, with an additional edge between each of the first $N$ vertices of $\widehat{G}$ and the first vertex of one semi-infinite path.  If each semi-infinite path is labeled as $(x,i)$, where $x\geq 2$ is an integer and $i\in[N]$, then the adjacency matrix for $G$ will be
+\begin{equation}
+  A(G) = A(\widehat{G}) + \sum_{j=1}^N \sum_{x=1}^\infty \big(\ketbra{x,j}{x+1,j} + \ketbra{x+1,j}{x,j}\big).
+\end{equation}
+
+At this point, we want to examine the possible eigenstates of the matrix $A(G)$.  It turns out that there are 3 different kinds of eigenstates, corresponding to the different forms of the state on the infinite path.  We can easily see that the eigenstates along the path must have amplitude of the form $e^{\kappa x}$ for some $\kappa$, but the form of the $\kappa$ determines these form.
+
+\subsubsection{Confined bound states}
+
+The easiest states to analyze are the confined bound states, which are eigenstates in which the only nonzero amplitudes are on vertices inside the finite graph $\widehat{G}$.  In particular, we have that these states are eigenstates of the matrix $D$, with the further restriction that they are in the null space of the matrix $B^\dag$.
+
+Note that there are no restrictions on the eigenvalues of these states, other than those that are inherited from any restrictions placed on it by $D$.
+
+\subsubsection{Unconfined bound states}
+
+The next interesting states are those that are not confined to the finite graph $\widehat{G}$, and thus they must take the form $e^{i k x}$ along the semi-infinite paths.  However, as we assume that the state is normalizable, we have to assume that $k\notin \RR$, and further that $\Im(k) < 0$.   
+
+With this assumption, we have that the amplitudes along the paths decay exponentially, so that the state is bound to the graph $\widehat{G}$.  
+
+Note that the energy of the eigenstate is given by 
+\begin{equation}
+  E = e^{i k } + e^{-i k}
+\end{equation}
+and as $E$ must be real, we have that $k = i \kappa + n\pi$ for $\kappa <0$.  We can assume that $n$ is either 0 or 1, as well.
+
+\todo{Finish this section, and figure out what values of $\kappa$ are possible}
+
+\todo{Are there only finitely many such $\kappa$, or is there a range of values?}
+
+\subsubsection{Half-bound states}
+
+The half-bound states are the limit of the states as $\kappa \rightarrow 0$.  In particular, they are those states where the amplitude along the infinite paths take the form $(\pm 1)^x$.  I don't really know much about them.
+
+\todo{Finish this section, make it important}
 
 
+\subsubsection{Scattering states}
 
-Talk about scattering algorithms and AND trees.
+We finally reach the point of scattering states, or those states we can use for computational tasks.  We first assume that we are orthogonal to all bound states, and in particular that we are othogonal to all confined bound states.  This allows us to uniquely construct the scattering states (without this assumption, if there existed a confined bound state at the appropriate energy, then we could simply add any multiple of the confined bound state to get a different scattering state).
+
+Taking some intuition from the classical case, we will construct a state corresponding to sending a particle in along one of the semi-infinite paths.  Namely, we will assume that one of the paths has a portion of its amplitude of the form $e^{i k x} + S_{i,i}(k)e^{-i k x}$ for $k\in (-\pi, 0)$, and that the rest of the paths have amplitudes given by $S_{i,q}(k)e^{ikx}$.  More concretely, we assume that the form of the states is given on the infinite paths by
+\begin{equation}
+  \braket{x,q}{\scat_{j}(k)} = \delta_{j,q} e^{i k x} + S_{qj} e^{i k x}.
+\end{equation}
+We then need to see whether such an eigenstate exists.
+
+In particular, if we assume that such an eigenstate exists, and that 
+\todo{Finish this section}
+
+\subsection{Orthonormality of the scattering states}
+
+\todo{Show that the scattering states are Delta function orthonormal}
+
+\todo{Do they span the space of states, if you also include the bound states?}
+
+\subsection{Scattering matrix properties}
+
+\todo{I need to show that the scattering matrix is a unitary, and symmetric.}
 
 \section{Applications of graph scattering}
 
 \subsection{NAND Trees}
 
+\todo{I need to give an explanation of this}
+
 \subsection{Momentum dependent actions}
 
+While the NAND trees gives a good example of how the process works, we can generalize the idea to work at momenta other than \todo{what momenta}.  In particular, we can attempt to find graph gadgets such that the scattering behaviour at some particular momenta is fixed.
+
 \subsubsection{R/T gadets}
-Note that while these 
+
+The easiest thing we could hope for are exactly similar to the NAND trees experiment, in that if there are only two attached semi-infite paths, then at some fixed momenta it either completely transmits, or it completely reflects.  
 
 \subsubsection{Momentum Switches}
 
-in one goes to 3 blah.
+We can generalize this idea of complete reflection or transmission to something called a momentum switch, in that with three inputs/outputs, for some chosen semi-infinite path, all incoming wavepackets at some momenta completely transmit to a second path, while all incoming wavepackets at some other particular momenta transmit to the third.
 
 \subsection{Encoded unitary}
 
 
 4 input/output, must go from in to out.
+
+This is as very particular behavior.
+
+
+\section{Construction of graphs with particular scattering behavior}
+
+Note that while these scattering behaviors at particular momenta are easy to calculate, no efficient way currently exists to find a graph with a given scattering matrix, or even to tell whether or not such a graph exists.  However, there are some special types of graphs that allow us to do this.
+
+\subsection{R/T gadgets}
+
+\subsection{Momentum switches}
+
+\subsection{Encoded unitaries}
+
+While there is no efficient method to find graphs that apply some fixed encoded unitary, it is possible to search over all small graphs that have some particular implementation.
+
+\missingcite{Find this small graphs thing}
+
+In particular, we have that these graphs have nice scattering behaviors, and will be useful in the long run.
+
+Additionally, it is possible to combine some graphs in a manner that can be used 
+
 
 \section{Various facts about scattering}
 
@@ -140,15 +220,6 @@ Replace each vertex by a path of fixed length.
 
 My interesting result.
 
-\section{Multi-particle quantum walk}
 
-Note that this is exactly what I wanted to talk about.
-
-Very difficult in general.
-
-\subsection{Two-particle scattering on an infinite path}
-
-The one thing we can actually compute
-It might be interesting to talk about what happens with spins.
 
 \end{document}
