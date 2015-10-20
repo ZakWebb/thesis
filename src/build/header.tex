@@ -10,7 +10,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Included Packages
 
-\usepackage{amsmath,amssymb,amstext}
+\usepackage{amsmath,amssymb,amstext,amsthm}
 \usepackage[pdftex]{graphicx}
 \usepackage{etoolbox}
 \usepackage{subfiles}
@@ -85,24 +85,21 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bra/Ket Macros
-
+\newcommand{\tinyspace}{\mspace{1mu}}
 \newcommand{\microspace}{\mspace{2mu}}
 
-\newcommand{\sket}[1]{|\microspace #1 \microspace \rangle}
-\newcommand{\sbra}[1]{\langle\microspace #1 \microspace |}
-\newcommand{\sbraket}[2]{\langle\microspace #1 \microspace | \microspace #2\microspace \rangle}
-\newcommand{\sbraMidket}[3]{\langle\microspace #1\microspace |\microspace #2
+\newcommand{\ket}[1]{|\microspace #1 \microspace \rangle}
+\newcommand{\bra}[1]{\langle\microspace #1 \microspace |}
+\newcommand{\braket}[2]{\langle\microspace #1 \microspace | \microspace #2\microspace \rangle}
+\newcommand{\braMidket}[3]{\langle\microspace #1\microspace |\microspace #2
 	\microspace |\microspace #3\microspace\rangle}
-\newcommand{\sxval}[1]{\langle \microspace #1 \microspace \rangle}
-\newcommand{\sden}[1]{\sket{#1}\mspace{-2mu}\sbra{#1}}
+\newcommand{\xval}[1]{\langle \microspace #1 \microspace \rangle}
+\newcommand{\ketbra}[2]{\ket{#1}\mspace{-2mu}\bra{#2}}
+\newcommand{\den}[1]{\ketbra{#1}{#1}}
 
-\newcommand{\ket}[1]{\left|\microspace #1 \microspace \right\rangle}
-\newcommand{\bra}[1]{\left\langle\microspace #1 \microspace \right|}
-\newcommand{\braket}[2]{\left\langle\microspace #1\microspace \middle|\microspace #2\microspace \right\rangle}
-\newcommand{\braMidket}[3]{\left\langle\microspace #1\microspace \middle|\microspace #2
-	\microspace \middle|\microspace #3\microspace \right\rangle}
-\newcommand{\xval}[1]{\left\langle\microspace #1 \microspace \right\rangle}
-\newcommand{\ketbra}[2]{\left|\microspace #1\microspace \middle\rangle\mspace{-2mu} \middle\langle\microspace #2\microspace\right|}
+
+\newcommand{\Norm}[1]{\left\|{#1}\right\|}
+\newcommand{\norm}[1]{\|{#1}\|}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Math Operator Macros
@@ -125,6 +122,8 @@
 \newcommand{\CC}{\mathbb{C}}
 \newcommand{\II}{\mathbb{I}}
 
+\newcommand{\OO}{\mathcal{O}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Adjusting Counter Depth  
 
@@ -145,6 +144,17 @@
 % Todo Command
 
 \newcommand{\todo}[1]{\textcolor{red}{[\textbf{TO~DO:}~\textit{#1}]} }
-
 \newcommand{\missingcite}[1]{\textcolor{red}{[\textbf{CITE:}~\textit{#1}]} }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Theorem Settup
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{problem}{Problem}
+\newtheorem{example}{Example}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{fact}{Fact}

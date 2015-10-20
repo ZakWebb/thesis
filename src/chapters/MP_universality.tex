@@ -36,7 +36,686 @@ It might be interesting to talk about what happens with spins.
 
 \subsection{Finite truncation}
 
-Theorem 2
+
+\begin{theorem}
+\label{thm:twopart}Let $H^{(2)}$ be a two-particle Hamiltonian of the form \eq{twoham} with interaction range at most $C$, i.e., $\mathcal{V}(|r|)=0$ for all $|r|>C$. Let $\theta_{\pm}(p_1,p_2)$ be given by equation \eq{delta_pm}. Define $\theta=\theta_{\pm}({\pi}/{4},{3\pi}/{8})$. Let $L\in\natural$, let $M\in\{C+1,C+2,\ldots\}$, and define
+\begin{align*}
+|\chi_{z,k}\rangle & =  \frac{1}{\sqrt{L}}\sum_{x=z-L}^{z-1}e^{ikx}|x\rangle\\
+|\psi(0)\rangle & =  \frac{1}{\sqrt{2}}\left(|\chi_{-M,-\frac{\pi}{2}}\rangle|\chi_{M+L+1,\frac{\pi}{4}}\rangle 
+	\pm |\chi_{M+L+1,\frac{\pi}{4}}\rangle|\chi_{-M,-\frac{\pi}{2}}\rangle\right).
+\end{align*}
+Let $c_{0}$ be a constant independent of $L$. Then, for all $0\leq t\leq c_{0}L$, we have
+\[
+\left\Vert e^{-iH^{(2)}t}|\psi(0)\rangle-|\alpha(t)\rangle\right\Vert =\O(L^{-{1}/{8}}),
+\]
+where 
+\begin{equation}
+|\alpha(t)\rangle=\sum_{x,y}a_{xy}(t)|x,y\rangle,
+\label{eq:alpha}
+\end{equation}
+$a_{xy}(t)=\pm a_{yx}(t)$, and, for $x\leq y$, 
+\begin{align}
+a_{xy}(t) & =  \frac{1}{\sqrt{2}L}e^{-\sqrt{2}it}\left[e^{-i \pi x/2} e^{i \pi y/4} F(x,y,t) 
+    \pm e^{i\theta} e^{i \pi x/4} e^{-i \pi y/2} F(y,x,t) \right]
+\label{eq:a_xy}
+\end{align}
+where
+\begin{align*}
+F(u,v,t) & =  \begin{cases}
+	1 & \text{if }u-2 \lfloor t \rfloor\in\{-M-L,\ldots,-M-1\}\text{ and }v+2\left\lfloor \frac{t}{\sqrt{2}}
+	\right\rfloor \in\{M+1,\ldots,M+L\}\\
+	0 & \text{otherwise.}\end{cases}
+\end{align*}
+\end{theorem}
+
+In this section we prove \thm{twopart}. The main proof appears in \sec{twopartproof}, relying on several technical lemmas proved in \sec{techlem}. The proof follows the method used in the single-particle case, which is based on the calculation from the appendix of reference \cite{FGG08}.
+
+Recall from \eq{symscatter} that for each $p_{1}\in(-\pi,\pi)$ and $p_{2}\in(0,\pi)$ there is an eigenstate $|\text{sc}(p_{1};p_{2})\rangle_{\pm}$ of $H^{(2)}$ of the form 
+\begin{align}
+  \langle x,y|\text{sc}(p_{1};p_{2})\rangle_\pm &=
+    \frac{e^{-ip_{1}\left(\frac{x+y}{2}\right)}}{\sqrt{2}} 
+    \begin{cases} e^{-i p_2 (x-y)} \pm  e^{i \theta_{\pm}(p_1,p_2)} e^{i p_2 (x - y)} & \text{if } x - y \leq -C\\
+     e^{- i p_2 (x-y)}e^{i\theta_{\pm}(p_1,p_2)} \pm e^{i p_2 (x-y)} & \text{if }x-y \geq C\\
+    f(p_1,p_2,x-y) \pm f(p_1,p_2,y-x)& \text{if }|x-y|< C \end{cases}\label{eq:sc}
+\end{align}
+where
+\begin{align*}
+e^{i \theta_\pm (p_{1},p_{2})} & =  T(p_1,p_2) \pm R(p_1,p_2),
+\end{align*}
+$C$ is the range of the interaction, $T$ and $R$ are the transmission
+and reflection coefficients of the interaction at the chosen momentum, $f$
+describes the amplitudes of the scattering state within the interaction range, and the $\pm$ depends
+on the type of particle ($+$ for bosons, $-$ for fermions).  The state
+$|\text{sc}(p_{1};p_{2})\rangle_\pm$ satisfies 
+\[
+H^{(2)}|\text{sc}(p_{1};p_{2})\rangle_{\pm} = 4\cos \frac{p_{1}}{2}\cos p_{2} |\text{sc}(p_{1};p_{2})\rangle_\pm
+\]
+and is delta-function normalized as
+\begin{equation}
+_{\pm}\langle\text{sc}(p_{1}';p_{2}')|\text{sc}(p_{1};p_{2})\rangle_{\pm}=
+  4 \pi^{2} \delta(p_{1} - p_{1}') \delta(p_{2} - p_{2}').
+\label{eq:del_func_norm}
+\end{equation}
+
+\begin{proof}
+Expand $|\psi(0)\rangle$ in the basis of eigenstates of the Hamiltonian
+to get
+\begin{align*}
+|\psi(t)\rangle & = e^{-iH^{(2)}t}|\psi(0)\rangle = |\psi_{1}(t)\rangle+|\psi_{2}(t)\rangle
+\end{align*}
+where 
+\[
+  \ket{\psi_{1}(t)} = \iint_{D_{\epsilon}} \frac{d\phi_{1}d\phi_{2}} 
+    {4\pi^{2}} e^{-it 4\cos(\frac{p_{1}}{2}+\frac{\phi_{1}}{2})
+      \cos(p_{2} + \phi_{2})}|\text{sc}(p_{1}+\phi_{1};p_{2}+ 
+    \phi_{2})\rangle_{\pm} \left({_{\pm}\langle\text{sc}(p_{1}+\phi_{1};p_{2}+\phi_{2})|\psi(0)\rangle}\right)
+\]
+with $D_{\epsilon}=\left[-\epsilon,\epsilon\right]\times\left[-\epsilon,\epsilon\right]$, $p_{1}= {\pi}/{2}-{\pi}/{4}=
+{\pi}/{4}$, $p_{2}=({\pi}/{2} +
+{\pi}/{4})/2={3\pi}/{8}$,
+and with $|\psi_{2}(t)\rangle$ orthogonal to $|\psi_{1}(t)\rangle$.
+We take $\epsilon=a/\sqrt{L}$ for some constant $a$. Using equation \eq{sc}
+we get 
+\[
+  \ket{\psi_{1}(t)}=|\psi_{A}(t)\rangle\pm|\psi_{B}(t)\rangle
+\]
+where
+\begin{align}
+  |\psi_{A}(t)\rangle & = \iint_{D_{\epsilon}} \frac{d\phi_{1}d\phi_{2}}
+    {4\pi^{2}} e^{-it 4\cos(\frac{\pi}{8}+\frac{\phi_{1}}{2})
+    \cos(\frac{3\pi}{8}+\phi_{2})}
+     A(\phi_{1},\phi_{2})|\text{sc}(\tfrac{\pi}{4}+\phi_{1};
+     \tfrac{3\pi}{8}+\phi_{2})\rangle_{\pm} \label{eq:psiA} \\
+ \ket{\psi_{B}(t)} & = \iint_{D_{\epsilon}} \frac{d\phi_{1}d\phi_{2}}
+    {4\pi^{2}} e^{-it 4\cos(\frac{\pi}{8}+\frac{\phi_{1}}{2})
+    \cos(\frac{3\pi}{8}+\phi_{2})}  e^{-i\theta_{\pm}(\tfrac{\pi}{4}+\phi_{1},\tfrac{3\pi}{8}+\phi_{2} )}B(\phi_{1},\phi_{2},\tfrac{3\pi}{8})
+ 	|\text{sc}(\tfrac{\pi}{4}\! +\!\phi_{1};\tfrac{3\pi}{8}\! +\!\phi_{2})\rangle_\pm \nonumber 
+\end{align}
+with
+\begin{align}
+A(\phi_{1},\phi_{2}) & = \frac{1}{L}\sum_{x=-(M+L)}^{-(M+1)}\sum_{y=M+1}^{M+L} 
+    e^{i\phi_{1}\frac{x+y}{2}}e^{i\phi_{2}\left(x-y\right)}\label{eq:A}\\
+B(\phi_{1},\phi_{2},k) & = \frac{1}{L}\sum_{x=-(M+L)}^{-(M+1)}
+    \sum_{y=M+1}^{M+L}e^{i\phi_{1}\frac{x+y}{2}} 	
+    e^{i\left(\phi_{2}+2 k\right)\left(y-x\right)}.\nonumber 
+\end{align}
+ Using the delta-function normalization of the scattering states (equation
+\eq{del_func_norm}) we get 
+\begin{align*}
+\langle\psi_{B}(t)|\psi_{B}(t)\rangle & = \iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}\left|B(\phi_{1},\phi_{2},\tfrac{3\pi}{8})\right|^{2}\\
+ & \leq \frac{16\pi^{2}}{L^{2}\epsilon^{2}}
+\end{align*}
+by \lem{Let--and} (as long as $\epsilon<{3\pi}/{8}$, which holds for $L$ sufficiently large).
+Similarly, 
+\begin{align*}
+1 &\geq\langle\psi_{A}(t)|\psi_{A}(t)\rangle \\
+&= \iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}\left|A(\phi_{1},\phi_{2})\right|^{2}\\
+ & \geq 1-\frac{4\pi}{L\epsilon}
+\end{align*}
+(from the first two facts in \lem{Let--and}) and therefore
+\begin{align*}
+\langle\psi_{1}(t)|\psi_{1}(t)\rangle & = \langle\psi_{A}(t)|\psi_{A}(t)\rangle+\langle\psi_{B}(t)|\psi_{B}(t)\rangle+\langle\psi_{A}(t)|\psi_{B}(t)\rangle+\langle\psi_{B}(t)|\psi_{A}(t)\rangle\\
+ & \geq 1-\frac{4\pi}{L\epsilon}-2\left|\langle\psi_{A}(t)|\psi_{B}(t)\rangle\right|\\
+ & \geq 1-\frac{4\pi}{L\epsilon}-2\left|\langle\psi_{A}(t)|\psi_{A}(t)\rangle\right|^{\frac{1}{2}}\left|\langle\psi_{B}(t)|\psi_{B}(t)\rangle\right|^{\frac{1}{2}}\\
+ & \geq 
+ 1-\frac{12\pi}{L\epsilon}.
+\end{align*}
+
+Hence 
+\[
+  \langle\psi_{2}(t)|\psi_{2}(t)\rangle\leq\frac{12\pi}{L\epsilon}
+\]
+since 
+\[
+\langle\psi(t)|\psi(t)\rangle=\langle\psi_{1}(t)|\psi_{1}(t)\rangle+\langle\psi_{2}(t)|\psi_{2}(t)\rangle=1.
+\]
+Thus
+\begin{align*}
+\left\Vert \,|\psi(t)\rangle-|\psi_{A}(t)\rangle\right\Vert  & = \left\Vert \,|\psi_{B}(t)\rangle+|\psi_{2}(t)\rangle\right\Vert \\
+ & \leq \left\Vert \,|\psi_{B}(t)\rangle\right\Vert +\left\Vert \,|\psi_{2}(t)\rangle\right\Vert \\
+ & \leq \frac{4\pi}{L\epsilon}+\sqrt{\frac{12\pi}{L\epsilon}}.
+\end{align*}
+Now 
+\begin{align*}
+\left\Vert \,|\psi(t)\rangle-|\alpha(t)\rangle\right\Vert  & \leq \left\Vert \,|\psi(t)\rangle-|\psi_{A}(t)\rangle\right\Vert +\left\Vert \,|\psi_{A}(t)\rangle-|\alpha(t)\rangle\right\Vert \\
+ & \leq \frac{4\pi}{L\epsilon}+\sqrt{\frac{12\pi}{L\epsilon}}+\left\Vert \,|\psi_{A}(t)\rangle-|\alpha(t)\rangle\right\Vert \\
+ & = \O(L^{-{1}/{4}})+\left\Vert \,|\psi_{A}(t)\rangle-|\alpha(t)\rangle\right\Vert 
+\end{align*}
+using our choice $\epsilon=a/\sqrt{L}$. To complete the
+proof, we now show that the second term in this expression is bounded by $\O(L^{-{1}/{8}})$.
+\begin{lemma}
+With $|\psi_{A}(t)\rangle$ and $|\alpha(t)\rangle$ defined through
+equations \eq{psiA} and \eq{alpha}, with $t\leq c_{0}L$ (for some constant $c_{0}$), 
+\[
+\left\Vert \,|\psi_{A}(t)\rangle-|\alpha(t)\rangle\right\Vert = \O(L^{-{1}/{8}}).
+\]
+\end{lemma}
+\begin{proof}
+To simplify matters, note that both $|\psi_{A}(t)\rangle$ and $|\alpha(t)\rangle$ are either symmetric or anti-symmetric (i.e., $\langle x,y|\alpha(t)\rangle=\pm\langle y,x|\alpha(t)\rangle$ and $\langle x,y|\psi_{A}(t)\rangle=\pm\langle y,x|\psi_{A}(t)\rangle$).  Taking $C$ to be the maximum range of the interaction in our Hamiltonian, we have
+\[
+\left\Vert \,|\psi_{A}(t)\rangle-|\alpha(t)\rangle\right\Vert \leq2\left\Vert P_{1}|\psi_{A}(t)\rangle-P_{1}|\alpha(t)\rangle\right\Vert  + \left\Vert P_2 \ket{\psi_A(t)}\right\Vert + \left \Vert P_2 \ket{\alpha(t)}\right\Vert,
+\]
+where
+\[
+     P_{1}=\sum_{y-x \geq C}|x,y\rangle\langle x,y| 
+     \qquad P_2 = \sum_{|x-y| < C} \ket{x,y}\bra{x,y}.
+\]
+
+Now, for $y-x\geq C$, 
+\begin{align*}
+\langle x,y|\psi_{A}(t)\rangle & = \iint_{D_{\epsilon}}
+  \frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+  e^{-it 4\cos(\frac{\pi}{8}+\frac{\phi_{1}}{2})
+        \cos(\frac{3\pi}{8}+\phi_{2})} A(\phi_{1},\phi_{2})\frac{e^{-i\left(\frac{\pi}{4}+\phi_{1}\right)
+       \left(\frac{x+y}{2}\right)}}{\sqrt{2}} \\
+ & \qquad \left(e^{i\left(\frac{3\pi}
+       {8}+\phi_{2}\right)\left(y-x\right)}\pm e^{-i\left(\frac{3\pi}{8}
+       +\phi_{2}\right)
+     \left(y-x\right)+
+     i\theta_{\pm}(\frac{\pi}{4}+\phi_{1},\frac{3\pi}{8}+\phi_{2})}
+      \right)\\
+ & = \iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+      \bigg[\frac{1}{\sqrt{2}} e^{-it 4\cos(\frac{\pi}{8} + \frac{\phi_{1}}{2}) 
+      \cos(\frac{3\pi}{8}+\phi_{2})} A(\phi_{1},\phi_{2}) \\
+&    \qquad \left( e^{-i\pi x/2} e^{i\pi y/4} e^{-i\phi_{1}\left(\frac{x+y}{2}\right)}
+ 	 e^{i\phi_{2}\left(y-x\right)}\right.\\
+& \qquad\quad\left.\pm  e^{i \pi x/4} e^{-i\pi y/2} e^{-i\phi_{1}
+      \left(\frac{x+y}{2}\right)}
+ 	 e^{-i\phi_{2}\left(y-x\right)} e^{i \theta_{\pm}\left(\frac{\pi}{4} 
+             + \phi_1 , \frac{3\pi}{8} + 
+ 	 \phi_2\right)} \right)\bigg].
+\end{align*}
+
+From \lem{a_xy}, for $x\leq y$, the state $\ket{\alpha(t)}$ takes the form
+\begin{align*}
+\langle x,y|\alpha(t)\rangle & = \frac{1}{\sqrt{2}}e^{-it\sqrt{2}}\left[ e^{-i\pi x /2}e^{i \pi y/4}  
+	\left(\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}\right.\right.\\
+ &	\qquad  \left.\left. A(\phi_{1},\phi_{2}) 		
+	e^{- i\phi_{1}\left(-\left\lfloor t\right\rfloor +\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor +\frac{x+y}
+	{2}\right)}e^{-2i\phi_{2}\left(-\left\lfloor t\right\rfloor -\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor +\frac{x-y}
+	{2}\right)}\right)\right.\\
+ & \quad \pm e^{i\theta} e^{i\pi x/4}e^{-i \pi y/2} 
+ 	\left(\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}\right.\\
+ & \qquad \left.\left. A(\phi_{1},\phi_{2})
+ 	e^{-i\phi_{1}\left(-\left\lfloor t\right\rfloor +\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor +\frac{x+y}{2}\right)}
+ 	e^{-2i\phi_{2}\left(-\left\lfloor t\right\rfloor -\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor +\frac{y-x}
+ 	{2}\right)}\right)\right],
+ \end{align*}
+ where $D_{\pi}=[-\pi,\pi]\times[-\pi,\pi]$. Using these expressions for $\ket{\psi_A(t)}$ and $\ket{\alpha(t)}$,
+we now write 
+\[
+P_{1}|\psi_{A}(t)\rangle-P_{1}|\alpha(t)\rangle=\pm |e_{1}(t)\rangle+|e_{2}(t)\rangle \pm|f_{1}(t)\rangle+|f_{2}(t)\rangle\pm|g_{1}(t)\rangle+|g_{2}(t)\rangle\pm|h(t)\rangle
+\]
+where each term in the above equation is supported only on states
+$|x,y\rangle$ such that $y-x \geq C$, and (for $y - x \geq C$)
+\begin{align*}
+\langle x,y|e_{1}(t)\rangle & = 
+	\frac{e^{i\theta}}{\sqrt{2}} e^{-it\sqrt{2}}
+	e^{i \pi x/4}e^{-i\pi y/2}\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+	A(\phi_{1},\phi_{2}) \bigg[e^{-i\phi_{1}\left(-t+\frac{t}{\sqrt{2}}+\frac{x+y}{2}\right)}\\
+&  \qquad\qquad e^{-2i\phi_{2}\left(-t-\frac{t}{\sqrt{2}}+\frac{y-x}{2}\right)}
+	-e^{-i\phi_{1}\left(-\left\lfloor t\right\rfloor +\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor +\frac{x+y}{2}
+ 		\right)}e^{-2i\phi_{2}\left(-\left\lfloor t\right\rfloor -\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor 
+ 		+\frac{y-x}{2}\right)}\bigg]\\
+\langle x,y|e_{2}(t)\rangle & = 
+	\frac{1}{\sqrt{2}}e^{-it\sqrt{2}}e^{-i \pi x/2}e^{i\pi y/4}
+	\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}A(\phi_{1},\phi_{2})\bigg[e^{-i\phi_{1}
+	\left(-t+\frac{t}{\sqrt{2}}+\frac{x+y}{2}\right)}\\
+& \qquad\qquad e^{-2i\phi_{2}\left(-t-\frac{t}{\sqrt{2}}+\frac{x-y}{2}\right)}
+		-e^{-i\phi_{1}\left(-\left\lfloor t\right\rfloor +\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor +
+		\frac{x+y}{2}\right)}e^{-2i\phi_{2}\left(-\left\lfloor t\right\rfloor -\left\lfloor 
+		\frac{t}{\sqrt{2}}\right\rfloor +\frac{x-y}{2}\right)}\bigg]\\
+\langle x,y|f_{1}(t)\rangle & = -
+	\frac{e^{i\theta}}{\sqrt{2}} e^{-it\sqrt{2}}e^{i \pi x/4} 
+	e^{-i\pi y/2}\iint_{D_{\pi}\setminus D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+	A(\phi_{1},\phi_{2})\\
+&  \qquad\qquad\qquad\qquad \qquad\qquad \qquad 
+	e^{-i\phi_{1}\left(-t+\frac{t}{\sqrt{2}}+\frac{x+y}{2}\right)}e^{-2i\phi_{2}
+	\left(-t-\frac{t}{\sqrt{2}}+\frac{y-x}{2}\right)}\\
+\langle x,y|f_{2}(t)\rangle & =  -\frac{1}{\sqrt{2}}e^{-it\sqrt{2}}e^{-i\pi x/2}e^{i\pi y/4 }
+	\iint_{D_{\pi}\setminus D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+	A(\phi_{1},\phi_{2})\\
+&  \qquad\qquad\qquad\qquad \qquad\qquad \qquad e^{-i\phi_{1}\left(-t+\frac{t}{\sqrt{2}}+\frac{x+y}{2}\right)}
+	e^{-2i\phi_{2}\left(-t-\frac{t}{\sqrt{2}}+\frac{x-y}{2}\right)}\\
+\langle x,y|g_{1}(t)\rangle & =   \frac{e^{i\theta}}{\sqrt{2}}e^{i \pi x/4}e^{- i \pi y/2}
+	\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}A(\phi_{1},\phi_{2})
+	e^{-i\phi_{1}\left(\frac{x+y}{2}\right)}e^{-2i\phi_{2}\left(\frac{y-x}{2}\right)}\\
+& \qquad \qquad 
+	\left[e^{-it 4\cos(\frac{\pi}{8}+\frac{\phi_{1}}{2})\cos(\frac{3\pi}{8}
+	+\phi_{2})} -e^{-it\left(\sqrt{2}+\sqrt{2}\left(\frac{\phi_{1}}{2}-\phi_{2}\right)
+ 	-2\left(\frac{\phi_{1}}{2}+\phi_{2}\right)\right)}\right]\\
+\langle x,y|g_{2}(t)\rangle & =  \frac{1}{\sqrt{2}}e^{-i\pi x/2}e^{i\pi y/4}
+	\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}A(\phi_{1},\phi_{2})
+	e^{-i\phi_{1}\left(\frac{x+y}{2}\right)}e^{-2i\phi_{2}\left(\frac{x-y}{2}\right)}\\
+ & \qquad\qquad\left[e^{-it 4\cos(\frac{\pi}{8}+\frac{\phi_{1}}{2})\cos(\frac{3\pi}{8}+\phi_{2})} - e^{-it\left(\sqrt{2}+\sqrt{2}\left(\frac{\phi_{1}}{2}-\phi_{2}\right)
+ 	-2\left(\frac{\phi_{1}}{2}+\phi_{2}\right)\right)}\right]\\
+\langle x,y|h(t)\rangle & =  \frac{1}{\sqrt{2}}e^{i\pi x/4}e^{-i \pi y/2}
+	\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+	A(\phi_{1},\phi_{2})e^{-i\phi_{1}\left(\frac{x+y}{2}\right)}e^{-2i\phi_{2}\left(\frac{y-x}{2}\right)}\\
+& \qquad \qquad e^{-it 4\cos(\frac{\pi}{8}+\frac{\phi_{1}}{2}) \cos(\frac{3\pi}{8}+\phi_{2})} \left(e^{i\theta_{\pm}(\frac{\pi}{4}+\phi_{1},\frac{3\pi}{8}+\phi_{2})}-e^{i\theta}\right).
+\end{align*}
+We now proceed to bound the norm of each of these states. We repeatedly
+use the fact that, for $(\phi_{1},\phi_{2})\in D_{\pi}$, 
+\begin{align*}
+\sum_{x,y=-\infty}^{\infty}e^{ix\left(\frac{1}{2}\left(\phi_{1}-\tilde{\phi}_{1}\right)-\left(\phi_{2}-\tilde{\phi}_{2}\right)\right)}e^{iy\left(\frac{1}{2}\left(\phi_{1}-\tilde{\phi}_{1}\right)+\left(\phi_{2}-\tilde{\phi}_{2}\right)\right)}
+ & =  4\pi^{2}\delta(\phi_{1}-\tilde{\phi}_{1}) \delta(\phi_{2}-\tilde{\phi}_{2}).
+ \end{align*}
+ Using this formula we get
+ \begin{align*}
+\langle e_{1}(t)|e_{1}(t)\rangle & =  \sum_{y-x\geq C}\langle e_{1}(t)|x,y\rangle\langle x,y|e_{1}(t)\rangle\\
+   & \leq  \sum_{x=-\infty}^{\infty}\sum_{y=-\infty}^{\infty}\bigg|\frac{1}{\sqrt{2}}
+	 	\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}A(\phi_{1},\phi_{2})
+	 	\bigg[e^{-i\phi_{1}\left(-t+\frac{t}{\sqrt{2}}+\frac{x+y}{2}\right)}\\
+	&\qquad e^{-2i\phi_{2}\left(-t-\frac{t}
+	 	{\sqrt{2}}+\frac{y-x}{2}\right)}-e^{-i\phi_{1}\left(-\left\lfloor t\right\rfloor +\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor 
+ 		+\frac{x+y}{2}\right)}e^{-2i\phi_{2}\left(-\left\lfloor t\right\rfloor -\left\lfloor \frac{t}{\sqrt{2}}
+ 		\right\rfloor +\frac{y-x}{2}\right)}\bigg]\bigg|^{2}\\
+ & =  \frac{1}{2}\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}\left|A(\phi_{1},\phi_{2})
+ 		\right|^{2}\bigg|e^{-i\phi_{1}\left(-t+\frac{t}{\sqrt{2}}\right)}e^{-2i\phi_{2}\left(-t-\frac{t}
+ 		{\sqrt{2}}\right)}\\
+ & \qquad -e^{-i\phi_{1}\left(-\left\lfloor t\right\rfloor +\left\lfloor \frac{t}
+ 		{\sqrt{2}}\right\rfloor \right)}e^{-2i\phi_{2}\left(-\left\lfloor t\right\rfloor -\left\lfloor 
+ 		\frac{t}{\sqrt{2}}\right\rfloor \right)}\bigg|^{2}.
+\end{align*}
+ Now use the fact that $\left|e^{-ic}-1\right|^{2}\leq c^{2}$ for
+$c\in\mathbb{R}$ to get 
+\begin{align*}
+\langle e_{1}(t)|e_{1}(t)\rangle & \leq  \frac{1}{2}\iint_{D_{\pi}}\left(\frac{d\phi_{1}d\phi_{2}}
+	{4\pi^{2}}\right)\left|A(\phi_{1},\phi_{2})\right|^{2}\Bigg(-\phi_{1}\left(-t+\frac{t}{\sqrt{2}}+
+	\left\lfloor t\right\rfloor -\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor \right)\\
+ &  \quad \quad -2\phi_{2}\left(-t-\frac{t}{\sqrt{2}}+\left\lfloor t\right\rfloor +\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor \right)\Bigg)^{2}\\
+ & \leq  4\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}\left|A(\phi_{1},\phi_{2})\right|^{2}\left(\phi_{1}^{2}+4\phi_{2}^{2}\right)
+\end{align*}
+using the Cauchy-Schwarz inequality and the fact that $\left|t-{t}/{\sqrt{2}}-\left\lfloor t\right\rfloor -\left\lfloor {t}/{\sqrt{2}}\right\rfloor \right|\leq2$.
+So 
+\begin{align*}
+\langle e_{1}(t)|e_{1}(t)\rangle & \leq 4\left(\iint_{D_{\pi}\setminus D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}+\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}\right)\left|A(\phi_{1},\phi_{2})\right|^{2}\left(\phi_{1}^{2}+4\phi_{2}^{2}\right)\\
+ & \leq  4\left(5\pi^{2}\right)\left(\frac{4\pi}{L\epsilon}\right)+20\epsilon^{2}\\
+ & =  \frac{80\pi^{3}}{L\epsilon}+20\epsilon^{2}
+\end{align*}
+where we have used \lem{Let--and} and the fact that $\phi_{1}^{2}+4\phi_{2}^{2}\leq 5\epsilon^{2}$ on $D_\epsilon$. Similarly, 
+\[
+\langle e_{2}(t)|e_{2}(t)\rangle\leq\frac{80\pi^{3}}{L\epsilon}+20\epsilon^{2}.
+\]
+ Now
+ \begin{align*}
+\langle f_{1}(t)|f_{1}(t)\rangle & \leq  \frac{1}{2}\iint_{D_{\pi}\setminus D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}\left|A(\phi_{1},\phi_{2})\right|^{2}\\
+ & \leq  \frac{2\pi}{L\epsilon}
+ \end{align*}
+ by \lem{Let--and}, and similarly
+ \[
+\langle f_{2}(t)|f_{2}(t)\rangle\leq\frac{2\pi}{L\epsilon}.
+\]
+Moving on to the next term, 
+\begin{align}
+\langle g_{1}(t)|g_{1}(t)\rangle & \leq  \frac{1}{2}\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+	\left|A(\phi_{1},\phi_{2})\right|^{2}\Bigg|e^{-it 4\cos(\frac{\pi}{8}+\frac{\phi_{1}}{2})
+	\cos(\frac{3\pi}{8}+\phi_{2})}\nonumber \\
+ &  \qquad\qquad\qquad -e^{-it\left(\sqrt{2}+\sqrt{2}\left(\frac{\phi_{1}}{2}-\phi_{2}\right)-2\left(\frac{\phi_{1}}{2}+\phi_{2}\right)\right)}
+ 	\Bigg|^{2}\nonumber \\
+ & \leq  \frac{1}{2}\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+ 	\Bigg[\left|A(\phi_{1},\phi_{2})\right|^{2}t^{2} \left(4\cos\left(\frac{\pi}{8}+\frac{\phi_{1}}{2}\right)\cos\left(\frac{3\pi}{8}+\phi_{2}\right)\right.\nonumber\\
+&\qquad\qquad\qquad\left.
+ 	-\sqrt{2}-\sqrt{2}\left(\frac{\phi_{1}}{2}-\phi_{2}\right)+2\left(\frac{\phi_{1}}{2}+\phi_{2}\right)\right)^{2}\Bigg]
+ 	\label{eq:g_bound}
+\end{align}
+using $\left|e^{-ic}-1\right|^{2}\leq c^{2}$ for $c\in\mathbb{R}$.
+Now 
+\begin{align*}
+4\cos\left(\frac{\pi}{8}+\frac{\phi_{1}}{2}\right)\cos\left(\frac{3\pi}{8}+\phi_{2}\right) & =  
+	2\cos\left(\frac{\pi}{2}+\frac{\phi_{1}}{2}+\phi_{2}\right)+2\cos\left(-\frac{\pi}{4}+\frac{\phi_{1}}{2}-\phi_{2}\right)\\
+ & =  - 2 \sin\left(\frac{\phi_1}{2} + \phi_2\right) + \sqrt{2} \cos\left(\frac{\phi_1}{2}-\phi_2\right) + 
+ 	\sqrt{2} \sin\left(\frac{\phi_1}{2} - \phi_2\right)
+ \end{align*}
+so 
+\begin{align*}
+ &   \left|4\cos\left(\frac{\pi}{8}+\frac{\phi_{1}}{2}\right)\cos\left(\frac{3\pi}{8}+\phi_{2}\right)-\sqrt{2}-\sqrt{2}
+ 	\left(\frac{\phi_{1}}{2}-\phi_{2}\right)+2\left(\frac{\phi_{1}}{2}+\phi_{2}\right)\right|\\
+ & \quad \leq  \left|\sqrt{2}\left(\cos\left(\frac{\phi_{1}}{2}-\phi_{2}\right)-1\right)\right| 
+ 	+\left|\sqrt{2}\left(\sin\left(\frac{\phi_{1}}{2}-\phi_{2}\right)-\left(\frac{\phi_{1}}{2}-\phi_{2}\right)\right)\right|\\
+ & \qquad +\left|2\left(\sin\left(\frac{\phi_{1}}{2}+\phi_{2}\right)-\left(\frac{\phi_{1}}{2}+\phi_{2}\right)\right)\right|\\
+ & \quad \leq  \sqrt{2}\left(\frac{\phi_1}{2}-\phi_{2}\right)^{2}+\sqrt{2}\left(\frac{\phi_{1}}{2}
+ 	-\phi_{2}\right)^{2}+2\left(\frac{\phi_{1}}{2}+\phi_{2}\right)^{2} \\
+ & \quad \leq  4\left(\left(\frac{\phi_{1}}{2}+\phi_{2}\right)^{2}+\left(\frac{\phi_{1}}{2}-\phi_{2}\right)^{2}\right),
+\end{align*}
+using $|{\cos x -1}|\leq x^2$ and $|{\sin x-x}|\leq x^2$ for $x\in \mathbb{R}$. Plugging this into equation \eq{g_bound} we get 
+\begin{align*}
+\langle g_{1}(t)|g_{1}(t)\rangle & \leq \frac{1}{2}\iint_{D_{\epsilon}}
+	\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}} 16 \left|A(\phi_{1},\phi_{2})\right|^{2}t^{2}
+	\left(\left(\frac{\phi_{1}}{2} + \phi_2\right)^2+\left(\frac{\phi_1}{2} - \phi_{2}\right)^2\right)^{2} \\
+ & \leq  16 t^2 \iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+ 	\left|A(\phi_{1},\phi_{2})\right|^{2}\left(\left(\frac{\phi_1}{2} + \phi_2\right)^4 
+ 	+ \left(\frac{\phi_1}{2} - \phi_2\right)^4\right)\\
+ & \leq  \frac{16 t^{2}}{L^2} \iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+	  \frac{\sin^2(\frac{L}{2} [\frac{\phi_1}{2} + \phi_2])}
+	 {\sin^2(\frac{1}{2} [\frac{\phi_1}{2} + \phi_2])}
+	 \frac{\sin^2(\frac{L}{2} [-\frac{\phi_1}{2} + \phi_2])}
+	 {\sin^2(\frac{1}{2} [-\frac{\phi_1}{2} + \phi_2])}\\
+ & \qquad \left(\left(\frac{\phi_1}{2}+ \phi_2\right)^4 
+ 	+ \left(\frac{\phi_1}{2} - \phi_2\right)^4\right)
+\end{align*}
+where we used the Cauchy-Schwarz inequality in the second line and equation \eq{A_summed} in the last line.  Changing coordinates to
+\[
+  \alpha_1 = \phi_1 + \frac{ \phi_2}{2} \qquad \alpha_2 = \frac{\phi_1}{2} -\phi_2 
+ \]
+and realizing that $|\alpha_1|,|\alpha_2| < 3\epsilon/2$ for $(\phi_1,\phi_2)\in D_{\epsilon}$, we see that
+\begin{align*}
+  \bra{g_1(t)} g_1(t)\rangle &\leq \frac{16t^2}{L^2} \int_{-{3\epsilon/2}}^{3\epsilon/2} \frac{d\alpha_1}{2\pi}
+      \int_{-{3\epsilon/2}}^{3\epsilon/2} \frac{d\alpha_1}{2\pi} 
+      \frac{\sin^2(\frac{1}{2} L\alpha_1)}
+	 {\sin^2(\frac{1}{2} \alpha_1)}
+	 \frac{\sin^2(\frac{1}{2} L\alpha_2)}
+	 {\sin^2(\frac{1}{2} \alpha_2)} \left(\alpha_1^4+\alpha_2^4\right)\\
+   &= \frac{32t^2}{L^2} \int_{-{3\epsilon/2}}^{3\epsilon/2} \frac{d\alpha_1}{2\pi}
+      \int_{-{3\epsilon/2}}^{3\epsilon/2} \frac{d\alpha_1}{2\pi}
+      \frac{\sin^2(\frac{1}{2} L\alpha_1)}
+	 {\sin^2(\frac{1}{2} \alpha_1)}
+	 \frac{\sin^2(\frac{1}{2} L\alpha_2)}
+	 {\sin^2(\frac{1}{2} \alpha_2)} \alpha_1^4\\
+   &\leq \frac{32t^2}{L} \int_{-3\epsilon/2}^{3\epsilon/2} \frac{d\alpha_1}{2\pi}  
+     \frac{\sin^2(\frac{1}{2} L\alpha_1)}
+	 {\sin^2(\frac{1}{2} \alpha_1)} \alpha_1^4\\
+   &\leq \frac{32 t^2}{L} \int_{-3\epsilon/2}^{3\epsilon/2} \frac{d\alpha_1}{2\pi} \frac{\pi^2}{\alpha_1^2} \alpha_1^4\\
+   &= \frac{36 \pi t^2\epsilon^3}{L},
+\end{align*}
+with a similar bound on $\langle g_{2}(t)|g_{2}(t)\rangle$.
+ 
+Finally, 
+\begin{align*}
+\langle h(t)|h(t)\rangle & \leq  \frac{1}{2}\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+	\left|A(\phi_{1},\phi_{2})\right|^{2}\left|e^{i\theta_\pm (\tfrac{\pi}{4}+\phi_{1},
+	\tfrac{3\pi}{8}+\phi_{2})}-e^{i\theta}\right|^{2}.
+ \end{align*}
+Recall that $e^{i\theta_\pm (p_1,p_2)}=T(p_1,p_2) \pm R(p_1,p_2)$ is obtained by solving for the effective single-particle S-matrix for the Hamiltonian \eq{vr_eqn}. For $p_1$ near ${\pi}/{4}$ we divide this Hamiltonian by $2\cos({p_1}/{2})$ to put it in the form considered in \cite{Childs_Gosset}, where the potential term is now $\mathcal{V}(|r|)/(2\cos({p_1}/{2}))$. The entries $T(p_1,p_2)$ and $R(p_1,p_2)$ of this S-matrix are bounded rational functions of $z=e^{ip_2}$ and $(2\cos({p_1}/{2}))^{-1}$ \cite{Childs_Gosset}, so they are differentiable as a function of $p_1$ and $p_2$ on some neighborhood $U$ of $({\pi}/{4},{3\pi}/{8})$ (and have bounded partial derivatives on this neighborhood).
+
+For $\epsilon$ small enough that $D_\epsilon\subset U$ we get, using the mean value theorem and the fact that $\theta=\theta_\pm ({\pi}/{4}, {3\pi}/{8})$,
+\begin{align*}
+\left|e^{i\theta_\pm (\tfrac{\pi}{4}+\phi_{1}, \tfrac{3\pi}{8}+\phi_{2})}-e^{i\theta}\right| & \leq \sqrt{\phi_1^2+\phi_2^2} \max_{U} \big|\vec{\nabla} e^{i\theta_\pm}\big| \quad \text{for }(\phi_1,\phi_2)\in D_{\epsilon}\\
+& \leq  \epsilon \Gamma
+\end{align*}
+for some constant $\Gamma$ (independent of $L$).
+Therefore
+\begin{align*}
+\langle h(t)|h(t)\rangle & \leq  \frac{1}{2}\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+	\left|A(\phi_{1},\phi_{2})\right|^{2} \epsilon^2 \Gamma^2\\
+& \leq \frac{1}{2}\Gamma^2 \epsilon^2.
+\end{align*}
+ 
+Putting these bounds together, we get 
+\begin{align*}
+\Norm{P_1|\psi_A(t)\rangle-P_1|\alpha(t)\rangle}  
+ & \leq \norm{|e_{1}(t)\rangle} + \norm{|e_{2}(t)\rangle} + 
+        \norm{|f_{1}(t)\rangle} + \norm{|f_{2}(t)\rangle} \\
+ &  \qquad + \norm{|g_{1}(t)\rangle} + \norm{|g_{2}(t)\rangle} 
+           + \norm{|h(t)\rangle} \\
+ & \leq 2\left(\frac{80\pi^{3}}{L\epsilon}+20\epsilon^{2}\right)^{\frac{1}{2}}
+ 	+2\left(\frac{2\pi}{L\epsilon}\right)^{\frac{1}{2}}+2\left(\frac{36\pi t^{2}\epsilon^{3}}{L}\right)^{\frac{1}{2}}+\frac{1}{\sqrt{2}}\Gamma \epsilon.
+\end{align*}
+ Letting $\epsilon={a}/{\sqrt{L}}$ and $t\leq c_{0}L$ we get 
+\begin{equation}
+\left\Vert \,P_1|\psi_A(t)\rangle-P_1|\alpha(t)\rangle\right\Vert = \O(L^{-{1}/{4}}).\label{eq:psiA_alpha}
+\end{equation}
+
+Since $P_2\ket{\alpha(t)}$ has support on at most $4CL$ basis states $|x,y\rangle$, and since $|\langle x,y|P_2|\alpha(t)\rangle|^2=\O( L^{-2})$, we get
+\begin{equation}
+  \left\Vert P_2\ket{\alpha(t)}\right\Vert = \O(L^{-{1}/{2}}).\label{eq:P2alpha_bound}
+\end{equation}
+
+We now use the bounds \eq{psiA_alpha} and \eq{P2alpha_bound} and \lem{alpha} to show that
+\begin{equation}
+\left\Vert |\psi_{A}(t)\rangle-|\alpha(t)\rangle\right\Vert =\O(L^{-{1}/{8}}).\label{eq:psiA_alpha_bound}\end{equation}
+ First consider the case where the interaction range is $C=0$ (as in
+the Bose-Hubbard model). In this case equation \eq{psiA_alpha_bound}
+follows directly from equation \eq{psiA_alpha} and the facts that
+$\langle x,y|\alpha(t)\rangle=\pm\langle y,x|\alpha(t)\rangle$ and
+$\langle x,y|\psi_{A}(t)\rangle=\pm\langle y,x|\psi_{A}(t)\rangle$. 
+
+Now suppose $C\neq0$. In this case
+\begin{align*}
+\left\Vert \left(1-P_{2}\right)|\psi_{A}(t)\rangle\right\Vert ^{2} & = 2\left\Vert P_{1}|\psi_{A}(t)\rangle\right\Vert ^{2}\\
+ & = 2\left(\left\Vert P_{1}|\alpha(t)\rangle\right\Vert +\O(L^{-{1}/{4}})\right)^2\\
+ & = 2\left(\frac{1}{2}\left\Vert (1-P_{2})|\alpha(t)\rangle\right\Vert ^{2}+\O(L^{-{1}/{4}})\right)\\
+ & = 1+\O(L^{-1})-\langle\alpha(t)|P_{2}|\alpha(t)\rangle+\O(L^{-{1}/{4}})\\
+ & = 1+\O(L^{-{1}/{4}})
+\end{align*}
+where in the next-to-last line we have used \lem{alpha}. So
+\begin{align*}
+\left\Vert |\psi_{A}(t)\rangle-|\alpha(t)\rangle\right\Vert  & \leq 2\left\Vert P_{1}|\psi_{A}(t)\rangle-P_{1}|\alpha(t)\rangle\right\Vert +\left\Vert P_{2}|\alpha(t)\rangle\right\Vert +\left\Vert P_{2}|\psi_{A}(t)\rangle\right\Vert \\
+ & = \O(L^{-{1}/{4}})+\O(L^{-{1}/{2}})+\left(1-\left\Vert \left(1-P_{2}\right)|\psi_{A}(t)\rangle\right\Vert \right)^{\frac{1}{2}}\\
+ & = \O(L^{-{1}/{4}})+\O(L^{-{1}/{2}})+\O(L^{-{1}/{8}})\\
+ & = \O(L^{-{1}/{8}})
+ \end{align*}
+which completes the proof. 
+\end{proof}
+\end{proof}
+
+\subsubsection{Technical lemmas}
+\label{sec:techlem}
+
+In this section we prove three lemmas that are used in the proof of \thm{twopart}.
+
+\begin{lemma} \label{lem:alpha}
+Let $|\alpha(t)\rangle$ be defined as in \thm{twopart}.
+Then
+\[
+\langle\alpha(t)|\alpha(t)\rangle=1+\O(L^{-1}).
+\]
+\end{lemma}
+
+\begin{proof}
+Define
+\[
+\Pi=\sum_{x\leq y}|x,y\rangle\langle x,y|.
+\]
+Note that, since $\langle x,y|\alpha(t)\rangle=\pm\langle y,x|\alpha(t)\rangle$,
+\begin{align*}
+\langle\alpha(t)|\alpha(t)\rangle & = 2\langle\alpha(t)|\Pi|\alpha(t)\rangle-\sum_{x=-\infty}^{\infty}\langle\alpha(t)|x,x\rangle\langle x,x|\alpha(t)\rangle\\
+ & = 2\langle\alpha(t)|\Pi|\alpha(t)\rangle+\O(L^{-1})
+\end{align*}
+where the last line follows since $|\langle x,x|\alpha(t)\rangle|^{2}$
+is nonzero for at most $L$ values of $x$ and $|\langle x,x|\alpha(t)\rangle|^{2}=\O(L^{-2})$.
+We now show that
+\[
+\langle\alpha(t)|\Pi|\alpha(t)\rangle=\frac{1}{2}+O(L^{-1}).
+\]
+Note that
+\begin{align*}
+\langle\alpha(t)|\Pi|\alpha(t)\rangle &= \frac{1}{2L^{2}}\sum_{x\leq y}\Bigg(F(x,y,t) +F(y,x,t)  \\
+&\qquad \pm e^{i\theta}e^{\frac{3i\pi}{4}x}e^{-\frac{3i\pi}{4}y}F(x,y,t) F(y,x,t) \\
+&\qquad \pm e^{-i\theta}e^{-\frac{3i\pi}{4}x}e^{\frac{3i\pi}{4}y}F(x,y,t) F(y,x,t) \Bigg).
+\end{align*}
+Now $F(x,y,t)= 1$ if and only if $x\in\{-M-L+2\lfloor t \rfloor,\ldots,-M-1+2 \lfloor t \rfloor \}$
+and $y\in\{M+1-2 \lfloor {t}/{\sqrt{2}} \rfloor ,\ldots,M+L-2 \lfloor {t}/{\sqrt{2}} \rfloor \}$.
+Similarly $F(y,x,t) =1$ if and only if $x\in\{M+1-2 \lfloor {t}/{\sqrt{2}} \rfloor ,\ldots,M+L-2 \lfloor {t}/{\sqrt{2}} \rfloor \}$
+and $y\in\{-M-L+2 \lfloor t \rfloor ,\ldots,-M-1+2 \lfloor t \rfloor \}$.
+So
+\[
+\sum_{x\leq y}F(y,x,t) =\sum_{y\leq x}F(x,y,t) 
+\]
+and
+\begin{align*}
+\frac{1}{2L^{2}}\sum_{x\leq y}\left[F(x,y,t) +F(y,x,t) \right] &= \frac{1}{2L^{2}}\left(\sum_{x=-\infty}^{\infty}\sum_{y=-\infty}^{\infty}F(x,y,t) -\sum_{x=-\infty}^{\infty}F(x,x,t) \right)\\
+ &= \frac{1}{2}+\O(L^{-1}).
+\end{align*}
+
+We now establish the bound
+\[
+\left|\frac{1}{2L^{2}}\sum_{x\leq y}e^{\frac{3i\pi}{4}x}e^{-\frac{3i\pi}{4}y}F(x,y,t) F(y,x,t) \right|=\O(L^{-1})
+\]
+to complete the proof.  To get this bound, note that both $F(x,y,t) =1$ and $F(y,x,t) =1$
+if and only if
+\begin{align*}
+x,y & \in \{-M-L+2\left\lfloor t\right\rfloor ,\ldots,-M-1+2\left\lfloor t\right\rfloor \}\\
+\text{ and }x,y & \in \left\{M+1-2\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor ,\ldots,M+L-2\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor \right\}.
+\end{align*}
+Letting
+\[
+B=\{-M-L+2\left\lfloor t\right\rfloor ,\ldots,-M-1+2\left\lfloor t\right\rfloor \} \cap \left\{M+1-2\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor ,\ldots,M+L-2\left\lfloor \frac{t}{\sqrt{2}}\right\rfloor \right\},
+\]
+we have
+ \[
+B=\{j,j+1,\ldots,j+l\}
+\]
+for some $j,l\in\mathbb{Z}$ with $l<L$. So
+\begin{align*}
+\frac{1}{2L^{2}}\left|\sum_{x\leq y}e^{\frac{3i\pi}{4}x}e^{-\frac{3i\pi}{4}y}F(x,y,t) F(y,x,t) \right| & = \frac{1}{2L^{2}}\left|\sum_{x,y\in B,\, x\leq y}e^{\frac{3i\pi}{4}x}e^{-\frac{3i\pi}{4}y}\right|\\
+ &  = \frac{1}{2L^{2}}\left|\sum_{y=j}^{j+l}\sum_{x=j}^{y}e^{\frac{3i\pi}{4}x}e^{-\frac{3i\pi}{4}y}\right|\\
+ &= \frac{1}{2L^{2}}\left|\sum_{y=j}^{j+l}e^{-\frac{3i\pi}{4}y}e^{3i\frac{\pi}{4}j}\frac{e^{3i\frac{\pi}{4}\left(y+1-j\right)}-1}{e^{3i\frac{\pi}{4}}-1}\right|\\
+ & \leq \frac{(l+1)}{2L^{2}}\frac{2}{\left|e^{3i\frac{\pi}{4}}-1\right|}\\
+ &= \O(L^{-1})
+ \end{align*}
+since $l<L$.
+\end{proof}
+\begin{lemma}
+\label{lem:Let--and}Let $k\in(-\pi,0)\cup(0,\pi)$ and $0<\epsilon<\min\left\{ \pi-|k|,|k|\right\}$.
+Let
+\begin{align*}
+D_{\epsilon} & =  \left[-\epsilon,\epsilon\right]\times\left[-\epsilon,\epsilon\right]\\
+D_{\pi} & =  \left[-\pi,\pi\right]\times\left[-\pi,\pi\right].
+\end{align*}
+Then 
+\begin{align*}
+\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}|A(\phi_{1},\phi_{2})|^{2} & =  1\\
+\iint_{D_{\pi}\setminus D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}|A(\phi_{1},\phi_{2})|^{2} & \leq  \frac{4\pi}{L\epsilon}\\
+\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}|B(\phi_{1},\phi_{2},k)|^{2} & \leq  \frac{4\pi^{2}}{L^{2}\epsilon^{2}}.\end{align*}
+where $A(\phi_1,\phi_2)$ and $B(\phi_1,\phi_2,k)$ are given by equation \eq{A}.
+ \end{lemma}
+\begin{proof}
+Using equation \eq{A} we get
+\begin{align*}
+|A(\phi_{1},\phi_{2})|^{2} & =  \frac{1}{L^{2}} \sum_{x,\tilde{x}=-(M+L)}
+  ^{-(M+1)} \sum_{y,\tilde{y}=M+1}^{M+L}
+	e^{i\frac{\phi_{1}}{2}\left(x+y-(\tilde{x}+\tilde{y})\right)}
+        e^{i\phi_{2}\left(x-y-(\tilde{x}-\tilde{y})\right)}.
+\end{align*}
+Now 
+\[
+\int_{-\pi}^{\pi}\frac{d\phi_{2}}{2\pi}e^{i\phi_{2}
+  \left(x-y-\tilde{x}+\tilde{y}\right)}=\delta_{x-y,\tilde{x}-\tilde{y}},
+\]
+so (suppressing the limits of summation for readability) 
+\begin{align*}
+\iint_{D_{\pi}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}
+   |A(\phi_{1},\phi_{2})|^{2} 
+   & =  \frac{1}{L^{2}} \int_{-\pi}^{\pi}\frac{d\phi_{1}}{2\pi}
+     \sum_{x,\tilde{x}}\sum_{y,\tilde{y}}	e^{i\phi_{1}\left(y-\tilde{y}\right)}
+     \delta_{x-y,\tilde{x}-\tilde{y}} \\
+ & =  \frac{1}{L^{2}}\sum_{x,\tilde{x}}\sum_{y,\tilde{y}}\delta_{y,\tilde{y}}
+ 	\delta_{x-y,\tilde{x}-\tilde{y}}\\
+ & =  1
+\end{align*}
+which proves the first part.
+
+By performing the sums in equation \eq{A} we get 
+\begin{equation}
+|A(\phi_{1},\phi_{2})|^{2}
+=\frac{1}{L^{2}}\frac{\sin^{2}(\frac{1}{2}L[\frac{\phi_1}{2}+\phi_{2}])} {\sin^{2}(\frac{1}{2}[\frac{\phi_1}{2}+\phi_{2}])}
+\frac{\sin^{2}(\frac{1}{2}L[\frac{\phi_1}{2} -\phi_{2}])}
+{\sin^{2}(\frac{1}{2}[\frac{\phi_1}{2}-\phi_{2}])}.
+\label{eq:A_summed}
+\end{equation}
+Letting $\alpha_{1}={\phi_1}/{2}+\phi_{2}$ and
+$\alpha_{2}={\phi_1}/{2}-\phi_{2}$, we see that
+$|\alpha_{1}|\leq 3\pi/2$, $|\alpha_{2}|\leq 3\pi/2$,
+and $\alpha_{1}^{2}+\alpha_{2}^{2}\geq  5\epsilon^{2}/2$ whenever
+$(\phi_{1},\phi_{2})\in D_{\pi}\setminus D_{\epsilon}$. Defining
+$D_{3\pi/2}=[-3\pi/2,3\pi/2]^{2}$
+we get $(\alpha_{1},\alpha_{2})\in D_{3\pi/2}\setminus D_{\epsilon}$
+whenever $(\phi_{1},\phi_{2})\in D_{\pi}\setminus D_{\epsilon}$.
+Hence 
+\begin{align*}
+\iint_{D_{\pi}\setminus D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}|A(\phi_{1},\phi_{2})|^{2} 
+	& \leq \frac{1}{L^{2}} \iint_{D_{3\pi/2}\setminus D_{\epsilon}} \frac{d\alpha_{1}d\alpha_{2}}{4\pi^{2}}
+	\frac{\sin^{2}(\frac{1}{2}L\alpha_{1})}{\sin^{2}
+	(\frac{1}{2}\alpha_{1})}\frac{\sin^{2}(\frac{1}{2}L\alpha_{2})}
+	{\sin^{2}(\frac{1}{2}\alpha_{2})}\\
+ & \leq  \frac{4}{L}\left(\frac{1}{L}\int_{-\frac{3\pi}{2}}^{\frac{3\pi}{2}}\frac{d\alpha_{1}}{2\pi}\frac{\sin^{2}(
+ 	\frac{1}{2}L\alpha_{1})}{\sin^{2}(\frac{1}{2}\alpha_{1})}\right)
+ 	\left(\int_{\epsilon}^{3\pi/2}\frac{d\alpha_{2}}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\alpha_{2})}
+ 	{\sin^{2}(\frac{1}{2}\alpha_{2})}\right)\\
+ & \leq  \frac{4}{L}\left(\int_{-2\pi}^{2\pi}\frac{d\alpha_{1}}{2\pi}\frac{1}{L}\frac{\sin^{2}(\frac{1}{2}L\alpha_{1})}{\sin^{2}(\frac{1}{2}\alpha_{1})}\right)\left(\int_{\epsilon}^{\frac{3\pi}{2}}\frac{d\alpha_{2}}{2\pi}\frac{1}{\sin^{2}(\frac{1}{2}\alpha_{2})}\right)\\
+ & = \frac{8}{L} \left(\int_{\epsilon}^{\pi}\frac{d\alpha_{2}}{2\pi}\frac{1}{\sin^{2}(\frac{1}{2}\alpha_{2})}+\int_{\pi}^{\frac{3\pi}{2}}\frac{d\alpha_{2}}{2\pi}\frac{1}{\sin^{2}(\frac{1}{2}\alpha_{2})}\right)\\
+ & \leq  \frac{8}{L}\left(\int_{\epsilon}^{\pi}\frac{d\alpha_{2}}{2\pi}\frac{\pi^{2}}{\alpha_{2}^{2}}+2\int_{\pi}^{\frac{3\pi}{2}}\frac{d\alpha_{2}}{2\pi}\right)\\
+ & =  \frac{4\pi}{L\epsilon}
+ \end{align*}
+which proves the second inequality (in the next-to-last line we
+have used the fact that $\sin({x}/{2})>{x}/{\pi}$ for $x \in (0,\pi)$
+and $\sin^{2}({x}/{2})>{1}/{2}$ for $x \in (\pi,{3\pi}/{2})$).
+
+Now
+\begin{align*}
+|B(\phi_{1},\phi_{2},k)|^{2} & =  |A(\phi_{1},-\phi_{2}-2k)|^{2}\\
+ & \leq  \frac{1}{L^{2}}\frac{1}{\sin^{2}\left(\frac{1}{2}
+     \left[\frac{\phi_{1}}{2}+\phi_{2}+2k\right]\right)}
+ \frac{1}{\sin^{2}\left(\frac{1}{2}
+     \left[-\frac{\phi_{1}}{2}+{\phi_{2}}+2k\right]\right)}.
+\end{align*}
+If $(\phi_{1},\phi_{2})\in D_{\epsilon}$ then $|k|-{3\epsilon}/{4} 
+\leq\left|\pm{\phi_{1}}/{4}+{\phi_{2}}/{2}+k\right|
+\leq|k|+{3\epsilon}/{4}$.
+Noting that $\epsilon$ is chosen such that $0 < \epsilon < 
+\min \{\pi-|k|,|k|\}$, we get
+\[
+\frac{\epsilon}{4}\leq\left|\pm\frac{\phi_{1}}{4}+\frac{\phi_{2}}{2}+k\right|\leq\pi-\frac{\epsilon}{4}
+\]
+so 
+\begin{align*}
+|B(\phi_{1},\phi_{2},k)|^{2} & \leq  \frac{1}{L^{2}}\frac{1}{\sin^{4}(\frac{\epsilon}{4})}\\
+ 	& \leq  \frac{16\pi^{4}}{L^{2}\epsilon^{4}}
+\end{align*}
+and 
+\begin{align*}
+\iint_{D_{\epsilon}}\frac{d\phi_{1}d\phi_{2}}{4\pi^{2}}|B(\phi_{1},\phi_{2},k)|^{2} & \leq  \frac{1}{4\pi^{2}}\left(2\epsilon\right)^{2}\left(\frac{16\pi^{4}}{L^{2}\epsilon^{4}}\right)\\
+ & =  \frac{16\pi^{2}}{L^{2}\epsilon^{2}}. \qedhere
+ \end{align*}
+\end{proof}
+
+\begin{lemma}
+\label{lem:a_xy}
+Let $a_{xy}(t)$ be as in Theorem \ref{thm:twopart}. For $x\leq y$,
+\begin{align*}
+a_{xy}(t) & =  \frac{1}{\sqrt{2}} e^{- i t\sqrt{2}}\left[e^{-i \pi x/2} e^{i \pi y/4} \left(\iint_{D_{\pi}} 
+	\frac{d\phi_1 d\phi_2}{4\pi^2} A(\phi_1,\phi_2)\right.\right.\\
+	& \qquad\quad \left.e^{-i \phi_1 \left( -\lfloor t\rfloor + \lfloor
+	\frac{t}{\sqrt{2}}\rfloor + \frac{x+y}{2} \right)} e^{-2 i \phi_2 \left(-\lfloor t 
+	\rfloor -\lfloor \frac{t}{\sqrt{2}}\rfloor + \frac{x-y}{2}\right)}\right)\\
+& \quad \pm e^{i\theta} e^{i\pi x/4}e^{-i \pi y/2} \left(\iint_{D_{\pi}} \frac{d\phi_1 d\phi_2}{4\pi^2}
+	A(\phi_1,\phi_2) \right.\\
+&	\qquad\quad\left.\left.e^{- i \phi_1 \left(- \lfloor t\rfloor + \lfloor \frac{t}{\sqrt{2}}\rfloor + 
+	\frac{x+y}{2}\right) } e^{-2 i \phi_2 \left(-\lfloor t \rfloor -\lfloor \frac{t}{\sqrt{2}}\rfloor
+	+ \frac{y-x}{2}\right)}\right)
+	\right].
+\end{align*}
+\end{lemma}
+
+\begin{proof}
+The lemma follows from \eq{a_xy} and the fact that, for any two numbers $\gamma_{1},\gamma_{2}$ such that $\gamma_{1}+\gamma_{2},\gamma_{1}-\gamma_{2}\in \mathbb{Z}$,
+\[
+\iint_{D_\pi}\frac{d\phi_{1} d\phi_{2}}{4\pi^2} A(\phi_{1},\phi_{2})e^{i\gamma_{1}\phi_{1}+2i \gamma_{2}\phi_{2}}=\begin{cases}
+\frac{1}{L} &\text{ if }(-\gamma_{1}-\gamma_{2},-\gamma_{1}+\gamma_{2})\in S \\
+0 &\text{ otherwise}
+\end{cases}
+\]
+where $S = \{-M-L,\ldots, -M-1\} \times \{M+1,\ldots, M+L\}$.  To establish this formula, observe that
+\begin{align*}
+  \iint_{D_{\pi}}\frac{d\phi_1 d\phi_{2}}{4\pi^2}A(\phi_{1},\phi_{2})e^{ i\gamma_{1}\phi_{1}+2i\gamma_{2}\phi_{2}} 
+  	& =  \frac{1}{L}\sum_{x=-M-L}^{-M-1}\sum_{y=M+1}^{M+L}\iint_{D_{\pi}}\frac{d\phi_1 d\phi_{2}}{4\pi^2}
+  		e^{i\phi_{1}\left(\gamma_{1}+\frac{x+y}{2}\right)}e^{i\phi_{2}\left(x-y+2\gamma_{2}\right)}\\
+ & =  \frac{1}{L}\sum_{x=-M-L}^{-M-1}\,\sum_{y=M+1}^{M+L}\int_{-\pi}^{\pi}\frac{d\phi_{1}}{2\pi}
+ 	e^{i\phi_{1}\left(\gamma_{1}+\frac{x-y}{2}\right)}\delta_{y,-x-2\gamma_{2}}.
+\end{align*}
+ Here we have performed the integral over $\phi_{2}$ using the fact
+that $2\gamma_{2}$ is an integer.  We then have
+\begin{align*}
+\iint_{D_\pi}\frac{d\phi_{1} d\phi_{2}}{4\pi^2} A(\phi_{1},
+	\phi_{2})e^{i\gamma_{1}\phi_{1}+2i\gamma_{2}\phi_{2}} 
+ & =  \frac{1}{L}\sum_{x=-M-L}^{-M-1}\,
+	\sum_{y=M+1}^{M+L}\int_{-\pi}^{\pi}\frac{d\phi_{1}}{2\pi}e^{i\phi_{1}
+	\left(\gamma_{1}+x+\gamma_{2}\right)}\delta_{y,-x-2\gamma_{1}}\\
+ & =  \frac{1}{L}\sum_{x=-M-L}^{-M-1}\,\sum_{y=M+1}^{M+L}\delta_{x,-\gamma_{1}-\gamma_{2}}\delta_{y,\gamma_{2}-\gamma_{1}}
+ \end{align*}
+as claimed.
+\end{proof}
 
 \subsection{Construction of $C\theta$-gate}
 
