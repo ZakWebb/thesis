@@ -88,14 +88,39 @@ With this construction, the eigenvalue equation must still be satisfied along th
 
 \subsection{Infinite path and a Graph}
 
-In the most simple example, let us attached a graph $\widetilde{G}$ to an infinite path.  This is probably the most analogous case to scattering off of a finite potential as in the 1-d continuum.  
+In the most simple example, let us attached a graph $\widetilde{G}$ to an infinite path.  In particular, we assume that $\widetilde{G}$ is attached to a single vertex of the infinite path, and that the graph is attached by adding an edge from each vertex in $S\subset V(\widetilde{G})$ to one specific vertex of the infinite path, which we label $0$.  With this, the adjacency matrix of the graph $G$ is then
+\begin{equation}
+  A(G) = A(\widetilde{G}) + \sum_{v\in S \subset V(\widetilde{G})} \ketbra{v}{0} + \ketbra{0}{v} + \sum_{x=-\infty}^\infty \ketbra{x}{x+1} + \ketbra{x+1}{x}.
+\end{equation}
 
-Because of this special form of the overall graph $G$, we know that the scattering eigenstates must take the 
+If we then want to inspect the eigenvectors of this Hamiltonian, we find that the eigenvalue equation on the infinite path is identical to that of an infinite path without the graph attached.  Hence, we can see that any eigenstate of the Hamiltonian must take the form $A_ke^{i k x} + B_{-k}e^{-i k x}$ for some $k$ along the infinite paths.  
 
-Note that even these simple models have a lot of computing power
+With this assumption, we can see that there are three distinct cases for the form of the eigenstates.  In particular, the eigenstate could have no amplitude along the infinite paths, being confined to the finite graph $\widehat{G}$.  It could also be a normalizable state not confined to the finite graph $\widehat{G}$, in that the amplitude along the infinite paths decays exponentially.  Finally, the eigenstate could be an unnormalizable state, in which case we will call the state a scattering state.
 
-I should really explain these NAND trees.
+Let us assume that the state is a scattering state.  Note that the eigenvalue of the state must be between $[-2,2]$, and that the form of the eigenstate along the paths must be scalar multiples of $e^{ikx}$ and $e^{-ikx}$.  Explicitly, the state must be of the form
+\begin{align}
+  \braket{x}{\psi} = \begin{cases} A_k e^{i k x} + B_k e^{i k x} & x \leq 0\\
+   C_k e^{i k x} + D_k e^{i k x} & x\geq 0\end{cases}
+\end{align}
+where we note that the amplitude can change at $x=0$ since we have attached the graph $\widetilde{G}$.  However, we do have that $A_k + B_k=C_k +D_k$, since the amplitude at $0$ is single valued.  Additionally, we have that the eigenvalue of this state is given by $2\cos(k)$.  Note that we have not yet determined the form of the eigenstate inside the graph $\widetilde{G}$, but if we define $\ket{\phi}$ to be the restriction of $\ket{\psi}$ to the finite graph $\widetilde{G}$, then $\ket{\phi}$ must satisfy the equation
+\begin{equation}
+  A(G) \ket{\phi} + (A_k + B_k)\sum_{v\in S} \ket{v}\braket{v}{\phi} = 2\cos(k) \ket{\phi},
+\end{equation}
+where the additional term arises from the fact that the vertices in $S$ are connected to the vertex $0$.  Finally, we have that
+\begin{equation}
+  2 \cos(k)\braket{0}{\psi} = Ae^{-ik} + B_k e^{ik} + C_k e^{i k} + D_k e^{-ik} + \sum_{v\in S} \braket{v}{\phi},
+\end{equation}
+since the eigenvalue equation must be satisfied at $0$.
 
+
+While all of this seems rather complicated, we can focus on the case where $A_k = 1$ and $D_k=0$ and the case where $A_k = 0$ and $D_k=1$ individually, so that along one of the semi-infinite paths (corresponding to $x>0$ or $x<0$), the amplitude is given by $e^{ikx}$ or $e^{-ikx}$.  These two states correspond to the eigenstates of the infinite path with the amplitudes given by $e^{-ikx}$ and $e^{ikx}$, with changes representing how adding the graph $\widetilde{G}$ affect the eigenstates.  
+
+With this assumption, let us first look at the case where $A_k = 1$ and $D_k = 0$.  We then have that the eigenstates take the form
+\begin{align}
+  \braket{x}{\psi} = \begin{cases} e^{-ikx} + B_k e^{i kx} & x\leq 0\\
+  C_k e^{-ikx} & x \geq 0
+\end{align}
+so that $1+ B_k  =C_k$.  Note that this is reminiscent of a scattering state, with reflection amplitude $B_k$ and transmission amplitude $C_k$, so that we take this intuition.  
 
 \subsection{General graphs}
 
@@ -153,15 +178,109 @@ We then need to see whether such an eigenstate exists.
 In particular, if we assume that such an eigenstate exists, and that 
 \todo{Finish this section}
 
-\subsection{Orthonormality of the scattering states}
 
-\todo{Show that the scattering states are Delta function orthonormal}
-
-\todo{Do they span the space of states, if you also include the bound states?}
 
 \subsection{Scattering matrix properties}
 
-\todo{I need to show that the scattering matrix is a unitary, and symmetric.}
+While the use of the $\gamma$ matrix gives an explicit construction of the form of the eigenstates on the internal vertices, it is also useful to note that the scattering matrix at a particular momentum $k$ can be expressed as
+\begin{equation}
+  S(k) = - Q(z)^{-1} Q(z^{-1}),
+\end{equation}
+where $z=e^{i k}$, and the matrices $Q(z)$ are given by
+\begin{equation}
+  Q(z) = \II - z \Big( A + B^\dag \frac{1}{ \frac{1}{z} + z - D} B\Big).
+\end{equation}
+Note that $Q(z)$ and $Q(z^{-1})$ commute for all $z\in \CC$, as they can both be written as $\II + z H(z + z^{-1})$.
+
+Using this expression for the scattering matrix, it is easy to see that $S(k)$ is a unitary matrix, as 
+\begin{equation}
+  S(k)^{\dag} = - Q(z^{-1})^\dag (Q(z)^{-1})^\dag
+\end{equation}
+and that
+\begin{equation}
+  Q(z)^\dag = \II^\dag - z^\dag\Big( A^\dag + B^\dag \Big(\frac{1}{\frac{1}{z} + z - D}\Big)^\dag (B^\dag)^\dag\Big) 
+     = \II - z^\dag \Big(A + B^\dag \frac{1}{\frac{1}{z^\dag} + z^\dag - D} B \Big) = Q(z^\dag)
+\end{equation}
+and thus
+\begin{equation}
+  S(k)^\dag = -Q(z^{-1})^\dag (Q(z)^{-1})^\dag = - Q(z) Q(z^{-1})^{-1} = Q(z^{-1})^{-1} Q(z) = S(k)^{-1}
+\end{equation}
+where we used the fact that $z=e^{ik}$ so that $z^\dag = z^{-1}$, and the fact that $Q(z)$ and $Q(z^{-1})$ commute.
+
+Additionally, we can make use of the fact that $S$ is derived from an unweighted graph to show that the scattering matrices are symmetric.  In particular, note that $Q(z)$ is symmetric for all $z$, since $D$ is symmetric, symmetric matrices are closed under inversion, $A$ is symmetric and $B$ is a 0-1 matrix.  As such, we have that
+\begin{align}
+  S(k)^T &= -\big( Q(z)^{-1} Q(z^{-1})\big)^T = -Q(z^{-1})^T (Q(z)^{-1})^T \\
+    &= -Q(z^{-1}) Q(z)^{-1} = -Q(z)^{-1} Q(z^{-1}) = S(k)
+\end{align}
+where we used the fact that $Q(z)$ and $Q(z^{-1})$ commute.
+
+Putting this together, we have that $S(k)$ is a symmetric, unitary matrix for all $k$.
+
+
+\subsection{Orthonormality of the scattering states}
+
+We now establish the delta-function normalization of the scattering states. Let 
+\begin{align*}
+\Pi_{1} & = \sum_{x=1}^{\infty}\sum_{q=1}^{N}|x,q\rangle\langle x,q|\\
+\Pi_{2} & = \mathbb{I}-\sum_{x=2}^{\infty}\sum_{q=1}^{N}|x,q\rangle\langle x,q|\\
+\Pi_{3} & = \sum_{q=1}^{N}|1,q\rangle\langle1,q|.\end{align*}
+We show that, for $k\in(-\pi,0)$, $p\in(-\pi,0)$, and $i,j\in\{1,\ldots,N\}$,
+\begin{equation}
+\langle\mathrm{sc}_{i}(p)|\mathrm{sc}_{j}(k)\rangle=\langle\mathrm{sc}_{i}(p)|\Pi_{1}+\Pi_{2}-\Pi_{3}|\mathrm{sc}_{j}(k)\rangle=2\pi\delta_{ij}\delta(k-p).\label{eq:delta}\end{equation}
+First write 
+\begin{align*}
+\langle\mathrm{sc}_{i}(p)|\Pi_{1}|\mathrm{sc}_{j}(k)\rangle & = \sum_{x=1}^{\infty}\sum_{q=1}^{N}(\delta_{iq}e^{ipx}+S_{qi}^{\ast}(p)e^{-ipx})(\delta_{jq}e^{-ikx}+S_{qj}(k)e^{ikx})\\
+ & = \frac{1}{2}\left(\delta_{ij}+\sum_{q=1}^{N}S_{qi}^{\ast}(p)S_{qj}(k)\right)\left(\sum_{x=1}^{\infty}e^{i(p-k)x}+\sum_{x=1}^{\infty}e^{-i(p-k)x}\right)\\
+ & \quad +\frac{1}{2}\left(\delta_{ij}-\sum_{q=1}^{N}S_{qi}^{\ast}(p)S_{qj}(k)\right)\left(\sum_{x=1}^{\infty}e^{i(p-k)x}-\sum_{x=1}^{\infty}e^{-i(p-k)x}\right)\\
+ & \quad +\frac{1}{2}(S_{ji}^{\ast}(p)+S_{ij}(k))\left(\sum_{x=1}^{\infty}e^{-i(p+k)x}+\sum_{x=1}^{\infty}e^{i(p+k)x}\right)\\
+ & \quad +\frac{1}{2}(S_{ji}^{\ast}(p)-S_{ij}(k))\left(\sum_{x=1}^{\infty}e^{-i(p+k)x}-\sum_{x=1}^{\infty}e^{i(p+k)x}\right).\end{align*}
+We use the following identities for $p,k\in(-\pi,0)$: 
+\begin{align*}
+\sum_{x=1}^{\infty}e^{i(p-k)x}+\sum_{x=1}^{\infty}e^{-i(p-k)x} & = 2\pi\delta(p-k)-1 \\
+\sum_{x=1}^{\infty}e^{i(p+k)x}+\sum_{x=1}^{\infty}e^{-i(p+k)x} &=-1 \\
+\sum_{x=1}^{\infty}e^{i(p-k)x}-\sum_{x=1}^{\infty}e^{-i(p-k)x} & = i\cot\left(\frac{p-k}{2}\right) \\
+\sum_{x=1}^{\infty}e^{i(p+k)x}-\sum_{x=1}^{\infty}e^{-i(p+k)x} &= i\cot\left(\frac{p+k}{2}\right).
+\end{align*}
+These identities hold when both sides are integrated against a smooth function of $p$ and $k$. Substituting, we get
+\begin{align}
+\langle\mathrm{sc}_{i}(p)|\Pi_{1}|\mathrm{sc}_{j}(k)\rangle & =  2\pi\delta_{ij}\delta(p-k)+\delta_{ij}\left(\frac{i}{2}\cot\left(\frac{p-k}{2}\right)-\frac{1}{2}\right)\nonumber\\
+&\quad+\sum_{q=1}^{N}S_{qi}^{\ast}(p)S_{qj}(k)\left(-\frac{i}{2}\cot\left(\frac{p-k}{2}\right)-\frac{1}{2}\right)\nonumber \\
+ &\quad+S_{ji}^{\ast}(p)\left(-\frac{1}{2}-\frac{i}{2}\cot\left(\frac{p+k}{2}\right)\right)\nonumber\\
+&\quad+S_{ij}(k)\left(-\frac{1}{2}+\frac{i}{2}\cot\left(\frac{p+k}{2}\right)\right)\label{eq:pi1}
+\end{align}
+where we used unitarity of the $S$-matrix to simplify the first term.
+Now turning to $\Pi_{2}$ we have \[
+\langle\mathrm{sc}_{i}(p)|H\Pi_{2}|\mathrm{sc}_{j}(k)\rangle=2\cos(p)\langle\mathrm{sc}_{i}(p)|\Pi_{2}|\mathrm{sc}_{j}(k)\rangle\]
+ and 
+\begin{align*}
+\langle\mathrm{sc}_{i}(p)|H\Pi_{2}|\mathrm{sc}_{j}(k)\rangle & = \langle\mathrm{sc}_{i}(p)|\bigg(2\cos(k)\Pi_{2}|\mathrm{sc}_{j}(k)\rangle+\sum_{q=1}^{N}(e^{-ik}\delta_{qj}+S_{qj}(k)e^{ik})|2,q\rangle\\
+&\quad -\sum_{q=1}^{N}(e^{-2ik}\delta_{qj}+S_{qj}(k)e^{2ik})|1,q\rangle\bigg).
+\end{align*}
+ Using these two equations we get 
+\begin{align*}
+(2\cos(p)-2\cos(k))\langle\mathrm{sc}_{i}(p)|\Pi_{2}|\mathrm{sc}_{j}(k)\rangle & =  \delta_{ij} (e^{2ip-ik}-e^{-2ik+ip})+S_{ji}^{\ast}(p)(e^{-2ip-ik}-e^{-2ik-ip})\\
+ & \quad +S_{ij}(k)(e^{2ip+ik}-e^{2ik+ip})\\
+& \quad +\sum_{q=1}^{N}S_{qi}^{\ast}(p)S_{qj}(k)(e^{-2ip+ik}-e^{2ik-ip}).
+\end{align*}
+ Noting that
+\[
+\langle\mathrm{sc}_{i}(p)|\Pi_{3}|\mathrm{sc}_{j}(k)\rangle=\sum_{q=1}^{N}(\delta_{iq}e^{ip}+S_{qi}^{\ast}(p)e^{-ip})(\delta_{jq}e^{-ik}+S_{qj}(k)e^{ik}),
+\]
+we have 
+\begin{align}
+\langle\mathrm{sc}_{i}(p)|\Pi_{2}-\Pi_{3}|\mathrm{sc}_{j}(k)\rangle & = \delta_{ij}\left(\frac{e^{2ip-ik}-e^{-2ik+ip}}{2\cos(p)-2\cos(k)}-e^{ip-ik}\right)\nonumber\\
+&\quad+S_{ji}^{\ast}(p)\left(\frac{e^{-2ip-ik}-e^{-2ik-ip}}{2\cos(p)-2\cos(k)}-e^{-ip-ik}\right)\nonumber \\
+ & \quad +S_{ij}(k)\left(\frac{e^{2ip+ik}-e^{2ik+ip}}{2\cos(p)-2\cos(k)}-e^{ip+ik}\right)\nonumber\\
+&\quad+\sum_{q=1}^{N}S_{qi}^{\ast}(p)S_{qj}(k)\left(\frac{e^{-2ip+ik}-e^{2ik-ip}}{2\cos(p)-2\cos(k)}-e^{-ip+ik}\right)\nonumber \\
+  & = \delta_{ij}\left(\frac{1}{2}-\frac{i}{2}\cot\left(\frac{p-k}{2}\right)\right)+S_{ji}^{\ast}(p)\left(\frac{1}{2}+\frac{i}{2}\cot\left(\frac{p+k}{2}\right)\right)\nonumber\\
+&\quad+S_{ij}(k)\left(\frac{1}{2}-\frac{i}{2}\cot\left(\frac{p+k}{2}\right)\right)\nonumber\\
+&\quad+\sum_{q=1}^{N}S_{qi}^{\ast}(p)S_{qj}(k)\left(\frac{1}{2}+\frac{i}{2}\cot\left(\frac{p-k}{2}\right)\right).
+\label{eq:pi2_pi3}
+\end{align}
+ Adding equation \eq{pi1} to equation \eq{pi2_pi3} gives
+equation \eq{delta}.
+
+\todo{Do they span the space of states, if you also include the bound states?}
 
 \section{Applications of graph scattering}
 
