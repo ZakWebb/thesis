@@ -118,9 +118,11 @@ While all of this seems rather complicated, we can focus on the case where $A_k 
 With this assumption, let us first look at the case where $A_k = 1$ and $D_k = 0$.  We then have that the eigenstates take the form
 \begin{align}
   \braket{x}{\psi} = \begin{cases} e^{-ikx} + B_k e^{i kx} & x\leq 0\\
-  C_k e^{-ikx} & x \geq 0
+  C_k e^{-ikx} & x \geq 0\end{cases}
 \end{align}
 so that $1+ B_k  =C_k$.  Note that this is reminiscent of a scattering state, with reflection amplitude $B_k$ and transmission amplitude $C_k$, so that we take this intuition.  
+
+
 
 \subsection{General graphs}
 
@@ -292,13 +294,19 @@ equation \eq{delta}.
 
 While the NAND trees gives a good example of how the process works, we can generalize the idea to work at momenta other than \todo{what momenta}.  In particular, we can attempt to find graph gadgets such that the scattering behaviour at some particular momenta is fixed.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{R/T gadets}
 
 The easiest thing we could hope for are exactly similar to the NAND trees experiment, in that if there are only two attached semi-infite paths, then at some fixed momenta it either completely transmits, or it completely reflects.  
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsubsection{Momentum Switches}
 
 We can generalize this idea of complete reflection or transmission to something called a momentum switch, in that with three inputs/outputs, for some chosen semi-infinite path, all incoming wavepackets at some momenta completely transmit to a second path, while all incoming wavepackets at some other particular momenta transmit to the third.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Encoded unitary}
 
@@ -307,14 +315,173 @@ We can generalize this idea of complete reflection or transmission to something 
 
 This is as very particular behavior.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Constructing graphs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Construction of graphs with particular scattering behavior}
 
 Note that while these scattering behaviors at particular momenta are easy to calculate, no efficient way currently exists to find a graph with a given scattering matrix, or even to tell whether or not such a graph exists.  However, there are some special types of graphs that allow us to do this.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{R/T gadgets}
 
+\todo{Go over this section, and revise}
+
+Perhaps the most simple behavior will be two-terminal gadgets that either perfectly reflect at some particular momenta, or perfectly transmit.  While this is still a rather complicated problem when the terminals can be any vertices of the graph, things become tractable when we want to only attach a graph to a single vertex of an infinite path.  In this case, everything works out as expected.
+
+We refer to the graph shown in \fig{reversal_orig} as $\hat{G}$, and we write $G$ for the full graph obtained by attaching two semi-infinite paths to terminals $(1,1)$ and $(1,2)$.  As shown in the Figure, the graph $\hat{G}$ for a type 1 gadget is determined by a finite graph $G_0$ and a subset $P = \{p_1,\ldots,p_n\} \subseteq V(G_0)$ of its vertices, called the \emph{periphery}.  Each vertex in the periphery is connected to a vertex denoted $a$, and $a$ is also connected to two terminals $(1,1)$ and $(1,2)$. A type 1 R/T gadget with $n=1$ has only one edge between $G_0$ and $a$; in this special case we also call it a \emph{type 2 R/T gadget} (see \fig{reversalRT}).
+
+Looking at the eigenvalue equation for the scattering state $\ket{\sc_{1} (k)}$ at vertices $(1,1)$ and $(1,2)$, we see that the amplitude at vertex $a$ satisfies
+\[
+  \langle{a}\ket{\sc_{1} (k)} = 1 + R(k) = T(k).
+\] 
+Thus perfect reflection at momentum $k$ occurs if and only if $R(k)=-1$ and $\langle{a}\ket{\sc_{1} (k)}=0$, while perfect transmission occurs if and only if $T(k)=1$ and $\langle{a}\ket{\sc_{1} (k)}=1$. Using this fact, we now derive conditions on the graph $G_0$ that determine when perfect transmission and reflection occur.
+
+For type 1 gadgets, we give a necessary and sufficient condition for perfect reflection: $G_0$ should have an eigenvector for which the sum of amplitudes on the periphery is nonzero.
+
+\begin{lemma}\label{lem:reflect_reqs}
+Let $\hat{G}$ be a type 1 R/T gadget. A momentum $k\in (-\pi,0)$ is in the reflection set $\mathcal{R}$ if and only if $G_0$ has an eigenvector $\ket{\chi_k}$ with eigenvalue $2\cos(k)$ satisfying
+\begin{equation}
+  \sum_{i=1}^{n} \braket{p_i}{\chi_k} \neq 0. \label{eq:sum_condition}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+First suppose that $\hat{G}$ has perfect reflection at momentum $k$, i.e., $R(k)=-1$ and $\langle{a}\ket{\sc_{1} (k)}=0$. Since $\langle{(1,1)}\ket{\sc_1(k)} = e^{-ik} - e^{ik}\neq 0$ and $\langle{(1,2)}\ket{\sc_1(k)}=0$, to satisfy the eigenvalue equation at vertex $a$, we have
+\[
+  \sum_{j=1}^{n} \langle{p_j}\ket{\sc_1(k)} = e^{ik} - e^{-ik} \neq 0.
+\]
+Further, since $G_0$ only connects to vertex $a$ and the amplitude at this vertex is zero, the restriction of $\ket{\sc_1(k)}$ to $G_0$ must be an eigenvector of $G_0$ with eigenvalue $2\cos(k)$. Hence the condition is necessary for perfect reflection. 
+ 
+Next suppose that $G_0$ has an eigenvector $\ket{\chi_k}$ with eigenvalue $2\cos(k)$ satisfying \eq{sum_condition}, with the sum equal to some nonzero constant $c$. Define a scattering state $\ket{\psi_k}$ on the Hilbert space of the full graph $G$ with amplitudes
+\[
+  \braket{v}{\psi_k} = \frac{e^{ik} - e^{-ik}}{c} \braket{v}{\chi_k}
+\]
+for all $v \in V(G_0)$, $\braket{a}{\psi_k}=0$, and 
+\[
+ \braket{(x,j)}{\psi_k}=\begin{cases} e^{-ikx}-e^{ikx} & j=1\\
+0 & j=2
+\end{cases}
+\]
+for all $x \in \posint$.
+
+We claim that $\ket{\psi_k}$ is an eigenvector of $G$ with eigenvalue $2 \cos(k)$.  The state clearly satisfies the eigenvalue equation on the semi-infinite paths since it is a linear combination of states with momentum $\pm k$.  At vertices of $G_0$, the state is proportional to an eigenvector of $G_0$, and since the state as no amplitude at $a$, the eigenvalue equation is also satisfied at these vertices.  It remains to see that the eigenvalue equation is satisfied at $a$, but this follows immediately by a simple calculation.
+
+Since $\ket{\psi_k}$ has the form of a scattering state with perfect reflection, we see that $R(k)=-1$ and $T(k)=0$ as claimed.
+\end{proof}
+
+The following Lemma gives a sufficient condition for perfect transmission (which is also necessary for type 2 gadgets).  Let $g_0$ denote the induced subgraph on $V(G_0)\setminus P$ where $P = \{p_i\colon i\in [n]\}$ is the periphery.
+
+\begin{lemma}\label{lem:transmit_reqs}
+Let $\hat{G}$ be a type 1 R/T gadget and let $k\in (-\pi,0)$. Suppose $\ket{\xi_k}$ is an eigenvector of $g_0$ with eigenvalue $2\cos{k}$ and with the additional property that, for all $i \in [n]$,
+\begin{equation}
+\label{eq:trans_cond}
+  \sum_{\substack{v \in V(g_0): \\ (v,p_i)\in E(G_0)}} \braket{v}{\xi_k} = c \neq 0 
+\end{equation}
+for some constant $c$ that does not depend on $i$. Then $k$ is in the transmission set $\mathcal{T}$. If $\hat{G}$ is a type 2 R/T gadget, then this condition is also necessary.
+\end{lemma}
+
+\begin{proof}
+If $g_0$ has a suitable eigenvector $\ket{\xi_k}$ satisfying \eq{trans_cond}, define a scattering state $\ket{\psi_k}$ on the full graph $G$, with amplitudes $\langle a\ket{\psi_k}=1$, 
+\begin{equation}
+  \braket{v}{\psi_k} 
+  = \begin{cases} -\frac{1}{c} \braket{v}{\xi_k} & v\in V(g_0)\\
+  	0 & v \in P
+\end{cases}
+\label{eq:psik_c}
+\end{equation}
+in the graph $G_0$, and 
+\[
+ \langle{(x,j)} \ket{\psi_k}=\begin{cases} e^{-ikx} & j=1\\
+ e^{ikx} & j=2
+\end{cases}
+\]
+for $x \in \posint$.  As in the proof of \lem{reflect_reqs}, the state $\ket{\psi_k}$ is clearly satisfies the eigenvalue equation (with eigenvalue $2\cos(k)$) at vertices on the semi-infinite paths and vertices of $g_0$.  The factor of $-\frac{1}{c}$ in \eq{psik_c} is chosen so that the eigenvalue condition is satisfied at vertices in $P$.  It is easy to see that the eigenvalue condition is also satisfied at $a$.
+
+Since $\ket{\psi_k}$ is a scattering eigenvector of $G$ with eigenvalue $2\cos(k)$ and perfect transmission, we have $T(k)=1$.
+
+Now suppose $\hat{G}$ is a type 2 R/T gadget (as shown in \fig{reversalRT}), with $P = \{p\}$.  Perfect transmission along with the eigenvalue equation at vertex $a$ implies
+\[
+\braket{p}{\sc_1(k)} = 0,
+\]
+so the restriction of $\ket{\sc_1(k)}$ to $g_0$ must be an eigenvector (since $p$ is the only vertex connected to $g_0$).  The eigenvalue equation at $p$ gives
+\[
+  \braket{a}{\sc_1(k)} 
+  + \sum_{w \colon (w,p)\in E(G_0)} \braket{w}{\sc_1(k)} = 0 
+  \quad\implies\quad
+  \sum_{w \colon (w,p)\in E(G_0)} \braket{w}{\sc_1(k)} = -1.
+\]
+Hence the restriction of $\ket{\sc_1(k)}$ to $V(g_0)$ is an eigenvector of the induced subgraph, with the additional property that the sum of the amplitudes at vertices connected to $p$ is nonzero.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Momentum switches}
+
+\todo{Go over this section, and revise/make it fit}
+
+To construct momentum switches between pairs of momentum, it will be worthwhile to first construct two R/T gadgets between the two momenta, with the two gadgets having swapped reflection and transmission sets.  We will then construct something like a railroad switch, by placing the two gadgets immediately after a 3-claw; this construction will then be that the wavepacket will only see one of the two outgoing paths, and function exactly how we want it to.
+
+
+We now construct a momentum switch between the reflection and transmission sets $\mathcal{R}$ and $\mathcal{T}$ of a type 2 R/T gadget.  We attach the gadget and its reversal (defined in \sec{reversal}) to the leaves of a claw, as shown in \fig{gen_mom_con}.  Specifically, given a type 2 R/T gadget $\hat{G}$, the corresponding momentum switch $\hat{G}^{\prec}$ consists of a copy of $G_0$, a copy of $G_{0}^{\leftrightarrow}$, and a claw.  The three leaves of the claw are the terminals.  Vertex $p$ of $G_0$ is connected to leaf $2$ of the claw, and vertices $w_1^{(1)},\ldots,w_r^{(1)}$ of $G_{0}^{\leftrightarrow}$ are each connected to leaf $3$ of the claw.
+
+The high-level idea of the switch construction is as follows.  For momenta in the transmission set, the gadget perfectly transmits while its reversal perfectly reflects, so the claw is effectively a path connecting terminals 1 and 2.  For momenta in the reflection set, the roles of transmission and reflection are reversed, so the claw is effectively a path connecting terminals 1 and 3.
+
+
+\begin{lemma}\label{lem:mom_switch_construction}
+Let $\hat{G}$ be a type 2 R/T gadget with reflection set $\mathcal{R}$ and transmission set $\mathcal{T}$.  The gadget $\hat{G}^{\prec}$ described above is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
+\end{lemma}
+
+
+\begin{proof}
+
+We construct a scattering eigenstate for each momentum $k\in \mathcal{T}$ with perfect transmission from path 1 to path 2, and similarly construct a scattering eigenstate for each momentum $k^{\prime}\in \mathcal{R}$ with perfect transmission from 1 to 3.  These eigenstates show that $S_{2,1}(k) = 1$ and $S_{3,1}(k^\prime) = 1$. Since the S-matrix is symmetric and unitary, this gives the complete form of the S-matrix for all momenta in $\mathcal{R}\cup\mathcal{T}$.  In particular, this shows that $\hat{G}^{\prec}$ is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
+
+We first construct the scattering states for momenta $k\in \mathcal{T}$.  \lem{transmit_reqs} shows that the graph $g_0$ has a $2\cos(k)$-eigenvector $\ket{\xi_k}$ satisfying equation \eq{trans_cond} with some nonzero constant $c$. We define a state $\ket{\mu_k}$ on $G^{\prec}$ and we show that it is a scattering eigenstate with perfect transmission between paths $1$ and $2$.   The amplitudes of $\ket{\mu_k}$ on the semi-infinite paths and the claw are
+\[
+  \langle (x,1)|\mu_k\rangle=e^{-ikx} \qquad 
+  \langle 0|\mu_k\rangle=1 \qquad 
+  \langle (x,2)|\mu_k\rangle=e^{ikx} \qquad
+  \langle (x,3)|\mu_k\rangle=0.
+\]
+The rest of the graph consists of the three copies of the subgraph $g_0$ and the vertices $p$ and $u_{\leftrightarrow}$. The corresponding amplitudes are
+\[
+  \braket{v}{\mu_k} =
+  \begin{cases}
+	  -\frac{1}{c}\braket{v}{\xi_k} & v\in V(g^{(1)}_0) \\
+    \frac{1}{c}\braket{v}{\xi_k} & v \in V(g^{(2)}_0) \\
+	  -\frac{e^{ik}}{c} \braket{v}{\xi_k} & v \in V(g^{(3)}_0) \\
+  	0 & v=p \text{ or } v=u_{\leftrightarrow}.
+  \end{cases}
+\]
+
+We claim that $\ket{\mu_k}$ is an eigenstate of the Hamiltonian with eigenvalue $2\cos(k)$.  As in previous proofs, the state clearly satisfies the eigenvalue condition on the semi-infinite paths and at the vertices of $G_0$ and $G_0^\leftrightarrow$, and the factors of $\frac{1}{c}$ in the above equation are chosen so that it also satisfies the eigenvalue condition at vertices $p$ and $u_\leftrightarrow$. Since $\ket{\mu_k}$ is a scattering state with perfect transmission from path 1 to path 2, we see that $S_{2,1}(k) = 1$.
+
+Finally, we construct an eigenstate $\ket{\nu_{k^\prime}}$ with perfect transmission from path 1 to path 3 for each momentum $k^\prime \in \mathcal{R}$.  This state has the form
+\[
+  \langle (x,1)|\nu_{k^\prime}\rangle=e^{-i k^\prime x} \qquad 
+  \langle 0|\nu_{k^\prime}\rangle=1 \qquad 
+  \langle (x,2)|\nu_{k^\prime}\rangle=0 \qquad
+  \langle (x,3)|\nu_{k^\prime}\rangle=e^{i k^\prime x}
+\]
+on the semi-infinite paths and the claw.  \lem{reflect_reqs} shows that $G_0$ has a $2\cos(k^\prime)$-eigenstate $\ket{\chi_{k^\prime}}$ with $\braket{p}{\chi_{k'}} \ne 0$, which determines the form of $\ket{\nu_{k^\prime}}$ on the remaining vertices:
+\[
+  \braket{v}{\nu_{k^\prime}} =
+  \begin{cases}
+	  -\frac{1}{\braket{p}{\chi_{k'}}} \braket{v}{\chi_{k^\prime}} & v \in V(G_0) \\
+	  -\frac{e^{ik'}}{\braket{p}{\chi_{k'}}} \braket{v}{\chi_{k^\prime}} & v \in V(g_0^{(2)}) \\
+	  -e^{ik'} & v=u^\leftrightarrow \\
+    0 & \text{otherwise}.
+  \end{cases} 
+\]
+As before, it is easy to check that this a momentum-$k^\prime$ scattering state with perfect transmission from path 1 to path 3, so $S_{3,1}(k^\prime)=1$.
+
+Thus the gadget from \fig{gen_mom_con} is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
+\end{proof}
+
+
 
 \subsection{Encoded unitaries}
 
@@ -333,11 +500,140 @@ These are facts that will be of use to us.
 
 \subsection{Degree-3 graphs are sufficent}
 
-Replace each vertex by a path of fixed length.
+Replace each vertex by a path of fixed length.  I should turn this into a lemma.
+
+\begin{lemma} Let $\widehat{G}$ be a finite graph, and let $M$ be a finite set of rational multiples of $\pi$.  There exists a degree 3 graph $\widehat{H}$ such that the scattering matrix arising from $\widehat{H}$ is equal to the scattering matrix arising from $\widehat{G}$ for each $ki\in M$.
+\end{lemma}
+\begin{proof}
+  The graph $\widehat{H}$ is constructed from $\widehat{G}$ by replacing each vertex with large degree by a path of some length related to the momenta in $M$.  If the path is taken to be the correct size, by inspecting the resulting eigenvectors we can show that the scattering amplitudes of the new graph are equal to the scattering graphs of the old graph.
+  
+  In particular, let $\widehat{G}$ be as described, and let $w\in V(G)$ be any vertex of degree $d>3$.  Additionally, let $L$ be the least integer such that $Lk/\pi \in \ZZ$ for each $k\in M$ (i.e., the least common multiple of the denominators of each $k\in M$).  Let $\widetilde{H}$ be the graph obtained by 
+  
+  \todo{Finish this proof}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Not all momenta can be split}
 
-My interesting result.
+In addition, it might be useful to see when particular scattering behavior is possible or not.  As such ,we will show that no momentum switch can exist between the pairs of momenta $-\frac{\pi}{4}$ and $-\frac{3\pi}{4}$.  The proof will actually show that no R/T gadget exists between these two momenta, but as any momentum switch can be turned into an R/T gadget, this will be sufficient.
+
+\todo{Go over this section, and revise}
+
+\subsubsection{Basis vectors with entries in $\QQ(\sqrt{2})$}
+\label{sec:vecs_over_field}
+
+Recall the general setup shown in \fig{basic_scattering}: $N$ semi-infinite paths are attached to a finite graph $\hat G$. Consider an eigenvector $\ket{\tau_k}$ of the adjacency matrix of $G$ with eigenvalue $2\cos(k)$ for $k\in (-\pi,0)$. In general this eigenspace is spanned by incoming scattering states with momentum $k$ and confined bound states \cite{CG12} (which have zero amplitude on the semi-infinite paths). We can thus write the amplitudes of $\ket{\tau_k}$ on the semi-infinite paths as
+\[
+  \braket{(x,j)}{\tau_k} 
+  = \kappa_j \cos(k (x-1)) + \sigma_j \sin(k (x-1))
+\]
+for $x \in \posint$, $j \in [N]$, and $\kappa_j,\sigma_j \in \CC$, and the amplitudes on the internal vertices as
+\[
+  \braket{w}{\tau_k} = \iota_w
+\]
+for $\iota_w \in \CC$, where $w$ indexes the internal vertices. We write the adjacency matrix of $\hat{G}$ as a block matrix as in \eq{blockadj}.  Since the state $\ket{\tau_k}$ satisfies the eigenvalue equation on the semi-infinite paths, it remains to satisfy the conditions specified by the block matrix equation
+\begin{equation*}
+  \begin{pmatrix} A & B^\dag\\ B & D\end{pmatrix}
+	\begin{pmatrix} \kappa \\ \iota \end{pmatrix}
+	+ \cos(k) \begin{pmatrix} \kappa \\ 0 \end{pmatrix}
+	+ \sin(k) \begin{pmatrix} \sigma \\ 0 \end{pmatrix} 
+	= 2\cos(k) \begin{pmatrix} \kappa \\ \iota \end{pmatrix}.
+\end{equation*}
+
+Hence, the nullspace of the matrix
+\[
+  M= \begin{pmatrix} A -\cos(k) \II & \sin(k) \II & B^\dag\\
+    0 & 0 & 0\\
+    B & 0 & D-2\cos(k)\II\end{pmatrix}
+\]
+is in one-to-one correspondence with the $2\cos(k)$-eigenspace of the infinite matrix (here the first block corresponds to $\kappa$, the second to $\sigma$, and the third to $\iota$). Further, $M$ only has entries in $\QQ(\cos(k),\sin(k))$, so its nullspace has a basis with amplitudes in $\QQ(\cos(k),\sin(k))$, as can be seen using Gaussian elimination.
+
+We are interested in the specific cases $2\cos(k)=\pm\sqrt{2}$ corresponding to $k = -\frac{\pi}{4}$ or $k = -\frac{3\pi}{4}$.  In these cases $\QQ(\cos(k),\sin(k)) = \QQ(\sqrt{2})$, and we may choose a basis for the nullspace of $M$ with amplitudes from $\QQ(\sqrt{2})$. Furthermore, $\cos(kx), \sin(kx) \in \QQ(\sqrt{2})$ for all $x\in \posint$, so with such a choice of basis, each amplitude of $\ket{\tau_k}$ is also an element of $\QQ(\sqrt{2})$.
+
+As noted above, the spectrum of $G$ may include confined bound states \cite{CG12} with eigenvalue $\pm\sqrt2$.  However, any such states are eigenstates of the adjacency matrix of $\hat{G}$ subject to the additional (rational) constraints that the amplitudes on the terminals are zero.  As such, the confined bound states have a basis over $\QQ(\sqrt{2})$. We can use this basis to restrict attention to those states orthogonal to confined bound states using only constraints over $\QQ(\sqrt{2})$, so there exists a basis over $\QQ(\sqrt{2})$ for the $N$-dimensional subspace of scattering states with energy $\pm\sqrt{2}$ that are orthogonal to the confined bound states. Finally, since $\QQ(\sqrt{2})$ can be seen as a two-dimensional vector space over $\QQ$, note that for any member of this basis $\ket{\tau_k}$ there exist rational vectors $\ket{u_k},\ket{w_k}$ such that $\ket{\tau_k}=\ket{u_k} + \sqrt{2}\ket{w_k}$. Since $H^2\ket{\tau_k}=2\ket{\tau_k}$, we have $H\ket{u_k}=\pm 2\ket{w_k}$ and $H\ket{w_k} = \pm \ket{u_k}$, so
+\begin{equation}
+  \ket{\tau_k}=(H \pm \sqrt{2} \II)\ket{w_k}.\label{eq:form_of_tau}
+\end{equation}
+
+%================================================================
+\subsubsection{No R/T gadget and hence no momentum switch}
+
+Recall from \sec{mswitch} that a momentum switch between two momenta $k$ and $p$ can always be converted into an R/T gadget between $k$ and $p$. Here we show that if an R/T gadget perfectly reflects at momentum $-\frac{\pi}{4}$, then it must also perfectly reflect at momentum $-\frac{3\pi}{4}$. This implies that no R/T gadget exists between these two momenta, and thus no momentum switch exists.
+
+We use the following basic fact about two-terminal gadgets several times: 
+
+
+\begin{fact}\label{fct:zero_ampl}
+If a two-terminal gadget has a momentum-$k$ scattering state $\ket{\phi}$ with zero amplitude along path $2$, then the gadget perfectly reflects at momentum $k$.
+\end{fact}
+
+
+\begin{proof}
+Without loss of generality, we may assume that $\ket{\phi}$ is orthogonal to all confined bound states.
+If $\ket{\phi}$ has zero amplitude along path $2$, then there exist some $\mu,\nu \in \CC$ such that
+\[
+  \braket{(x,2)}{\phi}
+  = \mu \braket{(x,2)}{\sc_2 (k)} + \nu \braket{(x,2)}{\sc_1(k)}
+  = \mu e^{-ikx} + \mu R e^{ikx} + \nu T e^{ikx}
+  = 0
+\] 
+for all $x\in \ZZ^{+}$.  Since this holds for all $x$, we have $\mu = \mu R + \nu T = 0$.  Since $\mu$ and $\nu$ cannot both be zero, we have $T=0$.
+\end{proof}
+
+For an R/T gadget, the scattering states (at some fixed momentum) that are orthogonal to the confined bound states span a two-dimensional space. As shown in \sec{vecs_over_field}, we can expand each scattering eigenstate at momentum $k=-\frac{\pi}{4}$ in a basis with entries in $\QQ(\sqrt{2})$, where each basis vector takes the form \eq{form_of_tau}. This gives
+\begin{equation*}
+  \ket{\sc_{1}(-\tfrac{\pi}{4})} 
+  = (H + \sqrt{2}\II) (\alpha \ket{a} + \beta \ket{b}) \label{eq:rat_expansion}
+\end{equation*}
+where $\alpha,\beta \in \CC$, $\alpha\neq 0$, and $\ket{a}$ and $\ket{b}$ are rational 2-eigenvectors of $H^2$.
+
+If $T(-\frac{\pi}{4}) = 0$, then for all $x \geq 0$, 
+\[
+  \langle x,2\ket{\sc_1(-\tfrac{\pi}{4})} 
+  = 0 
+  = \langle{x,2} |(H + \sqrt{2}\II) (\alpha \ket{a} + \beta \ket{b}).
+\]
+Dividing through by $\alpha$ and rearranging, we get that for all $x\geq 0$,
+\begin{equation*}
+\frac{\beta}{\alpha} (\langle{x,2}| H\ket{b}+\sqrt{2} \langle{x,2}\ket{b})
+  =-\langle{x,2}| H\ket{a}  -\sqrt{2} \langle{x,2}\ket{a}.
+\label{eq:cases_eqn}
+\end{equation*}
+If the left-hand side is not zero, then $\beta/\alpha \in \QQ(\sqrt{2})$ since $H$, $\ket{a}$, and $\ket{b}$ are rational.  If the left-hand side is zero, then $(H+ \sqrt{2}\II)\ket{a}$ is an eigenstate at energy $2\cos(k)$ with no amplitude along path 2, so $\beta = 0$ (using \fct{zero_ampl}), and again $\beta/\alpha \in \QQ(\sqrt{2})$.
+
+Now write $\beta/\alpha=r+s\sqrt{2}$ with $r,s\in\QQ$, and consider the rational 2-eigenvector of $H^2$
+\[
+  \ket{c} := \ket{a} + (r+sH) \ket{b}.
+\]
+Note that
+\[
+  \alpha (H + \sqrt{2} \II) \ket{c} 
+= \alpha(H+ \sqrt{2} \II) \ket{a} + \alpha (rH+r\sqrt{2}+ sH^2+sH\sqrt{2}) \ket{b}.
+\]
+Since $\ket{b}$ is a 2-eigenvector of $H^2$ and $\beta/\alpha=r+s\sqrt{2}$, this simplifies to
+\begin{equation}
+  \alpha (H + \sqrt{2}\II) \ket{c} 
+  = \alpha (H + \sqrt{2}\II) \ket{a} + \beta(H + \sqrt{2}\II) \ket{b} 
+  = \ket{\sc_1(-\tfrac{\pi}{4})}, \label{eq:sc1_c}
+\end{equation}
+so $\ket{\sc_1(-\tfrac{\pi}{4})}$ can be written as $\alpha(H+\sqrt{2}\II)$ times a rational 2-eigenvector of $H^2$.
+
+Since $\langle{x,2}\ket{\sc_1(-\tfrac{\pi}{4})} = 0$ for all $x\geq 1$ (and $\alpha\neq 0$), we have
+\[
+  \langle{x,2}| (H+\sqrt{2}\II) \ket{c} 
+  = \langle{x,2}| H \ket{c} + \sqrt{2} \langle{x,2}\ket{c} 
+  = 0.
+\]
+As $H$ is a rational matrix and $\ket{c}$ is a rational vector, the rational and irrational components must both be zero, implying $\langle{x,2}\ket{c}  =\langle{x,2}|H\ket{c} = 0$ for all $x\geq 1$. Furthermore, since $ \ket{\sc_1(-\tfrac{\pi}{4})}$ is a scattering state with zero amplitude on path $2$, it must have some nonzero amplitude on path 1 and thus there is some $x_0\in \mathbb{Z}^+$ for which $\langle{x_0,1}\ket{c}\neq 0$ or $\langle{x_0,1}|H\ket{c} \neq 0$.
+
+Now consider the state obtained by replacing $\sqrt{2}$ with $-\sqrt{2}$:
+\[
+  \ket{\overline{\sc}_1(-\tfrac{\pi}{4})} := \alpha (H-\sqrt{2}\II) \ket{c}.
+\]
+This is a $-\sqrt{2}$-eigenvector of $H$, which can be confirmed using the fact that $\ket{c}$ is a $2$-eigenvector of $H^2$. As $\langle{x,2} | H \ket{c} = \langle x,2 \ket{c} = 0$ for all $x\geq 1$, $\langle x,2 \ket{\overline{\sc}_1(-\tfrac{\pi}{4})} = 0$ for all $x\geq 1$. Furthermore the amplitude at vertex $(x_0,1)$ is nonzero, i.e.,  $\langle x_0,1 \ket{\overline{\sc}_1(-\tfrac{\pi}{4})} \neq 0$, and hence $\ket{\overline{\sc}_1(-\tfrac{\pi}{4})}$ has a component orthogonal to the space of confined bound states (which have zero amplitude on both semi-infinite paths).  Hence, there exists a scattering state with eigenvalue $-\sqrt{2}$ with no amplitude on path 2. By \fct{zero_ampl}, the gadget perfectly reflects at momentum $-\frac{3\pi}{4}$.  It follows that no perfect R/T gadget (and hence no perfect momentum switch) exists between these momenta.
+
+This proof technique can also establish non-existence of momentum switches between other pairs of momenta $k$ and $p$.  For example, a slight modification of the above proof shows that no momentum switch exists between $k = -\frac{\pi}{6}$ and $p = -\frac{5\pi}{6}$. 
 
 
 
