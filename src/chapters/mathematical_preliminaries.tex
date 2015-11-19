@@ -1,0 +1,203 @@
+%======================================================================
+%   Zak Webb
+%   Ph. D. Thesis
+%   Department of Physics and Astronomy
+%   University of Waterloo
+% 
+%   Mathematical Preliminaries
+%======================================================================
+
+
+\documentclass[../thesis-main/thesis-main]{subfiles}
+\begin{document}
+
+\chapter{Mathematical Preliminaries}
+
+\section{Complexity Theory}
+
+Definition of QMA, languages, etcetera.
+
+\section{Various Mathematical Lemmas}
+
+\subsection{Truncation Lemma}
+
+\begin{lemma}[Truncation Lemma]
+\label{lem:trunc}
+Let $H$ be a Hamiltonian acting on a Hilbertspace $\mathcal{H}$ and let $\ket{\Phi}\in\mathcal{H}$ be a normalized state. Let
+$\mathcal{K}$ be a subspace of $\mathcal{H}$, let $P$ be the projector onto $\mathcal{K}$,
+and let $\tilde{H}=PHP$ be the Hamiltonian within this subspace. Suppose
+that, for some $T>0$, $W\in\{H,\tilde{H}\}$, $N_0\in\natural$,
+and $\delta>0$, we have, for all $0\leq t\leq T$, 
+\begin{align*}
+e^{-iWt}|\Phi\rangle & = |\gamma(t)\rangle+|\epsilon(t)\rangle \text{ with }
+\left\Vert |\epsilon(t)\rangle\right\Vert \leq \delta
+\end{align*}
+and
+\begin{align*}
+  (1-P) H^{r}|\gamma(t)\rangle & = 0 \text{ for all } r\in\{0,1,\ldots, N_0-1\}.
+\end{align*}
+Then, for all $0\leq t \leq T$, 
+\[
+  \Norm{\left(e^{-iHt}-e^{-i\tilde{H}t}\right)|\Phi\rangle}
+  \leq \left(\frac{4e\norm{H}t}{N_0} + 2 \right) 
+        \left(\delta + 2^{-N_0}(1+\delta)\right).
+\]
+\end{lemma}
+
+\begin{proposition}
+\label{pro:trunc_prop}Let $H$ be a Hamiltonian acting on a Hilbert
+space $\mathcal{H}$, and let $\ket{\Phi}\in\mathcal{H}$ be a normalized state. Let
+$\mathcal{K}$ be a subspace of $\mathcal{H}$ such that there exists an $N_0\in\natural$
+so that for all $\ket{\alpha}\in \mathcal{K}^{\perp}$ and for all $n\in\{0,1,2,\ldots, N_0-1\}$, $\bra{\alpha}H^{n}\ket{\Phi}=0$.
+Let $P$ be the projector onto $\mathcal{K}$ and let $\tilde{H}=PHP$ be
+the Hamiltonian within this subspace.  Then
+\[
+\norm{e^{-it\tilde{H}}\ket{\Phi}-e^{-itH}\ket{\Phi}} \leq 2\left(\frac{e\norm{H}t}{N_0}\right)^{N_0}.
+\]
+\end{proposition}
+
+\begin{proof}
+Define $\ket{\Phi(t)}$ and $\ket{\tilde\Phi(t)}$
+as
+\[
+\ket{\Phi(t)}=e^{-itH}\ket{\Phi}=\sum_{k=0}^{\infty}\frac{(-it)^{k}}{k!}H^{k}\ket{\Phi}\qquad\ket{\tilde\Phi(t)}=e^{-it\tilde{H}}\ket{\Phi}=\sum_{k=0}^{\infty}\frac{(-it)^{k}}{k!}\tilde{H}^{k}\ket{\Phi}.
+\]
+Note that by assumption, $\tilde{H}^{k}\ket{\Phi}=H^{k}\ket{\Phi}$ for all $k< N_0$, and thus the first $N_0$ terms in the two above sums are equal. Looking at the difference between these two states, we have
+\begin{align*}
+\norm{\ket{\Phi(t)}-\ket{\tilde\Phi(t)}} & =\Norm{\sum_{k=0}^{\infty}\frac{(-it)^{k}}{k!}\left(H^{k}-\tilde{H}^{k}\right)\ket{\Phi}}\\
+ & =\Norm{\sum_{k=0}^{N_0-1}\frac{(-it)^{k}}{k!}\left(H^{k}-\tilde{H}^{k}\right)\ket{\Phi}-\sum_{k=N_0}^{\infty}\frac{(-it)^{k}}{k!}\left(H^{k}-\tilde{H}^{k}\right)\ket{\Phi}}\\
+ & \leq\sum_{k=N_0}^{\infty}\frac{t^{k}}{k!}\left(\norm{H}^{k}+\norm{\tilde{H}}^{k}\right) \\
+ & \leq 2\sum_{k=N_0}^{\infty}\frac{t^{k}}{k!} \norm{H}^{k}
+\end{align*}
+where the last step uses the fact that $\norm{\tilde{H}}\leq\norm{P}\norm{H}\norm{P} = \norm{H}$.  Thus for any $c \ge 1$, we have
+\begin{align*}
+\norm{\ket{\Phi(t)}-\ket{\tilde\Phi(t)}}
+ & \leq\frac{2}{c^{N_0}}\sum_{k=N_0}^{\infty}\frac{(ct)^{k}}{k!}\norm{H}^{k}\\
+ & \leq\frac{2}{c^{N_0}}\exp(ct\norm{H}).
+\end{align*}
+We obtain the best bound by choosing $c=N_0/\norm{Ht}$, which gives
+\[
+  \norm{\ket{\Phi(t)}-\ket{\tilde\Phi(t)}}
+  \le 2\left(\frac{e\norm{H}t}{N_0}\right)^{N_0}
+\]
+as claimed.  (If $c < 1$ then the bound is trivial.)
+\end{proof}
+
+\begin{proposition}
+\label{pro:hybrid}Let $U_1,\ldots, U_n$ and $V_1,\ldots, V_n$  be unitary operators.  Then for any $\ket{\psi}$,
+\begin{equation}
+  \Norm{\left(\prod_{i=n}^1 U_i - \prod_{i=n}^1 V_i \right) \ket{\psi}}   \le \sum_{j=1}^n \Bigg\|{(U_j - V_j)\prod_{i=j-1}^1 U_i \ket{\psi}}\Bigg\|.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The proof is by induction on $n$.  The case $n=1$ is obvious.  For the induction step, we have \begin{align}   \Norm{\left(\prod_{i=n}^1 U_i - \prod_{i=n}^1 V_i \right) \ket{\psi}}   &= \Norm{\left(\prod_{i=n}^1 U_i - V_n \prod_{i=n-1}^1 U_i             + V_n \prod_{i=n-1}^1 U_i - \prod_{i=n}^1 V_i \right) \ket{\psi}} \\   &\le \Norm{(U_n - V_n) \prod_{i=n-1}^1 U_i \ket{\psi}}       +\Norm{\left(\prod_{i=n-1}^1 U_i - \prod_{i=n-1}^1 V_i \right) \ket{\psi}} \\   &\le \sum_{j=1}^n \Norm{(U_j - V_j)\prod_{i=j-1}^1 U_i \ket{\psi}} \end{align} where the last step uses the induction hypothesis. 
+\end{proof}
+
+\begin{proof}[Proof of {\lem{trunc}}]
+For $M \in \natural$ write
+\begin{align*}
+  \norm{(e^{-iHt}-e^{-i\tilde{H}t}) \ket{\Phi}}
+  &= \Norm{\left(\left(e^{-iH\frac{t}{M}}\right)^{M} -
+     \left(e^{-i\tilde{H}\frac{t}{M}}\right)^{M}\right) \ket{\Phi}} \\
+  & \leq \sum_{j=1}^{M} \Norm{\left(e^{-iH\frac{t}{M}} - 
+     e^{-i\tilde{H}\frac{t}{M}}\right) e^{-iW\left(j-1\right)\frac{t}{M}}
+     \ket{\Phi}} \\
+  & \leq \sum_{j=1}^{M} 
+    \Norm{\left(e^{-iH\frac{t}{M}} - e^{-i\tilde{H}\frac{t}{M}}\right)
+    \left(\ket{\gamma(\tfrac{(j-1)t}{M})} +
+          \ket{\epsilon(\tfrac{(j-1)t}{M})}\right)} \\
+  & \leq 2M\delta+\sum_{j=1}^{M} 
+    \Norm{ \left(e^{-iH\frac{t}{M}} - e^{-i\tilde{H}\frac{t}{M}}\right)
+    \frac{\ket{\gamma(\tfrac{(j-1)t}{M})}} 
+         {\Norm{\ket{\gamma(\tfrac{(j-1)t}{M})}}}}
+    \Norm{\ket{\gamma(\tfrac{(j-1)t}{M})}}\\ 
+  & \leq 2M\delta 
+    + 2M\left(\frac{e\norm{H}t}{M N_0}\right)^{N_0}(1+\delta)
+\end{align*}
+where in the second line we have used \propo{hybrid} and in the last step we have used \propo{trunc_prop} and the fact that $\Vert |\gamma(t)\rangle\Vert \leq 1+\delta$.
+Now, for some $\eta>1$, choose
+\[
+  M= \left\lceil \frac{\eta e\norm{H}t}{N_0} \right\rceil
+\]
+for $0<t\leq T$ to get
+\begin{align*}
+  \norm{(e^{-iHt}-e^{-i\tilde{H}t}) \ket{\Phi}}
+  &\leq 2M\left(\delta + \eta^{-N_0}(1+\delta)\right) \\
+  &\leq 2\left(\frac{\eta e\norm{H}t}{N_0} + 1 \right) 
+        \left(\delta + \eta^{-N_0}(1+\delta)\right).
+\end{align*}
+The choice $\eta=2$ gives the stated conclusion.
+\end{proof}
+
+Note that it would be slightly better to take a smaller value of $\eta$.  However, this does not significantly improve the final result; the above bound is simpler and sufficient for our purposes.
+
+
+\subsection{Nullspace Projection Lemma}
+
+\begin{lemma}[Nullspace Projection Lemma]
+Let $H_A$ and $H_B$ be positive semi-definite matrices.  Suppose that the nullspace, $S$, of $H_A$ is nonempty, and that 
+\begin{equation}
+  \gamma\big(H_B|_S\big) \geq c > 0 \qquad \text{and} \qquad \gamma(H_A) \geq d > 0.
+\end{equation}
+Then,
+\begin{equation}
+  \gamma(H_A + H_B) \geq \frac{c d}{d + \norm{H_B}} .
+\end{equation}
+\end{lemma}
+\begin{proof}
+Let $|\psi\rangle$ be a normalized state satisfying 
+\begin{equation}
+\langle\psi|H_{A}+H_{B}|\psi\rangle=\gamma(H_{A}+H_{B}).
+\end{equation}
+Let $\Pi_{S}$ be the projector onto the nullspace of $H_{A}$. First suppose that $\Pi_{S}|\psi\rangle=0$, in which case 
+\begin{equation}
+\langle\psi|H_{A}+H_{B}|\psi\rangle\geq\langle\psi|H_{A}|\psi\rangle\geq\gamma(H_{A})
+\end{equation}
+and the result follows. On the other hand, if $\Pi_{S}|\psi\rangle\neq0$ then we can write 
+\begin{equation}
+|\psi\rangle=\alpha|a\rangle+\beta|a^{\perp}\rangle
+\end{equation}
+with $|\alpha|^{2}+|\beta|^{2}=1$, $\alpha\neq0$, and two normalized states $|a\rangle$ and $|a^{\perp}\rangle$ such that $|a\rangle\in S$ and $|a^{\perp}\rangle\in S^{\perp}$. (If $\beta=0$ then we may choose $|a^{\perp}\rangle$ to be an arbitrary state in $S^{\perp}$ but in the following we fix one specific choice for concreteness.) Note that any state $|\phi\rangle$ in the nullspace of $H_{A}+H_{B}$ satisfies $H_{A}|\phi\rangle=0$ and hence $\langle\phi|a^{\perp}\rangle=0$. Since $\langle\phi|\psi\rangle=0$ and $\alpha\neq0$ we also see that $\langle\phi|a\rangle=0$. Hence any state
+\begin{equation}
+|f(q,r)\rangle=q|a\rangle+r|a^{\perp}\rangle
+\end{equation}
+is orthogonal to the nullspace of $H_{A}+H_{B}$, and
+\begin{equation}
+\gamma(H_{A}+H_{B})=\min_{|q|^{2}+|r|^{2}=1}\langle f(q,r)|H_{A}+H_{B}|f(q,r)\rangle.
+\end{equation}
+
+Within the subspace $Q$ spanned by $\ket{a}$ and $\ket{a^\perp}$, note that
+\begin{equation}
+  H_A|_Q = \begin{pmatrix} w & v^*\\
+    v & z\end{pmatrix} \qquad H_B|_Q = \begin{pmatrix} 0 & 0\\
+    0 & y \end{pmatrix}
+\end{equation}
+where $w=\langle a|H_{B}|a\rangle$, $v=\langle a^{\perp}|H_{B}|a\rangle$, $y=\langle a^{\perp}|H_{A}|a^{\perp}\rangle$, and $z=\langle a^{\perp}|H_{B}|a^{\perp}\rangle$, and that we are interested in the smaller eigenvalue of 
+\begin{equation}
+M = H_A|_Q + H_B|_Q =  \begin{pmatrix}
+w & v^{*}\\
+v & y+z
+\end{pmatrix}.
+\end{equation}
+Letting $\epsilon_+$ and $\epsilon_-$ be the two eigenvalues of $M$ with $\epsilon_+\geq \epsilon_-$, note that 
+\begin{equation}
+  \epsilon_+ = \norm{M} \leq \norm{H_A|_Q} + \norm{H_B|_Q} \leq y+ \norm{H_B|_Q} \leq y + \norm{H_B},
+\end{equation}
+where we have used the Cauchy interlacing theorem to note that $\norm{H_B|_Q} \leq \norm{H_B}$.
+Additionally, we have that
+\begin{equation}
+  \epsilon_+ \epsilon_- = \det (M) = w (y+z) - |v|^2 \geq wy
+\end{equation}
+where we used the fact that $H_B|_Q$ is positive-semidefinite.  Putting this together, we have that
+\begin{equation}
+ \gamma(H_A + H_B) = \min_{|q|^{2}+|r|^{2}=1}\langle f(q,r)|H_{A}+H_{B}|f(q,r)\rangle = \epsilon_- \geq \frac{w y}{y + \norm{H_B}}.
+\end{equation}
+As the right hand side increased monotonically with both $w$ and $y$, and as $w \geq \gamma(H_B|_S) \geq c$ and $y \geq \gamma(H_A) \geq d$, we have
+\begin{equation}
+  \gamma(H_A + H_B) \geq \frac{c d}{d + \norm{H_B}}
+\end{equation}
+as required.
+\end{proof}
+
+\end{document}

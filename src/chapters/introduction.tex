@@ -47,7 +47,7 @@ Along these lines, many models of simple interactions between particles exist in
 
 \section{Computational complexity}
 
-While this is a physics thesis, much of my work is focused on understanding the computational power of these physical systems, and as such an understanding of the classification framework is in order.  
+While this is a physics thesis, much of my work is focused on understanding the computational power of these physical systems, and as such an understanding of the classification framework is in order.  I should explain some of the motivation behind this area of research, giving a bit of background for the physicist.
 
 These classifications are generally described by languages, or subsets of all possible 0-1 strings.  In particular, given some string $x$, the requisite power in order to determine whether the string belongs to a language or not describes the complexity of the language.  
 
@@ -61,78 +61,10 @@ Basically, I should define what a language is, compare with promise problems, an
 
 I want at least give an idea of where these results are coming from.  Basically, I should mention the idea of complexity measures related to Hamiltonians, such as area laws, quantum expanders, matrix product states, etc.
 
-%======================================================================
-%   Section: Notation and requisite mathematics
-%======================================================================
+Should I explain qPCP? I'm not sure.  I should really just explain that this is the nice intersection between physics and CS, with a large focus on understand physical systems, and how information and computation relate to our physical world.
 
-\section{Notation and requisite mathematics}
 
-I'm realizing that I'll need to include some information about graphs, positive-semidefinite matrices, etc.  This will probably be the section on necessary terminology and mathematics, but I'm not sure what will go in here.
 
-\begin{lemma}[Nullspace Projection Lemma]
-Let $H_A$ and $H_B$ be positive semi-definite matrices.  Suppose that the nullspace, $S$, of $H_A$ is nonempty, and that 
-\begin{equation}
-  \gamma\big(H_B|_S\big) \geq c > 0 \qquad \text{and} \qquad \gamma(H_A) \geq d > 0.
-\end{equation}
-Then,
-\begin{equation}
-  \gamma(H_A + H_B) \geq \frac{c d}{d + \norm{H_B}} .
-\end{equation}
-\end{lemma}
-\begin{proof}
-Let $|\psi\rangle$ be a normalized state satisfying 
-\begin{equation}
-\langle\psi|H_{A}+H_{B}|\psi\rangle=\gamma(H_{A}+H_{B}).
-\end{equation}
-Let $\Pi_{S}$ be the projector onto the nullspace of $H_{A}$. First suppose that $\Pi_{S}|\psi\rangle=0$, in which case 
-\begin{equation}
-\langle\psi|H_{A}+H_{B}|\psi\rangle\geq\langle\psi|H_{A}|\psi\rangle\geq\gamma(H_{A})
-\end{equation}
-and the result follows. On the other hand, if $\Pi_{S}|\psi\rangle\neq0$ then we can write 
-\begin{equation}
-|\psi\rangle=\alpha|a\rangle+\beta|a^{\perp}\rangle
-\end{equation}
-with $|\alpha|^{2}+|\beta|^{2}=1$, $\alpha\neq0$, and two normalized states $|a\rangle$ and $|a^{\perp}\rangle$ such that $|a\rangle\in S$ and $|a^{\perp}\rangle\in S^{\perp}$. (If $\beta=0$ then we may choose $|a^{\perp}\rangle$ to be an arbitrary state in $S^{\perp}$ but in the following we fix one specific choice for concreteness.) Note that any state $|\phi\rangle$ in the nullspace of $H_{A}+H_{B}$ satisfies $H_{A}|\phi\rangle=0$ and hence $\langle\phi|a^{\perp}\rangle=0$. Since $\langle\phi|\psi\rangle=0$ and $\alpha\neq0$ we also see that $\langle\phi|a\rangle=0$. Hence any state
-\begin{equation}
-|f(q,r)\rangle=q|a\rangle+r|a^{\perp}\rangle
-\end{equation}
-is orthogonal to the nullspace of $H_{A}+H_{B}$, and
-\begin{equation}
-\gamma(H_{A}+H_{B})=\min_{|q|^{2}+|r|^{2}=1}\langle f(q,r)|H_{A}+H_{B}|f(q,r)\rangle.
-\end{equation}
-
-Within the subspace $Q$ spanned by $\ket{a}$ and $\ket{a^\perp}$, note that
-\begin{equation}
-  H_A|_Q = \begin{pmatrix} w & v^*\\
-    v & z\end{pmatrix} \qquad H_B|_Q = \begin{pmatrix} 0 & 0\\
-    0 & y \end{pmatrix}
-\end{equation}
-where $w=\langle a|H_{B}|a\rangle$, $v=\langle a^{\perp}|H_{B}|a\rangle$, $y=\langle a^{\perp}|H_{A}|a^{\perp}\rangle$, and $z=\langle a^{\perp}|H_{B}|a^{\perp}\rangle$, and that we are interested in the smaller eigenvalue of 
-\begin{equation}
-M = H_A|_Q + H_B|_Q =  \begin{pmatrix}
-w & v^{*}\\
-v & y+z
-\end{pmatrix}.
-\end{equation}
-Letting $\epsilon_+$ and $\epsilon_-$ be the two eigenvalues of $M$ with $\epsilon_+\geq \epsilon_-$, note that 
-\begin{equation}
-  \epsilon_+ = \norm{M} \leq \norm{H_A|_Q} + \norm{H_B|_Q} \leq y+ \norm{H_B|_Q} \leq y + \norm{H_B},
-\end{equation}
-where we have used the Cauchy interlacing theorem to note that $\norm{H_B|_Q} \leq \norm{H_B}$.
-Additionally, we have that
-\begin{equation}
-  \epsilon_+ \epsilon_- = \det (M) = w (y+z) - |v|^2 \geq wy
-\end{equation}
-where we used the fact that $H_B|_Q$ is positive-semidefinite.  Putting this together, we have that
-\begin{equation}
- \gamma(H_A + H_B) = \min_{|q|^{2}+|r|^{2}=1}\langle f(q,r)|H_{A}+H_{B}|f(q,r)\rangle = \epsilon_- \geq \frac{w y}{y + \norm{H_B}}.
-\end{equation}
-As the right hand side increased monotonically with both $w$ and $y$, and as $w \geq \gamma(H_B|_S) \geq c$ and $y \geq \gamma(H_A) \geq d$, we have
-\begin{equation}
-  \gamma(H_A + H_B) \geq \frac{c d}{d + \norm{H_B}}
-\end{equation}
-as required.
-\end{proof}
 
 %======================================================================
 %   Section: Layout
