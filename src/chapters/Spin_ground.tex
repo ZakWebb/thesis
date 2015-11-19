@@ -13,10 +13,125 @@
 
 \chapter{Ground energy of spin systems}
 
+We reduce Frustration-Free Bose-Hubbard Hamiltonian to an eigenvalue problem for a class of $2$-local Hamiltonians defined by graphs. The reduction is based on a well-known mapping between hard-core bosons and spin systems, which we now review.
+
+We define the subspace $\mathcal{W}_N(G)\subset \mathcal{Z}_N (G)$ of $N$ hard-core bosons on a graph $G$ to consist of the states where each vertex of $G$ is occupied by either $0$ or $1$ particle, i.e., 
+\[
+  \mathcal{W}_N(G)=\text{span}\{\text{Sym}(|i_1,i_2,\ldots,i_N\rangle) \colon
+  i_1,\ldots,i_N\in V,\; i_j\neq i_k \text{ for distinct } j,k\in[N] \}.
+\]
+A basis for $\mathcal{W}_N(G)$ is the subset of occupation-number states \eq{occup_num_symmetrized} labeled by bit strings $l_1\ldots l_{|V|}\in \{0,1\}^{|V|}$ with Hamming weight $\sum_{j\in V}l_j=N$.  The space $\mathcal{W}_N(G)$ can thus be identified with the weight-$N$ subspace
+\[
+\text{Wt}_N(G)=\text{span}\{|z_1,\ldots, z_{|V|}\rangle:\; z_i\in\{0,1\},\; \sum_{i=1}^{|V|} z_i =N\}
+\]
+of a $|V|$-qubit Hilbert space. We consider the restriction of $H_G^N$ to the space $\mathcal{W}_N(G)$, which can equivalently be written as a $|V|$-qubit Hamiltonian $O_G$ restricted to the space $\text{Wt}_N(G)$.  In particular,
+\begin{equation}
+H_G^N\big|_{\mathcal{W}_N(G)}=O_G\big|_{\text{Wt}_N(G)}
+\label{eq:restriction_equality}
+\end{equation}
+where 
+\begin{align*}
+O_G & = \sum_{\substack{A(G)_{ij}=1 \\ i\neq j}}\big(|01\rangle\langle 10|+|10\rangle\langle 01|\big)_{ij} +\sum_{A(G)_{ii}=1} |1\rangle\langle1|_i\\
+&=\sum_{\substack{A(G)_{ij}=1 \\ i\neq j}}\frac{\sigma_x^i \sigma_x^j+\sigma_y^i \sigma_y^j}{2}+\sum_{A(G)_{ii}=1}\frac{1-\sigma_z^{i}}{2}.
+\end{align*}
+Note that the Hamiltonian $O_G$ conserves the total magnetization $M_z=\sum_{1=1}^{|V|}\frac{1-\sigma_z^{i}}{2}$ along the $z$ axis. 
+
+We define $\theta_N(G)$ to be the smallest eigenvalue of \eq{restriction_equality}, i.e., the ground energy of $O_G$ in the sector with magnetization $N$. We show that approximating this quantity is QMA-complete.
+
+
+\begin{problem}
+[\textbf{XY Hamiltonian}]
+We are given a $K$-vertex graph $G$, an integer $N\leq K$, a real number $c$, and a precision parameter $\epsilon=\frac{1}{T}$. The positive integer $T$ is provided in unary; the graph is specified by its adjacency matrix, which can be any $K\times K$ symmetric $0$-$1$ matrix. We are promised that either $\theta_N(G)\leq c$ (yes instance) or else $\theta_N(G)\geq c+\epsilon$ (no instance) and we are asked to decide which is the case.
+\end{problem}
+
+
 \section{Relation between spins and particles}
 
 \subsection{The transform}
 
 \section{Hardness reduction from frustration-free BH model}
+
+\begin{theorem}\label{thm:XY}
+XY Hamiltonian is QMA-complete.
+\end{theorem}
+
+
+\begin{proof}
+An instance of XY Hamiltonian can be verified by the standard QMA verification protocol for the Local Hamiltonian problem \cite{KSV02} with one slight modification: before running the protocol Arthur measures the magnetization of the witness and rejects unless it is equal to $N$.  Thus the problem is contained in QMA.
+	
+To prove QMA-hardness, we show that the solution (yes or no) of an instance of Frustration-Free Bose-Hubbard Hamiltonian with input $G$, $N$, $\epsilon$ is equal to the solution of the instance of XY Hamiltonian with the same graph $G$ and integer $N$, with precision parameter $\frac{\epsilon}{4}$ and $c=N\mu(G)+\frac{\epsilon}{4}$. 
+% This shows that XY Hamiltonian is QMA-hard since a polynomial-time algorithm for it could be used to solve any instance of Frustration-Free Bose-Hubbard Hamiltonian in polynomial time.
+
+We separately consider yes instances and no instances of Frustration-Free Bose-Hubbard Hamiltonian and show that the corresponding instance of XY Hamiltonian has the same solution in both cases.
+
+%-----------------------------------------------------------------------------
+\subsubsection*{Case 1: no instances}
+
+First consider a no instance of Frustration-Free Bose-Hubbard Hamiltonian, for which $\lambda_N^1 (G)\geq \epsilon+\epsilon^3$.
+We have
+\begin{align}
+\lambda_N^1 (G) & = \min_{\substack{|\phi\rangle\in \mathcal{Z}_N(G)\\ \langle \phi|\phi\rangle=1}} \langle \phi| H_G^N-N\mu(G)|\phi\rangle 
+\label{eq:lambda_theta1}\\
+& \leq \min_{\substack{|\phi\rangle\in \mathcal{W}_N(G)\\ \langle \phi|\phi\rangle=1}} \langle \phi| H_G^N-N\mu(G)|\phi\rangle
+\label{eq:lambda_theta2}\\ & =\min_{\substack{|\phi\rangle\in \mathrm{Wt}_N(G)\\ \langle \phi|\phi\rangle=1}} \langle \phi| O_G-N\mu(G)|\phi\rangle
+\label{eq:lambda_theta3} \\
+&= \theta_N(G)-N\mu(G)
+\label{eq:lambda_theta4}
+\end{align}
+where in the inequality we used the fact that $\mathcal{W}_N(G)\subset \mathcal{Z}_N(G)$. Hence 
+\[
+\theta_N(G)\geq N\mu(G)+\lambda_N^1 (G) \geq N\mu(G)+\epsilon+\epsilon^3\geq N\mu(G)+\frac{\epsilon}{2},
+\]
+so the corresponding instance of XY Hamiltonian is a no instance.
+
+%-----------------------------------------------------------------------------
+\subsubsection*{Case 2: yes instances}
+
+Now consider a yes instance of Frustration-Free Bose-Hubbard Hamiltonian,  so $0\leq \lambda_N^1 (G)\leq \epsilon^3$. 
+
+We consider the case $\lambda_N^1 (G)=0$ separately from the case where it is strictly positive. If $\lambda_N^1 (G)=0$ then any state $|\psi\rangle$ in the ground space of $H_G^N$ satisfies 
+\[
+\langle \phi|\sum_{w=1}^N \left(A(G)-\mu(G)\right)^{(w)}+\sum_{k\in V} \widehat{n}_k(\widehat{n}_k-1)|\phi\rangle=0.
+\]
+Since both terms are positive semidefinite, the state $|\phi\rangle$ has zero energy for each of them. In particular, it has zero energy for the second term, or equivalently, $|\phi\rangle\in \mathcal{W}_N(G)$. Therefore
+\begin{align*}
+\lambda_N^1 (G) = \min_{\substack{|\phi\rangle\in \mathcal{W}_N(G)\\ \langle \phi|\phi\rangle=1}} \langle \phi| H_G^N-N\mu(G)|\phi\rangle =\min_{\substack{|\phi\rangle\in \mathrm{Wt}_N(G)\\ \langle \phi|\phi\rangle=1}} \langle \phi| O_G-N\mu(G)|\phi\rangle= \theta_N(G)-N\mu(G),
+\end{align*}
+so $\theta_N(G)= N\mu(G)$, and the corresponding instance of XY Hamiltonian is a yes instance.
+
+Finally, suppose $0 < \lambda_N^1 (G)\leq \epsilon^3$. Then $\lambda_N^1(G)$
+% , by definition the smallest eigenvalue of $H(G,N)$, 
+is also the smallest \emph{nonzero} eigenvalue of $H(G,N)$, which we denote by $\gamma(H(G,N))$. (Here and throughout this paper we write $\gamma(M)$ for the smallest nonzero eigenvalue of a positive semidefinite matrix $M$.) Note that $ \lambda_N^1 (G)>0$ also implies (by the inequalities \eq{lambda_theta1}--\eq{lambda_theta4}) that $\theta_N(G)-N\mu(G)>0$, so
+\[
+\theta_N(G)-N\mu(G)=\gamma\left((O_G -N\mu(G))\big|_{\text{Wt}_N(G)}\right).
+\]
+To upper bound $\theta_N(G)$ we use the Nullspace Projection Lemma (\lem{npl}). We apply this Lemma using the decomposition $H(G,N)=H_A+H_B$ where
+\[
+H_A=\sum_{k\in V} \widehat{n}_k(\widehat{n}_k-1)\big|_{\mathcal{Z}_N(G)} \qquad H_B=\sum_{w=1}^N \left(A(G)-\mu(G)\right)^{(w)}\big|_{\mathcal{Z}_N(G)}.
+\]
+Note that $H_A$ and $H_B$ are both positive semidefinite, and that the nullspace $S$ of $H_A$ is equal the space $\mathcal{W}_N(G)$ of hard-core bosons. To apply the Lemma we compute bounds on $\gamma(H_A)$, $\|H_B\|$, and $\gamma(H_B|_S)$. We use the bounds $\gamma(H_A)=2$ (since the operators $\{\widehat{n}_k\colon k\in V\}$ commute and have nonnegative integer eigenvalues),
+\[
+\|H_B\|\leq N\|A(G)-\mu(G)\|\leq N(\|A(G)\|+\mu(G)) \leq 2N\|A(G)\|\leq 2KN\leq 2K^2
+\]
+(where we used the fact that $\|A(G)\|$ is at most the maximum degree of $G$, which is at most the number of vertices $K$), and
+\begin{align*}
+\gamma (H_B|_S)& =\gamma \left(\sum_{w=1}^N \left(A(G)-\mu(G)\right)^{(w)}\big|_{\mathcal{W}_N(G)}\right)\\
+& =\gamma\left((O_G -N\mu(G))\big|_{\text{Wt}_N(G)}\right)\\
+&= \theta_N(G)-N\mu(G).
+\end{align*}
+Now applying the Lemma, we get 
+\[
+\lambda_N^1 (G)=\gamma(H(G,N))\geq \frac{2(\theta_N(G)-N\mu(G))}{2+(\theta_N(G)-N\mu(G))+2K^2}.
+\]
+Rearranging this inequality gives
+\[
+\theta_N(G)-N\mu(G) \leq \lambda_N^1(G)\frac{2(K^2+1)}{2-\lambda_N^1(G)}\leq 4K^2 \lambda_N^1(G)\leq 4K^2 \epsilon^3 
+\]
+where in going from the second to the third inequality we used the fact that $1\leq K^2$ in the numerator and $\lambda_N^1(G)\leq \epsilon^3<1$ in the denominator.  Now using the fact (from the definition of Frustration-Free Bose-Hubbard Hamiltonian) that $\epsilon\leq \frac{1}{4K}$, we get 
+\[
+\theta_N(G)\leq N\mu(G)+\frac{\epsilon}{4}, 
+\]
+i.e., the corresponding instance of XY Hamiltonian is a yes instance.
+\end{proof}
 
 \end{document}

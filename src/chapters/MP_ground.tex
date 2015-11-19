@@ -21,21 +21,1182 @@
 \section{Constructing the underlying graph for QMA-hardness}
 
 \subsection{Gate graphs}
+
+In this Section we define a class of graphs (\emph{gate graphs}) and a diagrammatic notation for them (\emph{gate diagrams}). We also discuss the Bose-Hubbard model on these graphs.
+
+Every gate graph is constructed using a specific $128$-vertex graph $g_{0}$ as a building block. This graph is shown in \fig{g_0} and discussed in \sec{Encoding-a-Computation}. In \sec{Gate-graphs-and} we define gate graphs and gate diagrams. A gate graph is obtained by adding edges and self-loops (in a prescribed way) to a collection of disjoint copies of $g_{0}$.
+
+In \sec{FF_State} we discuss the ground states of the Bose-Hubbard model on gate graphs. For any gate graph $G$, the smallest eigenvalue $\mu(G)$ of the adjacency matrix $A(G)$ satisfies $\mu(G)\geq-1-3\sqrt{2}$. It is convenient to define the constant
+\begin{equation}
+e_{1}=-1-3\sqrt{2}.\label{eq:e1_defn}
+\end{equation}
+When $\mu(G)=e_{1}$ we say $G$ is an $e_{1}$-gate graph. We focus on the frustration-free states of $e_1$-gate graphs (recall from \defn{FF_states} that $|\phi\rangle\in \mathcal{Z}_N(G)$ is frustration free iff $H(G,N)|\phi\rangle=0$). We show that all such states live in a convenient subspace (called $\mathcal{I}(G,N)$) of the $N$-particle Hilbert space. This subspace has the property that no two (or more) particles ever occupy vertices of the same copy of $g_{0}$. The restriction to this subspace makes it easier to analyze the ground space.
+
+In \sec{Occupancy-constraints} we consider a class of subspaces that, like $\mathcal{I}(G,N)$, are defined by a set of constraints on the locations of $N$ particles in an $e_{1}$-gate graph $G$. We state an ``Occupancy Constraints Lemma'' (proven in \app{Occupancy-Constraints-Lemma}) that relates a subspace of this form to the ground space of the Bose-Hubbard model on a graph derived from $G$.
+
+
 \subsubsection{The graph $g_0$}
+
+The graph $g_{0}$ shown in \fig{g_0} is closely related to a single-qubit circuit $\mathcal{C}_{0}$ with eight gates $U_{j}$ for $j\in[8]$, where 
+\begin{align*}
+U_{1} & =U_{2}=U_{7}=U_{8}=H\qquad U_{3}=U_{5}=HT\qquad U_{4}=U_{6}=\left(HT\right)^{\dagger}
+\end{align*}
+with 
+\[
+H=\frac{1}{\sqrt{2}}\begin{pmatrix}
+1 & 1\\
+1 & -1
+\end{pmatrix}\qquad T=\begin{pmatrix}
+1 & 0\\
+0 & e^{i\frac{\pi}{4}}
+\end{pmatrix}.
+\]
+In this section we map this circuit to the graph $g_{0}$. The mapping we use can be generalized to map an arbitrary quantum circuit with any number of qubits to a graph, but for simplicity we focus here on $g_{0}$. In \app{complexity_smallest_graph_eig} we discuss the more general mapping and use it to prove that computing (in a certain precise sense specified in the Appendix) the smallest eigenvalue of a sparse, efficiently row-computable symmetric $0$-$1$ matrix is QMA-complete.
+
+%\begin{figure}
+%\centering
+%\begin{tikzpicture}[scale = 0.75]
+%
+%  % These are the connections from t to t+1
+%
+%  \foreach \sym in {1,-1}{  % note that the graph is symmetric about x=0
+%  \begin{scope}[xscale = \sym]
+%    % note that each connection is a shift of the registers by some constant amount 
+%    % write all four explicitly (a = logic 0, b= logic 1), and needed rotation
+%  \foreach \theta/\shiftaa /\shiftab /\shiftba /\shiftbb in {
+%      0/4/4/4/0,
+%      -45/4/4/4/0,
+%      -90/4/4/5/1,
+%      -135/4/3/4/7}{
+%  \begin{scope}[rotate = \theta]
+%    \foreach \zstart / \zend /\shift in {6/6/\shiftaa,6/1.5/\shiftab,1.5/6/\shiftba,1.5/1.5/\shiftbb}{
+%    \foreach \w in {0,...,7}{
+%      \draw[draw=black!70] let \n1={int(mod(\w + \shift,8)) /2 + \zend} in (90:{\w/2 + \zstart} ) -- (45: \n1 cm);
+%    }}
+%  \end{scope}}
+%  \end{scope}}
+%
+%  % Now just write all of the penalty terms (S^3+S^4+S^5)
+%  % can shift for logic 0 and 1, and rotate for different t
+%  % Also draw the nodes
+%  \foreach \theta in {0,45,...,315}{
+%  \foreach \yshift in {1.5,6}{
+%  \begin{scope}[rotate = \theta,yshift=\yshift cm]
+%  \begin{scope}[draw=black!40]
+%    \draw (0,3.5) to[out=210,in = 150] (0,1);
+%    \draw (0,3.5) to[out=225,in = 135] (0,1.5);
+%    \draw (0,3.5) to[out=240,in=120] (0,2);
+%  
+%    \draw (0,3) to[out=330,in = 30] (0,.5);
+%    \draw (0,3) to[out=315,in=45] (0,1);
+%    \draw (0,3) to[out=300,in=60] (0,1.5);
+%  
+%    \draw (0,0) to[out=30,in=330] (0,2.5);
+%    \draw (0,0) to[out=45,in=315] (0,2);
+%    \draw (0,0) to[out=60,in=300] (0,1.5);
+%  
+%    \draw (0,.5) to[out=135,in=225] (0,2.5);
+%    \draw (0,.5) to[out=120,in=240] (0,2);
+%  
+%    \draw (0,2.5) to[out=240,in=120] (0,1);
+%  \end{scope}
+%   \foreach \y in {0,.5,...,3.5}{
+%    \draw[fill = black,draw=black] (0,\y cm) circle (.33mm);
+%  }
+%  
+%  \end{scope}}}
+%  
+%  % Label the times and unitaries applied (I couldn't get a counter to work here for some reason)
+%  \foreach \t/\gate in {1/H,2/H,3/HT,4/{(HT)^\dag},5/HT,6/{(HT)^\dag},7/H,8/H}{
+%    \node at ({135 - \t * 45} :10.25) {$t = \t$};
+%    \draw[->,draw=black] ({120-\t*45} :10.25) arc[radius=10.25, start angle = {120-\t*45} ,end angle= {105-\t*45}];
+%    \node[fill=white] at ({112.5 - \t * 45} :10.25) {$\gate$ };
+%  }
+%\end{tikzpicture}
+%
+%\caption{The graph $g_{0}$.\label{fig:g_0}}
+%\end{figure}
+
+Starting with the circuit $\mathcal{C}_{0}$, we apply the Feynman-Kitaev circuit-to-Hamiltonian mapping \cite{Fey85,KSV02} (up to a constant term and overall multiplicative factor) to get the Hamiltonian
+\begin{equation}
+-\sqrt{2}\sum_{t=1}^{8}\left(U_{t}^{\dagger}\otimes|t\rangle\langle t+1|+U_{t}\otimes|t+1\rangle\langle t|\right).\label{eq:single_qubit_ham}
+\end{equation}
+This Hamiltonian acts on the Hilbert space $\CC^{2}\otimes\CC^{8}$, where the second register (the ``clock register'') has periodic boundary conditions (i.e., we let $|8+1\rangle=|1\rangle$). The ground space of \eq{single_qubit_ham} is spanned by so-called history states
+\begin{align*}
+  |\phi_{z}\rangle & 
+  =\frac{1}{\sqrt{8}} \big(|z\rangle(|1\rangle+|3\rangle+|5\rangle+|7\rangle)
+    +H|z\rangle(|2\rangle+|8\rangle)
+    +HT|z\rangle(|4\rangle+|6\rangle)\big),
+  \quad z\in\{0,1\},
+\end{align*}
+that encode the history of the computation where the circuit $\mathcal{C}_{0}$ is applied to $|z\rangle$. One can easily check that $|\phi_{z}\rangle$ is an eigenstate of the Hamiltonian with eigenvalue $-2\sqrt{2}$. 
+
+Now we modify \eq{single_qubit_ham} to give a symmetric $0$-$1$ matrix. The trick we use is a variant of one used in references \cite{JW06,JGL10} for similar purposes. 
+
+The nonzero standard basis matrix elements of \eq{single_qubit_ham} are integer powers of $\omega=e^{i\frac{\pi}{4}}$. Note that $\omega$ is an eigenvalue of the $8\times8$ shift operator 
+\[
+S=\sum_{j=0}^{7}|j+1\bmod 8\rangle\langle j|
+\]
+with eigenvector 
+\[
+|\omega\rangle=\frac{1}{\sqrt{8}}\sum_{j=0}^{7}\omega^{-j}|j\rangle.
+\]
+For each operator $-\sqrt{2}H,-\sqrt{2}HT,$ or $-\sqrt{2}(HT)^{\dagger}$ appearing in equation \eq{single_qubit_ham}, define another operator acting on $\CC^{2}\otimes\CC^{8}$ by replacing nonzero matrix elements with powers of the operator $S$, namely $\omega^k \mapsto S^k$. Write $B(U)$ for the operator obtained by making this replacement in $U$, e.g.,
+\begin{align*}
+-\sqrt{2}HT & = \begin{pmatrix}
+\omega^{4} & \omega^{5}\\
+\omega^{4} & \omega
+\end{pmatrix} 
+\mapsto B(HT)
+=\begin{pmatrix}
+S^{4} & S^{5}\\
+S^{4} & S
+\end{pmatrix}.
+\end{align*}
+We adjoin an 8-level ancilla and we make this replacement in equation \eq{single_qubit_ham}. This gives
+\begin{align}
+H_{\text{prop}} & =\sum_{t=1}^{8}\left(B(U_{t})^{\dagger}_{13}\otimes|t\rangle\langle t+1|_2+B(U_{t})_{13}\otimes|t+1\rangle\langle t|_2\right),\label{eq:Hprop}
+\end{align}
+a symmetric $0$-1 matrix acting on $\CC^{2}\otimes\CC^{8}\otimes\CC^{8}$, where the second register is the clock register and the third register is the ancilla register on which the $S$ operators act (the subscripts indicate which registers are acted upon). It is an insignificant coincidence that the clock and ancilla registers have the same dimension. 
+
+Note that $H_{\text{prop}}$ commutes with $S$ (acting on the $8$-level ancilla) and therefore is block diagonal with eight sectors. In the sector where $S$ has eigenvalue $\omega$, it is identical to the Hamiltonian we started with, equation \eq{single_qubit_ham}. There is also a sector (where $S$ has eigenvalue $\omega^*$) where the Hamiltonian is the entrywise complex conjugate of the one we started with. We add a term to $H_{\text{prop}}$ that assigns an energy penalty to states in any of the other six sectors, ensuring that none of these states lie in the ground space of the resulting operator.
+
+Now we can define the graph $g_{0}$. Each vertex in $g_0$ corresponds to a standard basis vector in the Hilbert space $\CC^{2}\otimes\CC^{8}\otimes\CC^{8}$. We label the vertices $(z,t,j)$ with $z\in\{0,1\}$ describing the state of the computational qubit, $t\in[8]$ giving the state of the clock, and $j\in\{0,\ldots,7\}$ describing the state of the ancilla. The adjacency matrix is
+\[
+A(g_{0})=H_{\text{prop}}+H_{\text{penalty}}
+\]
+where the penalty term
+\[
+H_{\text{penalty}}=\II\otimes\II\otimes\left(S^{3}+S^{4}+S^{5}\right)
+\]
+acts nontrivially on the third register. The graph $g_{0}$ is shown in \fig{g_0}.
+
+Now consider the ground space of $A(g_{0})$. Note that $H_{\text{prop}}$ and $H_{\text{penalty}}$ commute, so they can be simultaneously diagonalized. Furthermore, $H_{\text{penalty}}$ has smallest eigenvalue $-1-\sqrt{2}$ (with eigenspace spanned by $|\omega\rangle$ and $|\omega^*\rangle$) and first excited energy $-1$. The norm of $H_{\text{prop}}$ satisfies $\left\Vert H_{\text{prop}}\right\Vert \leq4$, which follows from the fact that $H_{\text{prop}}$ has four ones in each row and column (with the remaining entries all zero).
+
+The smallest eigenvalue of $A(g_{0})$ lives in the sector where $H_{\text{penalty}}$
+has eigenvalue $-1-\sqrt{2}$ and is equal to 
+\begin{equation}
+  -2\sqrt{2}+(-1-\sqrt{2})=-1-3\sqrt{2}=-5.24\ldots.\label{eq:e_1_definition}
+\end{equation}
+This is the constant $e_{1}$ from equation \eq{e1_defn}. To see this, note that in any other sector $H_{\text{penalty}}$ has eigenvalue at least $-1$ and every eigenvalue of $A(g_{0})$ is at least $-5$ (using the fact that $H_{\text{prop}}\geq-4$). An orthonormal basis for the ground space of $A(g_{0})$ is furnished by the states
+\begin{align}
+|\psi_{z,0}\rangle & =\frac{1}{\sqrt{8}}\big(|z\rangle(|1\rangle+|3\rangle+|5\rangle+|7\rangle)+H|z\rangle(|2\rangle+|8\rangle)+HT|z\rangle(|4\rangle+|6\rangle)\big)|\omega\rangle\label{eq:psi0m}\\
+|\psi_{z,1}\rangle & =|\psi_{z,0}\rangle^{*}\label{eq:psi1m}
+\end{align}
+where $z\in \{0,1\}$.
+
+Note that the amplitudes of $|\psi_{z,0}\rangle$ in the above basis contain the result of computing either the identity, Hadamard, or $HT$ gate acting on the ``input'' state $|z\rangle$.
+
 
 \subsubsection{Gate graphs}
 
-Note that this will be different from our BH-paper, as I will include the doubling and self-loops
+We use three different schematic representations of the graph $g_{0}$ (defined in \sec{Encoding-a-Computation}), as depicted in \fig{diagram_elements}. We call these Figures \emph{diagram elements}; they are also the simplest examples of \emph{gate diagrams}, which we define shortly.
+
+%\begin{figure}
+%\centering
+%%%%%%%%%%%%%%%%%%%%%% 
+%\subfloat[][]{ 
+%%%%%%%%%% Hadamard %%%%%%%%%
+%\label{fig:diagram_elementH}
+%\begin{tikzpicture}
+%  \draw[rounded corners=2mm,thick] (0,0) rectangle (3.24 cm, 2cm);
+%  % Drawing the nodes 
+% \foreach \y in {.33,.66,1.33,1.66}
+%{ 
+% \foreach \x/\color in {0/black,3.24/gray}
+%{      
+%\draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);   
+%}
+%}   
+%  % Labels   
+%\foreach \z in {0,1}
+%{    
+%\node[right] at (0,1.66-\z) {\footnotesize $(\z,1)$}; 
+%\node[right] at (0,1.33-\z) {\footnotesize $(\z,3)$};    
+%% Output nodes change for each type 
+%   \node[left] at (3.24,1.66-\z) {\footnotesize $(\z,2)$}; 
+%   \node[left] at (3.24,1.33-\z) {\footnotesize $(\z,8)$};  
+%}   
+%  % Type of Graph
+%  \node at (1.62,1) {\huge $H$};   
+%\end{tikzpicture} 
+%} 
+%\qquad
+%\subfloat[][]{
+%%%%%%%%%% Hadamard * T %%%%%%%%%
+%\label{fig:diagram_elementHT}
+%\begin{tikzpicture}
+%  \draw[rounded corners=2mm,thick] (0,0) rectangle (3.24 cm, 2cm);
+%  % Drawing the nodes   
+%\foreach \y in {.33,.66,1.33,1.66}
+%{  
+%\foreach \x/\color in {0/black,3.24/gray}
+%{     
+%\draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);   
+%}
+%}     
+%% Labels  
+%\foreach \z in {0,1}
+%{    
+%\node[right] at (0,1.66-\z) {\footnotesize $(\z,1)$}; 
+%   \node[right] at (0,1.33-\z) {\footnotesize $(\z,3)$};     
+%% Output nodes change for each type  
+%  \node[left] at (3.24,1.66-\z) {\footnotesize $(\z,4)$}; 
+%   \node[left] at (3.24,1.33-\z) {\footnotesize $(\z,6)$}; 
+% }    
+% % Type of Graph  
+%\node at (1.62,1) {\huge $HT$}; 
+% \end{tikzpicture}
+%} 
+%\qquad 
+%\subfloat[][]
+%{
+%%%%%%%%%% Identity %%%%%%%%%
+%\label{fig:diagram_element1}
+%\begin{tikzpicture}
+%  \draw[rounded corners=2mm,thick] (0,0) rectangle (3.24 cm, 2cm);
+%  % Drawing the nodes  
+%\foreach \y in {.33,.66,1.33,1.66}
+%{   
+%\foreach \x/\color in {0/black,3.24/gray}
+%{     
+%\draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);   
+%}
+%}    
+% % Labels  
+%\foreach \z in {0,1}
+%{     
+%\node[right] at (0,1.66-\z) {\footnotesize $(\z,1)$};   
+% \node[right] at (0,1.33-\z) {\footnotesize $(\z,3)$};    
+%% Output nodes change for each type   
+% \node[left] at (3.24,1.66-\z) {\footnotesize $(\z,5)$};  
+%  \node[left] at (3.24,1.33-\z) {\footnotesize $(\z,7)$};   }    
+% % Type of Graph  
+%\node at (1.62,1) {\huge $1$};  
+%\end{tikzpicture}  
+%}
+%
+%\caption{Diagram elements from which a gate diagram is constructed. Each diagram element is a schematic representation of the graph $g_{0}$ shown
+%in \fig{g_0}. \label{fig:diagram_elements}}
+%\end{figure}
+
+The black and grey circles in a diagram element are called ``nodes.'' Each node has a label $(z,t)$. The only difference between the three diagram elements is the labeling of their nodes. In particular, the nodes in the diagram element $U\in\{\II,H,HT\}$ correspond to values of $t\in[8]$ where the first register in equation \eq{psi0m} is either $|z\rangle$ or $U|z\rangle$. For example, the nodes for the $H$ diagram element have labels with $t\in\{1,3\}$ (where $|\psi_{z,0}\rangle$ contains the ``input'' $|z\rangle$) or $t=\{2,8\}$ (where $|\psi_{z,0}\rangle$ contains the ``output'' $H|z\rangle$). We draw the input nodes in black and the output nodes in grey.
+
+The rules for constructing gate diagrams are simple. A gate diagram consists of some number $R \in \{1,2,\ldots\}$ of diagram elements, with self-loops attached to a subset $\mathcal{S}$ of the nodes and edges connecting a set $\mathcal{E}$ of pairs of nodes. A node may have a single edge or a single self-loop attached to it, but never more than one edge or self-loop and never both an edge and a self-loop. Each node in a gate diagram has a label $(q,z,t)$ where $q \in [R]$ indicates the diagram element it belongs to. An example is shown in \fig{simple_gate_diagram}.
+% \dg{Note that the diagram element names $q\in [R]$ are indicated in the Figure.} 
+Sometimes it is convenient to draw the input nodes on the right-hand side of a diagram element; e.g., in \fig{W_gadget} the node closest to the top left corner is labeled $(q,z,t)=(3,0,2)$.
+
+%\begin{figure}
+%\centering \begin{tikzpicture}
+%  % The connections 
+% \foreach \y in {1.2,.55}
+%{   
+% \draw[thick] (2.43,\y) -- (3.43,\y);  
+%}      
+%\draw[thick,looseness = 200] (0,1.2) to [out = 180, in = 100] (-.01,1.2);
+%  % The two rectangles 
+% \foreach \offset/\unitary/\label in {0/HT/1,3.43/1/2}
+%{ 
+% \begin{scope}[xshift=\offset cm] 
+% \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);
+% \foreach \x /\color in {0/black,2.43/gray}
+%{     
+%\foreach \y in {1.2,.95,.55,.3}
+%{      
+%\draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);  
+%  }
+%}    
+%\node at (1.22cm, .75cm) {\huge $\unitary$};   
+% \node at (1.22cm, 1.85cm){\Large \label};  
+%\end{scope}
+%}    
+%\end{tikzpicture}
+%\caption{A gate diagram with two diagram elements labeled $q=1$ (left) and $q=2$ (right).
+%\label{fig:simple_gate_diagram}}
+%\end{figure}
+
+To every gate diagram we associate a \emph{gate graph} $G$ with
+vertex set 
+\[
+\left\{ (q,z,t,j)\colon q\in[R],\, z\in\{0,1\},\, t\in[8],\, j\in\{0,\ldots,7\}\right\} 
+\]
+and adjacency matrix 
+\begin{align}
+A(G) & =\II_{q}\otimes A(g_{0})+h_{\mathcal{S}}+h_{\mathcal{E}}\label{eq:adj_gate_graph}\\
+h_{\mathcal{S}} & =\sum_{\mathcal{S}}|q,z,t\rangle\langle q,z,t|\otimes\II_{j}\label{eq:h_loops}\\
+h_{\mathcal{E}} & =\sum_{\mathcal{E}}\left(|q,z,t\rangle+|q^{\prime},z^{\prime},t^{\prime}\rangle\right)\left(\langle q,z,t|+\langle q^{\prime},z^{\prime},t^{\prime}|\right)\otimes\II_{j}.\label{eq:h_edges}
+\end{align}
+The sums in equations \eq{h_loops} and \eq{h_edges} run over the set of nodes with self-loops $(q,z,t)\in\mathcal{S}$ and the set of pairs of nodes connected by edges $\{(q,z,t),(q^{\prime},z^{\prime},t^{\prime})\}\in\mathcal{E}$, respectively. We write $\II_{q}$ and $\II_{j}$ for the identity operator on the registers with variables $q$ and $j$, respectively. We see from the above expression that each self-loop in the gate diagram corresponds to $8$ self-loops in the graph $G$, and an edge in the gate diagram corresponds to $8$ edges and $16$ self-loops in $G$.
+
+Since a node in a gate graph never has more than one edge or self-loop attached to it, equations \eq{h_loops} and \eq{h_edges} are sums of orthogonal Hermitian operators.  Therefore 
+\begin{align}
+\left\Vert h_{\mathcal{S}}\right\Vert  & =\max_{\mathcal{S}}\left\Vert |q,z,t\rangle\langle q,z,t|\otimes\II_{j}\right\Vert =1\quad\text{if }\mathcal{S}\neq\emptyset\label{eq:h_S_bound}\\
+\left\Vert h_{\mathcal{E}}\right\Vert  & =\max_{\mathcal{E}}\left\Vert \left(|q,z,t\rangle+|q^{\prime},z^{\prime},t^{\prime}\rangle\right)\left(\langle q,z,t|+\langle q^{\prime},z^{\prime},t^{\prime}|\right)\otimes\II_{j}\right\Vert =2\quad\text{if }\mathcal{E}\neq\emptyset\label{eq:h_E_bound}
+\end{align}
+for any gate graph. (Of course, this also shows that $\|{h_{\mathcal{S}^\prime}}\|=1$ and $\|{h_{\mathcal{E}^\prime}}\|=2$ for any nonempty subsets $\mathcal{S}^\prime\subseteq \mathcal{S}$ and $\mathcal{E}^\prime\subseteq \mathcal{E}$.)
+
+
+
+\todo{Change this to the updated types with every vertex having a self-loop}
 
 \subsubsection{Frustration-free states for a given interaction range}
 
+Consider the adjacency matrix $A(G)$ of a gate graph $G$, and note (from equation \eq{adj_gate_graph} that its smallest eigenvalue $\mu(G)$ satisfies
+\[
+\mu(G)\geq e_{1}
+\]
+since $h_{\mathcal{S}}$ and $h_{\mathcal{E}}$ are positive semidefinite and $A(g_{0})$ has smallest eigenvalue $e_{1}$. In the special case where $\mu(G)=e_{1}$, we say $G$ is an $e_{1}$-gate graph.
+
+\begin{definition}
+An $e_{1}$-gate graph is a gate graph $G$ such that the smallest eigenvalue of its adjacency matrix is $e_{1}=-1-3\sqrt{2}$.
+\end{definition}
+
+When $G$ is an $e_{1}$-gate graph, a single-particle ground state $|\Gamma\rangle$ of $A(G)$ satisfies 
+\begin{align}
+\left(\II\otimes A(g_{0})\right)|\Gamma\rangle & =e_{1}|\Gamma\rangle\label{eq:Gamma_disc}\\
+h_{\mathcal{S}}|\Gamma\rangle & =0\label{eq:h_s_0}\\
+h_{\mathcal{E}}|\Gamma\rangle & =0.\label{eq:h_e_0}
+\end{align}
+Indeed, to show that a given gate graph $G$ is an $e_{1}$-gate graph, it suffices to find a state $|\Gamma\rangle$ satisfying these conditions. Note that equation \eq{Gamma_disc} implies that $|\Gamma\rangle$ can be written as a superposition of the states
+\[
+  |\psi_{z,a}^{q}\rangle=|q\rangle|\psi_{z,a}\rangle,\quad
+  z,a\in\{0,1\},\, q\in[R]
+\]
+where $|\psi_{z,a}\rangle$ is given by equations \eq{psi0m} and \eq{psi1m}. The coefficients in the superposition are then constrained by equations \eq{h_s_0} and \eq{h_e_0}.
+ 
+\begin{example}\label{ex:As-an-example}
+As an example, we show the gate graph in \fig{simple_gate_diagram} is an $e_{1}$-gate graph. As noted above, equation \eq{Gamma_disc} lets us restrict our attention to the space spanned by the eight states $|\psi_{z,a}^{q}\rangle$ with $z,a\in \{0,1\}$ and $q\in \{1,2\}$. In this basis, the operators $h_{\mathcal{S}}$ and $h_{\mathcal{E}}$ only have nonzero matrix elements between states with the same value of $a\in\{0,1\}$. We therefore solve for the $e_{1}$ energy ground states with $a=0$ and those with $a=1$ separately. Consider a ground state of the form
+\[
+\left(\tau_{1}|\psi_{0,a}^{1}\rangle+\nu_{1}|\psi_{1,a}^{1}\rangle\right)+\left(\tau_{2}|\psi_{0,a}^{2}\rangle+\nu_{2}|\psi_{1,a}^{2}\rangle\right)
+\]
+and note that in this case \eq{h_s_0} implies $\tau_{1}=0$. Equation \eq{h_e_0} gives
+\[
+\begin{pmatrix}
+\tau_{2}\\
+\nu_{2}
+\end{pmatrix}=\begin{cases}
+HT\begin{pmatrix}
+-\tau_{1}\\
+-\nu_{1}
+\end{pmatrix} & a=0\\
+(HT)^{*}\begin{pmatrix}
+-\tau_{1}\\
+-\nu_{1}
+\end{pmatrix} & a=1.
+\end{cases}
+\]
+We find two orthogonal $e_{1}$-energy states, which are (up to normalization)
+\begin{align}
+|\psi_{1,0}^{1}\rangle-\frac{e^{i\frac{\pi}{4}}}{\sqrt{2}}\left(|\psi_{0,0}^{2}\rangle-|\psi_{1,0}^{2}\rangle\right)\label{eq:example_ffstate_1}\\
+|\psi_{1,1}^{1}\rangle-\frac{e^{-i\frac{\pi}{4}}}{\sqrt{2}}\left(|\psi_{0,1}^{2}\rangle-|\psi_{1,1}^{2}\rangle\right) & .\label{eq:example_ffstate_2}
+\end{align}
+We interpret each of these states as encoding a qubit that is transformed at each set of input/output nodes in the gate diagram in \fig{simple_gate_diagram}. The encoded qubit begins on the input nodes of the first diagram element in the state 
+\[
+\begin{pmatrix}
+\tau_{1}\\
+\nu_{1}
+\end{pmatrix}=\begin{pmatrix}
+0\\
+1
+\end{pmatrix}
+\]
+because the self-loop penalizes the basis vectors $|\psi_{0,a}^{1}\rangle$. On the output nodes of diagram element $1$, the encoded qubit is in the state where either $HT$ (if $a=0$) or its complex conjugate (if $a=1$) has been applied. The edges in the gate diagram ensure that the encoded qubit on the input nodes of diagram element 2 is minus the state on the output nodes of diagram element $1$.
+\end{example}
+
+In this example, each single-particle ground state encodes a single-qubit computation. Later we show how $N$-particle frustration-free states on $e_{1}$-gate graphs can encode computations on $N$ qubits. Recall from \defn{FF_states} that a state $|\Gamma\rangle\in\mathcal{Z}_{N}(G)$ is said to be frustration free iff $H(G,N)|\Gamma\rangle=0.$ Note that $H(G,N)\geq0$, so an $N$-particle frustration-free state is necessarily a ground state. Putting this together with \lem{increase_part_number}, we see that the existence of an $N$-particle frustration-free state implies
+\[
+\lambda_{N}^{1}(G)=\lambda_{N-1}^{1}(G)=\ldots=\lambda_{1}^{1}(G)=0,
+\]
+i.e., there are $N^{\prime}$-particle frustration-free states for all $N^{\prime}\leq N$. 
+
+We prove that the graph $g_{0}$ has no two-particle frustration-free states. By \lem{increase_part_number}, it follows that $g_0$ has no $N$-particle frustration-free states for $N\geq 2$.
+
+\begin{lemma}
+\label{lem:2particle}$\lambda_{2}^{1}(g_{0})>0$.
+\end{lemma}
+
+\begin{proof}
+Suppose (for a contradiction) that $|Q\rangle\in\mathcal{Z}_{2}(g_{0})$ is a nonzero vector in the nullspace of $H(g_{0},2)$, so 
+\[
+H_{g_{0}}^{2}|Q\rangle=\bigg(A(g_{0})\otimes\II+\II\otimes A(g_{0})+2\sum_{v\in g_{0}}|v\rangle\langle v|\otimes|v\rangle\langle v|\bigg)|Q\rangle=2e_{1}|Q\rangle.
+\]
+This implies 
+\[
+A(g_{0})\otimes\II|Q\rangle=\II\otimes A(g_{0})|Q\rangle=e_{1}|Q\rangle
+\]
+since $A(g_0)$ has smallest eigenvalue $e_1$ and the interaction term is positive semidefinite. We can therefore write 
+\[
+|Q\rangle=\sum_{z,a,x,y\in\{0,1\}}Q_{za,xy}|\psi_{z,a}\rangle|\psi_{x,y}\rangle
+\]
+with $Q_{za,xy}=Q_{xy,za}$ (since $|Q\rangle\in\mathcal{Z}_{2}(g_{0})$) and 
+\begin{equation}
+\left(|v\rangle\langle v|\otimes|v\rangle\langle v|\right)|Q\rangle=0\label{eq:eqn_twoparticleannihilate}
+\end{equation}
+for all vertices $v=(z,t,j)\in g_{0}.$ Using this equation with
+$|v\rangle=|0,1,j\rangle$ gives 
+\begin{align*}
+&Q_{00,00}\langle0,1,j|\psi_{0,0}\rangle^{2}  +2Q_{01,00}\langle0,1,j|\psi_{0,1}\rangle\langle0,1,j|\psi_{0,0}\rangle+Q_{01,01}\langle0,1,j|\psi_{0,1}\rangle^{2}\\
+ &\quad =\frac{1}{64}\left(Q_{00,00}i^{-j}+2Q_{01,00}+Q_{01,01}i^{j}\right)\\
+ &\quad =0
+\end{align*}
+for each $j\in\{0,\ldots,7\}$. The only solution to this set of equations is $Q_{00,00}=Q_{01,00}=Q_{01,01}=0$. The same analysis, now using $|v\rangle=|1,1,j\rangle$, gives $Q_{10,10}=Q_{11,10}=Q_{11,11}=0$. Finally, using equation \eq{eqn_twoparticleannihilate} with $|v\rangle=|0,2,j\rangle$ gives
+\begin{align*}
+ & \frac{1}{64}\langle0|H|1\rangle\langle0|H|0\rangle\left(2Q_{10,00}i^{-j}+2Q_{10,01}+2Q_{11,00}+2Q_{11,01}i^{j}\right)\\
+ &\quad =\frac{1}{64}\left(Q_{10,00}i^{-j}+Q_{10,01}+Q_{11,00}+Q_{11,01}i^{j}\right)\\
+ &\quad =0
+\end{align*}
+for all $j\in\{0,\ldots,7\}$, which implies that $Q_{10,00}=Q_{11,01}=0$ and $Q_{11,00}=-Q_{10,01}$. Thus, up to normalization, 
+\[
+|Q\rangle=|\psi_{1,0}\rangle|\psi_{0,1}\rangle+|\psi_{0,1}\rangle|\psi_{1,0}\rangle-|\psi_{11}\rangle|\psi_{00}\rangle-|\psi_{00}\rangle|\psi_{11}\rangle.
+\]
+Now applying equation \eq{eqn_twoparticleannihilate} with $|v\rangle=|0,4,j\rangle$, we see that the quantity 
+\begin{align*}
+\frac{1}{64}\left(2\langle0|HT|1\rangle\langle0|(HT)^{*}|0\rangle-2\langle0|(HT)^{*}|1\rangle\langle0|HT|0\rangle\right) & =\frac{1}{64}\left(e^{i\frac{\pi}{4}}-e^{-i\frac{\pi}{4}}\right)
+\end{align*}
+must be zero, which is a contradiction. Hence we conclude that the nullspace of $H(g_{0},2)$ is empty.
+\end{proof}
+We now characterize the space of $N$-particle frustration-free states on an $e_{1}$-gate graph $G$. Define the subspace $\mathcal{I}(G,N)\subset\mathcal{Z}_{N}(G)$ where each particle is in a ground state of $A(g_{0})$ and no two particles are located within the same diagram element: 
+\begin{equation}
+  \mathcal{I}(G,N)=\spn\{
+  \Sym(|\psi_{z_{1},a_{1}}^{q_{1}}\rangle
+  % |\psi_{z_{2},a_{2}}^{q_{2}}\rangle
+  \ldots|\psi_{z_{N},a_{N}}^{q_{N}}\rangle)\colon 
+  z_{i},a_{i}\in\{0,1\},\; q_{i}\in[R],\; 
+  q_{i}\neq q_{j}\;\text{whenever}\; i\neq j\}.\label{eq:Ign}
+\end{equation}
+
+\begin{lemma}\label{lem:FF_characterization}
+Let $G$ be an $e_{1}$-gate graph. A state $|\Gamma\rangle\in\mathcal{Z}_{N}(G)$ is frustration free if and only if 
+\begin{align}
+\left(A(G)-e_{1}\right)^{(w)}|\Gamma\rangle & =0\;\text{ for all }w\in[N]\label{eq:ff_condition1}\\
+|\Gamma\rangle & \in\mathcal{I}(G,N).\label{eq:ff_condition2}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+First suppose that equations \eq{ff_condition1} and \eq{ff_condition2} hold. From \eq{ff_condition2} we see that $|\Gamma\rangle$ has no support on states where two or more particles are located at the same vertex. Hence 
+\begin{equation}
+\sum_{k\in V}\hat{n}_{k}\left(\hat{n}_{k}-1\right)|\Gamma\rangle=0.\label{eq:ff_condition3}
+\end{equation}
+Putting together equations \eq{ff_condition1} and \eq{ff_condition3}, we get 
+\[
+H(G,N)|\Gamma\rangle=\left(H_{G}^{N}-Ne_{1}\right)|\Gamma\rangle=0,
+\]
+so $|\Gamma\rangle$ is frustration free.
+
+To complete the proof, we show that if $|\Gamma\rangle$ is frustration free, then conditions \eq{ff_condition1} and \eq{ff_condition2} hold. By definition, a frustration-free state $|\Gamma\rangle$ satisfies 
+\begin{equation}
+H(G,N)|\Gamma\rangle=\left(\sum_{w=1}^{N}\left(A(G)-e_{1}\right)^{(w)}+\sum_{k\in V}\hat{n}_{k}\left(\hat{n}_{k}-1\right)\right)|\Gamma\rangle=0.\label{eq:defn_frustr}
+\end{equation}
+Since both terms in the large parentheses are positive semidefinite, they must both annihilate $|\Gamma\rangle$ (similarly, each term in the first summation must be zero). Hence equation \eq{ff_condition1} holds. Let $G_{\mathrm{rem}}$ be the graph obtained from $G$ by removing all of the edges and self-loops in the gate diagram of $G$. In other words,
+\[
+A(G_{\mathrm{rem}})=\sum_{q=1}^{R}|q\rangle\langle q|\otimes A(g_{0})=\II\otimes A(g_{0}).
+\]
+Noting that 
+\[
+H(G,N)\geq H(G_{\mathrm{rem}},N)\geq0,
+\]
+we see that equation \eq{defn_frustr} also implies 
+\begin{equation}
+H(G_{\mathrm{rem}},N)|\Gamma\rangle=0.\label{eq:Grem_gamma}
+\end{equation}
+Since each of the $R$ components of $G_{\mathrm{rem}}$ is an identical copy of $g_{0}$, the eigenvalues and eigenvectors of $H(G_{\mathrm{rem}},N)$ are characterized by \lem{BH_disconnected_graphs} (along with knowledge of the eigenvalues and eigenvectors of $g_{0}$). By \lem{2particle} and \lem{increase_part_number}, no component has a two- (or more) particle frustration-free state. Combining these two facts, we see that in an $N$-particle frustration-free state, every component of $G_{\mathrm{rem}}$ must contain either $0$ or $1$ particles, and the nullspace of $H(G_{\mathrm{rem}},N)$ is the space $\mathcal{I}(G,N).$ From equation \eq{Grem_gamma} we get $|\Gamma\rangle\in\mathcal{I}(G,N)$.
+\end{proof}
+
+Note that if $\mathcal{I}(G,N)$ is empty then \lem{FF_characterization} says that $G$ has no $N$-particle frustration-free states. For example, this holds for any $e_{1}$-gate graph $G$ whose gate diagram has $R<N$ diagram elements.
+
+A useful consequence of \lem{FF_characterization} is the fact that every $k$-particle reduced density matrix of an $N$-particle frustration-free state $|\Gamma\rangle$ on an $e_{1}$-gate graph $G$ (with $k\leq N$) has all of its support on $k$-particle frustration-free states. To see this, note that for any partition of the $N$ registers into subsets $A$ (of size $k$) and $B$ (of size $N-k$), we have
+\[
+\mathcal{I}(G,N)\subseteq\mathcal{I}(G,k)_{A}\otimes\mathcal{Z}_{N-k}(G)_{B}.
+\]
+Thus, if condition \eq{ff_condition2} holds, then all $k$-particle reduced density matrices of $|\Gamma\rangle$ are contained in $\mathcal{I}(G,k)$. Furthermore, \eq{ff_condition1} is a statement about the single-particle reduced density matrices, so it also holds for each $k$-particle reduced density matrix. From this we see that each reduced density matrix of $|\Gamma\rangle$ is frustration free.
+
+
 \subsection{Gadgets}
 
-\subsubsection{The move-together gadget}
+In \ex{As-an-example} we saw how a single-particle ground state can encode a single-qubit computation. In this Section we see how a two-particle frustration-free state on a suitably designed $e_{1}$-gate graph can encode a two-qubit computation. We design specific $e_{1}$-gate graphs (called \emph{gadgets}) that we use in \sec{From-circuits-to} to prove that Bose-Hubbard Hamiltonian is QMA-hard. For each gate graph we discuss, we show that the smallest eigenvalue of its adjacency matrix is $e_{1}$ and we solve for all of the frustration-free states.
+
+We first design a gate graph where, in any two-particle frustration-free state, the locations of the particles are synchronized. This ``move-together'' gadget is presented in \sec{move-together}. In \sec{Gadgets-for-two-qubit}, we design gadgets for two-qubit gates using four move-together gadgets, one for each two-qubit computational basis state. Finally, in \sec{Other-gate-graph} we describe a small modification of a two-qubit gate gadget called the ``boundary gadget.''
+
+The circuit-to-gate graph mapping described in \sec{From-circuits-to} uses a two-qubit gate gadget for each gate in the circuit, together with boundary gadgets in parts of the graph corresponding to the beginning and end of the computation.
+%
+%\subsubsection{The move-together gadget}
+%
+%\begin{figure}
+%\centering \begin{tikzpicture}[scale=.7]
+%  % Each connection
+%\foreach \startpoint/\endpoint in {{(-1.618,1.16)}/{(0,.33)},{(-1.618,4.16)}/{(0,1.33)},{(-1.618,2.16)}/{(0,4.33)}, {(-1.618,5.16)}/{(0,5.33)},{(3.24,.66)}/{(4.85,1.16)},{(3.24,1.66)}/{(4.85,4.16)},{(3.24,4.66)}/{(4.85,5.16)},{(3.24,5.66)}/{(4.85,2.16)}}
+%{   
+%\node (a) at \startpoint {}; 
+% \node (b) at \endpoint {};
+%  \draw[looseness=.66,line width=4pt,color=white] (a) to [out=0,in=180] (b);
+%  \draw[looseness=.66] (a) to [out=0,in=180] (b); 
+%}
+%  % Each Rectangle 
+%\foreach \xshift / \yshift /\xscale /\lab in  {0/0/1/2,  0/4/1/1,  4.85/.5/1/6,  4.85/3.5/1/5,  -1.618/.5/-1/4,  -1.618/3.5/-1/3}{   \begin{scope}[shift={(\xshift,\yshift)},xscale=\xscale]   
+% \draw[rounded corners=2mm,thick] (0,0) rectangle (3.24cm, 2cm);
+% \node at (1.62,2.4) {\Large \lab};   
+% \foreach \y in {.66,.33,1.33,1.66}
+%{
+%    \foreach \x /\color in {0/black,3.24 /gray}
+%{       
+%		\draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);   
+%}
+%}
+%  \node at (1.618,1) {\huge$H$}; \end{scope}
+%}  
+%% the output nodes 
+%\foreach \point/\name in {{(0,.66)}/\gamma,{(0,1.66)}/\delta,{(0,4.66)}/\beta,{(0,5.66)}/\alpha}
+%{ 
+%\begin{scope}[shift=\point] 
+% \node at (3mm,0mm){$\name$}; 
+%\end{scope} 
+%}
+%\begin{scope}[shift={(10,3)},scale=1.5]
+%  \node at (-.65 ,0) {\LARGE $=$};
+%  \draw[rounded corners=2mm,thick] (0,-.46) rectangle (1.5cm,.46cm); 
+%    \node at (.75,0) {\LARGE $W$};
+%  \foreach \x/\y  in {0,1.5}
+%{  
+%\foreach \y in {-.2,.2}
+%{    
+%\draw[fill=black] (\x,\y) circle (.45mm);  
+%}
+%}      
+%\node at (.2,.2) {$\alpha$};  
+%\node at (.2,-.15) {$\gamma$}; 
+% \node at (1.3,.2) {$\beta$}; 
+% \node at (1.3,-.15) {$\delta$}; 
+%  \end{scope} 
+%\end{tikzpicture}
+%
+%\caption{The gate diagram for the move-together gadget. \label{fig:W_gadget}}
+%\end{figure}
+
+The gate diagram for the \emph{move-together gadget} is shown in \fig{W_gadget}. Using equation \eq{adj_gate_graph}, we write the adjacency matrix of the corresponding gate graph $G_W$ as 
+\begin{equation}
+A(G_W)=\sum_{q=1}^{6}|q\rangle\langle q|\otimes A(g_{0})+h_{\mathcal{E}}\label{eq:move_together_adj}
+\end{equation}
+where $h_{\mathcal{E}}$ is given by \eq{h_edges} and $\mathcal{E}$ is the set of edges in the gate diagram (in this case $h_{\mathcal{S}}=0$ as there are no self-loops).
+
+We begin by solving for the single-particle ground states, i.e., the eigenvectors of \eq{move_together_adj} with eigenvalue $e_{1}=-1-3\sqrt{2}$. As in \ex{As-an-example}, we can solve for the states with $a=0$ and $a=1$ separately, since
+\[
+\langle\psi_{x,1}^{j}|h_{\mathcal{E}}|\psi_{z,0}^{i}\rangle=0
+\]
+for all $i,j\in\{1,\ldots,6\}$ and $x,z\in\{0,1\}$. We write a single-particle ground state as
+\[
+\sum_{i=1}^{6}\left(\tau_{i}|\psi_{0,a}^{i}\rangle+\nu_{i}|\psi_{1,a}^{i}\rangle\right)
+\]
+and solve for the coefficients $\tau_{i}$ and $\nu_{i}$ using equation \eq{h_e_0} (in this case equation \eq{h_s_0} is automatically satisfied since $h_{\mathcal{S}}=0$). Enforcing \eq{h_e_0} gives eight equations, one for each edge in the gate diagram:
+\begin{align*}
+  \tau_{3}&=-\tau_{1} & 
+  \frac{1}{\sqrt{2}}(\tau_{1}+\nu_{1})&=-\tau_{6} \\
+  \tau_{4}&=-\nu_{1} & 
+  \frac{1}{\sqrt{2}}(\tau_{1}-\nu_{1})&=-\tau_{5}\\
+  \nu_{3}&=-\tau_{2} & 
+  \frac{1}{\sqrt{2}}(\tau_{2}+\nu_{2})&=-\nu_{5}\\
+  \nu_{4}&=-\nu_{2} & 
+  \frac{1}{\sqrt{2}}(\tau_{2}-\nu_{2})&=-\nu_{6}.
+\end{align*}
+There are four linearly independent solutions to this set of equations, given by 
+\begin{align*}
+  \text{\emph{Solution 1:}} && 
+    \tau_{1} &= 1 & \tau_{3} &=-1 & 
+    \tau_{5} &= -\frac{1}{\sqrt{2}} & \tau_{6} &= -\frac{1}{\sqrt{2}} &&
+    \text{all other coefficients }0 \\
+  \text{\emph{Solution 2:}} && 
+    \nu_{1} &= 1 & \tau_{4} &= -1 &
+    \tau_{5} &= \frac{1}{\sqrt{2}} & \tau_{6} &= -\frac{1}{\sqrt{2}} &&
+    \text{all other coefficients }0 \\
+  \text{\emph{Solution 3:}} && 
+    \nu_{2} &= 1 & \nu_{4} &= -1 &
+    \nu_{5} &= -\frac{1}{\sqrt{2}} & \nu_{6} &= \frac{1}{\sqrt{2}} &&
+    \text{all other coefficients }0 \\
+  \text{\emph{Solution 4:}} && 
+    \tau_{2} &= 1 & \nu_{3} &= -1 &
+    \nu_{5} &= -\frac{1}{\sqrt{2}} & \nu_{6} &= -\frac{1}{\sqrt{2}} &&
+    \text{all other coefficients }0.
+\end{align*}
+For each of these solutions, and for each $a\in\{0,1\}$, we find a single-particle state with energy $e_1$. This result is summarized in the following Lemma.
+
+\begin{lemma}
+$G_{W}$ is an $e_{1}$-gate graph. A basis for the eigenspace
+of $A(G_{W})$ with eigenvalue $e_1$ is 
+\begin{align}
+|\chi_{1,a}\rangle & =\frac{1}{\sqrt{3}}|\psi_{0,a}^{1}\rangle-\frac{1}{\sqrt{3}}|\psi_{0,a}^{3}\rangle-\frac{1}{\sqrt{6}}|\psi_{0,a}^{5}\rangle-\frac{1}{\sqrt{6}}|\psi_{0,a}^{6}\rangle\label{eq:chi_alpha}\\
+|\chi_{2,a}\rangle & =\frac{1}{\sqrt{3}}|\psi_{1,a}^{1}\rangle-\frac{1}{\sqrt{3}}|\psi_{0,a}^{4}\rangle+\frac{1}{\sqrt{6}}|\psi_{0,a}^{5}\rangle-\frac{1}{\sqrt{6}}|\psi_{0,a}^{6}\rangle\label{eq:chi_beta}\\
+|\chi_{3,a}\rangle & =\frac{1}{\sqrt{3}}|\psi_{1,a}^{2}\rangle-\frac{1}{\sqrt{3}}|\psi_{1,a}^{4}\rangle-\frac{1}{\sqrt{6}}|\psi_{1,a}^{5}\rangle+\frac{1}{\sqrt{6}}|\psi_{1,a}^{6}\rangle\label{eq:chi_gamma}\\
+|\chi_{4,a}\rangle & =\frac{1}{\sqrt{3}}|\psi_{0,a}^{2}\rangle-\frac{1}{\sqrt{3}}|\psi_{1,a}^{3}\rangle-\frac{1}{\sqrt{6}}|\psi_{1,a}^{5}\rangle-\frac{1}{\sqrt{6}}|\psi_{1,a}^{6}\rangle\label{eq:chi_delta}
+\end{align}
+where $a\in\{0,1\}$. 
+\end{lemma}
+
+In \fig{W_gadget} we have used a shorthand $\alpha,\beta,\gamma,\delta$ to identify four nodes of the move-together gadget; these are the nodes with labels $(q,z,t)=(1,0,1),(1,1,1),(2,1,1),(2,0,1)$, respectively. We view $\alpha$ and $\gamma$ as ``input'' nodes and $\beta$ and $\delta$ as ``output'' nodes for this gate diagram. It is natural to associate each single-particle state $|\chi_{i,a}\rangle$ with one of these four nodes.  We also associate the set of 8 vertices represented by the node with the corresponding node, e.g.,
+\[
+  S_{\alpha}=\left\{ (1,0,1,j)\colon j\in\{0,\ldots,7\}\right\} .
+\]
+Looking at equation \eq{chi_alpha} (and perhaps referring back to equation \eq{psi0m}) we see that $|\chi_{1,a}\rangle$ has support on vertices in $S_{\alpha}$ but not on vertices in $S_{\beta}$, $S_{\gamma}$, or $S_{\delta}$. Looking at the picture on the right-hand side of the equality sign in \fig{W_gadget}, we think of $|\chi_{1,a}\rangle$ as localized at the node $\alpha$, with no support on the other three nodes. The states $|\chi_{2,a}\rangle,|\chi_{3,a}\rangle,|\chi_{4,a}\rangle$ are similarly localized at nodes $\beta,\gamma,\delta$. We view $|\chi_{1,a}\rangle$ and $|\chi_{3,a}\rangle$ as input states and $|\chi_{2,a}\rangle$ and $|\chi_{4,a}\rangle$ as output states.
+
+Now we turn our attention to the two-particle frustration-free states of the move-together gadget, i.e., the states $|\Phi\rangle\in\mathcal{Z}_{2}(G_{W})$ in the nullspace of $H(G_W,2)$. Using \lem{FF_characterization} we can write
+\begin{equation}
+|\Phi\rangle=\sum_{a,b \in \{0,1\},\,I,J \in [4]}C_{(I,a),(J,b)}|\chi_{I,a}\rangle|\chi_{J,b}\rangle\label{eq:chi_superposition}
+\end{equation}
+where the coefficients are symmetric, i.e.,
+\begin{equation}
+C_{(I,a),(J,b)}=C_{(J,b),(I,a)},\label{eq:symmetric_coefs}
+\end{equation}
+and where 
+\begin{equation}
+\langle\psi_{z,a}^{q}|\langle\psi_{x,b}^{q}|\Phi\rangle=0\label{eq:frustration_free}
+\end{equation}
+for all $z,a,x,b\in\{0,1\}$ and $q\in[6].$
+
+The move-together gadget is designed so that each solution $|\Phi\rangle$ to these equations  is a superposition of a term where both particles are in input states and a term where both particles are in output states. The particles move from input nodes to output nodes together. We now solve equations \eq{chi_superposition}--\eq{frustration_free} and prove the following.
+
+\begin{lemma}
+\label{lem:Wgadget_lemma}
+A basis for the nullspace of $H(G_{W},2)$ is 
+\begin{equation}
+|\Phi_{a,b}\rangle=\Sym\left(\frac{1}{\sqrt{2}}|\chi_{1,a}\rangle|\chi_{3,b}\rangle+\frac{1}{\sqrt{2}}|\chi_{2,a}\rangle|\chi_{4,b}\rangle\right),\quad a,b\in\{0,1\}.\label{eq:phi_a1_a2}
+\end{equation}
+There are no $N$-particle frustration-free states on $G_{W}$ for $N\geq3$, i.e.,
+\[
+\lambda_{N}^{1}(G_{W})>0\quad\text{for }N\geq3.
+\]
+\end{lemma}
+
+\begin{proof}
+The states $|\Phi_{a,b}\rangle$ manifestly satisfy equations \eq{chi_superposition} and \eq{symmetric_coefs}, and one can directly verify that they also satisfy \eq{frustration_free} (the nontrivial cases to check are $q=5$ and $q=6$). 
+
+To complete the proof that \eq{phi_a1_a2} is a basis for the nullspace of $H(G_W,2)$, we verify that any state satisfying these conditions must be a linear combination of these four states. Applying equation \eq{frustration_free} gives
+\begin{align*}
+\langle\psi_{0,a}^{1}|\langle\psi_{0,b}^{1}|\Phi\rangle & =\frac{1}{3} C_{(1,a),(1,b)}=0 &
+\langle\psi_{1,a}^{1}|\langle\psi_{1,b}^{1}|\Phi\rangle & =\frac{1}{3} C_{(2,a),(2,b)}=0\\
+\langle\psi_{1,a}^{2}|\langle\psi_{1,b}^{2}|\Phi\rangle & =\frac{1}{3} C_{(3,a),(3,b)}=0 &
+\langle\psi_{0,a}^{2}|\langle\psi_{0,b}^{2}|\Phi\rangle & =\frac{1}{3} C_{(4,a),(4,b)}=0\\
+\langle\psi_{0,a}^{1}|\langle\psi_{1,b}^{1}|\Phi\rangle & =\frac{1}{3} C_{(1,a),(2,b)}=0 &
+\langle\psi_{0,a}^{2}|\langle\psi_{1,b}^{2}|\Phi\rangle & =\frac{1}{3} C_{(4,a),(3,b)}=0\\
+\langle\psi_{0,a}^{3}|\langle\psi_{1,b}^{3}|\Phi\rangle & =\frac{1}{3} C_{(1,a),(4,b)}=0 &
+\langle\psi_{0,a}^{4}|\langle\psi_{1,b}^{4}|\Phi\rangle & =\frac{1}{3} C_{(2,a),(3,b)}=0
+\end{align*}
+for all $a,b\in \{0,1\}$. Using the fact that all of these coefficients are zero, and using equation \eq{symmetric_coefs}, we get 
+\[
+|\Phi\rangle=\sum_{a,b\in\{0,1\}}\left(C_{(1,a),(3,b)}\left(|\chi_{1,a}\rangle|\chi_{3,b}\rangle+|\chi_{3,b}\rangle|\chi_{1,a}\rangle\right)+C_{(2,a),(4,b)}\left(|\chi_{2,a}\rangle|\chi_{4,b}\rangle+|\chi_{4,b}\rangle|\chi_{2,a}\rangle\right)\right).
+\]
+Finally, applying equation \eq{frustration_free} again gives
+\[
+\langle\psi_{0,a}^{6}|\langle\psi_{1,b}^{6}|\Phi\rangle=\frac{1}{6}C_{(2,a),(4,b)}-\frac{1}{6}C_{(1,a),(3,b)}=0.
+\]
+Hence
+\[
+|\Phi\rangle=\sum_{a,b\in\{0,1\}}C_{(1,a),(3,b)}\left(|\chi_{1,a}\rangle|\chi_{3,b}\rangle+|\chi_{3,b}\rangle|\chi_{1,a}\rangle+|\chi_{2,a}\rangle|\chi_{4,b}\rangle+|\chi_{4,b}\rangle|\chi_{2,a}\rangle\right),
+\]
+which is a superposition of the states $|\Phi_{a,b}\rangle.$ 
+
+Finally, we prove that there are no frustration-free ground states of the Bose-Hubbard model on $G_{W}$ with more than two particles. By \lem{increase_part_number},
+% To establish this 
+it suffices to prove that there are no frustration-free three-particle states.
+% , since by \lem{increase_part_number}, $\lambda_{3}^{1}(G_{W})>0$ implies $\lambda_{N}^{1}(G_{W})>0$ for $N\geq 3$.
+
+Suppose (for a contradiction) that $|\Gamma\rangle\in\mathcal{Z}_{3}(G_{W})$ is a normalized three-particle frustration-free state. Write 
+\[
+|\Gamma\rangle=\sum D_{(i,a),(j,b),(k,c)}|\chi_{i,a}\rangle|\chi_{j,b}\rangle|\chi_{k,c}\rangle.
+\]
+Note that each reduced density matrix of $|\Gamma\rangle$ on two of the three subsystems must have all of its support on two-particle frustration-free states (see the remark following \lem{FF_characterization}), i.e., on the states $|\Phi_{a,b}\rangle$. Using this fact for the subsystem consisting of the first two particles, we see in particular that
+\begin{equation}
+(i,j)\notin\{(1,3),(3,1),(2,4),(4,2)\}\quad\Longrightarrow\quad D_{(i,a),(j,b),(k,c)}=0\label{eq:ij_constraint1}
+\end{equation}
+(since $|\Phi_{a_1,a_2}\rangle$ only has support on vectors $|\chi_{i,a}\rangle|\chi_{j,b}\rangle$ with $i,j\in \{(1,3),(3,1),(2,4),(4,2)\}$).
+
+Using this fact for subsystems consisting of particles $2,3$ and $1,3$, respectively, gives 
+\begin{align}
+(j,k)\notin\{(1,3),(3,1),(2,4),(4,2)\}\quad\Longrightarrow\quad D_{(i,a),(j,b),(k,c)} & =0\label{eq:ij_constraint2}\\
+(i,k)\notin\{(1,3),(3,1),(2,4),(4,2)\}\quad\Longrightarrow\quad D_{(i,a),(j,b),(k,c)} & =0.\label{eq:ij_constraint3}
+\end{align}
+Putting together equations \eq{ij_constraint1}, \eq{ij_constraint2}, and \eq{ij_constraint3}, we see that $|\Gamma\rangle=0$. This is a contradiction, so no three-particle frustration-free states exist.
+\end{proof}
+
+Next we show how this gadget can be used to build gadgets the implement two-qubit gates.
 
 \subsubsection{Two-qubit gate gadget}
 
+
+In this Section we define a gate graph for each of the two-qubit unitaries
+\[
+  \{\CNOT_{12}, \CNOT_{21}, \CNOT_{12}\left(H\otimes\II\right),
+    \CNOT_{12}\left(HT\otimes\II\right)\}.
+\]
+Here $\CNOT_{12}$ is the standard controlled-not gate with the second qubit as a target, whereas $\CNOT_{21}$ has the first qubit as target.
+
+%\begin{figure}
+%\centering 
+%\subfloat[][]{
+%\begin{tikzpicture}[yscale=.929] \label{fig:GVucnot}
+%
+%\path[use as bounding box](-5.5,-3) rectangle (10,10.5);
+%     % Each Hadamard Rectangle 
+%\foreach \xshift / \yshift /\xscale / \lab / \unitary in{3.12/0.5/1/4/1,3.12/3.5/1/2/1,-3.62/0.5/1/3/1,-3.62/3.5/1/1/\tilde U, -3.62/-2.5/1/7/1,3.12/-2.5/1/8/1, 3.12/7/1/6/1, -3.62/7/1/5/1}
+%{ 
+%\begin{scope}[shift={(\xshift,\yshift)},xscale=\xscale]
+%  \draw[rounded corners=0.75mm,thick] (0,0) rectangle (2 cm, 2cm);
+%  \node at (1,1) {\huge$\unitary$};   
+%\node at (1,2.4) {\large\lab};
+%  \foreach \y in {.33,.66,1.33,1.66}
+%	{   
+%		\foreach \x /\color in {0/black,2/gray}
+%			{    
+%				\draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);  
+%			}
+%	} 
+%\end{scope}
+%}
+%  % Each W Gadget
+%\foreach \yshift/\from in {0.25/11,1.75/10,3.25/01,4.75/00}
+%{ 
+%\begin{scope}[yshift=\yshift cm] 
+% \draw[rounded corners=0.75mm,thick] (0,0) rectangle (1.5cm,.93cm); 
+% \node at (.75,.465) {$W$};   
+%\node at (.75,1.2) {$\from$};
+%  \foreach \x/\color in {0/black,1.5/gray}
+%	{   
+%		\foreach \y in {0.33,.6}
+%		{   
+%			 \draw[fill=\color,draw=\color] (\x,\y) circle (.66mm); 
+%		 }
+%	}
+%\end{scope}
+%}
+%  % Right Connections
+%\foreach \l/\r in {   5.35/5.16,5.08/2.16,   .85/3.83,.57/1.83,   3.85/4.83,3.57/1.16,   2.35/4.16,2.08/.83} 
+%{   
+%\node (a) at (1.5,\l) {}; 
+% \node (b) at (3.12,\r)   {}; 
+% \draw[looseness=.66,line width=4pt,color=white] (a) to [out=0,in=180] (b);
+%  \draw[looseness=.66] (a) to [out=0,in=180] (b); 
+%}
+%  % Left Connections
+%\foreach \l/\r in {5.16/5.35,2.16/5.08,   3.83/.85,.83/.57,   4.83/3.85,1.83/2.08,   4.16/2.35,1.16/3.57}
+%{   
+%\node (a) at (-1.618,\l) {}; 
+% \node (b) at (0,\r)   {};
+%  \draw[looseness=.66,line width=4pt,color=white] (a) to [out=0,in=180] (b);
+%  \draw[looseness=.66] (a) to [out=0,in=180] (b); 
+%}
+%
+%%%%%%%%Edges which connect to the two lower diagram elements
+%
+%%The one on the left-hand side
+%
+%\node (c) at (-3.62,1.83){};
+%\node (d) at (-3.62,-1.17){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=180,in=180] (d);
+% \draw[looseness=.66] (c) to [out=180,in=180] (d); 
+%
+%\node (c) at (-3.62,0.83){};
+%\node (d) at (-3.62,-2.17){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=180,in=180] (d);
+% \draw[looseness=.66] (c) to [out=180,in=180] (d); 
+%
+%% The one on the right-hand side
+%
+%\node (c) at (5.12,1.83){};
+%\node (d) at (5.12,-1.17){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=0,in=0] (d);
+% \draw[looseness=.66] (c) to [out=0,in=0] (d); 
+%
+%\node (c) at (5.12,0.83){};
+%\node (d) at (5.12,-2.17){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=0,in=0] (d);
+% \draw[looseness=.66] (c) to [out=0,in=0] (d); 
+%
+%%%%%%%%Edges which connect to the two upper diagram elements
+%
+%%The ones on the left-hand side
+%
+%\node (c) at (-3.62,8.33){};
+%\node (d) at (-3.62,4.83){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=180,in=180] (d);
+% \draw[looseness=.66] (c) to [out=180,in=180] (d); 
+%
+%\node (c) at (-1.62,7.33){};
+%\node (d) at (5.12,3.83){};
+%
+% \draw[looseness=1.5,line width=4pt,color=white] (c) to [out=0,in=10] (d);
+% \draw[looseness=1.5] (c) to [out=0,in=10] (d); 
+%
+%%The ones on the right-hand side
+%
+%\node (c) at (5.12,8.33){};
+%\node (d) at (5.12,4.83){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=0,in=0] (d);
+% \draw[looseness=.66] (c) to [out=0,in=0] (d); 
+%
+%\node (c) at (3.12,7.33){};
+%\node (d) at (-3.62,3.83){};
+%
+% \draw[looseness=1.5,line width=4pt,color=white] (c) to [out=180,in=170] (d);
+% \draw[looseness=1.5] (c) to [out=180,in=170] (d); 
+%
+%
+%
+%
+%  % Node Labels
+%
+% \node at (-3.9,5.2) {$\alpha$};
+% \node at (-3.9,4.2) {$\beta$};
+%\node at (-3.9,2.2) {$\gamma$};
+%\node at (-3.9,1.2) {$\delta$};
+%
+% \node at (5.4,5.2) {$\epsilon$};
+% \node at (5.4,4.2) {$\zeta$};
+%\node at (5.4,2.2) {$\eta$};
+%\node at (5.4,1.2) {$\theta$};
+%
+%
+%\setcounter{mycount}{`a} \begin{scope}[xshift = 7.5cm,yshift = 3cm]
+%  \node at (-1,0) {\huge $=$}; 
+% \begin{scope}[xscale=-1,xshift=-2cm]   
+%\draw[rounded corners = .75mm,thick] (0cm, -1.618 cm) -- (2 cm, -1.618 cm) -- (2cm, -.5 cm) -- (1.2cm, -.5 cm) -- (1.2 cm,.5cm) -- (2cm, .5cm) -- (2cm, 1.618cm) -- (0cm, 1.618cm) -- (0cm, .5cm) -- (.6cm, .5cm) -- (.6cm, -.5cm) -- (0cm, -.5cm) -- cycle; 
+%    \draw (.15cm, 1.06cm) -- (1.85cm, 1.06cm); 
+% \draw (.15cm, -1.06cm) -- (1.85cm, -1.06cm);
+%  \draw (.9cm,1.06cm) -- (.9cm,-1.06cm);   
+%\draw[fill=black] (.9,1.06cm) circle (.66mm); 
+% \draw (.9,-1.06cm) circle (1.25mm); 
+% \draw (.9,-1.19cm) -- (.9,-.93cm);   
+%  \draw[rounded corners=.75mm,fill=white] (1.15cm, .7cm) rectangle (1.75cm, 1.42cm); 
+% \node at (1.45cm, 1.06cm) {\small $\tilde U$}; 
+% \end{scope}   
+%
+%
+%\node at ( -0.2,1.31) {$\alpha$};
+% \draw[fill=black] (0,1.31) circle (.66mm);   
+%
+%\node at ( -0.2,0.81) {$\beta$};
+% \draw[fill=black] (0,0.81) circle (.66mm);   
+%
+%\node at ( -0.2,-0.81) {$\gamma$};
+% \draw[fill=black] (0,-0.81) circle (.66mm);   
+%
+%\node at ( -0.2,-1.31) {$\delta$};
+% \draw[fill=black] (0,-1.31) circle (.66mm);   
+%
+%\node at (2.2,1.31) {$\epsilon$};
+% \draw[fill=black] (2,1.31) circle (.66mm);   
+%
+%\node at (2.2,0.81) {$\zeta$};
+% \draw[fill=black] (2,0.81) circle (.66mm);   
+%
+%\node at ( 2.2,-0.81) {$\eta$};
+% \draw[fill=black] (2,-0.81) circle (.66mm);   
+%
+%\node at ( 2.2,-1.31) {$\theta$};
+% \draw[fill=black] (2,-1.31) circle (.66mm);   
+%
+%
+%\end{scope} 
+%\end{tikzpicture}}
+%\vspace{0.63cm}
+%\subfloat[][]{\begin{tikzpicture}[yscale=.92] \label{fig:GVcnot}
+%
+%  \setcounter{mycount}{`a} \begin{scope}[xshift = 7.2 cm,yshift = 3cm]   
+%     
+%\draw[rounded corners = 2mm,thick] (0cm, -1.618 cm) -- (2 cm, -1.618 cm) -- (2cm, -.5 cm) -- (1.2cm, -.5 cm) -- (1.2 cm,.5cm) -- (2cm, .5cm) -- (2cm, 1.618cm) -- (0cm, 1.618cm) -- (0cm, .5cm) -- (.6cm, .5cm) -- (.6cm, -.5cm) -- (0cm, -.5cm) -- cycle;      \draw (.15cm, 1.06cm) -- (1.85cm, 1.06cm);   \draw (.15cm, -1.06cm) -- (1.85cm, -1.06cm);   \draw (.9cm,1.06cm) -- (.9cm,-1.06cm);
+% \draw[fill=black] (.9,-1.06cm) circle (.66mm);   \draw (.9,1.06cm) circle (1.25mm);   \draw (.9,1.19cm) -- (.9,.93cm); 
+%
+%
+%\node at ( -0.2,-0.81) {$\alpha$};
+% \draw[fill=black] (0,-0.81) circle (.66mm);   
+%
+%\node at ( -0.2,-1.31) {$\beta$};
+% \draw[fill=black] (0,-1.31) circle (.66mm);   
+%
+%\node at ( -0.2,1.31) {$\gamma$};
+% \draw[fill=black] (0,1.31) circle (.66mm);   
+%
+%\node at ( -0.2,0.81) {$\delta$};
+% \draw[fill=black] (0,0.81) circle (.66mm);   
+%
+%\node at ( 2.2,-0.81) {$\epsilon$};
+% \draw[fill=black] (2,-0.81) circle (.66mm);   
+%
+%\node at ( 2.2,-1.31) {$\zeta$};
+% \draw[fill=black] (2,-1.31) circle (.66mm);   
+%
+%\node at (2.2,1.31) {$\eta$};
+% \draw[fill=black] (2,1.31) circle (.66mm);   
+%
+%\node at (2.2,0.81) {$\theta$};
+% \draw[fill=black] (2,0.81) circle (.66mm);   
+%
+%\end{scope}
+%\end{tikzpicture}}
+%
+%\caption{\subfig{GVucnot} Gadget for the
+% two-qubit unitary $U=(\tilde U\otimes\II)\CNOT_{12}$ with $\tilde U\in \{1,H,HT\}$.
+%\subfig{GVcnot} For the $U=\CNOT_{21}$ gate (first qubit is the target), we use the same gate graph as in \subfig{GVucnot} with $\tilde U=1$; we represent it schematically as shown.}
+%\end{figure}
+
+We define the gate graphs by exhibiting their gate diagrams. For the three cases
+\[
+  U=\CNOT_{12}(\tilde U\otimes\II)
+\]
+with $\tilde U\in\{\II,H,HT\}$, we associate $U$ with the gate diagram shown in \fig{GVucnot}. In the Figure we also indicate a shorthand used to represent this gate diagram. As one might expect, for the case $U=\CNOT_{21}$, we use the same gate diagram as for $U=\CNOT_{12}$; however, we use the slightly different shorthand shown in \fig{GVcnot}.
+
+Roughly speaking, the two-qubit gate gadgets work as follows. In \fig{GVucnot} there are four move-together gadgets, one for each two-qubit basis state $|00\rangle, |01\rangle, |10\rangle, |11\rangle$. These enforce the constraint that two particles must move through the graph together. The connections between the four diagram elements labeled $1,2,3,4$ and the move-together gadgets ensure that certain frustration-free two-particle states encode two-qubit computations, while the connections between diagram elements $1,2,3,4$ and $5,6,7,8$ ensure that there are no additional frustration-free two-particle states (i.e., states that do not encode computations).
+
+To describe the frustration-free states of the gate graph depicted in \fig{GVucnot}, first recall the definition of the states $|\chi_{1,a}\rangle, |\chi_{2,a}\rangle, |\chi_{3,a}\rangle, |\chi_{4,a}\rangle$ from equations \eq{chi_alpha}--\eq{chi_delta}. For each of the move-together gadgets $xy\in\{00,01,10,11\}$ in \fig{GVucnot}, write 
+\[
+|\chi_{L,a}^{xy}\rangle
+\]
+for the state $|\chi_{L,a}\rangle$ with support (only) on the gadget labeled $xy$. Write 
+\[
+U(a)=\begin{cases}
+U & \text{ if }a=0\\
+U^{*} & \text{ if }a=1
+\end{cases}
+\]
+and similarly for $\tilde U$ (we use this notation throughout the paper to indicate a unitary or its elementwise complex conjugate).
+
+In \app{graph_gadgets}
+we prove the following Lemma, which shows that $G_{U}$ is an $e_{1}$-gate
+graph and solves for its frustration-free states.
+
+\begin{restatable}{lemma}{Twoqub}\label{lem:2qub_gate}
+Let $U=\CNOT_{12}(\tilde U\otimes\II)$ where $\tilde U\in\{\II,H,HT\}$. The corresponding gate graph $G_U$ is defined by its gate diagram shown in \fig{GVucnot}. The adjacency matrix $A(G_U)$ has ground energy $e_{1}$; a basis for the corresponding eigenspace is
+\begin{align}
+|\rho_{z,a}^{1,U}\rangle & =\frac{1}{\sqrt{8}}|\psi_{z,a}^{1}\rangle-\frac{1}{\sqrt{8}}|\psi_{z,a}^{5+z}\rangle-\sqrt{\frac{3}{8}}\sum_{x,y=0}^{1}\tilde U(a)_{yz}|\chi_{1,a}^{yx}\rangle
+ & |\rho_{z,a}^{2,U}\rangle
+ & =\frac{1}{\sqrt{8}}|\psi_{z,a}^{2}\rangle-\frac{1}{\sqrt{8}}|\psi_{z,a}^{6-z}\rangle-\sqrt{\frac{3}{8}}\sum_{x=0}^{1}|\chi_{2,a}^{zx}\rangle\label{eq:rho1_1}\\
+|\rho_{z,a}^{3,U}\rangle & =\frac{1}{\sqrt{8}}|\psi_{z,a}^{3}\rangle-\frac{1}{\sqrt{8}}|\psi_{z,a}^{7}\rangle-\sqrt{\frac{3}{8}}\sum_{x=0}^{1}|\chi_{3,a}^{xz}\rangle 
+& |\rho_{z,a}^{4,U}\rangle & =\frac{1}{\sqrt{8}}|\psi_{z,a}^{4}\rangle-\frac{1}{\sqrt{8}}|\psi_{z,a}^{8}\rangle-\sqrt{\frac{3}{8}}\sum_{x=0}^{1}|\chi_{4,a}^{x\left(z\oplus x\right)}\rangle\label{eq:rho2_1}
+\end{align}
+where $z,a\in\{0,1\}$. A basis for the nullspace of $H(G_U,2)$ is
+\begin{equation}
+\Sym(|T_{z_{1},a,z_{2},b}^U\rangle),\quad z_{1},z_{2},a,b\in\{0,1\}\label{eq:twopartstate_1}
+\end{equation}
+where 
+\begin{equation}
+|T_{z_{1},a,z_{2},b}^U\rangle=\frac{1}{\sqrt{2}}|\rho_{z_{1},a}^{1,U}\rangle|\rho_{z_{2},b}^{3,U}\rangle+\frac{1}{\sqrt{2}}\sum_{x_1,x_2=0}^{1}U(a)_{x_{1}x_{2},z_{1}z_{2}}|\rho_{x_{1},a}^{2,U}\rangle|\rho_{x_{2},b}^{4,U}\rangle\label{eq:twopartstate_2}
+\end{equation}
+for $z_{1},z_{2},a,b\in\{0,1\}$. There are no $N$-particle frustration-free
+states on $G_U$ for $N\geq3$, i.e., 
+\[
+\lambda_{N}^{1}(G_U)>0\quad\text{for }N\geq3.
+\]
+\end{restatable}
+
+We view the nodes labeled $\alpha,\beta,\gamma,\delta$ in \fig{GVucnot} as ``input'' nodes and those labeled $\epsilon, \zeta,\eta,\theta$ as ``output nodes''. Each of the states $|\rho_{x,y}^{i,U}\rangle$ is associated with one of the nodes, depending on the values of $i\in\{1,2,3,4\}$ and $x\in\{0,1\}$. For example, the states $|\rho_{0,0}^{1,U}\rangle$ and $|\rho_{0,1}^{1,U}\rangle$ are associated with input node $\alpha$ since they both have nonzero amplitude on vertices of the gate graph that are associated with $\alpha$ (and zero amplitude on vertices associated with other labeled nodes).
+
+
+The two-particle state $\Sym(|T_{z_{1},a,z_{2},b}^{U}\rangle)$ is a superposition of a term
+\[
+\Sym\bigg(\frac{1}{\sqrt{2}}|\rho_{z_{1},a}^{1,U}\rangle|\rho_{z_{2},b}^{3,U}\rangle\bigg)
+\]
+with both particles located on vertices corresponding to input nodes and a term 
+\[
+\Sym\Bigg(\frac{1}{\sqrt{2}}\sum_{x_{1},x_{2}\in\{0,1\}}U(a)_{x_{1}x_{2},z_{1}z_{2}}|\rho_{x_{1},a}^{2,U}\rangle|\rho_{x_{2},b}^{4,U}\rangle\Bigg)
+\]
+with both particles on vertices corresponding to output nodes. The two-qubit gate $U(a)$
+% \[
+% U(a)=\begin{cases}
+% U & \text{ if }a=0\\
+% U^{*} & \text{ if }a=1
+% \end{cases}
+% \]
+is applied as the particles move from input nodes to output nodes.
+
 \subsubsection{Boundary gadget}
+
+%\begin{figure}
+%\centering
+%\begin{tikzpicture}[yscale=0.92] 
+%
+%\path[use as bounding box](-5.5,-3) rectangle (10,10.5);
+% % Each Hadamard Rectangle 
+%\foreach \xshift / \yshift /\xscale / \lab / \unitary in{3.12/0.5/1/4/1,3.12/3.5/1/2/1,-3.62/0.5/1/3/1,-3.62/3.5/1/1/1, -3.62/-2.5/1/7/1,3.12/-2.5/1/8/1, 3.12/7/1/6/1, -3.62/7/1/5/1}
+%{ 
+%\begin{scope}[shift={(\xshift,\yshift)},xscale=\xscale]
+%  \draw[rounded corners=0.75mm,thick] (0,0) rectangle (2 cm, 2cm);
+%  \node at (1,1) {\huge$\unitary$};   
+%\node at (1,2.4) {\large\lab};
+%  \foreach \y in {.33,.66,1.33,1.66}
+%	{   
+%		\foreach \x /\color in {0/black,2/gray}
+%			{    
+%				\draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);  
+%			}
+%	} 
+%\end{scope}
+%}
+%  % Each W Gadget
+%\foreach \yshift/\from in {0.25/11,1.75/10,3.25/01,4.75/00}
+%{ 
+%\begin{scope}[yshift=\yshift cm] 
+% \draw[rounded corners=0.75mm,thick] (0,0) rectangle (1.5cm,.93cm); 
+% \node at (.75,.465) {$W$};   
+%\node at (.75,1.2) {$\from$};
+%  \foreach \x/\color in {0/black,1.5/gray}
+%	{   
+%		\foreach \y in {0.33,.6}
+%		{   
+%			 \draw[fill=\color,draw=\color] (\x,\y) circle (.66mm); 
+%		 }
+%	}
+%\end{scope}
+%}
+%  % Right Connections
+%\foreach \l/\r in {   5.35/5.16,5.08/2.16,   .85/3.83,.57/1.83,   3.85/4.83,3.57/1.16,   2.35/4.16,2.08/.83} 
+%{   
+%\node (a) at (1.5,\l) {}; 
+% \node (b) at (3.12,\r)   {}; 
+% \draw[looseness=.66,line width=4pt,color=white] (a) to [out=0,in=180] (b);
+%  \draw[looseness=.66] (a) to [out=0,in=180] (b); 
+%}
+%  % Left Connections
+%\foreach \l/\r in {5.16/5.35,2.16/5.08,   3.83/.85,.83/.57,   4.83/3.85,1.83/2.08,   4.16/2.35,1.16/3.57}
+%{   
+%\node (a) at (-1.618,\l) {}; 
+% \node (b) at (0,\r)   {};
+%  \draw[looseness=.66,line width=4pt,color=white] (a) to [out=0,in=180] (b);
+%  \draw[looseness=.66] (a) to [out=0,in=180] (b); 
+%}
+%
+%%%%%%%%Edges which connect to the two lower diagram elements
+%
+%%The one on the left-hand side
+%
+%\node (c) at (-3.62,1.83){};
+%\node (d) at (-3.62,-1.17){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=180,in=180] (d);
+% \draw[looseness=.66] (c) to [out=180,in=180] (d); 
+%
+%\node (c) at (-3.62,0.83){};
+%\node (d) at (-3.62,-2.17){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=180,in=180] (d);
+% \draw[looseness=.66] (c) to [out=180,in=180] (d); 
+%
+%% The one on the right-hand side
+%
+%\node (c) at (5.12,1.83){};
+%\node (d) at (5.12,-1.17){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=0,in=0] (d);
+% \draw[looseness=.66] (c) to [out=0,in=0] (d); 
+%
+%\node (c) at (5.12,0.83){};
+%\node (d) at (5.12,-2.17){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=0,in=0] (d);
+% \draw[looseness=.66] (c) to [out=0,in=0] (d); 
+%
+%%%%%%%%Edges which connect to the two upper diagram elements
+%
+%%The ones on the left-hand side
+%
+%\node (c) at (-3.62,8.33){};
+%\node (d) at (-3.62,4.83){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=180,in=180] (d);
+% \draw[looseness=.66] (c) to [out=180,in=180] (d); 
+%
+%\node (c) at (-1.62,7.33){};
+%\node (d) at (5.12,3.83){};
+%
+% \draw[looseness=1.5,line width=4pt,color=white] (c) to [out=0,in=10] (d);
+% \draw[looseness=1.5] (c) to [out=0,in=10] (d); 
+%
+%%The ones on the right-hand side
+%
+%\node (c) at (5.12,8.33){};
+%\node (d) at (5.12,4.83){};
+%
+% \draw[looseness=.66,line width=4pt,color=white] (c) to [out=0,in=0] (d);
+% \draw[looseness=.66] (c) to [out=0,in=0] (d); 
+%
+%\node (c) at (3.12,7.33){};
+%\node (d) at (-3.62,3.83){};
+%
+% \draw[looseness=1.5,line width=4pt,color=white] (c) to [out=180,in=170] (d);
+% \draw[looseness=1.5] (c) to [out=180,in=170] (d); 
+%
+%
+%
+%
+%  % Node Labels
+%
+%\draw[looseness=150] (-3.7,5.19) to [out=150,in=210] (-3.7,5.18) ;   
+%\draw[looseness=150] (-3.7,4.19) to [out=150,in=210] (-3.7,4.18) ;   
+%
+%\draw[looseness=150] (-3.7,2.19) to [out=150,in=210] (-3.7,2.18) ;   
+%\draw[looseness=150] (-3.7,1.19) to [out=150,in=210] (-3.7,1.18) ;   
+%
+%\draw[looseness=150] (5.2,5.19) to [out=30,in=-30] (5.2,5.18) ;   
+%\draw[looseness=150] (5.2,4.19) to [out=30,in=-30] (5.2,4.18) ;   
+%
+%\node at (5.4,2.2) {$\alpha$};
+%\node at (5.4,1.2) {$\beta$};
+%\node at (5.4,-0.8) {$\gamma$};
+%\node at (5.4,-1.8) {$\delta$};
+%
+%  \node at (6.5cm,3cm) {\huge $=$};
+%\begin{scope}[xshift = 7.5cm,yshift = 3.81cm]       
+%\draw[rounded corners = 2mm,thick] (0,0) -- (.6,0) -- (.6,-.5) -- (1.4,-.5) -- (1.4,-1.618) -- (0,-1.618) -- cycle;                    \draw[fill=black] (1,-.5) circle (.66mm);             
+%\draw[fill=black] (1.4,-.81) circle (.66mm);       
+%\draw[fill=black] (1.4,-1.41) circle (.66mm);       
+%\draw[fill=black] (1,-1.618) circle (.66mm);              
+%\node at (1,-.25) {$\alpha$};       
+%\node at (1.6,-.76) {$\gamma$};       
+%\node at (1.6,-1.46) {$\beta$};       
+%\node at (1,-1.868) {$\delta$};              
+%\node at (.7,-1.06) {\Large Bnd};          
+%\end{scope}
+%\end{tikzpicture}
+%\caption{The gate diagram for the boundary gadget is obtained from \fig{GVucnot} by setting $\tilde U=1$ and adding 6 self-loops.}\label{fig:GVbdy}
+%\end{figure}
+
+The \emph{boundary gadget} is shown in \fig{GVbdy}. This gate diagram is obtained from \fig{GVucnot} (with $\tilde U=\II$) by adding self-loops. The adjacency matrix is
+\[
+  A(G_{\text{bnd}})=A(G_{\CNOT_{12}})+h_{\mathcal{S}}
+\]
+where 
+\[
+  h_{\mathcal{S}}
+  =\sum_{z=0}^{1}(
+    |1,z,1\rangle\langle1,z,1|\otimes\II_{j}
+   +|2,z,5\rangle\langle2,z,5|\otimes\II_{j}
+   +|3,z,1\rangle\langle3,z,1|\otimes\II_{j}
+  ).
+\]
+The single-particle ground states (with energy $e_{1}$) are superpositions of the states $|\rho_{z,a}^{i,U}\rangle$ from \lem{2qub_gate} that are in the nullspace of $h_{\mathcal{S}}$. Note that 
+\[
+\langle\rho_{x,b}^{j,U}|h_{\mathcal{S}}|\rho_{z,a}^{i,U}\rangle=\delta_{a,b}\delta_{x,z}\left(\delta_{i,1}\delta_{j,1}+\delta_{i,2}\delta_{j,2}+\delta_{i,3}\delta_{j,3}\right)\frac{1}{8}\cdot\frac{1}{8}
+\]
+(one factor of $\frac{1}{8}$ comes from the normalization in equations \eq{rho1_1}--\eq{rho2_1} and the other factor comes from the normalization in equation \eq{psi0m}), so the only single-particle ground states are 
+\[
+|\rho_{z,a}^{\text{bnd}}\rangle = |\rho_{z,a}^{4,U}\rangle
+\]
+with $z,a\in\{0,1\}$. Thus there are no two- (or more) particle frustration-free states, because no superposition of the states \eq{twopartstate_1} lies in the subspace 
+\[
+\spn\{ \Sym(|\rho_{z,a}^{4,U}\rangle|\rho_{x,b}^{4,U}\rangle)\colon z,a,x,b\in\{0,1\}\} 
+\]
+of states with single-particle reduced density matrices in the ground space of $A(G_{\text{bnd}})$.  We summarize these results as follows.
+
+\begin{lemma}\label{lem:boundary_lemma}
+The smallest eigenvalue of $A(G_{\text{bnd}})$ is $e_{1}$, with corresponding eigenvectors 
+\begin{equation}
+|\rho_{z,a}^{\text{bnd}}\rangle=\frac{1}{\sqrt{8}}|\psi_{z,a}^{4}\rangle-\frac{1}{\sqrt{8}}|\psi_{z,a}^{8}\rangle-\sqrt{\frac{3}{8}}\sum_{x=0,1}|\chi_{4,a}^{x\left(z\oplus x\right)}\rangle.\label{eq:rho_bnd}
+\end{equation}
+There are no frustration-free states with two or more particles, i.e., $\lambda_{N}^{1}(G_{\text{bnd}})>0$ for $N\geq2$.
+\end{lemma}
+
 
 \subsection{Gate graph for a given circuit}
 \subsubsection{Occupancy constraints graph}

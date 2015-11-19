@@ -13,6 +13,8 @@
 
 \chapter{Ground energy of quantum walk}
 
+To get some flavor for \QMA-completeness results.
+
 \section{Encoding computations as states}
 
 \subsection{History states}
@@ -23,6 +25,208 @@
 
 \subsection{Transformation to Adjacency Matrix}
 
-This is a neat result for CS people.
+We suppose $\mathcal{C}_{x}$ implements a unitary 
+\begin{equation}
+U_{\mathcal{C}_{x}}=U_{M}\ldots U_{2}U_{1}\label{eq:single_qubit_circuit}
+\end{equation}
+ where each $U_{i}$ is from the universal gate set 
+\[
+\mathcal{G}=\{H,HT,\left(HT\right)^{\dagger},\left(H\otimes\II\right)\CNOT\}
+\]
+with 
+\[
+H=\frac{1}{\sqrt{2}}\begin{pmatrix}
+1 & 1\\
+1 & -1
+\end{pmatrix} \quad T=\begin{pmatrix}
+1 & 0\\
+0 & e^{i\frac{\pi}{4}}
+\end{pmatrix}\quad\CNOT=\begin{pmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1\\
+0 & 0 & 1 & 0
+\end{pmatrix}.
+\]
+The verification circuit $\mathcal{C}_{x}$ has an $n_{\text{input}}$-qubit input register and $n-n_{\text{input}}$ ancilla qubits initialized to $|0\rangle$ at the beginning of the computation. One of these $n$ qubits serves as an output qubit.
+
+It will be convenient to consider 
+\[
+  U_{\mathcal{C}_{x}}^{\dagger}U_{\mathcal{C}_{x}}=W_{2M}\ldots W_{2}W_{1}
+\]
+where
+\[
+W_{t}=\begin{cases}
+U_{t} & 1\leq t\leq M\\
+U_{2M+1-t}^{\dagger} & M+1 \le t \le 2M.
+\end{cases}
+\]
+As in \sec{Encoding-a-Computation} we start with a version of the Feynman-Kitaev Hamiltonian \cite{Fey85,KSV02}
+\begin{equation}
+H_{x}=-\sqrt{2}\sum_{t=1}^{2M}\left(W_{t}^{\dagger}\otimes|t\rangle\langle t+1|+W_{t}\otimes|t+1\rangle\langle t|\right)\label{eq:H_x}
+\end{equation}
+acting on the Hilbert space $\mathcal{H}_{\text{comp}} \otimes \mathcal{H}_{\text{clock}}$ where $\mathcal{H}_{\text{comp}} = \left(\CC^{2}\right)^{\otimes n}$ is an $n$-qubit computational register and $\mathcal{H}_{\text{clock}}=\CC^{2M}$ is a $2M$-level register with periodic boundary conditions (i.e., we let $|2M+1\rangle=|1\rangle$). Note that 
+\begin{equation}
+V^{\dagger}H_{x}V=-\sqrt{2}\sum_{t=1}^{2M}\left(\II\otimes|t\rangle\langle t+1|+\II\otimes|t+1\rangle\langle t|\right)\label{eq:V_H_V}
+\end{equation}
+where 
+\[
+V=\sum_{t=1}^{2M}\bigg(\prod_{j=t-1}^{1}W_{j}\bigg)\otimes|t\rangle\langle t|
+\]
+and $W_{0}=1$. Since $V$ is unitary, the eigenvalues of $H_{x}$ are the same as the eigenvalues of \eq{V_H_V}, namely 
+\[
+-2\sqrt{2}\cos\left(\frac{\pi \ell}{M}\right)
+\]
+for $\ell=0,\ldots,2M-1$. The ground energy of \eq{V_H_V} is $-2\sqrt{2}$ and its ground space is spanned by 
+\[
+  |\phi\rangle\frac{1}{\sqrt{2M}}\sum_{j=1}^{2M}|t\rangle,
+  \quad|\phi\rangle\in\Lambda
+\]
+where $\Lambda$ is any orthonormal basis for $\mathcal{H}_{\mathrm{comp}}$. A basis for the ground space of $H_{x}$ is therefore 
+\[
+V\bigg(|\phi\rangle\frac{1}{\sqrt{2M}}\sum_{j=1}^{2M}|t\rangle\bigg)=\frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}|\phi\rangle|t\rangle
+\]
+ where $|\phi\rangle\in\Lambda$. The first excited energy of $H_{x}$ is 
+\[
+\eta=-2\sqrt{2}\cos\left(\frac{\pi}{M}\right)
+\]
+and the gap between ground and first excited energies is lower bounded as 
+\begin{equation}
+\eta+2\sqrt{2}\geq\sqrt{2}\frac{\pi^{2}}{M^{2}}\label{eq:bound_on_eta}
+\end{equation}
+(using the fact that $1-\cos(x)\leq\frac{x^{2}}{2}$).
+
+The universal set $\mathcal{G}$ is chosen so that each gate has nonzero entries that are integer powers of $\omega=e^{i\frac{\pi}{4}}$.  Correspondingly, the nonzero standard basis matrix elements of $H_{x}$ are also integer powers of $\omega=e^{i\frac{\pi}{4}}$. We consider the $8\times8$ shift operator
+\[
+S=\sum_{j=0}^{7}|j+1\text{ mod 8}\rangle\langle j|
+\]
+and note that $\omega$ is an eigenvalue of $S$ with eigenvector
+\[
+|\omega\rangle=\frac{1}{\sqrt{8}}\sum_{j=0}^{7}\omega^{-j}|j\rangle.
+\]
+We modify $H_{x}$ as follows. For each operator $-\sqrt{2}H$, $-\sqrt{2}HT$, $-\sqrt{2}(HT)^{\dagger}$, or $-\sqrt{2}\left(H\otimes\II\right)\CNOT$ appearing in equation \eq{H_x}, define another operator that acts on $\CC^{2}\otimes\CC^{8}$ or $\CC^{4}\otimes\CC^{8}$ (as appropriate) by replacing nonzero matrix elements with powers of the operator $S$:
+\begin{align*}
+\omega^{k} &\mapsto S^{k}.
+\end{align*}
+Matrix elements that are zero are mapped to the $8\times8$ all-zeroes matrix. Write $B(W)$ for the operators obtained by making this replacement, e.g., 
+\begin{align*}
+-\sqrt{2}HT & = \begin{pmatrix}
+\omega^{4} & \omega^{5}\\
+\omega^{4} & \omega
+\end{pmatrix} \mapsto B(HT)=\begin{pmatrix}
+S^{4} & S^{5}\\
+S^{4} & S
+\end{pmatrix}.
+\end{align*}
+Adjoining an 8-level ancilla as a third register and making this replacement in equation \eq{single_qubit_ham} gives 
+\begin{align}
+H_{\mathcal{\text{prop}}} & =\sum_{t=1}^{2M}\left(B(W_{t})^{\dagger}_{13}\otimes|t\rangle\langle t+1|_2+B(W_{t})_{13}\otimes|t+1\rangle\langle t|_2\right)\label{eq:Hprop-1}
+\end{align}
+which is a symmetric $0$-1 matrix (the subscripts indicate which registers the operators act on). Note that $H_{\text{prop}}$ commutes with $S$ (acting on the $8$-level ancilla) and therefore is block diagonal with eight sectors. In the sector where $S$ has eigenvalue $\omega$, $H_{\text{prop}}$ is identical to the Hamiltonian $H_x$ that we started with (see equation \eq{H_x}). There is also a sector (where $S$ has eigenvalue $\omega^*$) where the Hamiltonian is the complex conjugate of $H_x$. We will add a term to $H_{\text{prop}}$ that introduces an energy penalty for states in any of the other six sectors, ensuring that none of these states lie in the ground space.
+
+To see what kind of energy penalty is needed, we lower bound the eigenvalues of $H_{\text{prop}}$. Note that for each $W\in\mathcal{G}$, $B(W)$ contains at most 2 ones in each row or column. Looking at equation \eq{Hprop-1} and using this fact, we see that each row and each column of $H_{\text{prop}}$ contains at most four ones (with the remaining entries all zero). Therefore $\|H_{\text{prop}}\| \leq4$, so every eigenvalue of $H_{\text{prop}}$ is at least $-4$.
+
+The matrix $A_{x}$ associated with the circuit $\mathcal{C}_{x}$ acts on the Hilbert space 
+\[
+\mathcal{H}_{\text{comp}}\otimes\mathcal{H}_{\text{clock}}\otimes\mathcal{H}_{\text{anc}}
+\]
+where $\mathcal{H}_{\text{anc}}=\CC^{8}$ holds the $8$-level ancilla.  We define 
+\begin{equation}
+A_{x}=H_{\text{prop}}+H_{\text{penalty}}+H_{\text{input}}+H_{\text{output}}\label{eq:A_x_eqn}
+\end{equation}
+ where 
+\[
+H_{\text{penalty}}=\II\otimes\II\otimes\left(S^{3}+S^{4}+S^{5}\right)
+\]
+is the penalty ensuring that the ancilla register holds either
+$|\omega\rangle$ or $|\omega^*\rangle$ and the terms
+\begin{align*}
+H_{\text{input}} & =\sum_{j=n_{\text{input}}+1}^{n}|1\rangle\langle1|_{j}\otimes|1\rangle\langle1|\otimes\II\\
+H_{\text{output}} & =|0\rangle\langle0|_{\text{output}}\otimes|M+1\rangle\langle M+1|\otimes\II
+\end{align*}
+ensure that the ancilla qubits are initialized in the state $|0\rangle$ when $t=1$ and that the output qubit is in the state $|1\rangle\langle1|$ when the circuit $\mathcal{C}_{x}$ has been applied (i.e., at time $t=M+1$). Observe that $A_{x}$ is a symmetric $0$-$1$ matrix. 
+
+Now consider the ground space of the first two terms $H_{\text{prop}}+H_{\text{penalty}}$ in \eq{A_x_eqn}. Note that $[H_{\text{prop}},H_{\text{penalty}}]=0$, so these operators can be simultaneously diagonalized. Furthermore, $H_{\mathrm{penalty}}$ has smallest eigenvalue $-1-\sqrt{2}$, with eigenspace spanned by $|\omega\rangle$ and $|\omega^*\rangle$. One can also easily confirm that the first excited energy of $H_{\mathrm{penalty}}$ is $-1$.
+
+The ground space of $H_{\text{prop}}+H_{\text{penalty}}$ lives in the sector where $H_{\text{penalty}}$ has minimal eigenvalue $-1-\sqrt{2}$. To see this, note that within this sector $H_{\text{prop}}$ has the same eigenvalues as $H_{x}$, and therefore has lowest eigenvalue $-2\sqrt{2}$. The minimum eigenvalue $e_{1}$ of $H_{\text{prop}}+H_{\text{penalty}}$ in this sector is 
+\begin{equation}
+e_{1}=-2\sqrt{2}+\left(-1-\sqrt{2}\right)=-1-3\sqrt{2}=-5.24\ldots,\label{eq:e_1_definition-1}
+\end{equation}
+whereas in any other sector $H_{\text{penalty}}$ has eigenvalue at least $-1$ and (using the fact that $H_{\text{prop}}\geq-4$) the minimum eigenvalue of $H_{\text{prop}}+H_{\text{penalty}}$ is at least $-5.$ Thus, an orthonormal basis for the ground space of $H_{\text{prop}}+H_{\mathrm{penalty}}$ is furnished by the states 
+\begin{align}
+ & \frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}|\phi\rangle|t\rangle|\omega\rangle\label{eq:gs_Hprop_Hpen1}\\
+ & \frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}(W_{t-1}W_{t-2}\ldots W_{1})^{*}|\phi^{*}\rangle|t\rangle|\omega^{*}\rangle\label{eq:gs_Hprop_Hpen2}
+\end{align}
+where $|\phi\rangle$ ranges over the basis $\Lambda$ for $\mathcal{H}_{\text{comp}}$ and $*$ denotes (elementwise) complex conjugation. 
+
+%=============================================================================
+\subsection{Upper bound on the smallest eigenvalue for yes instances}
+\label{sec:mappingyes}
+
+Suppose $x$ is a yes instance; then there exists some $n_{\text{input}}$-qubit state $|\psi_{\text{input}}\rangle$ satisfying $\text{AP}\left(\mathcal{C}_{x},|\psi_{\text{input}}\rangle\right)\geq1-\frac{1}{2^{|x|}}$. Let
+\[
+|\text{wit}\rangle=\frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}\left(|\psi_{\text{input}}\rangle|0\rangle^{\otimes n-n_{\text{input}}}\right)|t\rangle|\omega\rangle
+\]
+and note that this state is in the $e_{1}$-energy ground space of
+$H_{\text{prop}}+H_{\text{penalty}}$ (since it has the form \eq{gs_Hprop_Hpen1}).
+One can also directly verify that $|\text{wit}\rangle$ has zero energy for $H_{\text{input}}$. Thus
+\begin{align*}
+\langle\text{wit}|A_{x}|\text{wit}\rangle & =e_{1}+\langle\text{wit}|H_{\text{output}}|\text{wit}\rangle\\
+ & =e_{1}+\frac{1}{2M}\langle\psi_{\text{input}}|\langle0|^{\otimes n-n_{\text{input}}}U_{\mathcal{C}_{x}}^{\dagger}|0\rangle\langle0|_{\text{output}}U_{\mathcal{C}_{x}}|\psi_{\text{input}}\rangle|0\rangle^{\otimes n-n_{\text{input}}}\\
+ & =e_{1}+\frac{1}{2M}\left(1-\text{AP}(\mathcal{C}_{x},|\psi_{\text{input}}\rangle)\right)\\
+ & \leq e_{1}+\frac{1}{2M}\frac{1}{2^{|x|}}.
+\end{align*}
+
+
+%=============================================================================
+\subsection{Lower bound on the smallest eigenvalue for no instances}
+\label{sec:mappingno}
+
+Now suppose $x$ is a no instance. Then the verification circuit $\mathcal{C}_{x}$ has acceptance probability $\text{AP}\left(\mathcal{C}_{x},|\psi\rangle\right)\leq\frac{1}{3}$ for all $n_{\text{input}}$-qubit input states $|\psi\rangle$.
+
+We backtrack slightly to obtain bounds on the eigenvalue gaps of the Hamiltonians $H_{\text{prop}}+H_{\text{penalty}}$ and $H_{\text{prop}}+H_{\text{penalty}}+H_{\text{input}}$. We begin by showing that the energy gap of $H_{\text{prop}}+H_{\text{penalty}}$ is at least an inverse polynomial function of $M$. Subtracting a constant equal to the ground energy times the identity matrix sets the smallest eigenvalue to zero, and the smallest nonzero eigenvalue satisfies 
+\begin{equation}
+\gamma(H_{\text{prop}}+H_{\text{penalty}}-e_{1}\cdot\II)\geq\min\left\{ \sqrt{2}\frac{\pi^{2}}{M^{2}},-5-e_{1}\right\} \geq\frac{1}{5M^{2}}.\label{eq:gamma_Ha}
+\end{equation}
+since $-5-e_{1}\approx0.24\ldots>\frac{1}{5}$. The first inequality above follows from the fact that every eigenvalue of $H_{\text{prop}}$ in the range $[e_{1},-5)$ is also an eigenvalue of $H_{x}$ (as discussed above) and the bound \eq{bound_on_eta} on the energy gap of $H_{x}$.
+
+Now use the Nullspace Projection Lemma (\lem{npl}) with 
+\[
+H_{A}=H_{\text{prop}}+H_{\text{penalty}}-e_{1}\cdot\II\qquad H_{B}=H_{\text{input}}.
+\]
+Note that $H_{A}$ and $H_{B}$ are positive semidefinite. Let $S_{A}$ be the ground space of $H_{A}$ and consider the restriction $H_{B}|_{S_{A}}$. Here it is convenient to use the basis for $S_{A}$ given by \eq{gs_Hprop_Hpen1} and \eq{gs_Hprop_Hpen2} with $|\phi\rangle$ ranging over the computational basis states of $n$ qubits. In this basis, $H_{B}|_{S_{A}}$ is diagonal with all diagonal entries equal to $\frac{1}{2M}$ times an integer, so $\gamma(H_{B}|_{S_{A}})\geq\frac{1}{2M}$. We also have $\gamma(H_{A})\geq\frac{1}{5M^{2}}$ from equation \eq{gamma_Ha}, and clearly $\left\Vert H_{B}\right\Vert \leq n$. Thus \lem{npl} gives
+\begin{equation}
+\gamma(H_{\text{prop}}+H_{\text{penalty}}+H_{\text{input}}-e_{1}\cdot\II)\geq\frac{\left(\frac{1}{5M^{2}}\right)\left(\frac{1}{2M}\right)}{\frac{1}{5M^{2}}+\frac{1}{2M}+n}\geq\frac{1}{10M^{3}\left(1+n\right)}\geq\frac{1}{20M^{3}n}.\label{eq:lowerbound_uptoinput}
+\end{equation}
+
+Now consider adding the final term $H_{\mathrm{output}}$. We use \lem{npl} again, now setting 
+\[
+H_{A}=H_{\text{prop}}+H_{\mathrm{penalty}}+H_{\mathrm{input}}-e_{1}\cdot\II\qquad H_{B}=H_{\mathrm{output}}.
+\]
+Let $S_{A}$ be the ground space of $H_{A}$. Note that it is spanned by states of the form \eq{gs_Hprop_Hpen1} and \eq{gs_Hprop_Hpen2} where $|\phi\rangle=|\psi\rangle|0\rangle^{\otimes n-n_{\text{input}}}$ and $|\psi\rangle$ ranges over any orthonormal basis of the $n_{\text{input}}$-qubit input register. The restriction $H_{B}|_{S_{A}}$ is block diagonal, with one block for states of the form 
+\begin{equation}
+\frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}\left(|\psi\rangle|0\rangle^{\otimes n-n_{\text{input}}}\right)|t\rangle|\omega\rangle\label{eq:block1}
+\end{equation}
+and another block for states of the form 
+\begin{equation}
+\frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}\left(W_{t-1}W_{t-2}\ldots W_{1}\right)^{*}\left(|\psi\rangle^{*}|0\rangle^{\otimes n-n_{\text{input}}}\right)|t\rangle|\omega^{*}\rangle.\label{eq:block2}
+\end{equation}
+We now show that the minimum eigenvalue of $H_{B}|_{S_{A}}$ is nonzero, and we lower bound it. We consider the two blocks separately. By linearity, every state in the first block can be written in the form \eq{block1} for some state $|\psi\rangle$. Thus the minimum eigenvalue within this block is the minimum expectation of $H_{\text{output}}$ in a state \eq{block1}, where the minimum is taken over all $n_{\text{input}}$-qubit states $|\psi\rangle$. This is equal to 
+\[
+\min_{|\psi\rangle}\frac{1}{2M}\left(1-\text{AP}(\mathcal{C}_{x},|\psi\rangle)\right)\geq\frac{1}{3M}
+\]
+where we used the fact that $\text{AP}\left(\mathcal{C}_{x},|\psi\rangle\right)\leq\frac{1}{3}$ for all $|\psi\rangle$. Likewise, every state in the second block can be written as \eq{block2} for some state $|\psi\rangle$, and the minimum eigenvalue within this block is 
+\[
+\min_{|\psi\rangle}\frac{1}{2M}\left(1-\text{AP}(\mathcal{C}_{x},|\psi\rangle)^{*}\right)\geq\frac{1}{3M}
+\]
+(since $\text{AP}(\mathcal{C}_{x},|\psi\rangle)^{*}=\text{AP}(\mathcal{C}_{x},|\psi\rangle)\leq\frac{1}{3}$). Thus we see that $H_{B}|_{S_{A}}$ has an empty nullspace, so its smallest eigenvalue is equal to its smallest nonzero eigenvalue, namely 
+\[
+\gamma(H_{B}|_{S_{A}})\geq\frac{1}{3M}.
+\]
+Now applying \lem{npl} using this bound, the fact that $\left\Vert H_{B}\right\Vert =1$, and the fact that $\gamma(H_{A})\geq\frac{1}{20M^{3}n}$ (from equation \eq{lowerbound_uptoinput}), we get 
+\[
+\gamma(A_{x}-e_{1}\cdot\II)\geq\frac{\frac{1}{60M^{4}n}}{\frac{1}{20M^{3}n}+\frac{1}{3M}+1}\geq\frac{1}{120M^{4}n}.
+\]
+Since $H_{B}|_{S_{A}}$ has an empty nullspace, $A_{x}-e_{1}\cdot\II$ has an empty nullspace, and this is a lower bound on its smallest eigenvalue.
 
 \end{document}

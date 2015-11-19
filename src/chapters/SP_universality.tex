@@ -44,7 +44,7 @@ form
 \langle x,q|\text{sc}_{j}(k)\rangle=e^{-ikx}\delta_{qj}+e^{ikx}S_{qj}(k)\]
  for each $k\in(-\pi,0)$. 
 
-Before delving into the proof, we first establish that the state $|\alpha^{j}(t)\rangle$ is approximately normalized. This state is not normalized at all times $t$. However, $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\O(L^{-1})$, as we now show:
+Before delving into the proof, we first establish that the state $|\alpha^{j}(t)\rangle$ is approximately normalized. This state is not normalized at all times $t$. However, $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\OO(L^{-1})$, as we now show:
 \begin{align*}
 \langle\alpha^{j}(t)|\alpha^{j}(t)\rangle & =\frac{1}{L} \sum_{x=1}^{\infty}\left|e^{-ikx}R(x-\left\lfloor 2t\sin k\right\rfloor)+S_{jj}(k)e^{ikx}R(-x-\left\lfloor 2t\sin k\right\rfloor)\right|^{2} \\
  &\quad   +\frac{1}{L}\sum_{q\neq j}\sum_{x=1}^{\infty}|S_{qj}(k)|^{2} R(-x-\left\lfloor 2t\sin k\right\rfloor) \\
@@ -54,7 +54,7 @@ Before delving into the proof, we first establish that the state $|\alpha^{j}(t)
  	\left(e^{-2ikx}S_{jj}^{\ast}(k)\! +\! e^{2ikx}S_{jj}(k)\right)
    R(x\! -\! \left\lfloor 2t\sin k\right\rfloor)
    R(-x\! -\!\left\lfloor 2t\sin k\right\rfloor)
-   \! +\!\O(L^{-1})
+   \! +\!\OO(L^{-1})
 \end{align*}
 where we have used unitarity of $S$ in the second step.
 When it is nonzero, the second term can be written as
@@ -71,9 +71,9 @@ S_{jj}(k)e^{2ik} \frac{e^{2ikb}-1}{e^{2ik}-1} \right|\\
  & \leq \frac{2}{L|{\sin k}|} .
 \end{align*}
 
-Thus we have $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\O(L^{-1})$.
+Thus we have $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\OO(L^{-1})$.
 
-\begin{proof}[Proof of \thm{singlepart}]
+\begin{proof}[Proof of {\thm{singlepart}}]
 Define
 \[
 |\psi^{j}(t)\rangle=e^{-iH_{G}^{(1)}t}|\psi^{j}(0)\rangle
