@@ -16,6 +16,9 @@
 \usepackage{subfiles}
 \usepackage[margin=1in]{geometry}
 \usepackage{thm-restate}
+\usepackage{mdframed}
+\usepackage[lofdepth,lotdepth,labelformat=simple]{subfig}
+\usepackage{enumitem}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Print/Online Version
@@ -84,6 +87,7 @@
 \newcommand{\fig}[1]{\hyperref[fig:#1]{Figure~\ref*{fig:#1}}}
 \newcommand{\figs}[1]{\hyperref[fig:#1]{Figures~\ref*{fig:#1}}}
 \newcommand{\propo}[1]{\hyperref[prop:#1]{Proposition~\ref*{fig:#1}}}
+\newcommand{\subfig}[1]{\protect\subref{fig:#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bra/Ket Macros
@@ -173,5 +177,9 @@
 \newcommand{\XX}{\mathrm{X}}
 \newcommand{\CZ}{\mathrm{CZ}}
 \newcommand{\CNOT}{\mathrm{CNOT}}
+\DeclareMathOperator{\In}{In}
+\DeclareMathOperator{\Cube}{Cube}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\new}{new}
 
 \newcommand{\Had}{\mathrm{H}}

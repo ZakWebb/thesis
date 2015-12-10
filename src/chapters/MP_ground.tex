@@ -1199,17 +1199,2827 @@ There are no frustration-free states with two or more particles, i.e., $\lambda_
 
 
 \subsection{Gate graph for a given circuit}
+
+For any $n$-qubit, $M$-gate verification circuit $\mathcal{C}_{X}$ of the form described above, we associate a gate graph $G_X$. The gate diagram for $G_X$ is built using the gadgets described in \sec{Gadgets}; specifically, we use $M$ two-qubit gadgets and $2(n-1)$ boundary gadgets. Since each two-qubit gadget and each boundary gadget contains $32$ diagram elements, the total number of diagram elements in $G_X$ is $R=32(M+2n-2)$.
+
+We now present the construction of the gate diagram for $G_X$.  We also describe some gate graphs obtained as intermediate steps that are used in our analysis in \sec{Proof-of-Theorem}. The reader may find this description easier to follow by looking ahead to \fig{step-by-step}, which illustrates this construction for a specific $3$-qubit circuit.
+
+\begin{enumerate}
+\item \textbf{Draw a grid} with columns labeled $j=0,1,\ldots,M+1$ and rows labeled $i=1,\ldots,n$ (this grid is only used to help describe the diagram).
+\item \textbf{Place gadgets in the grid to mimic the quantum circuit.}
+For each $j=1,\ldots,M$, place a gadget for the two-qubit gate $U_j$ between rows $1$ and $s(j)$ in the $j$th column. Place boundary gadgets in rows $i=2,\ldots,n$ of column $0$ and in the same rows of column $M+1$. Write $G_{1}$ for the gate graph associated with the resulting diagram.
+\item \textbf{Connect the nodes within each row.}
+First add edges connecting the nodes in rows $i=2,\ldots,n$; call the resulting gate graph $G_{2}$. Then add edges connecting the nodes in row $1$; call the resulting gate graph $G_{3}$.
+\item \textbf{Add self-loops to the boundary gadgets.}
+In this step we add self-loops to enforce initialization of ancillas (at the beginning) and the proper output of the circuit (at the end). For each row $k=n_{\text{in}}+1,\ldots,n$, add a self-loop to node $\delta$ (as shown in  \fig{GVbdy}) of the corresponding boundary gadget in column $r=0$, giving the gate diagram for $G_{4}$. Finally, add a self-loop to node $\alpha$ of the boundary gadget (as in \fig{GVbdy}) in row %$k=$
+$2$ and column $M+1$, giving the gate diagram for $G_X$.
+\end{enumerate}
+
+\fig{step-by-step} illustrates the step-by-step construction of $G_X$ using a simple $3$-qubit circuit with four gates 
+\[
+\CNOT_{12}\left(\CNOT_{13}HT\otimes\II\right)\CNOT_{21}\CNOT_{13}.
+\]
+In this example, two of the qubits are input qubits (so $n_{\text{in}}=2$), while the third qubit is an ancilla 
+%that is 
+initialized to $|0\rangle$.
+% at the start of the computation. 
+Following the convention described in \sec{Universality}, we take qubit $2$ to be the output qubit. (In this example the circuit is not meant to compute anything interesting; its only purpose is to illustrate our method of constructing a gate graph).
+
+%\begin{figure}
+%\centering \subfloat[][]{ \label{fig:G1}
+%\begin{tikzpicture}[scale=.8,yscale=.8]
+%  
+%  % Gray Grid Lines 
+%\foreach \y in {2,4}
+%{   
+%\draw[draw=black!20] (0,\y cm) -- (15.7 cm, \y cm); 
+%} 
+%\foreach \x in {2.618,5.236,7.854,10.472,13.09}
+%{   
+%\draw[draw=black!20] (\x cm, 0cm) -- (\x cm, 6cm); 
+%}
+%\setcounter{mycount}{1}; 
+%\foreach \y in {5,3,1}
+%{   
+%\node at (-.6,\y) {$i = \arabic{mycount}$\addtocounter{mycount}{1}}; 
+%}
+%\foreach \x in {0, ...,5}
+%{   
+%\node at ( 2.618*\x + 1.31,6.3) {$j = \x$}; 
+%}
+%  % Boundary Graphs
+%\foreach \xscope /\scale in {0.5/1,15.2/-1}
+%{ 
+%	\foreach \yscope in {1.81,3.81}
+%	{    
+%		\begin{scope}[yshift = \yscope cm,xshift = \xscope cm,xscale=\scale]     
+%		\draw[rounded corners = .75mm,thick] (0,0) -- (.6,0) -- (.6,-.5) -- (1.4,-.5) -- (1.4,-1.618) -- (0,-1.618) -- cycle;                  \draw[fill=black] (1,-.5) circle (.66mm);             
+%		\draw[fill=black] (1.4,-.81) circle (.66mm);       
+%		\draw[fill=black] (1.4,-1.41) circle (.66mm);       
+%		\draw[fill=black] (1,-1.618) circle (.66mm);
+%        \node at (.7,-1.11) {\large Bnd};   
+%		\end{scope}
+%	}
+%}  
+%    % Gate Graphs   
+%\setcounter{mycount}{1}   \foreach \ybottom/ \control /\unitary in {.19/1/1,2.19/0/1,.19/1/HT,2.19/1/1}
+%{   
+%\begin{scope}[xshift = \value{mycount}*2.618 cm + .31cm]     
+%\begin{scope}[xshift=2cm,xscale=-1]     
+%\draw[rounded corners = .75mm,thick,fill=white] (0cm,\ybottom cm) -- (2cm, \ybottom cm)-- (2cm,\ybottom cm + 1.118cm) -- (1.2cm, \ybottom cm + 1.118cm) -- (1.2cm, 4.5cm)-- (2cm, 4.5cm) -- (2cm, 5.62 cm) -- (0cm, 5.62cm) -- (0cm, 4.5cm) -- (.6cm, 4.5cm)            -- (.6cm, \ybottom cm + 1.118cm) -- (0cm, \ybottom cm + 1.118cm) -- cycle; 
+%% Inner Circuit/Unitary Matrix   
+%\draw (.15cm, 5.06cm) -- (1.85cm, 5.06cm);     
+%\draw (.15cm, \ybottom cm + .56 cm) -- (1.85cm, \ybottom cm + .56 cm);     
+%\draw (.9cm, 5.06cm) -- (.9cm,\ybottom cm + .56 cm);          
+%\foreach \x in {0,2}
+%{     
+%	\foreach \y in {5.41,4.81,\ybottom + .81,\ybottom + .21}
+%	{       
+%		\draw[fill=black] (\x,\y) circle (.66mm);     
+%	}
+%}          
+%\if\control1
+%{       
+%\draw[rounded corners=.75mm,fill=white] (1.12cm,4.75cm) rectangle (1.78cm, 5.37cm);       
+%\node at (1.45,5.06) {\scriptsize $\unitary$};       
+%\draw[fill=black] (.9, 5.06) circle (.66mm);       
+%\begin{scope}[yshift = \ybottom cm]         
+%\draw[fill=white] (.9,.56) circle (1.2mm);         
+%\draw (.78,.56) -- (1.02,.56);         
+%\draw (.9,.44) -- (.9,.68);       
+%\end{scope}     
+%}
+%\else
+%{       
+%\draw[fill=black] (.9,\ybottom+.56) circle (.66mm);       
+%\draw[fill=white] (.9,5.06) circle (1.2mm);       
+%\draw (.78,5.06) -- (1.02,5.06);       
+%\draw (.9,4.94) -- (.9,5.18);     
+%}\fi     
+%\end{scope}   
+%\end{scope}   
+%\addtocounter{mycount}{1}; 
+%}
+%\end{tikzpicture}} 
+%% \vspace{0.1cm}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% % The Example Composition Graph Mark 2 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subfloat[][]{ \label{fig:G2}
+%\begin{tikzpicture}[scale=.8,yscale=.8]
+%     % Gray Grid Lines
+%\foreach \y in {2,4}
+%{   
+%\draw[draw=black!20] (0,\y cm) -- (15.7 cm, \y cm); 
+%} 
+%\foreach \x in {2.618,5.236,7.854,10.472,13.09}
+%{   
+%\draw[draw=black!20] (\x cm, 0cm) -- (\x cm, 6cm); 
+%}
+%\setcounter{mycount}{1}; 
+%\foreach \y in {5,3,1}
+%{   
+%\node at (-.6,\y) {$i = \arabic{mycount}$\addtocounter{mycount}{1}}; 
+%}
+%\foreach \x in {0, ...,5}
+%{   
+%\node at ( 2.618*\x + 1.31,6.3) {$j = \x$}; 
+%}
+%  % Lower Links
+%\foreach \y in {.4,1,2.4,3}
+%{   
+%\draw (1.9,\y) -- (13.8,\y); 
+%}
+%  % Boundary Graphs
+%\foreach \xscope /\scale in {0.5/1,15.2/-1}
+%{ 
+%	\foreach \yscope in {1.81,3.81}
+%	{    
+%		\begin{scope}[yshift = \yscope cm,xshift = \xscope cm,xscale=\scale]     
+%		\draw[rounded corners = .75mm,thick] (0,0) -- (.6,0) -- (.6,-.5) -- (1.4,-.5) -- (1.4,-1.618) -- (0,-1.618) -- cycle; 
+%        \draw[fill=black] (1,-.5) circle (.66mm);             
+%		\draw[fill=black] (1.4,-.81) circle (.66mm);       
+%		\draw[fill=black] (1.4,-1.41) circle (.66mm);       
+%		\draw[fill=black] (1,-1.618) circle (.66mm);
+%        \node at (.7,-1.11) {\large Bnd};   
+%		\end{scope}
+%	}
+%}     
+% % Gate Graphs  
+%\setcounter{mycount}{1}   \foreach \ybottom/ \control /\unitary in {.19/1/1,2.19/0/1,.19/1/HT,2.19/1/1}
+%{   
+%\begin{scope}[xshift = \value{mycount}*2.618 cm + .31cm]     
+%\begin{scope}[xshift=2cm,xscale=-1]     
+%\draw[rounded corners = .75mm,thick,fill=white] (0cm,\ybottom cm) -- (2cm, \ybottom cm)-- (2cm,\ybottom cm + 1.118cm) -- (1.2cm, \ybottom cm + 1.118cm) -- (1.2cm, 4.5cm)-- (2cm, 4.5cm) -- (2cm, 5.62 cm) -- (0cm, 5.62cm) -- (0cm, 4.5cm) -- (.6cm, 4.5cm)            -- (.6cm, \ybottom cm + 1.118cm) -- (0cm, \ybottom cm + 1.118cm) -- cycle;
+%% Inner Circuit/Unitary Matrix   
+% \draw (.15cm, 5.06cm) -- (1.85cm, 5.06cm);     
+%\draw (.15cm, \ybottom cm + .56 cm) -- (1.85cm, \ybottom cm + .56 cm);     
+%\draw (.9cm, 5.06cm) -- (.9cm,\ybottom cm + .56 cm);          
+%\foreach \x in {0,2}
+%{     
+%	\foreach \y in {5.41,4.81,\ybottom + .81,\ybottom + .21}
+%	{       
+%		\draw[fill=black] (\x,\y) circle (.66mm);     
+%	}
+%}          
+%\if\control1
+%{       
+%\draw[rounded corners=.75mm,fill=white] (1.12cm,4.75cm) rectangle (1.78cm, 5.37cm);       
+%\node at (1.45,5.06) {\scriptsize $\unitary$};       
+%\draw[fill=black] (.9, 5.06) circle (.66mm);       
+%\begin{scope}[yshift = \ybottom cm]         
+%\draw[fill=white] (.9,.56) circle (1.2mm);         
+%\draw (.78,.56) -- (1.02,.56);         
+%\draw (.9,.44) -- (.9,.68);       
+%\end{scope}     
+%}
+%\else
+%{       
+%\draw[fill=black] (.9,\ybottom+.56) circle (.66mm);       
+%\draw[fill=white] (.9,5.06) circle (1.2mm);       
+%\draw (.78,5.06) -- (1.02,5.06);       
+%\draw (.9,4.94) -- (.9,5.18);     
+%}\fi     
+%\end{scope}   
+%\end{scope}   
+%\addtocounter{mycount}{1}; 
+%}
+%\end{tikzpicture}}
+%
+%% \vspace{0.1cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% % The Example Composition Graph Mark 3 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subfloat[][]{ \label{fig:G3}
+%\begin{tikzpicture}[scale=.8,yscale=.8]
+%  
+%  % Gray Grid Lines 
+%\foreach \y in {2,4}
+%{   
+%\draw[draw=black!20] (0,\y cm) -- (15.7 cm, \y cm); 
+%} 
+%\foreach \x in {2.618,5.236,7.854,10.472,13.09}
+%{   
+%\draw[draw=black!20] (\x cm, 0cm) -- (\x cm, 6cm); 
+%} 
+%\setcounter{mycount}{1}; 
+%\foreach \y in {5,3,1}
+%{   
+%\node at (-.6,\y) {$i = \arabic{mycount}$\addtocounter{mycount}{1}}; 
+%}
+%\foreach \x in {0, ...,5}
+%{   
+%\node at ( 2.618*\x + 1.31,6.3) {$j = \x$}; 
+%}
+%  % Lower Links
+%\foreach \y in {.4,1,2.4,3}
+%{   
+%\draw (1.9,\y) -- (13.8,\y); 
+%}
+%  % Upper Links
+%\foreach \y in {5.41,4.81}
+%{   
+%\draw (4.93,\y) -- (10.78,\y); 
+%}
+%  % Boundary Graphs
+%\foreach \xscope /\scale in {0.5/1,15.2/-1}
+%{ 
+%	\foreach \yscope in {1.81,3.81}
+%	{    
+%		\begin{scope}[yshift = \yscope cm,xshift = \xscope cm,xscale=\scale]     
+%		\draw[rounded corners = .75mm,thick] (0,0) -- (.6,0) -- (.6,-.5) --(1.4,-.5) -- (1.4,-1.618) -- (0,-1.618) -- cycle;
+%        \draw[fill=black] (1,-.5) circle (.66mm);    
+%		\draw[fill=black] (1.4,-.81) circle (.66mm);       
+%		\draw[fill=black] (1.4,-1.41) circle (.66mm);       
+%		\draw[fill=black] (1,-1.618) circle (.66mm);
+%        \node at (.7,-1.11) {\large Bnd};   
+%		\end{scope}
+%	}
+%}    
+%  % Gate Graphs  
+% \setcounter{mycount}{1}   \foreach \ybottom/ \control /\unitary in {.19/1/1,2.19/0/1,.19/1/HT,2.19/1/1}
+%{   
+%\begin{scope}[xshift = \value{mycount}*2.618 cm + .31cm]     
+%\begin{scope}[xshift=2cm,xscale=-1]     
+%\draw[rounded corners = .75mm,thick,fill=white] (0cm,\ybottom cm) -- (2cm, \ybottom cm)-- (2cm,\ybottom cm + 1.118cm) -- (1.2cm, \ybottom cm + 1.118cm) -- (1.2cm, 4.5cm)-- (2cm, 4.5cm) -- (2cm, 5.62 cm) -- (0cm, 5.62cm) -- (0cm, 4.5cm) -- (.6cm, 4.5cm)            -- (.6cm, \ybottom cm + 1.118cm) -- (0cm, \ybottom cm + 1.118cm) -- cycle;
+%          % Inner Circuit/Unitary Matrix   
+% \draw (.15cm, 5.06cm) -- (1.85cm, 5.06cm);     
+%\draw (.15cm, \ybottom cm + .56 cm) -- (1.85cm, \ybottom cm + .56 cm);     
+%\draw (.9cm, 5.06cm) -- (.9cm,\ybottom cm + .56 cm);          
+%\foreach \x in {0,2}
+%{     
+%	\foreach \y in {5.41,4.81,\ybottom + .81,\ybottom + .21}
+%	{       
+%		\draw[fill=black] (\x,\y) circle (.66mm);     
+%	}
+%}          
+%\if\control1
+%{       
+%\draw[rounded corners=.75mm,fill=white] (1.12cm,4.75cm) rectangle (1.78cm, 5.37cm);       
+%\node at (1.45,5.06) {\scriptsize $\unitary$};       
+%\draw[fill=black] (.9, 5.06) circle (.66mm);       
+%\begin{scope}[yshift = \ybottom cm]         
+%\draw[fill=white] (.9,.56) circle (1.2mm);         
+%\draw (.78,.56) -- (1.02,.56);         
+%\draw (.9,.44) -- (.9,.68);       
+%\end{scope}     
+%}
+%\else
+%{       
+%\draw[fill=black] (.9,\ybottom+.56) circle (.66mm);       
+%\draw[fill=white] (.9,5.06) circle (1.2mm);       
+%\draw (.78,5.06) -- (1.02,5.06);    
+%\draw (.9,4.94) -- (.9,5.18);     
+%}\fi     
+%\end{scope}   
+%\end{scope}   
+%\addtocounter{mycount}{1}; 
+%}
+%\end{tikzpicture}} 
+%% \vspace{0.1cm}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% % The Example Composition Graph Mark 4 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subfloat[][]{ \label{fig:GX}
+%\begin{tikzpicture}[scale=.8,yscale=.8]
+%    % Gray Grid Lines 
+%\foreach \y in {2,4}
+%{   
+%\draw[draw=black!20] (0,\y cm) -- (15.7 cm, \y cm); 
+%} 
+%\foreach \x in {2.618,5.236,7.854,10.472,13.09}
+%{   
+%\draw[draw=black!20] (\x cm, 0cm) -- (\x cm, 6cm); 
+%}
+%\setcounter{mycount}{1}; 
+%\foreach \y in {5,3,1}
+%{   
+%\node at (-.6,\y) {$i = \arabic{mycount}$\addtocounter{mycount}{1}}; 
+%}
+%\foreach \x in {0, ...,5}
+%{   
+%\node at ( 2.618*\x + 1.31,6.3) {$j = \x$}; 
+%}
+%  % Lower Links
+%\foreach \y in {.4,1,2.4,3}
+%{   
+%\draw (1.9,\y) -- (13.8,\y); 
+%}
+%  % Upper Links
+%\foreach \y in {5.41,4.81}
+%{   
+%\draw (4.93,\y) -- (10.78,\y); 
+%}
+%  % Boundary Graphs 
+%\foreach \xscope /\scale in {0.5/1,15.2/-1}
+%{ 
+%	\foreach \yscope in {1.81,3.81}
+%	{    
+%		\begin{scope}[yshift = \yscope cm,xshift = \xscope cm,xscale=\scale]     
+%		\draw[rounded corners = .75mm,thick] (0,0) -- (.6,0) -- (.6,-.5) --(1.4,-.5) -- (1.4,-1.618) -- (0,-1.618) -- cycle; 
+%        \draw[fill=black] (1,-.5) circle (.66mm);             
+%		\draw[fill=black] (1.4,-.81) circle (.66mm);       
+%		\draw[fill=black] (1.4,-1.41) circle (.66mm);       
+%		\draw[fill=black] (1,-1.618) circle (.66mm);
+%        \node at (.7,-1.11) {\large Bnd};   
+%		\end{scope}
+%	}
+%}   
+%   % Gate Graphs 
+% \setcounter{mycount}{1}   \foreach \ybottom/ \control /\unitary in {.19/1/1,2.19/0/1,.19/1/HT,2.19/1/1}
+%{   
+%\begin{scope}[xshift = \value{mycount}*2.618 cm + .31cm]     
+%\begin{scope}[xshift=2cm,xscale=-1]     
+%\draw[rounded corners = .75mm,thick,fill=white] (0cm,\ybottom cm) -- (2cm, \ybottom cm)-- (2cm,\ybottom cm + 1.118cm) -- (1.2cm, \ybottom cm + 1.118cm) -- (1.2cm, 4.5cm)-- (2cm, 4.5cm) -- (2cm, 5.62 cm) -- (0cm, 5.62cm) -- (0cm, 4.5cm) -- (.6cm, 4.5cm)-- (.6cm, \ybottom cm + 1.118cm) -- (0cm, \ybottom cm + 1.118cm) -- cycle;
+%% Inner Circuit/Unitary Matrix 
+%\draw (.15cm, 5.06cm) -- (1.85cm, 5.06cm);     
+%\draw (.15cm, \ybottom cm + .56 cm) -- (1.85cm, \ybottom cm + .56 cm);     
+%\draw (.9cm, 5.06cm) -- (.9cm,\ybottom cm + .56 cm);          
+%\foreach \x in {0,2}
+%{     
+%	\foreach \y in {5.41,4.81,\ybottom + .81,\ybottom + .21}
+%	{       
+%		\draw[fill=black] (\x,\y) circle (.66mm);     
+%	}
+%}          
+%\if\control1
+%{       
+%\draw[rounded corners=.75mm,fill=white] (1.12cm,4.75cm) rectangle (1.78cm, 5.37cm);       
+%\node at (1.45,5.06) {\scriptsize $\unitary$};       
+%\draw[fill=black] (.9, 5.06) circle (.66mm);       
+%\begin{scope}[yshift = \ybottom cm]         
+%\draw[fill=white] (.9,.56) circle (1.2mm);         
+%\draw (.78,.56) -- (1.02,.56);         
+%\draw (.9,.44) -- (.9,.68);       
+%\end{scope}     
+%}
+%\else
+%{       
+%\draw[fill=black] (.9,\ybottom+.56) circle (.66mm);       
+%\draw[fill=white] (.9,5.06) circle (1.2mm);       
+%\draw (.78,5.06) -- (1.02,5.06);       
+%\draw (.9,4.94) -- (.9,5.18);     
+%}\fi     
+%\end{scope}   
+%\end{scope}   
+%\addtocounter{mycount}{1}; 
+%}
+%% self-loops
+%\draw[looseness=200] (1.5,.19) to [out=-60,in=-120] (1.5,.2);   
+%\draw[looseness=200] (14.2,3.31) to [out=60,in=120] (14.2,3.30);
+%\end{tikzpicture}}
+%
+%\caption{Step-by-step construction of the gate diagram for $G_X$ for the three-qubit example circuit described in the text. 
+%\subfig{G1} The gate diagram for $G_{1}$.
+%\subfig{G2} Add edges in all rows except the first to obtain the gate diagram for $G_{2}$.
+%\subfig{G3} Add edges in the first row to obtain the gate diagram for $G_{3}$.
+%\subfig{GX} Add self-loops to the boundary gadgets to obtain the gate diagram for $G_X$ (the diagram for $G_{4}$ in this case differs from \subfig{GX} by removing the self-loop in column $5$; this diagram is not shown).
+%\label{fig:step-by-step}
+%}
+%\end{figure}
+
+We made some choices in designing this circuit-to-gate graph mapping that may seem arbitrary (e.g., we chose to place boundary gadgets in each row except the first). We have tried to achieve a balance between simplicity of description and ease of analysis, but we expect that other choices could be made to work.
+
+%-----------------------------------------------------------------------------
+\subsubsection{Notation for $G_X$}
+
+We now introduce some notation that allows us to easily refer to a subset $\mathcal{L}$ of the diagram elements in the gate diagram for $G_X$.
+
+Recall from \sec{Gadgets} that each two-qubit gate gadget and each boundary gadget is composed of $32$ diagram elements. This can be seen by looking at \fig{GVucnot} and noting (from \fig{W_gadget}) that each move-together gadget comprises 6 diagram elements.
+
+For each of the two-qubit gate gadgets in the gate diagram for $G_X$, we focus our attention on the four diagram elements labeled $1$--$4$ in \fig{GVucnot}. In total there are $4M$ such diagram elements in the gate diagram for $G_X$: in each column $j\in\{1,\ldots,M\}$ there are two in row $1$ and two in row $s(j)$. When $U_j\in\{\CNOT_{1s(j)},\CNOT_{1s(j)}\left(H\otimes\II\right),\CNOT_{1s(j)}\left(HT\otimes\II\right)\}$ the diagram elements labeled $1,2$ are in row $1$ and those labeled $3,4$ are in row $s(j)$; when $U_j=\CNOT_{s(j) 1}$ those labeled $1,2$ are in row $s(j)$ and those labeled $3,4$ are in row $1$. We denote these diagram elements by triples $(i,j,d)$. Here $i$ and $j$ indicate (respectively) the row and column of the grid in which the diagram element is found, and $d$ indicates whether it is the leftmost ($d=0$) or rightmost ($d=1$) diagram element in this row and column. We define 
+\begin{equation}
+\mathcal{L}_{\mathrm{gates}}=\left\{ \left(i,j,d\right)\colon i\in\{1,s(j)\},\; j\in[M],\; d\in\{0,1\}\right\} \label{eq:L_gates}
+\end{equation}
+to be the set of all such diagram elements.
+
+For example, in \fig{step-by-step} the first gate is 
+\[
+  U_1=\CNOT_{13},
+\]
+so the gadget from \fig{GVucnot} (with $\tilde U=1$) appears between rows $1$ and $3$ in the first column. The diagram elements labeled $1,2,3,4$ from \fig{GVucnot} are denoted by $(1,1,0), (1,1,1), (3,1,0), (3,1,1)$, respectively. The second gate in \fig{step-by-step} is $U_2=\CNOT_{21}$, so the gadget from \fig{GVcnot} (with $\tilde U=1$) appears between rows $2$ and $1$; in this case the diagram elements labeled $1,2,3,4$ in \fig{GVucnot} are denoted by $(2,2,0),(2,2,1),(1,2,0),(1,2,1)$, respectively.
+
+We also define notation for the boundary gadgets in $G_X$. For each boundary gadget. we focus on a single diagram element, labeled $4$ in \fig{GVbdy}. For the left hand-side and right-hand side boundary gadgets, respectively, we denote these diagram elements as
+\begin{align}
+ & \mathcal{L}_{\text{in}}=\left\{ (i,0,1)\colon i\in\{2,\ldots,n\}\right\} \label{eq:L_in}\\
+ & \mathcal{L}_{\text{out}}=\left\{ (i,M+1,0)\colon i\in\{2,\ldots,n\}\right\} .\label{eq:L_out}
+\end{align}
+ 
+\begin{definition}
+\label{defn:scriptL}Let $\mathcal{L}$ be the set of diagram
+elements
+\[
+\mathcal{L}=\mathcal{L}_{\text{in}}\cup\mathcal{L}_{\mathrm{gates}}\cup\mathcal{L}_{\text{out}}
+\]
+where $\mathcal{L}_{\text{in}}$, $\mathcal{L}_{\mathrm{gates}}$, and $\mathcal{L}_{\text{out}}$ are given by equations \eq{L_in}, \eq{L_gates}, and \eq{L_out}, respectively.
+\end{definition}
+
+Finally, it is convenient to define a function $F$ that describes horizontal movement within the rows of the gate diagram for $G_X$. The function $F$ takes as input a two-qubit gate $j\in[M]$, a qubit $i\in\{2,\ldots,n\}$, and a single bit and outputs a diagram element from the set $\mathcal{L}$. If the bit is $0$ then $F$ outputs the diagram element in row $i$ that appears in a column $0\leq k<j$ with $k$ maximal (i.e., the closest diagram element in row $i$ to the left of column $j$):
+\begin{equation}
+F(i,j,0)=\begin{cases}
+(i,k,1) & \text{ where }1\leq k<j\text{ is the largest }k\text{ such that }s(k)=i\text{, if it exists}\\
+(i,0,1) & \text{ otherwise.}
+\end{cases}\label{eq:F_bit0}
+\end{equation}
+On the other hand, if the bit is $1$, then $F$ outputs the diagram element in row $i$ that appears in a column $j<k\leq M+1$ with $k$ minimal (i.e., the closest diagram element in row $i$ to the right of column $j$). 
+\begin{equation}
+F(i,j,1)=\begin{cases}
+(i,k,0) & \text{ where }j<k\leq M\text{ is the smallest }k\text{ such that }s(k)=j\text{, if it exists}\\
+(i,M+1,0) & \text{ otherwise}.
+\end{cases}\label{eq:F_bit1}
+\end{equation}
+
 \subsubsection{Occupancy constraints graph}
+
+In this Section we define an occupancy constraints graph $G_Xoc$. Along with $G_X$ and the number of particles $n$, this determines a subspace $\mathcal{I}(G_X,G_Xoc,n)\subset\mathcal{Z}_{n}(G_X)$ through equation \eq{occup_space_defn}. We will see in \sec{Proof-of-Theorem} how low-energy states of the Bose-Hubbard model that live entirely within this subspace encode computations corresponding to the quantum circuit $\mathcal{C}_{X}$. This fact is used in the proof of \thm{main_thm_with_occ_constraints}, which shows that the smallest eigenvalue $\lambda_{n}^{1}(G_X,G_Xoc)$ of
+\[
+H(G_X,G_Xoc,n)=H(G_X,n)\big|_{\mathcal{I}(G_X,G_Xoc,n)}
+\]
+is related to the maximum acceptance probability of the circuit.
+
+We encode quantum data in the locations of $n$ particles in the graph $G_X$ as follows. Each particle encodes one qubit and is located in one row of the graph $G_X$. Since all two-qubit gates in $\mathcal{C}_{X}$ involve the first qubit, the location of the particle in the first row determines how far along the computation has proceeded. We design the occupancy constraints graph to ensure that low-energy states of $H(G_X,G_Xoc,n)$ have exactly one particle in each row (since there are $n$ particles and $n$ rows), and so that the particles in rows $2,\ldots,n$ are not too far behind or ahead of the particle in the first row. To avoid confusion, we emphasize that not \emph{all} states in the subspace $\mathcal{I}(G_X,G_Xoc,n)$ have the desired properties---for example, there are states in this subspace with more than one particle in a given row. We see in the next Section that states with low energy for $H(G_X,n)$ that also satisfy the occupancy constraints (i.e., low-energy states of $H(G_X,G_Xoc,n)$) have the desired properties.
+
+We now define $G_Xoc$, which is a simple graph with a vertex for each diagram element in $G_X$. Each edge in $G_Xoc$ places a constraint on the locations of particles in $G_X$. The graph $G_Xoc$ only has edges between diagram elements in the set $\mathcal{L}$ from \defn{scriptL}; we define the edge set $E(G_Xoc)$ by specifying pairs of diagram elements $L_{1},L_{2}\in\mathcal{L}$. We also indicate (in bold) the reason for choosing the constraints, which will become clearer in \sec{Proof-of-Theorem}.
+\begin{enumerate}
+\item \textbf{No two particles in the same row.} For each $i\in[n]$ we add constraints between diagram elements $(i,j,c)\in\mathcal{L}$ and $(i,k,d)\in\mathcal{L}$ in row $i$ but in different columns, i.e.,
+\begin{equation}
+\{\left(i,j,c\right),\left(i,k,d\right)\}\in E(G_Xoc)\text{ whenever }j\neq k.\label{eq:occ_constraints_type1}
+\end{equation}
+\item \textbf{Synchronization with the particle in the first row.} For each $j\in[M]$ we add constraints between row $1$ and row $s(j)$:
+\[
+\{(1,j,c),(s(j),k,d)\}\in E(G_Xoc)\text{ whenever }k\neq j\text{ and }(s(j),k,d)\neq F(s(j),j,c).
+\]
+For each $j\in[M]$ we also add constraints between row $1$ and rows $i\in[n]\setminus\{1,s(j)\}$:
+\[
+\{(1,j,c),(i,k,d)\}\in E(G_Xoc)\text{ whenever }(i,k,d)\notin\{F(i,j,0),F(i,j,1)\}.
+\]
+\end{enumerate}
+
+
+%=============================================================================
+%  Proof
+%=============================================================================
 
 \section{Proof of QMA-hardness for MPQW ground energy}
 
-\subsection{Overview}
+\thm{main_thm_with_occ_constraints} bounds the smallest eigenvalue $\lambda_n^{1}(G_X,G_Xoc)$ of $H(G_X,G_Xoc,n)$. To prove the Theorem, we investigate a sequence of Hamiltonians starting with $H(G_{1},n)$ and $H(G_{1},G_Xoc,n)$ and then work our way up to the Hamiltonian $H(G_X,G_Xoc,n)$ by adding positive semidefinite terms.
+
+For each Hamiltonian we consider, we solve for the nullspace and the smallest nonzero eigenvalue. To go from one Hamiltonian to the next, we use the following ``Nullspace Projection Lemma,'' which was used (implicitly) in reference \cite{MLM99}. The Lemma bounds the smallest nonzero eigenvalue $\gamma(H_A+H_B)$ of a sum of positive semidefinite Hamiltonians $H_A$ and $H_B$ using knowledge of the smallest nonzero eigenvalue $\gamma(H_A)$ of $H_A$ and the smallest nonzero eigenvalue $\gamma(H_B|_S)$ of the restriction of $H_B$ to the nullspace $S$ of $H_A$.
+
+We prove the Lemma in \sec{Proof-of-Lemma_MLM}. When we apply this Lemma, we are usually interested in an asymptotic limit where $c,d\ll\left\Vert H_{B}\right\Vert $ and the right-hand side of \eq{lemma_lower_bnd} is $\Omega(\frac{cd}{\Vert H_{B}\Vert })$.
+
+Our proof strategy, using repeated applications of the Nullspace Projection Lemma, is analogous to that of reference \cite{KKR04}, where the so-called Projection Lemma was used similarly. Our technique has the advantage of not requiring the terms we add to our Hamiltonian to have ``unphysical'' problem-size dependent coefficients (it also has this advantage over the method of perturbative gadgets \cite{KKR04,JF08}). This allows us to prove results about the ``physically realistic'' Bose-Hubbard Hamiltonian. A similar technique based on Kitaev's Geometric Lemma was used recently in reference \cite{GN13} (however, that method is slightly more computation intensive, requiring a lower bound on $\gamma(H_{B})$ as well as bounds on $\gamma(H_{A})$ and $\gamma(H_{B}|_{S})$).
+
+
+\subsection{Single-particle ground-states}
+
+We begin by discussing the graphs
+\[
+G_{1},G_{2},G_{3},G_{4},G_X
+\]
+(as defined in \sec{From-circuits-to}; see \fig{step-by-step}) in more detail and deriving some properties of their adjacency matrices.
+
+The graph $G_{1}$ has a component for each of the two-qubit gates $j \in [M]$, for each of the boundary gadgets $i=2,\ldots,n$ in column $0$, and for each of the boundary gadgets $i=2,\ldots,n$ in column $M+1$. In other words 
+\begin{equation}
+G_{1}=\underbrace{\left(\bigcup_{i=2}^{n}G_{\text{bnd}}\right)}_{\text{left boundary}}\cup\underbrace{\left(\bigcup_{j=1}^{M}G_{U_j}\right)}_{\text{two-qubit gates}}\cup\underbrace{\left(\bigcup_{i=2}^{n}G_{\text{bnd}}\right)}_{\text{right boundary}}.\label{eq:G_alpha}
+\end{equation}
+We use our knowledge of the adjacency matrices of the components $G_\text{bnd}$ and $G_{U_j}$ to understand the ground space of $A(G_1)$.  Recall (from \sec{Gadgets}) that the smallest eigenvalue of $A(G_{U_j})$ is 
+\[
+e_{1}=-1-3\sqrt{2}
+\]
+(with degeneracy $16)$ which is also the smallest eigenvalue of $A(G_{\text{bnd}})$ (with degeneracy $4$). For each diagram element $L\in\mathcal{L}$ and pair of bits $z,a\in\{0,1\}$ there is an eigenstate $|\rho_{z,a}^{L}\rangle$ of $A(G_{1})$ with this minimal eigenvalue $e_{1}$. In total we get sixteen eigenstates
+\[
+|\rho_{z,a}^{(1,j,0)}\rangle,|\rho_{z,a}^{(1,j,1)}\rangle,|\rho_{z,a}^{(s(j),j,0)}\rangle,|\rho_{z,a}^{(s(j),j,1)}\rangle,\quad z,a\in\{0,1\}
+\]
+for each two-qubit gate $j\in[M]$, four eigenstates 
+\[
+|\rho_{z,a}^{(i,0,1)}\rangle,\quad z,a\in\{0,1\}
+\]
+for each boundary gadget $i\in\{2,\ldots,n\}$ in column $0$, and four eigenstates 
+\[
+|\rho_{z,a}^{(i,M+1,0)}\rangle,\quad z,a\in\{0,1\}
+\]
+for each boundary gadget $i\in\{2,\ldots,n\}$ in column $M+1$. The set 
+\[
+\left\{ |\rho_{z,a}^{L}\rangle\colon z,a\in\{0,1\},\; L\in\mathcal{L}\right\} 
+\]
+is an orthonormal basis for the ground space of $A(G_{1})$. 
+
+We write the adjacency matrices of $G_{2}$, $G_{3}$, $G_{4}$, and $G_X$ as 
+\begin{align*}
+  A(G_{2}) &= A(G_{1})+h_{1} & 
+  A(G_{4}) &= A(G_{3})+\sum_{i=n_{\text{in}}+1}^{n}h_{\text{in},i} \\
+  A(G_{3}) &= A(G_{2})+h_{2} &
+  A(G_X)   &= A(G_{4})+h_{\text{out}}.
+\end{align*}
+From step 3 of the construction of the gate diagram in \sec{The-gate-graph}, we see that $h_{1}$ and $h_{2}$ are both sums of terms of the form 
+\[
+  \left(|q,z,t\rangle+|q^{\prime},z,t^{\prime}\rangle\right)
+  \left(\langle q,z,t|+\langle q^{\prime},z,t^{\prime}|\right)\otimes\II_{j},
+\]
+where $h_1$ contains a term for each edge in rows $2,\ldots, n$ and $h_2$ contains a term for each of the $2(M-1)$ edges in the first row. The operators
+\begin{align}
+  h_{\mathrm{in},i} &= |(i,0,1),1,7\rangle\langle(i,0,1),1,7|\otimes\II &
+  h_{\text{out}} &= |(2,M+1,0),0,5\rangle\langle(2,M+1,0),0,5|\otimes\II
+\label{eq:hin_i}
+\end{align}
+correspond to the self-loops added in the gate diagram in step 4 of \sec{The-gate-graph}. 
+
+We prove that $G_1$, $G_2$, $G_3$, $G_4$, and $G_X$ are $e_1$-gate graphs.
+
+\begin{lemma}
+\label{lem:The-smallest-eigenvalues}The smallest eigenvalues of $G_{1},G_{2},G_{3},G_{4}$
+and $G_X$ are 
+\[
+\mu(G_{1})=\mu(G_{2})=\mu(G_{3})=\mu(G_{4})=\mu(G_X)=e_{1}.
+\]
+\end{lemma}
+
+\begin{proof}
+We showed in the above discussion that $\mu(G_{1})=e_{1}$. The adjacency matrices of $G_{2}$, $G_{3}$, $G_{4}$, and $G_X$ are obtained from that of $G_{1}$ by adding positive semidefinite terms ($h_{1}$, $h_{2}$, $h_{\text{in},i}$, and $h_{\text{out}}$ are all positive semidefinite). It therefore suffices to exhibit an eigenstate $|\varrho\rangle$ of $A(G_{1})$ with
+\[
+  h_{1}|\varrho\rangle
+  =h_{2}|\varrho\rangle
+  =h_{\text{in},i}|\varrho\rangle
+  =h_{\text{out}}|\varrho\rangle
+  =0
+\]
+(for each $i\in\{n_{\text{in}}+1,\ldots,n\}$). There are many states $|\varrho\rangle$ satisfying these conditions; one example is
+\[
+|\varrho\rangle = |\rho_{0,0}^{(1,1,0)}\rangle
+\]
+which is supported on vertices where $h_{1}$, $h_{2}$, $h_{\text{in},i}$, and $h_{\text{out}}$ have no support.
+\end{proof}
+
+%-----------------------------------------------------------------------------
+\subsubsection{Multi-particle Hamiltonian}
+\label{sec:Building-up-the}
+
+We now outline the sequence of Hamiltonians considered in the following Sections and describe the relationships between them. As a first step, in \sec{Configurations-and-the} we exhibit a basis $\mathcal{B}_{n}$ for the nullspace of $H(G_{1},n)$ and we prove that its smallest nonzero eigenvalue is lower bounded by a positive constant. We then discuss the restriction
+\begin{equation}
+  H(G_{1},G_Xoc,n)
+  = H(G_{1},n)\big|_{\mathcal{I}\left(G_{1},G_Xoc,n\right)}
+\label{eq:restriction}
+\end{equation}
+in \sec{Legal-configurations-and}, where we prove that a subset $\mathcal{B}_{\text{legal}}\subset\mathcal{B}_{n}$ is a basis for the nullspace of \eq{restriction}, and that its smallest nonzero eigenvalue is also lower bounded by a positive constant.
+
+For the remainder of the proof we use the Nullspace Projection Lemma (\lem{npl}) four times, using the decompositions 
+\begin{align}
+H(G_{2},G_Xoc,n) & =H(G_{1},G_Xoc,n)+H_{1}\big|_{\mathcal{I}(G_{2},G_Xoc,n)}\label{eq:H_G2}\\
+H(G_{3},G_Xoc,n) & =H(G_{2},G_Xoc,n)+H_{2}\big|_{\mathcal{I}(G_{3},G_Xoc,n)}\label{eq:H_G3}\\
+H(G_{4},G_Xoc,n) & =H(G_{3},G_Xoc,n)+\sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}\big|_{\mathcal{I}(G_{4},G_Xoc,n)}\label{eq:H_G4}\\
+H(G_X,G_Xoc,n) & =H(G_{4},G_Xoc,n)+H_{\text{out}}\big|_{\mathcal{I}(G_X,G_Xoc,n)}\label{eq:H_GC}
+\end{align}
+where 
+\begin{equation*}
+H_{1}=\sum_{w=1}^{n}h_{1}^{(w)} \qquad H_{\text{in},i}=\sum_{w=1}^{n}h_{\text{in},i}^{(w)} \qquad 
+H_{2}=\sum_{w=1}^{n}h_{2}^{(w)} \qquad  H_{\text{out}}=\sum_{w=1}^{n}h_{\text{out}}^{(w)}
+\end{equation*}
+are all positive semidefinite, with $h_{1},h_{2},h_{\text{in},i},h_{\text{out}}$ as defined in \sec{The-adjacency-matrix}. Note that in writing equations \eq{H_G2}, \eq{H_G3}, \eq{H_G4}, and \eq{H_GC}, we have used the fact (from \lem{The-smallest-eigenvalues}) that the adjacency matrices of the graphs we consider all have the same smallest eigenvalue $e_{1}$. Also note that
+\[ \mathcal{\mathcal{I}}\left(G_{i},G_Xoc,n\right)=\mathcal{\mathcal{I}}\left(G_X,G_Xoc,n\right) \] for $i\in[4]$ since the gate diagrams for each of the graphs $G_{1},G_{2},G_{3},G_{4}$ and $G_X$ have the same set of diagram elements.
+
+Let $S_{k}$ be the nullspace of $H(G_{k},G_Xoc,n)$ for $k=1,2,3,4$. Since these positive semidefinite Hamiltonians are related by adding positive semidefinite terms, their nullspaces satisfy 
+\[
+S_{4}\subseteq S_{3}\subseteq S_{2}\subseteq S_{1}\subseteq\mathcal{\mathcal{I}}\left(G_X,G_Xoc,n\right).
+\]
+We solve for $S_1=\spn(\mathcal{B}_{\text{legal}})$ in \sec{Legal-configurations-and} and we characterize the spaces $S_2,S_3$, and $S_4$ in \sec{Frustration-free-states} in the course of applying our strategy. 
+
+For example, to use the Nullspace Projection Lemma to lower bound the smallest nonzero eigenvalue of $H(G_{2},G_Xoc,n)$, we consider the restriction 
+\begin{equation}
+  \Big(H_{1}\big|_{\mathcal{I}(G_{2},G_Xoc,n)}\Big)\Big|_{S_{1}}
+  =H_{1}\big|_{S_{1}}.\label{eq:H1_restriction}
+\end{equation}
+We also solve for $S_2$, which is equal to the nullspace of \eq{H1_restriction}. To obtain the corresponding lower bounds on the smallest nonzero eigenvalues of $H(G_{k},G_Xoc,n)$ for $k=2,3,4$ and $H(G_X,G_Xoc,n)$, we consider restrictions 
+\[
+  H_{2}\big|_{S_{2}},
+  \sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}\big|_{S_{3}},\quad\text{and}\quad
+  H_{\text{out}}\big|_{S_{4}}.
+\]
+Analyzing these restrictions involves extensive computation of matrix elements. To simplify and organize these computations, we first compute the restrictions of each of these operators to the space $S_{1}$. We present the results of this computation in \sec{Matrix-elements-in}; details of the calculation can be found in \sec{matrix_els_details}. In \sec{Frustration-free-states} we proceed with the remaining computations and apply the Nullspace Projection Lemma three times using equations \eq{H_G2}, \eq{H_G3}, and \eq{H_G4}. Finally, in \sec{Completeness-and-Soundness} we apply the Lemma again using equation \eq{H_GC} and we prove \thm{main_thm_with_occ_constraints}.
+
+
 
 \subsection{Configurations}
 
+In this Section we use \lem{BH_disconnected_graphs} to solve for the nullspace of $H(G_{1},n)$, i.e., the $n$-particle frustration-free states on $G_{1}$. \lem{BH_disconnected_graphs} describes how frustration-free states for $G_1$ are built out of frustration-free states for its components.
+
+To see how this works, consider the example from \fig{G1}. In this example, with $n=3$, we construct a basis for the nullspace of $H(G_{1},3)$ by considering two types of eigenstates. First, there are frustration-free states
+\begin{equation}
+\Sym(|\rho_{z_{1},a_{1}}^{L_{1}}\rangle|\rho_{z_{2},a_{2}}^{L_{2}}\rangle|\rho_{z_{3},a_{3}}^{L_{3}}\rangle)
+\label{eq:twopart_states1}
+\end{equation}
+where $L_{k}=(i_{k},j_{k},d_{k})\in\mathcal{L}$ belong to different components of $G_{1}$. That is to say, $j_{w}\neq j_{t}$ unless $j_{w}=j_{t}\in\{0,5\}$, in which case $i_{w}\neq i_{t}$ (in this case the particles are located either at the left or right boundary, in different rows of $G_{1}$). There are also frustration-free states where two of the three particles are located in the same two-qubit gadget $J\in[M]$ and one of the particles is located in a diagram element $L_{1}$ from a different component of the graph. These states have the form
+\begin{equation}
+\Sym(|T_{z_{1},a_{1},z_{2},a_{2}}^{J}\rangle|\rho_{z_{3},a_{3}}^{L_{1}}\rangle)
+\label{eq:twopart_states2}
+\end{equation}
+where 
+\begin{equation}
+|T_{z_{1},a_{1},z_{2},a_{2}}^{J}\rangle=\frac{1}{\sqrt{2}}|\rho_{z_{1},a_{1}}^{(1,J,0)}\rangle|\rho_{z_{2},a_{2}}^{(s(J),J,0)}\rangle+\frac{1}{\sqrt{2}}\sum_{x_{1},x_{2}\in\{0,1\}}U_{J}(a_{1})_{x_{1}x_{2},z_{1}z_{2}}|\rho_{x_{1},a_{1}}^{(1,J,1)}\rangle|\rho_{x_{2},a_{2}}^{(s(J),J,1)}\rangle\label{eq:T_state}
+\end{equation}
+and $L_{1}=(i,j,k)\in\mathcal{L}$ satisfies $j\neq J$. Each of the states \eq{twopart_states1} and \eq{twopart_states2} is specified by $6$ ``data'' bits $z_{1},z_{2},z_{3},a_{1},a_{2},a_{3}\in\{0,1\}$ and a ``configuration'' indicating where the particles are located in the graph. The configuration is specified either by three diagram elements $L_{1},L_{2},L_{3}\in\mathcal{L}$ from different components of $G_{1}$ or by a two-qubit gate $J\in [M]$ along with a diagram element $L_{1}\in\mathcal{L}$ from a different component of the graph.
+
+We now define the notion of a configuration for general $n$. Informally, we can think of an $n$-particle configuration as a way of placing $n$ particles in the graph $G_{1}$ subject to the following restrictions. We first place each of the $n$ particles in a component of the graph, with the restriction that no boundary gadget may contain more than one particle and no two-qubit gadget may contain more than two particles. For each particle on its own in a component (i.e., in a component with no other particles), we assign one of the diagram elements $L\in\mathcal{L}$ associated to that component. We therefore specify a configuration by a set of two-qubit gadgets $J_{1},\ldots,J_{Y}$ that contain two particles, along with a set of diagram elements $L_{k}\in\mathcal{L}$ that give the locations of the remaining $n-2Y$ particles. We choose to order the $J$s and the $L$s so that each configuration is specified by a unique tuple $(J_{1},\ldots,J_{Y},L_{1},\ldots,L_{n-2Y})$. For concreteness, we use the lexicographic order on diagram elements in the set $\mathcal{L}$: $L_{A}=(i_{A},j_{A},d_{A})$ and $L_{B}=(i_{B},j_{B},d_{B})$ satisfy $L_{A}<L_{B}$ iff either $i_{A}<i_{B}$, or $i_{A}=i_{B}$ and $j_{A}<j_{B}$, or $(i_{A},j_{A})=(i_{B},j_{B})$ and $d_{A}<d_{B}$.
+
+\begin{definition}
+[\textbf{Configuration}]\label{defn:configuration}An $n$-particle configuration on the gate graph $G_{1}$ is a tuple 
+\[
+(J_{1},\ldots,J_{Y},L_{1},\ldots,L_{n-2Y})
+\]
+with $Y\in\{0,\ldots,\left\lfloor \frac{n}{2}\right\rfloor \}$, ordered integers
+\[
+1\leq J_{1}<J_{2}<\cdots<J_{Y}\leq M,
+\]
+and lexicographically ordered diagram elements 
+\[
+L_{1}<L_{2}<\cdots<L_{n-2Y},\qquad L_{k}=\left(i_{k},j_{k},d_{k}\right)\in\mathcal{L}.
+\]
+We further require that each $L_{k}$ is from a different component of $G_{1}$, i.e., 
+\[
+j_{w}=j_{t}\quad\Longrightarrow\quad j_{w}\in\{0,M+1\}\text{ and }i_{w}\neq i_{t},
+\]
+and we require that $j_{u}\neq J_{v}$ for all $u\in[n-2Y]$ and $v\in[Y]$.
+\end{definition}
+
+\newcommand{\configex}[1]{
+\raisebox{-0.5\height}{
+\begin{tikzpicture}[scale=.4,yscale=.8, every node/.style={scale=0.4}]
+
+% Gray Grid Lines 
+\foreach \y in {2,4}{
+  \draw[draw=black!20] (0,\y cm) -- (15.7 cm, \y cm);
+}
+\foreach \x in {2.618,5.236,7.854,10.472,13.09}{
+  \draw[draw=black!20] (\x cm, 0cm) -- (\x cm, 6cm);
+}
+\setcounter{mycount}{1};
+\foreach \y in {5,3,1}{
+  \node at (-.6,\y) {$i = \arabic{mycount}$\addtocounter{mycount}{1}};
+}
+\foreach \x in {0, ...,5}{
+  \node at ( 2.618*\x + 1.31,6.3) {$j = \x$};
+}
+  
+% Boundary Graphs
+\foreach \xscope /\scale in {0.5/1,15.2/-1}{ 
+  \foreach \yscope in {1.81,3.81}{
+    \begin{scope}[yshift = \yscope cm,xshift = \xscope cm,xscale=\scale]
+      \draw[rounded corners = .75mm] (0,0) -- (.6,0) -- (.6,-.5) --
+        (1.4,-.5) -- (1.4,-1.618) -- (0,-1.618) -- cycle;
+      % \draw[fill=black] (1,-.5) circle (.66mm);
+      % \draw[fill=black] (1.4,-.81) circle (.66mm);
+      % \draw[fill=black] (1.4,-1.41) circle (.66mm);
+      % \draw[fill=black] (1,-1.618) circle (.66mm);
+      % \node at (.7,-1.11) {\large Bnd};
+    \end{scope}
+  }
+}
+      
+% Gate Graphs
+\setcounter{mycount}{1}
+\foreach \ybottom/ \control /\unitary in {.19/1/1,2.19/0/1,.19/1/HT,2.19/1/1}{
+  \begin{scope}[xshift = \value{mycount}*2.618 cm + .31cm]
+    \begin{scope}[xshift=2cm,xscale=-1]
+      \draw[rounded corners = .75mm,fill=white] 
+        (0cm,\ybottom cm) -- (2cm, \ybottom cm) -- (2cm,\ybottom cm + 1.118cm) 
+          -- (1.2cm, \ybottom cm + 1.118cm) -- (1.2cm, 4.5cm) -- (2cm, 4.5cm) 
+          -- (2cm, 5.62 cm) -- (0cm, 5.62cm) -- (0cm, 4.5cm) -- (.6cm, 4.5cm)
+          -- (.6cm, \ybottom cm + 1.118cm) -- (0cm, \ybottom cm + 1.118cm)
+          -- cycle; 
+    \end{scope}
+  \end{scope}
+  \addtocounter{mycount}{1};
+}
+
+#1
+
+\end{tikzpicture}
+}}
+
+%\begin{figure}
+%\subfloat[][]{\label{fig:configA}\configex{
+%\node at (2.618+.31+1.7,5.06) {\huge $\times$};
+%\node at (2*2.618+.31+.3,2.75) {\huge $\times$};
+%\node at (3*2.618+.31+.3,.75) {\huge $\times$};
+%}}
+%\subfloat[][]{\label{fig:configB}\configex{
+%\node at (2.618+.31+1.7,.75) {\huge $\times$};
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (2*2.618+.31+1.1,4+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (2*2.618+.31+1.1,4) ellipse (.25 cm and .45 cm);
+%}}
+%
+%\subfloat[][]{\label{fig:configC}\configex{
+%\node at (2.618+.31+1.7,5.06) {\huge $\times$};
+%\node at (.5+1.1,2.75) {\huge $\times$};
+%\node at (3*2.618+.31+.3,.75) {\huge $\times$};
+%}}
+%\subfloat[][]{\label{fig:configD}\configex{
+%\node at (.5+1.1,2.75) {\huge $\times$};
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (3*2.618+.31+1.1,3+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (3*2.618+.31+1.1,3) ellipse (.25 cm and .45 cm);
+%}}
+%
+%\subfloat[][]{\label{fig:configE}\configex{
+%\node at (3*2.618+.31+.3,5.06) {\huge $\times$};
+%\node at (2*2.618+.31+1.7,2.75) {\huge $\times$};
+%\node at (4*2.618+.31+.3,2.75) {\huge $\times$};
+%}}
+%\subfloat[][]{\label{fig:configF}\configex{
+%\node at (2.618+.31+1.7,5.06) {\huge $\times$};
+%\node at (2*2.618+.31+.3,2.75) {\huge $\times$};
+%\node at (5*2.618+.718+.3,.75) {\huge $\times$};
+%}}
+%\caption{Diagrammatic depictions of configurations for the example where $G_1$ is the gate graph from \fig{G1}. The Figures show the locations of each of the three particles in the gate graph.  The symbol \protect\tikz[scale=.4, yscale=.8, every node/.style={scale=0.4}]{
+%\protect \node at (0,0) {\protect \huge $\times$};} indicates a single-particle state and the symbol \protect\tikz[scale=.4, yscale=.8, every node/.style={scale=0.4}]{
+%\protect \node at (0,.2) {\protect \large $\times$};
+%\protect \node at (0,-.2) {\protect \large $\times$};
+%\protect \draw (0,0) ellipse (.25 cm and .45 cm);}
+%indicates a two-particle state.
+%\subfig{configA} $((1,1,1),(2,2,0),(3,3,0))$.
+%\subfig{configB} $(2,(3,1,1))$.
+%\subfig{configC} $((1,1,1),(2,0,1),(3,3,0)$.
+%\subfig{configD} $(3,(2,0,1))$.
+%\subfig{configE} $((1,3,0),(2,2,1),(2,4,0))$.
+%\subfig{configF} $((1,1,1),(2,2,0),(3,5,0))$.
+%\label{fig:configs}}
+%\end{figure}
+
+In \fig{configs} we give some examples of configurations (for the example from \fig{G1} with $n=3$) and we introduce a diagrammatic notation for them.
+
+For any configuration and $n$-bit strings $\vec{z}$ and $\vec{a}$, there is a state in the nullspace of $H(G_{1},n)$, given by
+\begin{equation}
+\Sym(|T_{z_{1},a_{1},z_{2},a_{2}}^{J_{1}}\rangle\ldots|T_{z_{2Y-1},a_{2Y-1},z_{2Y},a_{2Y}}^{J_{Y}}\rangle|\rho_{z_{2Y+1},a_{2Y+1}}^{L_{1}}\rangle\ldots|\rho_{z_{n},a_{n}}^{L_{n-2Y}}\rangle).\label{eq:config_data_state}
+\end{equation}
+The ordering in the definition of a configuration ensures that each distinct choice of configuration and $n$-bit strings $\vec{z},\vec{a}$ gives a different state.
+
+\begin{definition}
+Let $\mathcal{B}_{n}$ be the set of all states of the form \eq{config_data_state}, where $(J_{1},\ldots,J_{Y},L_{1},\ldots,L_{n-2Y})$ is a configuration and $\vec{z},\vec{a}\in\{0,1\}^{n}$.
+\end{definition}
+
+\begin{lemma}
+\label{lem:gs_g_alpha}The set $\mathcal{B}_{n}$ is an orthonormal
+basis for the nullspace of $H(G_{1},n)$. Furthermore,
+\begin{equation}
+  \gamma(H(G_{1},n)) \geq \mathcal{K}_0
+\label{eq:first_lowerbnd}
+\end{equation}
+where $\mathcal{K}_0\in (0,1]$ is an absolute constant.
+\end{lemma}
+
+\begin{proof}
+Each component of $G_{1}$ is either a two-qubit gadget or a boundary gadget (see equation \eq{G_alpha}). The single-particle states of $A(G_{1})$ with energy $e_{1}$ are the states $|\rho_{z,a}^{L}\rangle$ for $L\in\mathcal{L}$ and $z,a\in\{0,1\}$, as discussed in \sec{The-adjacency-matrix}. Each of these states has support on only one component of $G_{1}$. In addition, $G_{1}$ has a two-particle frustration-free state for each two-qubit gadget $J\in[M]$ and bits $z,a,x,b$, namely $\Sym(|T_{z,a,x,b}^{J}\rangle)$. Furthermore, no component of $G_{1}$ has any three- (or more) particle frustration-free states. Using these facts and applying \lem{BH_disconnected_graphs}, we see that $\mathcal{B}_{n}$ spans the nullspace of $H(G_{1},n)$.
+
+\lem{BH_disconnected_graphs} also expresses each eigenvalue of $H(G_{1},n)$ as a sum of eigenvalues for its components. We use this fact to obtain the desired lower bound on the smallest nonzero eigenvalue. Our analysis proceeds on a case-by-case basis, depending on the occupation numbers for each component of $G_{1}$ (the values $N_{1},\ldots,N_{k}$ in \lem{BH_disconnected_graphs}).
+
+First consider any set of occupation numbers where some two-qubit gate gadget $J\in[M]$ contains 3 or more particles. By \lem{increase_part_number} and \lem{BH_disconnected_graphs}, any such eigenvalue is at least $\lambda_{3}^{1}(G_{U_J})$, which is a positive constant by \lem{2qub_gate}. Next consider a case where some boundary gadget contains more than one particle. The corresponding eigenvalues are similarly lower bounded by $\lambda_{2}^{1}(G_{\text{bnd}})$, which is also a positive constant by \lem{boundary_lemma}. Finally, consider a set of occupation numbers where each two-qubit gadget contains at most two particles and each boundary gadget contains at most one particle. The smallest eigenvalue with such a set of occupation numbers is zero. The smallest nonzero eigenvalue is either
+\[
+\gamma(H(G_{U_J},1)),\,\gamma(H(G_{U_J},2))\text{ for some $J\in[M]$, or }\gamma(H(G_{\text{bnd}},1)).
+\]
+However, these quantities are at least some positive constant since $H(G_{U_J},1)$, $H(G_{U_J},2)$, and $H(G_{\text{bnd}},1)$ are nonzero constant-sized positive semidefinite matrices.
+
+Now combining the lower bounds discussed above and using the fact that, for each $J\in [M]$, the two-qubit gate $U_J$ is chosen from a fixed finite gate set (given in \eq{gate_set_Vr}), we see that $\gamma (H(G_1,n))$ is lower bounded by the positive constant 
+\begin{equation}
+  \min\{\lambda_{3}^{1}(G_U),
+        \lambda_{2}^{1}(G_{\text{bnd}}),
+        \gamma(H(G_U,1)),
+        \gamma(H(G_U,2)),
+        \gamma(H(G_{\text{bnd}},1))\colon
+        \text{$U$ is from the gate set \eq{gate_set_Vr}}\}.
+\label{eq:minterms}
+\end{equation}
+The condition $\mathcal{K}_0\leq1$ can be ensured by setting $\mathcal{K}_0$ to be the minimum of $1$ and \eq{minterms}.
+\end{proof}
+
+Note that the constant $\mathcal{K}_0$ can in principle be computed using \eq{minterms}: each quantity on the right-hand side can be evaluated by diagonalizing a specific finite-dimensional matrix.
+
+
 \subsubsection{Legal configurations}
 
+In this section we define a subset of the $n$-particle configurations that we call legal configurations, and we prove that the subset of the basis vectors in $\mathcal{B}_{n}$ that have legal configurations spans the nullspace of $H(G_{1},G_Xoc,n).$
+
+We begin by specifying the set of legal configurations. Every legal configuration 
+\[
+(J_{1},\ldots,J_{Y},L_{1},\ldots,L_{n-2Y})
+\]
+has $Y\in\{0,1\}$. The legal configurations with $Y=0$ are 
+\begin{equation}
+((1,j,d_{1}),F(2,j,d_{2}),F(3,j,d_{3}),\ldots,F(n,j,d_{n}))\label{eq:config_c01}
+\end{equation}
+where $j\in[M]$ and where $\vec{d}=\left(d_{1},\ldots,d_{n}\right)$ satisfies $d_{i}\in\{0,1\}$ and $d_{1}=d_{s(j)}$. (Recall that the function $F$, defined in equations \eq{F_bit0} and \eq{F_bit1}, describes horizontal movement of particles.) The legal configurations with $Y=1$ are 
+\begin{equation}
+(j,F(2,j,d_{2}),\ldots,F(s(j)-1,j,d_{s(j)-1}),F(s(j)+1,j,d_{s(j)+1}),\ldots,F(n,j,d_{n}))\label{eq:config_2}
+\end{equation}
+where $j\in\{1,\ldots,M\}$ and $d_{i}\in\{0,1\}$ for $i\in[n]\setminus\{1,s(j)\}$. Although the values $d_{1}$ and $d_{s(j)}$ are not used in equation \eq{config_2}, we choose to set them to 
+\[
+d_{1}=d_{s(j)}=2
+\]
+for any legal configuration with $Y=1$. In this way we identify the set of legal configurations with the set of pairs $j,\vec{d}$ with $j\in[M]$ and 
+\[
+\vec{d}=(d_{1},d_{2},d_{3},\ldots,d_{n})
+\]
+satisfying 
+\begin{align*}
+d_{1} & =d_{s(j)}\in\{0,1,2\} \quad \text{and} \quad d_{i}\in\{0,1\} \text{ for } i\notin\{1,s(j)\}.
+\end{align*}
+The legal configuration is given by equation \eq{config_c01} if $d_{1}=d_{s(j)}\in\{0,1\}$ and equation \eq{config_2} if $d_{1}=d_{s(j)}=2$. 
+
+The examples in \figs{configA}, \subfig{configB}, and \subfig{configC} show legal configurations whereas the examples in \figs{configD}, \subfig{configE}, and \subfig{configF} are illegal.  The legal examples correspond to $j=1$, $\vec d=(1,1,1)$; $j=2$, $\vec d=(2,2,0)$; and $j=1$, $\vec d=(1,0,1)$, respectively.  We now explain why the other examples are illegal. Looking at \eq{config_2}, we see that the configuration $(3,(2,0,1))$ depicted in \fig{configD} is illegal since $F(2,3,0)=(2,2,1) \neq (2,0,1)$ and $F(2,3,1)=(2,4,0) \neq (2,0,1)$. The configuration in \fig{configE} is illegal since there are two particles in the same row. Looking at equation \eq{config_c01}, we see that the configuration $((1,1,1),(2,2,0),(3,5,0))$ in \fig{configF} is illegal since $(3,5,0)\notin \{F(3,1,0),F(3,1,1)\} = \{(3,0,1),(3,3,0)\}$.
+
+We now identify the subset of basis vectors $\mathcal{B}_{\text{legal}}\subset\mathcal{B}_{n}$ that have legal configurations. We write each such basis vector as
+\begin{equation}
+|j,\vec{d},\vec{z},\vec{a}\rangle=\begin{cases}
+\Sym\Big(|\rho_{z_{1},a_{1}}^{(1,j,d_{1})}\rangle\displaystyle\bigotimes_{i=2}^{n}|\rho_{z_{i},a_{i}}^{F(i,j,d_{i})}\rangle\Big) & d_{1}=d_{s(j)}\in\{0,1\}\\
+\Sym\bigg(|T_{z_{1},a_{1},z_{s(j)},a_{s(j)}}^{j}\rangle\displaystyle\bigotimes_{\substack{i=2\\i\neq s(j)}}^n |\rho_{z_{i},a_{i}}^{F(i,j,d_{i})}\rangle\bigg) & d_{1}=d_{s(j)}=2
+\end{cases}\label{eq:legal_states}
+\end{equation}
+where $j,\vec{d}$ specifies the legal configuration and $\vec{z,}\vec{a}\in\{0,1\}^{n}$. (Note that the bits in $\vec{z}$ and $\vec{a}$ are ordered slightly differently than in equation \eq{config_data_state}; here the labeling reflects the indices of the encoded qubits). 
+
+\begin{definition}
+Let 
+\[
+\mathcal{B}_{\text{legal}}=\big\{ |j,\vec{d},\vec{z},\vec{a}\rangle\colon j\in [M],\; d_{1}=d_{s(j)}\in\{0,1,2\}\text{ and }\; d_{i}\in\{0,1\}\text{ for }i\notin\{1,s(j)\},\;\vec{z},\vec{a}\in\{0,1\}^{n}\big\} 
+\]
+ and $\mathcal{B}_{\text{illegal}}=\mathcal{B}_{n}\setminus\mathcal{B}_{\text{illegal}}.$ 
+\end{definition}
+
+The basis $\mathcal{B}_{n}=\mathcal{B}_{\text{legal}}\cup\mathcal{B}_{\text{illegal}}$ is convenient when considering the restriction to the subspace $\mathcal{I}(G_{1},G_Xoc,n)$. Letting $\Pi_{0}$ be the projector onto $\mathcal{I}(G_{1},G_Xoc,n)$, the following Lemma (proven in \sec{Proof-of-Lemma Pi0_restriction}) shows that the restriction 
+\begin{equation}
+\Pi_{0}\big|_{\spn(\mathcal{B}_{n})}\label{eq:restrictionBn}
+\end{equation}
+is diagonal in the basis $\mathcal{B}_n$. The Lemma also bounds the diagonal entries.
+
+\begin{restatable}{lemma}{restrictionlemma}
+\label{lem:Pi_0_restriction}
+Let $\Pi_{0}$ be the projector onto $\mathcal{I}(G_{1},G_Xoc,n)$. For any $|j,\vec{d},\vec{z},\vec{a}\rangle\in\mathcal{B}_{\text{legal}}$, we have
+\begin{align}
+\Pi_{0}|j,\vec{d},\vec{z},\vec{a}\rangle & =|j,\vec{d},\vec{z},\vec{a}\rangle\label{eq:subspace_eqn0}.
+\end{align}
+Furthermore, for any two distinct basis vectors $|\phi\rangle,|\psi\rangle\in\mathcal{B}_{\text{illegal}}$, we have 
+\begin{align}
+\langle\phi|\Pi_{0}|\phi\rangle & \leq\frac{255}{256}\label{eq:subspace_eqn1}\\
+\langle\phi|\Pi_{0}|\psi\rangle & =0.\label{eq:subspace_eqn2}
+\end{align}
+\end{restatable}
+
+We use this Lemma to characterize the nullspace of $H(G_{1},G_Xoc,n)$ and bound its smallest nonzero eigenvalue.
+
+\begin{lemma}
+\label{lem:H_Galpha_Gtilde}The nullspace $S_1$ of $H(G_{1},G_Xoc,n)$ is spanned by the orthonormal basis $\mathcal{B}_{\text{legal}}$. Its smallest nonzero eigenvalue is
+\begin{equation}
+  \gamma(H(G_{1},G_Xoc,n)) \geq \frac{\mathcal{K}_0}{256} \label{eq:G_alpha_lowerbnd}
+\end{equation}
+where $\mathcal{K}_0\in (0,1]$ is the absolute constant from \lem{gs_g_alpha}.
+\end{lemma}
+
+\begin{proof}
+Recall from \sec{The-occupancy-constraints} that 
+\[
+H(G_{1},G_Xoc,n)=H(G_{1},n)|_{\mathcal{I}(G_{1},G_Xoc,n)}.
+\]
+Its nullspace is the space of states $|\kappa\rangle$ satisfying
+\[
+\Pi_{0}|\kappa\rangle=|\kappa\rangle\quad\text{and}\quad H(G_{1},n)|\kappa\rangle=0
+\]
+(recall that $\Pi_{0}$ is the projector onto $\mathcal{I}(G_{1},G_Xoc,n)$, the states satisfying the occupancy constraints). Since $\mathcal{B}_{n}$ is a basis for the nullspace of $H(G_{1},n)$, to solve for the nullspace of $H(G_{1},G_Xoc,n)$ we consider the restriction \eq{restrictionBn} and solve for the eigenspace with eigenvalue $1$. This calculation is simple because \eq{restrictionBn} is diagonal in the basis $\mathcal{B}_{n}$, according to \lem{Pi_0_restriction}. We see immediately from the Lemma that $\mathcal{\mathcal{B}_{\text{legal}}}$ spans the nullspace of $H(G_{1},G_Xoc,n)$; we now show that \lem{Pi_0_restriction} also implies the lower bound \eq{G_alpha_lowerbnd}. Note that
+\[
+\gamma(H(G_{1},G_Xoc,n))=\gamma(\Pi_{0}H(G_{1},n)\Pi_{0}).
+\]
+Let $\Pi_{\text{legal}}$ and $\Pi_{\text{illegal}}$ project onto the spaces spanned by $\mathcal{B}_{\text{legal}}$ and $\mathcal{B}_{\text{illegal}}$ respectively, so $\Pi_{\text{legal}}+\Pi_{\text{illegal}}$ projects onto the nullspace of $H(G_{1},n)$. The operator inequality
+\[
+H(G_{1},n)\geq\gamma(H(G_{1},n))\cdot\left(1-\Pi_{\text{legal}}-\Pi_{\text{illegal}}\right)
+\]
+implies 
+\[
+\Pi_{0}H(G_{1},n)\Pi_{0}\geq\gamma(H(G_{1},n))\cdot\Pi_{0}(1-\Pi_{\text{legal}}-\Pi_{\text{illegal}})\Pi_{0}.
+\]
+Since the operators on both sides of this inequality are positive semidefinite and have the same nullspace, their smallest nonzero eigenvalues are bounded as 
+\[
+\gamma(\Pi_{0}H(G_{1},n)\Pi_{0})\geq\gamma(H(G_{1},n))\cdot\gamma(\Pi_{0}(1-\Pi_{\text{legal}}-\Pi_{\text{illegal}})\Pi_{0}).
+\]
+Hence 
+\begin{equation}
+\gamma(H(G_{1},G_Xoc,n))=\gamma(\Pi_{0}H(G_{1},n)\Pi_{0}) \geq \mathcal{K}_0\cdot\gamma(\Pi_{0}(1-\Pi_{\text{legal}}-\Pi_{\text{illegal}})\Pi_{0})
+\label{eq:gamma_bnd1}
+\end{equation}
+where we used \lem{gs_g_alpha}. From equations \eq{subspace_eqn1} and \eq{subspace_eqn2} we see that 
+\begin{equation}
+\Pi_{0}|g\rangle=|g\rangle\quad\text{and}\quad\Pi_{\text{illegal}}|f\rangle=|f\rangle\qquad\Longrightarrow\qquad\langle f|g\rangle\langle g|f\rangle\leq\frac{255}{256}.\label{eq:fg_eqn}
+\end{equation}
+The nullspace of 
+\begin{equation}
+\Pi_{0}\left(1-\Pi_{\text{legal}}-\Pi_{\text{illegal}}\right)\Pi_{0}\label{eq:projector_conjugated}
+\end{equation}
+is spanned by 
+\[
+\mathcal{B}_{\text{legal}}\cup\left\{ |\tau\rangle\colon\Pi_{0}|\tau\rangle=0\right\} .
+\]
+To see this, note that \eq{projector_conjugated} commutes with $\Pi_{0}$, and the space of $+1$ eigenvectors of $\Pi_{0}$ that are annihilated by \eq{projector_conjugated} is spanned by $\mathcal{B}_{\text{legal}}$ (by \lem{Pi_0_restriction}). Any eigenvector $|g_{1}\rangle$ corresponding to the smallest nonzero eigenvalue of this operator therefore satisfies $\Pi_{0}|g_{1}\rangle=|g_{1}\rangle$ and $\Pi_{\text{legal}}|g_{1}\rangle=0$, so 
+\begin{align*}
+\gamma(\Pi_{0}(1-\Pi_{\text{legal}}-\Pi_{\text{illegal}})\Pi_{0}) 
+&= 1-\langle g_{1}|\Pi_{\mathcal{\text{illegal}}}|g_{1}\rangle\geq\frac{1}{256}
+\end{align*}
+using equation \eq{fg_eqn}. Plugging this into equation \eq{gamma_bnd1} gives the lower bound \eq{G_alpha_lowerbnd}. 
+\end{proof}
+
+
+We now consider 
+\begin{equation}
+H_{1}|_{S_{1}},H_{2}|_{S_{1}},H_{\text{in},i}|_{S_{1}},H_{\text{out}}|_{S_{1}}\label{eq:ops_restriction_S1}
+\end{equation}
+where these operators are defined in \sec{Building-up-the} and 
+\[
+S_{1}=\spn(\mathcal{B}_{\text{legal}})
+\]
+is the nullspace of $H(G_1,G_Xoc,n)$.
+
+We specify the operators \eq{ops_restriction_S1} by their matrix elements in an orthonormal basis for $S_{1}$. Although the basis $\mathcal{B}_{\text{legal}}$ was convenient in \sec{Legal-configurations-and}, here we use a different basis in which the matrix elements of $H_{1}$ and $H_{2}$ are simpler. We define
+\begin{equation}
+  |j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+  =\sum_{\vec{x}\in\{0,1\}^{n}} \big(\langle\vec{x} 
+   |\bar{U}_{j,d_1}(a_{1}) 
+   |\vec{z}\rangle\big)|j,\vec{d},\vec{x},\vec{a}\rangle 
+  \label{eq:phi_init_basis}
+\end{equation}
+where
+\begin{equation}
+  \bar{U}_{j,d_1}(a_1) = \begin{cases}
+    U_{j-1}(a_1) U_{j-2}(a_1) \ldots U_1(a_1) & \text{if $d_1 \in \{0,2\}$} \\
+    U_j(a_1) U_{j-1}(a_1) \ldots U_1(a_1) & \text{if $d_1=1$}.
+  \end{cases}
+  \label{eq:ubar}
+\end{equation}
+In each of these states the quantum data (represented by the $\vec{x}$ register on the right-hand side) encodes the computation in which the unitary $\bar{U}_{j,d_1}(a_1)$ is applied to the initial $n$-qubit state $|\vec{z}\rangle$ (the notation $\In(\vec{z})$ indicates that $\vec{z}$ is the input). The vector $\vec{a}$ is only relevant insofar as its first bit $a_{1}$ determines whether or not each two-qubit unitary is complex conjugated; the other bits of $\vec{a}$ go along for the ride. Letting $\vec{z},\vec{a}\in\{0,1\}^{n}$ , $j\in[M]$, and \[ \vec{d}=(d_{1},\ldots,d_{n})\quad\text{with}\quad d_{1}=d_{s(j)}\in\{0,1,2\}\quad\text{and}\quad d_{i}\in\{0,1\},\; i\notin\{1,s(j)\}, \] we see that the states \eq{phi_init_basis} form an orthonormal basis for $S_{1}$. In \sec{matrix_els_details} we compute the matrix elements of the operators \eq{ops_restriction_S1} in this basis, which are reproduced below.
+
+Roughly speaking, the nonzero off-diagonal matrix elements of the operator $H_{1}$ in the basis \eq{phi_init_basis} occur between states $|j,\vec{d},\In(\vec{z}),\vec{a}\rangle$ and $|j,\vec{c},\In(\vec{z}),\vec{a}\rangle$ where the legal configurations $j,\vec{d}$ and $j,\vec{c}$ are related by horizontal motion of a particle in one of the rows $i\in\{2,\ldots,n\}$. 
+
+\begin{mdframed}[frametitle=Matrix elements of $H_{1}$]
+\begin{equation}
+\langle k,\vec{c},\In(\vec{x}),\vec{b}|H_{1}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle=\delta_{k,j}\delta_{\vec{a},\vec{b}}\delta_{\vec{z},\vec{x}}\cdot\begin{cases}
+\frac{n-1}{64} & \vec{c}=\vec{d}\\
+\frac{1}{64}\displaystyle\prod_{\substack{r=1\\r\neq i}}^n
+\delta_{d_{r},c_{r}} & d_{i}\neq c_{i}\;\text{for some}\; i\in[n]\setminus\{1,s(j)\}\\
+\frac{1}{64\sqrt{2}} \displaystyle\prod_{\substack{r=2\\r\neq s(j)}}^n \delta_{d_{r},c_{r}} & (c_{1},d_{1})\in\{(2,0),(0,2),(1,2),(2,1)\}\\
+0 & \text{otherwise.}
+\end{cases}\label{eq:H1_goodbasis-1}
+\end{equation}
+\end{mdframed}
+
+\newcommand{\configtrans}[2]{
+\configex{#1}
+$~\longrightarrow~$
+\configex{#2}
+}
+%\begin{figure}
+%\subfloat[][$\langle j,\vec{c},\In(\vec{z}),\vec{a}|H_1|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+%    =\frac{1}{64}$; here $j=2$ and $\vec{d}=(2,2,0) \rightarrow \vec{c}=(2,2,1)$.]{\label{fig:H1_InbasisA}
+%\configtrans{
+%\node at (2.618+.31+1.7,.75) {\huge $\times$};
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (2*2.618+.31+1.1,4+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (2*2.618+.31+1.1,4) ellipse (.25 cm and .45 cm);
+%}{
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (2*2.618+.31+1.1,4+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (2*2.618+.31+1.1,4) ellipse (.25 cm and .45 cm);
+%\node at (3*2.618+.31+.3,.75) {\huge $\times$};
+%}}
+%
+%\subfloat[][$\langle j,\vec{c},\In(\vec{z}),\vec{a}|H_1|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+%   =\frac{1}{64\sqrt{2}}$; here $j=3$ and $\vec{d}=(0,0,0) \rightarrow \vec{c}=(2,0,2)$. ]{\label{fig:H1_InbasisB}
+%\configtrans{
+%\node at (2.618+.31+1.7,.75) {\huge $\times$};
+%\node at (2*2.618+.31+1.7,2.75) {\huge $\times$};
+%\node at (3*2.618+.31+.3,5.06) {\huge $\times$};
+%}{
+%\node at (2*2.618+.31+1.7,2.75) {\huge $\times$};
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (3*2.618+.31+1.1,3+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (3*2.618+.31+1.1,3) ellipse (.25 cm and .45 cm);
+%}}
+%
+%\subfloat[][$\langle j,\vec{c},\In(\vec{z}),\vec{a}|H_1|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+%  =\frac{1}{64\sqrt{2}}$; here $j=1$ and $\vec{d}=(1,1,1) \rightarrow \vec{c}=(2,1,2)$.]{\label{fig:H1_InbasisC}
+%\configtrans{
+%\node at (2.618+.31+1.7,5.06) {\huge $\times$};
+%\node at (2*2.618+.31+.3,2.75) {\huge $\times$};
+%\node at (3*2.618+.31+.3,.75) {\huge $\times$};
+%}{
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (2.618+.31+1.1,3+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (2.618+.31+1.1,3) ellipse (.25 cm and .45 cm);
+%\node at (2*2.618+.31+.3,2.75) {\huge $\times$};
+%}}
+%
+%\caption{
+%Examples of matrix elements of $H_1$ in the basis \eq{phi_init_basis} of $S_1$. The relevant matrix elements (as indicated above) are computed using \subfig{H1_InbasisA} the second case and \subfig{H1_InbasisB}, \subfig{H1_InbasisC} the third case in equation \eq{H1_goodbasis-1}. \label{fig:H1_Inbasis}
+%}
+%\end{figure}
+
+From this expression we see that $H_{1}|_{S_1}$ is block diagonal in the basis \eq{phi_init_basis}, with a block for each $\vec{z},\vec{a}\in\{0,1\}^{n}$ and $j\in[M]$. Moreover, the submatrix for each block is the same. In \fig{H1_Inbasis} we illustrate some of the off-diagonal matrix elements of $H_{1}|_{S_{1}}$ for the example from \fig{step-by-step}.
+
+Next, we present the matrix elements of $H_2$.
+
+\begin{mdframed}[frametitle=Matrix elements of $H_{2}$]
+\begin{align}
+\langle k,\vec{c},\In(\vec{x}),\vec{b}|H_{2}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle & =f_{\mathrm{diag}(\vec{d},j)\cdot\delta_{j,k}\delta_{\vec{a},\vec{b}}\delta_{\vec{z},\vec{x}}\delta_{\vec{c},\vec{d}}}\label{eq:H2_formula_with_f}\\
+ & \quad +\big(f_{\textrm{off-diag}}(\vec{c},\vec{d},j)\cdot\delta_{k,j-1}+f_{\textrm{off-diag}}(\vec{d},\vec{c},k)\cdot\delta_{k-1,j}\big)\delta_{\vec{a},\vec{b}}\delta_{\vec{z},\vec{x}}\nonumber 
+\end{align}
+where
+\begin{equation}
+f_{\mathrm{diag}}(\vec{d},j)=\begin{cases}
+0 & d_{1}=0\text{ and }j=1,\text{ or }d_{1}=1\text{ and }j=M\\
+\frac{1}{128} & d_{1}=2\text{ and }j\in\{1,M\}\\
+\frac{1}{64} & \text{otherwise}
+\end{cases}\label{eq:H2_diag_goodbasis-1}
+\end{equation}
+and 
+\begin{equation}
+f_{\textrm{off-diag}}(\vec{c},\vec{d},j)=\left(
+\prod_{\substack{r=2\\r\notin\{s(j-1),s(j)\}}}^n \mkern-36mu\delta_{d_{r},c_{r}}\right)\cdot\begin{cases}
+\frac{1}{64\sqrt{2}} & (c_{1},c_{s(j)},d_{1},d_{s(j-1)})\in\{(2,0,0,0),(1,1,2,1)\}\\
+\frac{1}{64} & (c_{1},c_{s(j)},d_{1},d_{s(j-1)})=(1,0,0,1)\\
+\frac{1}{128} & (c_{1},c_{s(j)},d_{1},d_{s(j-1)})=(2,1,2,0)\\
+0 & \text{otherwise.}
+\end{cases}\label{eq:H2_offdiag_goodbasis-1}
+\end{equation}
+\end{mdframed}
+
+%\begin{figure}
+%\subfloat[][$\langle j-1,\vec{c},\In(\vec{z}),\vec{a}|H_2|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+%  =\frac{1}{64\sqrt{2}}$; here $j=4$ and $\vec{d}=(0,0,0)\rightarrow\vec{c}=(2,0,2)$]{\label{fig:H2_InbasisA}
+%\configtrans{
+%\node at (2*2.618+.31+1.7,2.75) {\huge $\times$};
+%\node at (3*2.618+.31+1.7,.75) {\huge $\times$};
+%\node at (4*2.618+.31+.3,5.06) {\huge $\times$};
+%}{
+%\node at (2*2.618+.31+1.7,2.75) {\huge $\times$};
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (3*2.618+.31+1.1,3+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (3*2.618+.31+1.1,3) ellipse (.25 cm and .45 cm);
+%}}
+%
+%\subfloat[][
+%  $\langle j-1,\vec{c},\In(\vec{z}),\vec{a}|H_2|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+%  =\frac{1}{64 \sqrt{2}}$; here $j=3$ and $\vec{d}=(2,1,2)\rightarrow\vec{c}=(1,1,1)$]{\label{fig:H2_InbasisB}
+%\configtrans{
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (3*2.618+.31+1.1,3+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (3*2.618+.31+1.1,3) ellipse (.25 cm and .45 cm);
+%\node at (4*2.618+.31+.3,2.75) {\huge $\times$};
+%}{
+%\node at (2*2.618+.31+1.7,5.06) {\huge $\times$};
+%\node at (3*2.618+.31+.3,.75) {\huge $\times$};
+%\node at (4*2.618+.31+.3,2.75) {\huge $\times$};
+%}}
+%
+%\subfloat[][
+%  $\langle j-1,\vec{c},\In(\vec{z}),\vec{a}|H_2|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+%  =\frac{1}{64}$; here $j=3$ and $\vec{d}=(0,1,0)\rightarrow\vec{c}=(1,1,0)$]{
+%\label{fig:H2_InbasisC}
+%\configtrans{
+%\node at (2.618+.31+1.7,.75) {\huge $\times$};
+%\node at (3*2.618+.31+.3,5.06) {\huge $\times$};
+%\node at (4*2.618+.31+.3,2.75) {\huge $\times$};
+%}{
+%\node at (2.618+.31+1.7,.75) {\huge $\times$};
+%\node at (2*2.618+.31+1.7,5.06) {\huge $\times$};
+%\node at (4*2.618+.31+.3,2.75) {\huge $\times$};
+%}}
+%
+%\subfloat[][
+%  $\langle j-1,\vec{c},\In(\vec{z}),\vec{a}|H_2|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+%  =\frac{1}{128}$; here $j=2$ and $\vec{d}=(2,2,0)\rightarrow\vec{c}=(2,1,2)$]{
+%\label{fig:H2_InbasisD}
+%\configtrans{
+%\node at (2.618+.31+1.7,.75) {\huge $\times$};
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (2*2.618+.31+1.1,4+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (2*2.618+.31+1.1,4) ellipse (.25 cm and .45 cm);
+%}{
+%\foreach \yoffset in {.2,-.2}{
+%  \node at (2.618+.31+1.1,4+\yoffset) {\large $\times$};
+%}
+%\draw[line width=.1mm] (2.618+.31+1.1,4) ellipse (.25 cm and .45 cm);
+%\node at (2*2.618+.31+.3,2.75) {\huge $\times$};
+%}}
+%\caption{
+%Examples of matrix elements of $H_2$ in the basis \eq{phi_init_basis} of $S_1$. The relevant matrix elements (as indicated above) are computed using the \subfig{H2_InbasisA}, \subfig{H2_InbasisB} first, \subfig{H2_InbasisC} second, and \subfig{H2_InbasisD} third cases in equation \eq{H2_offdiag_goodbasis-1}. \label{fig:H2_Inbasis}}
+%\end{figure}
+
+This shows that $H_{2}|_{S_{1}}$ is block diagonal in the basis \eq{phi_init_basis}, with a block for
+each $\vec{z},\vec{a}\in\{0,1\}^{n}$. Also note that (in contrast
+with $H_{1}$) $H_{2}$ connects states with different values of $j$.
+In \fig{H2_Inbasis} we illustrate some of the off-diagonal
+matrix elements of $H_{2}|_{S_{1}}$, for the example from \fig{step-by-step}.
+
+Finally, we present the matrix elements of $H_{\text{in},i}$ (for
+$i\in\{n_{\text{in}}+1,\ldots,n\}$) and $H_{\text{out}}$:
+
+\begin{mdframed}[frametitle=Matrix elements of $H_{\text{in},i}$]
+For each ancilla qubit $i\in\{n_{\text{in}}+1,\ldots,n\}$, define  $j_{\min,i}=\min\left\{ j\in[M]\colon s(j)=i\right\}$ to be the index of the first gate in the circuit that involves this qubit (recall from \sec{From-circuits-to} that we consider circuits where each ancilla qubit is involved in at least one gate). The operator $H_{\text{in},i}$ is diagonal in the basis \eq{phi_init_basis}, with entries
+\begin{equation}
+\langle j,\vec{d},\In(\vec{z}),\vec{a}|H_{\text{in},i}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle=\begin{cases}
+\frac{1}{64} & j\leq j_{\min,i},\text{ }z_{i}=1,\text{ and }d_{i}=0\\
+0 & \text{otherwise.}
+\end{cases}\label{eq:Hin_mat_els}
+\end{equation}
+\end{mdframed}
+
+\begin{mdframed}[frametitle=Matrix elements of $H_{\text{out}}$]
+Let $j_{\max}=\max\{j\in[M]\colon s(j)=2\}$ be the index of the last gate $U_{j_{\max}}$ in the circuit that acts between qubits $1$ and $2$ (the output qubit). Then
+\begin{equation}
+\langle k,\vec{c},\In(\vec{x}),\vec{b}|H_{\text{out}}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle=\delta_{j,k}\delta_{\vec{c},\vec{d}}\delta_{\vec{a},\vec{b}}\begin{cases}
+\langle\vec{x}|U_{\mathcal{C}_X}^{\dagger}(a_{1})|0\rangle\langle0|_{2}U_{\mathcal{C}_X}(a_{1})|\vec{z}\rangle\frac{1}{64} & j\geq j_{\max}\text{ and }d_{2}=1\\
+0 & \text{otherwise}.
+\end{cases}\label{eq:hout_matels-1}
+\end{equation}
+\end{mdframed}
+
+\subsection{Frustration-Free states}
+
+Define the $(n-2)$-dimensional hypercubes
+\[
+\mathcal{D}_{k}^{j}=\left\{ (d_{1},\ldots,d_{n})\colon d_{1}=d_{s(j)}=k,\, d_{i}\in\{0,1\}\text{ for }i\in[n]\setminus\{1,s(j)\}\right\} 
+\]
+for $j\in\{1,\ldots,M\}$ and $k\in\{0,1,2\}$, and the superpositions
+\[
+|{\Cube_{k}(j,\vec{z},\vec{a})}\rangle=\frac{1}{\sqrt{2^{n-2}}}\sum_{\vec{d}\in\mathcal{D}_{k}^{j}}\left(-1\right)^{\sum_{i=1}^{n}d_{i}}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+\]
+for $k\in\{0,1,2\}$, $j\in[M]$, and $\vec{z},\vec{a}\in\{0,1\}^{n}.$
+For each $j\in[M]$ and $\vec{z},\vec{a}\in\{0,1\}^{n}$, let
+\begin{equation}
+|C(j,\vec{z},\vec{a})\rangle=\frac{1}{2}|{\Cube_{0}(j,\vec{z},\vec{a})}\rangle+\frac{1}{2}|{\Cube_{1}(j,\vec{z},\vec{a})}\rangle-\frac{1}{\sqrt{2}}|{\Cube_{2}(j,\vec{z},\vec{a})}\rangle.\label{eq:cubestates-1}
+\end{equation}
+We prove
+
+\begin{lemma}
+\label{lem:beta_bound}The Hamiltonian $H(G_{2},G_Xoc,n)$ has nullspace $S_2$ spanned by the states
+\[
+|C(j,\vec{z},\vec{a})\rangle
+\]
+for $j\in[M]$ and $\vec{z},\vec{a}\in\{0,1\}^{n}$. Its smallest nonzero eigenvalue is 
+\[
+  \gamma(H(G_{2},G_Xoc,n)) \geq \frac{\mathcal{K}_0}{35000n}
+\]
+where $\mathcal{K}_0\in (0,1]$ is the absolute constant from \lem{gs_g_alpha}.
+\end{lemma}
+
+\begin{proof}
+Recall from the previous section that $H_{1}|_{S_1}$ is block diagonal in the basis \eq{phi_init_basis}, with a block for each $j\in[M]$ and $\vec{z},\vec{a}\in\{0,1\}^{n}$. That is to say, $\langle k,\vec{c},\In(\vec{x}),\vec{b}|H_{1}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle$ is zero unless $\vec{a}=\vec{b}$, $k=j$, and $\vec{z}=\vec{x}$. Equation \eq{H1_goodbasis-1} gives the nonzero matrix elements within a given block, which we use to compute the frustration-free ground states of $H_{1}|_{S_{1}}$.
+
+Looking at equation \eq{H1_goodbasis-1}, we see that the matrix for each block can be written as a sum of $n$ commuting matrices: $\frac{n-1}{64}$ times the identity matrix (case 1 in equation \eq{H1_goodbasis-1}), $n-2$ terms that each flip a single bit $i\notin\{1,s(j)\}$ of $\vec{d}$ (case 2), and a term that changes the value of the ``special'' components $d_{1}=d_{s(j)}\in\{0,1,2\}$ (case 3). Thus
+\[
+\langle j,\vec{c},\In(\vec{z}),\vec{a}|H_{1}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle=\langle j,\vec{c},\In(\vec{z}),\vec{a}|\frac{1}{64}(n-1)+\frac{1}{64}\sum_{i\in[n]\setminus\{1,s(j)\}}H_{\mathrm{flip},i}+\frac{1}{64}H_{\mathrm{special},j}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle
+\]
+where
+\begin{align*}
+\langle j,\vec{c},\In(\vec{z}),\vec{a}|H_{\mathrm{flip},i}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle &= \delta_{c_{i},d_{i}\oplus1} \prod_{r\in[n]\setminus\{i\}}\delta_{c_{r},d_{r}}
+\end{align*}
+and 
+\[
+\langle j,\vec{c},\In(\vec{z}),\vec{a}|H_{\mathrm{special},j}|j,\vec{d},\In(\vec{z}),\vec{a}\rangle=\begin{cases}
+\frac{1}{\sqrt{2}} & \begin{aligned}
+  &(c_{1},d_{1})\in\{(2,0),(0,2),(1,2),(2,1)\}\\ 
+  &\text{and}\; d_{r}=c_{r}\;\text{for}\; r\in [n]\setminus\{1,s(j)\}
+\end{aligned}\\
+0 & \text{otherwise.}
+\end{cases}
+\]
+Note that these $n$ matrices are mutually commuting, each eigenvalue of $H_{\mathrm{flip},i}$ is $\pm1$, and each eigenvalue of $H_{\mathrm{special},j}$ is equal to one of the eigenvalues of the matrix 
+\[
+\frac{1}{\sqrt{2}}\begin{pmatrix}
+0 & 0 & 1\\
+0 & 0 & 1\\
+1 & 1 & 0
+\end{pmatrix},
+\]
+which are $\{-1,0,1\}$. Thus we see that the eigenvalues of $H_1|_{S_{1}}$ within a block for some $j\in [M]$ and $\vec{z},\vec{a}\in\{0,1\}^{n}$ are
+\begin{equation}
+  \frac{1}{64}\bigg(n-1+\sum_{i\notin\{1,s(j)\}}y_{i}+w\bigg)
+  \label{eq:block_eig}
+\end{equation}
+where $y_{i}\in\pm1$ for each $i\in[n]\setminus\{1,s(j)\}$ and $w\in\{-1,0,1\}$. In particular, the smallest eigenvalue within the block is zero (corresponding to $y_i=w=-1$). The corresponding eigenspace is spanned by the simultaneous $-1$ eigenvectors of each $H_{\mathrm{flip},i}$ for $i\in [n]\setminus \{1,s(j)\}$ and $H_{\mathrm{special},j}$. The space of simultaneous $-1$ eigenvectors of $H_{\mathrm{flip},i}$ for $i\in [n]\setminus\{1,s(j)\}$ within the block is spanned by $\{|{\Cube_{0}(j,\vec{z},\vec{a})}\rangle, |{\Cube_{1}(j,\vec{z},\vec{a})}\rangle, |{\Cube_{2}(j,\vec{z},\vec{a})}\rangle\}$. The state $|C(j,\vec{z},\vec{a})\rangle$  is the unique superposition of these states that is a $-1$ eigenvector of $H_{\mathrm{special},j}$. Hence, for each block we obtain a unique state $|C(j,\vec{z},\vec{a})\rangle$ in the space $S_2$. Ranging over all blocks $j\in [M]$ and $\vec{z},\vec{a}\in \{0,1\}^n$, we get the basis described in the Lemma.
+
+The smallest nonzero eigenvalue within each block is $\frac{1}{64}$ (corresponding to $y_{i}=-1$ and $w=0$ in equation \eq{block_eig}), so 
+\begin{equation}
+\gamma(H_{1}|_{S_{1}})=\frac{1}{64}.\label{eq:lowerbnd_H1S_alph}
+\end{equation}
+
+To get the stated lower bound, we use \lem{npl} with $H(G_{2},G_Xoc,n) = H_{A}+H_{B}$ where 
+\[
+H_{A}=H(G_{1},G_Xoc,n)\qquad H_{B}=H_{1}|_{\mathcal{I}(G_{2},G_Xoc,n)}
+\]
+(as in equation \eq{H_G2}), along with the bounds 
+\[
+\gamma(H_{A}) \geq \frac{\mathcal{K}_0}{256}\qquad\gamma(H_{B}|_{S_{1}})=\gamma(H_{1}|_{S_{1}})=\frac{1}{64}\qquad\left\Vert H_{B}\right\Vert \leq\left\Vert H_{1}\right\Vert \leq n\left\Vert h_{1}\right\Vert =2n
+\]
+from \lem{H_Galpha_Gtilde}, equations \eq{H1_restriction} and \eq{lowerbnd_H1S_alph}, and the fact that $\left\Vert h_{1}\right\Vert =2$ from \eq{h_E_bound}. This gives
+\[
+  \gamma(H(G_2,G_Xoc,n))
+  \geq \frac{\mathcal{K}_0}{64\mathcal{K}_0+256+2n\cdot64\cdot256}
+  \geq \frac{\mathcal{K}_0}{35000n}
+\]
+where we used the facts that $\mathcal{K}_0\leq 1$ and $n \ge 1$.
+\end{proof}
+For each $\vec{z},\vec{a}\in\{0,1\}^{n}$ define the uniform superposition
+\[
+  |\mathcal{H}(\vec{z},\vec{a})\rangle
+  =\frac{1}{\sqrt{M}}\sum_{j=1}^{M}|C\left(j,\vec{z},\vec{a}\right)\rangle.
+\]
+that encodes (somewhat elaborately) the history of the computation that consists of applying either $U_{\mathcal{C}_X}$ or $U_{\mathcal{C}_X}^{*}$ to the state $|\vec{z}\rangle$. The first bit of $\vec{a}$ determines whether the circuit $\mathcal{C}_{X}$ or its complex conjugate is applied. 
+
+\begin{lemma}
+\label{lem:HG3}
+The Hamiltonian $H(G_{3},G_Xoc,n)$ has nullspace $S_3$ spanned by the states
+\[
+  |\mathcal{H}(\vec{z},\vec{a})\rangle
+\]
+for $\vec{z},\vec{a}\in\{0,1\}^{n}$. Its smallest nonzero eigenvalue is 
+\[
+  \gamma(H(G_{3},G_Xoc,n)) \geq \frac{\mathcal{K}_0}{10^7 n^{2}M^{2}}
+\]
+where $\mathcal{K}_0\in (0,1]$ is the absolute constant from \lem{gs_g_alpha}.
+\end{lemma}
+
+\begin{proof}
+Recall that
+\[
+H(G_{3},G_Xoc,n)=H(G_{2},G_Xoc,n)+H_{2}|_{\mathcal{I}(G_{3},G_Xoc,n)}
+\]
+with both terms on the right-hand side positive semidefinite. To solve for the nullspace of $H(G_{3},G_Xoc,n)$, it suffices to restrict our attention to the space
+\begin{equation}
+  S_{2}=\spn\{ |C(j,\vec{z},\vec{a})\rangle\colon
+    j\in[M],\;\vec{z},\vec{a}\in\{0,1\}^{n}\}
+  \label{eq:S_beta_basis}
+\end{equation}
+of states in the nullspace of $H(G_{2},G_Xoc,n)$. We begin by computing the matrix elements of $H_{2}$ in the basis for $S_{2}$ given above. We use equations \eq{H2_formula_with_f} and \eq{cubestates-1} to compute the diagonal matrix elements: 
+\begin{align}
+\langle C\left(j,\vec{z},\vec{a}\right)|H_{2}|C\left(j,\vec{z},\vec{a}\right)\rangle= & \frac{1}{4}\langle{\Cube_{0}(j,\vec{z},\vec{a})}|H_{2}|{\Cube_{0}(j,\vec{z},\vec{a})}\rangle+\frac{1}{4}\langle{\Cube_{1}(j,\vec{z},\vec{a})}\rangle|H_{2}|{\Cube_{1}(j,\vec{z},\vec{a})}\rangle\\
+ & +\frac{1}{2}\langle{\Cube_{2}(j,\vec{z},\vec{a})}|H_{2}|{\Cube_{2}(j,\vec{z},\vec{a})}\rangle\\
+= & \begin{cases}
+0+\frac{1}{256}+\frac{1}{256} & j=1\\
+\frac{1}{256}+\frac{1}{256}+\frac{1}{128} & j\in\{2,\ldots,M-1\}\\
+\frac{1}{256}+0+\frac{1}{256} & j=M
+\end{cases}\\
+= & \begin{cases}
+\frac{1}{128} & j\in\{1,M\} \\
+\frac{1}{64} & j\in\{2,\ldots,M-1\}.
+\end{cases}\label{eq:diag_C_mat_els}
+\end{align}
+In the second line we used equation \eq{H2_diag_goodbasis-1}. Looking at equation \eq{H2_formula_with_f}, we see that the only nonzero off-diagonal matrix elements of $H_{2}$ in this basis are of the form 
+\[
+\langle C(j-1,\vec{z},\vec{a})|H_{2}|C(j,\vec{z},\vec{a})\rangle\quad
+\text{or}\quad\langle C(j,\vec{z},\vec{a})|H_{2}|C(j-1,\vec{z},\vec{a})\rangle
+=\langle C(j-1,\vec{z},\vec{a})|H_{2}|C(j,\vec{z},\vec{a})\rangle^{*}
+\]
+for $j\in\{2,\ldots,M\}$, $\vec{z},\vec{a}\in\{0,1\}^{n}$. To compute these matrix elements we first use equation \eq{H2_offdiag_goodbasis-1} to evaluate 
+\[
+\langle{\Cube_{w}(j-1,\vec{z},\vec{a})}|H_{2}|{\Cube_{v}(j,\vec{z},\vec{a})}\rangle
+\]
+for $v,w\in\{0,1,2\}$ and $j\in\{2,\ldots,M\}$. For example, using the second case of equation \eq{H2_offdiag_goodbasis-1}, we get
+\begin{align*}
+\langle{\Cube_{1}\left(j-1,\vec{z},\vec{a}\right)}|H_{2}|{\Cube_{0}\left(j,\vec{z},\vec{a}\right)}\rangle & = 
+ \frac{1}{2^{n-2}}\sum_{\vec{d}\in\mathcal{D}_{0}^{j}}\; \sum_{\vec{c}\in\mathcal{D}_{1}^{j-1}} \!\!(-1)^{\sum_{i\in[n]} (c_i +d_i)}\langle j-1,\vec{c},\text{In}(\vec{z}),\vec{a}|H_2|j,\vec{d},\text{In}(\vec{z}),\vec{a}\rangle \\
+& = \frac{1}{2^{n-2}}\sum_{\vec{d}\in\mathcal{D}_{0}^{j}:d_{s(j-1)}=1}\!\!(-1)\cdot\frac{1}{64}=-\frac{1}{128}.
+\end{align*}
+To go from the first to the second line we used the fact that, for each $\vec{d}\in\mathcal{D}_{0}^{j}$ with $d_{s(j-1)}=1$, there is one $\vec{c}\in\mathcal{D}_{1}^{j-1}$ for which $\langle j-1,\vec{c},\text{In}(\vec{z}),\vec{a}|H_2|j,\vec{d},\text{In}(\vec{z}),\vec{a}\rangle=\frac{1}{64}$ (with all other such matrix elements equal to zero). This $\vec{c}$ satisfies $c_1=c_{s(j-1)}=1$ and $c_{s(j)}=0$, with all other bits equal to those of $\vec{d}$, so 
+\[
+(-1)^{\sum_{i=1}^{n}\left(c_{i}+d_{i}\right)}=(-1)^{c_{1}+c_{s(j)}+c_{s(j-1)}+d_{1}+d_{s(j)}+d_{s(j-1)}}=-1
+\]
+for each nonzero term in the sum.
+
+We perform a similar calculation using cases 1, 3, and 4 in equation \eq{H2_offdiag_goodbasis-1} to obtain
+\[
+\langle{\Cube_{w}(j-1,\vec{z},\vec{a})}|H_{2}|{\Cube_{v}(j,\vec{z},\vec{a})}\rangle=\begin{cases}
+-\frac{1}{128} & (w,v)=(1,0)\\
+\frac{1}{128\sqrt{2}} & (w,v)\in\{(2,0),(1,2)\}\\
+-\frac{1}{256} & (w,v)=(2,2)\\
+0 & \text{otherwise.}
+\end{cases}
+\]
+Hence 
+\begin{align*}
+ & \langle C\left(j-1,\vec{z},\vec{a}\right)|H_{2}|C\left(j,\vec{z},\vec{a}\right)\rangle\\
+ &\quad =\frac{1}{4}\langle{\Cube_{1}\left(j-1,\vec{z},\vec{a}\right)}|H_{2}|{\Cube_{0}\left(j,\vec{z},\vec{a}\right)}\rangle-\frac{1}{2\sqrt{2}}\langle{\Cube_{2}\left(j-1,\vec{z},\vec{a}\right)}|H_{2}|{\Cube_{0}\left(j,\vec{z},\vec{a}\right)}\rangle\\
+ &\qquad +\frac{1}{2}\langle{\Cube_{2}\left(j-1,\vec{z},\vec{a}\right)}|H_{2}|{\Cube_{2}\left(j,\vec{z},\vec{a}\right)}\rangle-\frac{1}{2\sqrt{2}}\langle{\Cube_{1}\left(j-1,\vec{z},\vec{a}\right)}|H_{2}|{\Cube_{2}\left(j,\vec{z},\vec{a}\right)}\rangle\\
+ &\quad =-\frac{1}{128}.
+\end{align*}
+Combining this with equation \eq{diag_C_mat_els}, we see that $H_{2}|_{S_{2}}$ is block diagonal in the basis \eq{S_beta_basis}, with a block for each pair of $n$-bit strings $\vec{z},\vec{a}\in\{0,1\}^{n}$. Each of the $2^{2n}$ blocks is equal to the $M\times M$ matrix
+\[
+  \frac{1}{128}
+  \begin{pmatrix}
+    1 & -1 & 0 & 0 & \cdots & 0  \\
+    -1 & 2 & -1 & 0 & \cdots & 0  \\
+    0 & -1 & 2 & -1 & \ddots & \vdots \\
+    0 & 0 & -1 & \ddots & \ddots & 0 \\
+    \vdots & \vdots & \ddots & \ddots & 2 & -1 \\
+    0 & 0 & \cdots & 0 & -1 & 1  
+  \end{pmatrix}.
+\]
+This matrix is just $\frac{1}{128}$ times the Laplacian of a path of length $M$, whose spectrum is well known. In particular, it has a unique eigenvector with eigenvalue zero (the all-ones vector) and its eigenvalue gap is $2(1-\cos (\frac{\pi}{M}))\geq \frac{4}{M^2}$. Thus for each of the $2^{2n}$ blocks there is an eigenvector of $H_{2}|_{S_{2}}$ with eigenvalue $0$, equal to the uniform superposition $|\mathcal{H}(\vec{z},\vec{a})\rangle$ over the $M$ states in the block. Furthermore, the smallest nonzero eigenvalue within each block is at least $\frac{1}{32M^{2}}$. Hence
+\begin{equation}
+  \gamma(H_{2}|_{S_{2}}) \geq \frac{1}{32M^{2}}.\label{eq:gamma_HB}
+\end{equation}
+To get the stated lower bound on $\gamma(H(G_{3},G_Xoc,n))$, we apply \lem{npl} with 
+\begin{align*}
+  H_{A} &= H(G_{2},G_Xoc,n) \qquad H_{B}=H_{2}|_{\mathcal{I}(G_{3},G_Xoc,n)}
+\end{align*}
+and 
+\begin{equation}
+  \gamma(H_{A}) \geq \frac{\mathcal{K}_0}{35000 n} \qquad
+  \gamma(H_{B}|_{S_{2}}) = \gamma(H_{2}|_{S_{2}}) 
+  \geq \frac{1}{32 M^{2}} \qquad
+  \|H_{B}\| \leq \|H_{2}\| \leq n \|h_{2}\| = 2n
+\label{eq:gamma_HA}
+\end{equation}
+from \lem{beta_bound}, equation \eq{gamma_HB}, and the fact that $\left\Vert h_{2}\right\Vert =2$ from \eq{h_E_bound}. This gives 
+\begin{align*}
+  \gamma(H(G_3,G_Xoc,n)) 
+  &\geq \frac{\mathcal{K}_0}{32M^2\mathcal{K}_0+35000n +2n(35000n)(32M^2)} \\
+  &\geq \frac{\mathcal{K}_0}{M^2 n^2(32+35000+70000\cdot32)}
+   \geq \frac{\mathcal{K}_0}{10^7 M^2 n^2}. \qedhere
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+\label{lem:G_IV}The nullspace $S_4$ of $H(G_{4},G_Xoc,n)$ is spanned by
+the states 
+\begin{equation}
+|\mathcal{H}\left(\vec{z},\vec{a}\right)\rangle\quad\text{where}\quad\vec{z}=z_{1}z_{2}\ldots z_{n_{\text{in}}}\underbrace{00\ldots0}_{n-n_{\text{in}}}\label{eq:history_states_zero_init}
+\end{equation}
+for $\vec{a}\in\{0,1\}^{n}$ and $z_{1},\ldots,z_{n_{\text{in}}}\in\{0,1\}$.
+Its smallest nonzero eigenvalue satisfies
+\[
+\gamma(H(G_{4},G_Xoc,n)) \geq \frac{\mathcal{K}_0}{10^{10} M^3n^3}
+\]
+where $\mathcal{K}_0\in (0,1]$ is the absolute constant from \lem{gs_g_alpha}.
+\end{lemma}
+
+\begin{proof}
+Using equation \eq{Hin_mat_els}, we find
+\begin{align*}
+\langle C(k,\vec{x},\vec{b})|H_{\text{in},i}|C(j,\vec{z},\vec{a})\rangle
+&=\delta_{k,j} \delta_{\vec{x},\vec{z}}\delta_{\vec{a},\vec{b}}\bigg(\frac{1}{4}\langle {\Cube_0(j,\vec{z},\vec{a})}|H_{\text{in},i}|{\Cube_0(j,\vec{z},\vec{a})}\rangle\\
+&\quad+\frac{1}{4}\langle {\Cube_1(j,\vec{z},\vec{a})}|H_{\text{in},i}| {\Cube_1(j,\vec{z},\vec{a})}\rangle \\
+&\quad+\frac{1}{2}\langle {\Cube_2(j,\vec{z},\vec{a})}|H_{\text{in},i}| {\Cube_2(j,\vec{z},\vec{a})}\rangle\bigg)\\
+&=\delta_{k,j} \delta_{\vec{x},\vec{z}}\delta_{\vec{a},\vec{b}}\left(\frac{1}{64}\delta_{z_i,1}\right)\begin{cases}
+\frac{1}{4}\cdot\frac{1}{2}+\frac{1}{4}\cdot\frac{1}{2}+\frac{1}{2}\cdot\frac{1}{2} & j<j_{\min,i}\\
+\frac{1}{4}+0+0 & j=j_{\min,i}\\
+0+0+0 & j>j_{\min,i}
+\end{cases}
+\end{align*}
+for each $i\in\{n_{\text{in}}+1,\ldots,n\}$. Hence 
+\[
+\langle\mathcal{H}(\vec{x},\vec{b})|\sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}|\mathcal{H}(\vec{z},\vec{a})\rangle=\frac{1}{M}\delta_{\vec{x},\vec{z}}\delta_{\vec{a},\vec{b}}\sum_{i=n_{\text{in}}+1}^{n}\frac{1}{64}\left(\frac{j_{\min,i}-1}{2}+\frac{1}{4}\right)\delta_{z_{i},1}.
+\]
+Therefore
+\[
+\sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}\big|_{S_{3}}
+\]
+is diagonal in the basis $\{|\mathcal{H}(\vec{z},\vec{a})\rangle\colon\vec{z},\vec{a}\in\{0,1\}^{n}\}$. The zero eigenvectors are given by equation \eq{history_states_zero_init}, and the smallest nonzero eigenvalue is
+\begin{equation}
+\gamma\left(\sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}\big|_{S_{3}}\right)\geq\frac{1}{256M}.\label{eq:lbnd_Hinj}
+\end{equation}
+since $j_{\min,i}\geq1$. To get the stated lower bound we now apply \lem{npl} with 
+\begin{align*}
+H_{A} & =H(G_{3},G_Xoc,n)\qquad H_{B}=\sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}\big|_{\mathcal{I}(G_{4},G_Xoc,n)}
+\end{align*}
+and
+\[
+  \gamma(H_{A}) \geq \frac{\mathcal{K}_0}{10^7 M^{2}n^{2}} \qquad
+  \gamma(H_{B}|_{S_{3}})\geq\frac{1}{256M} \qquad 
+  \left\Vert H_{B}\right\Vert 
+    \leq n\left\Vert \sum_{i=n_{\text{in}}+1}^{n}h_{\text{in},i}\right\Vert = n
+\]
+where we used \lem{HG3}, equation \eq{lbnd_Hinj}, and the fact that $\left\Vert \sum_{i=n_{\text{in}}+1}^{n}h_{\text{in},i}\right\Vert =1$ (from equation \eq{h_S_bound}. This gives
+\begin{align*}
+\gamma \left(H(G_4,G_Xoc,n)\right)
+&\geq \frac{\mathcal{K}_0}{256M\mathcal{K}_0+10^7n^2M^2+n(256M)(10^7n^2M^2)} \\
+&\geq \frac{\mathcal{K}_0}{(M^3n^3)(256+10^7+256\cdot 10^7)}
+ \geq \frac{\mathcal{K}_0}{10^{10} M^3n^3}. \qedhere
+\end{align*}
+\end{proof}
+
+
 \subsection{The occupancy constraints lemma}
+
+%=============================================================================
+\subsubsection{Definitions and notation}
+\label{sec:Definitions-and-Notation_G_square}
+
+In this Section we establish notation and we describe how the gate graph $G^{\square}$ is constructed from $G$ and $G^{\text{occ}}$. We also define two related gate graphs $G^{\triangle}$ and $G^{\diamondsuit}$ that we use in our analysis.
+
+Let us first fix notation for the gate graph $G$ and the occupancy constraints graph $G^{\text{occ}}$. Write the adjacency matrix of $G$ as (see equation \eq{adj_gate_graph}) 
+\[
+A(G)=\sum_{q=1}^{R}|q\rangle\langle q|\otimes A(g_{0})+h_{\mathcal{E}^{G}}+h_{\mathcal{S}^{G}}
+\]
+where $h_{\mathcal{E}^{G}}$ and $h_{\mathcal{S}^{G}}$ are determined (through equations \eq{h_edges} and \eq{h_loops}) by the sets $\mathcal{E}^{G}$ and $\mathcal{S}^{G}$ of edges and self-loops in the gate diagram for $G$, and where $g_0$ is the 128-vertex graph from \fig{g_0}. Recall that the occupancy constraints graph $G^{\text{occ}}$ is a simple graph with vertices labeled $q\in[R]$, one for each diagram element in $G$. We write $E(G^{\text{occ}})\subseteq\binom{[R]}{2} = \{\{x,y\}\colon x,y\in[R],\, x\neq y\}$ for the edge set of $G^{\text{occ}}$. 
+
+%-----------------------------------------------------------------------------
+\subsubsection*{Definition of $G^{\square}$}
+
+To ensure that the ground space has the appropriate form, the construction of $G^{\square}$ is slightly different depending on whether $R$ is even or odd. The following description handles both cases.
+
+\begin{enumerate}
+\item Replace each diagram element $q\in[R]$ in the gate diagram for $G$ as shown in \fig{replace_gate_diagram}, with diagram elements labeled $q_{\text{in}},q_{\text{out}}$ and $d(q,s)$ where $q,s\in[R]$ and $q\neq s$ if $R$ is even. Each node $(q,z,t)$ in the gate diagram for $G$ is mapped to a new node $\new(q,z,t)$ as shown by the black and grey arrows, i.e., 
+\begin{equation}
+\new(q,z,t)=\begin{cases}
+(q_{\mathrm{in}},z,t) & \text{ if }(q,z,t)\text{ is an input node}\\
+(q_{\mathrm{out}},z,t) & \text{ if }(q,z,t)\text{ is an output node}.
+\end{cases}\label{eq:node_mapping_G_G_square}
+\end{equation}
+Edges and self-loops in the gate diagram for $G$ are replaced by edges and self-loops between the corresponding nodes in the modified diagram.
+\item For each edge $\{q_{1},q_{2}\}\in E(G^{\text{occ}})$ in the occupancy constraints graph we add four diagram elements of the type shown in \fig{diagram_element1} (i.e., diagram elements corresponding to the identity). We refer to these diagram elements by labels $e_{ij}(q_{1},q_{2})$ with $i,j\in\{0,1\}$. For these diagram elements the labeling function is symmetric, i.e., $e_{ij}(q_{1},q_{2})=e_{ji}(q_{2},q_{1})$ whenever $\{q_{1},q_{2}\}\in E(G^{\text{occ}})$.
+\item For each non-edge $\{q_{1},q_{2}\}\notin E(G^{\text{occ}})$ with $q_{1},q_{2}\in[R]$ and $q_{1}\neq q_{2}$ we add $8$ diagram elements of the type shown in \fig{diagram_element1}. We refer to these diagram elements as $e_{ij}(q_{1},q_{2})$ and $e_{ij}(q_{2},q_{1})$ with $i,j\in\{0,1\}$; when $\{q_1,q_2\}\notin E(G^{\text{occ}})$ the labeling function is not symmetric, i.e., $e_{ij}(q_{1},q_{2})\neq e_{ji}(q_{2},q_{1})$. If $R$ is odd we also add $4R$ diagram elements labeled $e_{ij}(q,q)$ with $i,j\in\{0,1\}$ and $q\in[R]$.
+\item Finally, we add edges and self-loops to the gate diagram as shown in \fig{add_edges}. This gives the gate diagram for $G^{\square}$.
+\end{enumerate}
+
+%\begin{figure}
+%\centering
+%\begin{tikzpicture}[scale=0.5]
+%\begin{scope}[xshift=-10 cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (1.22cm, .75cm) {\large{$\tilde U$}};   
+% \node at (1.22cm, 1.85cm){\large{$q$}};
+%
+%\node at (6cm, 0.75cm) {\Large{$\longrightarrow$}};
+%\draw [->, thick, color=black] (0,2.5) --(0,1.6);
+%\draw [->, thick, color=gray] (2.43,2.5) --(2.43,1.6);
+%\end{scope}
+%\draw [decorate,decoration={brace,amplitude=10pt}] (3.43,2.5) -- (14.43,2.5) node [black,midway,yshift=17]  {$d(q,q)$ is omitted if $R$ is even};
+%\draw [->, thick, color=black] (0,2.5) --(0,1.6);
+%\draw [->, thick, color=gray] (17.86,2.5) --(17.86,1.6);
+%  % The connections 
+% \foreach \y in {0.925,.55}{  
+%  \draw[thick] (2.43,\y) -- (3.43,\y);
+%	\draw[thick] (5.86,\y) -- (6.86,\y);	
+%	\draw[thick] (14.43,\y) -- (15.43,\y);
+%	\draw[thick] (9.29,\y) -- (9.79,\y);
+%	\draw[thick] (11.5,\y) -- (12,\y);
+%	\node at (10.6,\y){\large{$\ldots$}};
+%}
+%%\draw[thick,looseness = 200] (0,1.2) to [out = 180, in = 100] (-.01,1.2);
+%  % The two rectangles 
+% \foreach \offset/\unitary/\label in {0/1/q_{\mathrm{in}},3.43/1/{d(q,1)},6.86/1/{d(q,2)},12/1/{d(q,R)},15.43/\tilde U/q_{\mathrm{out}}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (1.22cm, .75cm) {\large{$\unitary$}};   
+% \node at (1.22cm, 2cm){\large{$\label$}};   
+%\end{scope}}   
+%\end{tikzpicture}
+%
+%\caption{The first step in constructing the gate diagram of $G^{\square}$
+%from that of $G$ is to replace each diagram element as shown. The
+%four input nodes (black arrow) and four output nodes (grey arrow)
+%on the left-hand side are identified with nodes on the right-hand
+%side as shown.\label{fig:replace_gate_diagram}}
+%\end{figure}
+%
+%\begin{figure}
+%\centering
+%\subfloat[b][$\{q,s\}\in E(G^{\text{occ}}),\,q<s$]{
+%\label{fig:add_edgesA}
+%\begin{tikzpicture}[baseline=(X.base),scale=0.8]
+%\node at (0,0) (X){};
+%\begin{scope}[xshift=0cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (1.22cm, .75cm) {\large{$1$}};   
+% \node at (1.22cm, 1.85cm){\large{$e_{ij}(q,s)$}};
+%\draw[thick,looseness=.66] (0cm,1.2cm) to [out=180,in=-45] (-1.5cm,1.5cm);
+%\node at (-1.5,1.8){to $d(q,s)$};
+%\draw[thick,looseness=.66] (0cm,0.55cm) to [out=180,in=45] (-1.5cm,0.2cm);
+%\node at (-1.5,-0.1){to $d(s,q)$};
+%\end{scope}
+%\node at (0,-0.7){};
+%\end{tikzpicture}
+%}
+%\hspace{.5cm}
+%\subfloat[b][$\{q,s\}\notin E(G^{\text{occ}})$]{
+%\label{fig:add_edgesB}
+%\begin{tikzpicture}[baseline=(X.base),scale=0.8]
+%\node at (0,0) (X){};
+%
+%\begin{scope}[xshift=0cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (1.22cm, .75cm) {\large{$1$}};   
+% \node at (1.22cm, 1.85cm){\large{$e_{ij}(q,s)$}};
+%\draw[thick,looseness=.66] (0cm,1.2cm) to [out=180,in=-45] (-1.5cm,1.5cm);
+%\node at (-1.5,1.8){to $d(q,s)$};
+%\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);
+%\end{scope}
+%\node at (0,-0.7){};
+%\end{tikzpicture}
+%}
+%\hspace{.5cm}
+%\subfloat[b][]{
+%\label{fig:add_edgesC}
+%\begin{tikzpicture}[baseline=(X.base),scale=0.8]
+%\node at (0,0) (X){};
+%\draw[thick,looseness=.66] (0cm,1.2cm) to [out=180,in=-45] (-0.8cm,1.7cm);
+%\node at (-0.8cm,2cm){to $e_{00}(q,s)$};
+%\draw[thick,looseness=.66] (0cm,0.3cm) to [out=180,in=45] (-0.8cm,-0.2cm);
+%\node at (-0.8cm,-0.5cm){to $e_{10}(q,s)$};
+%
+%\draw[thick,looseness=.66] (2.43cm,1.2cm) to [out=0,in=225] (3.23cm,1.7cm);
+%\node at (3.23cm,2cm){to $e_{01}(q,s)$};
+%\draw[thick,looseness=.66] (2.43cm,0.3cm) to [out=0,in=135] (3.23cm,-0.2cm);
+%\node at (3.23cm,-0.5cm){to $e_{11}(q,s)$};
+%\draw[thick] (-1,0.95)--(0,0.95);
+%\draw[thick] (-1,0.55)--(0,0.55);
+%\draw[thick] (2.43,0.95)--(3.43,0.95);
+%\draw[thick] (2.43,0.55)--(3.43,0.55);
+%\node at (0,-0.7){};
+%\begin{scope}
+%\clip (-1.4,-0.1) rectangle (3.83,2.1);
+%     
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (1.22cm, .75cm) {\large{$1$}};   
+% \node at (1.22cm, 1.85cm){\large{$d(q,s)$}};
+%\begin{scope}[xshift=3.43cm]
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (1.22cm, .75cm) {\large{$1$}};   
+% \node at (1.22cm, 1.85cm){\large{$d(q,\widehat{q})$}};
+%\end{scope}
+%\begin{scope}[xshift=-3.43cm]
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (1.22cm, .75cm) {\large{$1$}};   
+%\node at (1.22cm, 1.85cm){\large{$d(q,s)$}};
+%\end{scope}
+%\end{scope}
+%\end{tikzpicture}
+%}
+%\caption{Edges and self-loops added in step 4 of the construction of the gate diagram of $G^{\square}$. When $\{q,s\}\in E(G^{\text{occ}})$ with $q<s$, we add two outgoing edges to $e_{ij}(q,s)$ as shown in \subfig{add_edgesA}. Note that if $q>s$ and $\{q,s\}\in E(G^{\text{occ}})$ then $e_{ij}(q,s)=e_{ji}(s,q)$. When $\{q,s\}\notin E(G^{\text{occ}})$ we add a self-loop and a single outgoing edge from $e_{ij}(q,s)$ as shown in \subfig{add_edgesB}. Each diagram element $d(q,s)$ has eight outgoing edges (four of which are added in step 4), as shown in \subfig{add_edgesC}.\label{fig:add_edges}}
+%\end{figure}
+
+The set of diagram elements in the gate graph for $G^{\square}$ is indexed by
+\begin{equation}
+L^{\square}=Q_{\text{in}}\cup D\cup E_{\text{edges}}\cup E_{\text{non-edges}}\cup Q_{\text{out}}\label{eq:L_square}
+\end{equation}
+where
+\begin{align}
+Q_{\text{in}} & =\left\{ q_{\mathrm{in}}:q\in[R]\right\} \label{eq:Q_in}\\
+D & =\left\{ d(q,s):\, q,s\in[R]\text{ and }q\neq s\text{ if }R\text{ is even}\right\} \label{eq:defn_of D}\\
+E_{\text{edges}} & =\left\{ e_{ij}(q,s):\, i,j\in\{0,1\},\,\{q,s\}\in E(G^{\text{occ}})\text{ and }q<s\right\} \nonumber \\
+E_{\text{non-edges}} & =\left\{ e_{ij}(q,s):\, i,j\in\{0,1\},\,\{q,s\}\notin E(G^{\text{occ}})\text{ and }q\neq s\text{ if }R\text{ is even}\right\} \nonumber \\
+Q_{\text{out}} & =\left\{ q_{\mathrm{out}}:q\in[R]\right\} .\label{eq:Q_out}
+\end{align}
+The total number of diagram elements in $G^{\square}$ is 
+\begin{align*}
+|L^{\square}| & =|Q_{\text{in}}|+|D|+|E_{\text{edges}}|+|E_{\text{non-edges}}|+|Q_{\text{out}}|\\
+ & =\begin{cases}
+R+R^{2}+4|E(G^{\text{occ}})|+4\left(R^{2}-2|E(G^{\text{occ}})|\right)+R & R\text{ odd}\\
+R+R\left(R-1\right)+4|E(G^{\text{occ}})|+4\left(R(R-1)-2|E(G^{\text{occ}})|\right)+R & R\text{ even}
+\end{cases}\\
+ & =\begin{cases}
+5R^{2}+2R-4|E(G^{\text{occ}})| & R\text{ odd}\\
+5R^{2}-3R-4|E(G^{\text{occ}})| & R\text{ even}.
+\end{cases}
+\end{align*}
+In both cases this is upper bounded by $7R^2$ as claimed in the statement of the Lemma. Write 
+\begin{equation}
+A(G^{\square})=\sum_{l\in L^{\square}}|l\rangle\langle l|\otimes A(g_{0})+h_{\mathcal{S}^{\square}}+h_{\mathcal{E}^{\square}}\label{eq:A_G_squAre}
+\end{equation}
+where $\mathcal{S}^{\square}$ and $\mathcal{E}^{\square}$ are the sets of self-loops and edges in the gate diagram for $G^{\square}$. 
+
+We now focus on the input nodes of diagram elements in $Q_{\text{in}}$ and the output nodes of the diagram elements in $Q_{\text{out}}$. These are the nodes indicated by the black and grey arrows in \fig{replace_gate_diagram}. Write $\mathcal{E}^{0}\subset\mathcal{E}^{\square}$ and $\mathcal{S}^{0}\subset\mathcal{S^{\square}}$ for the sets of edges and self-loops that are incident on these nodes in the gate diagram for $G^{\square}$. Note that the sets $\mathcal{E}^{0}$ and $\mathcal{S}^{0}$ are in one-to-one correspondence with (respectively) the sets $\mathcal{E}^{G}$ and $\mathcal{S}^{G}$ of edges and self-loops in the gate diagram for $G$. The other edges and self-loops in $G^{\square}$ do not depend on the sets of edges and self-loops in $G$. Writing
+\[
+\mathcal{S}^{\triangle}=\mathcal{S}^{\square}\setminus S^{0}\qquad\mathcal{E}^{\triangle}=\mathcal{E}^{\square}\setminus\mathcal{E}^{0},
+\]
+we have 
+\begin{equation}
+h_{\mathcal{S}^{\square}}=h_{\mathcal{S}^{0}}+h_{\mathcal{S}^{\triangle}}\qquad h_{\mathcal{E}^{\square}}=h_{\mathcal{E}^{0}}+h_{\mathcal{E}^{\triangle}}.\label{eq:h_se_square}
+\end{equation}
+
+%-----------------------------------------------------------------------------
+\subsubsection*{Definition of $G^{\triangle}$ }
+
+The gate diagram for $G^{\triangle}$ is obtained from that of $G^{\square}$ by removing all edges and self-loops attached to the input nodes of the diagram elements in $Q_{\text{in}}$ and the output nodes of the diagram elements in $Q_{\text{out}}$. Its adjacency matrix is
+\begin{equation}
+A(G^{\triangle})=\sum_{l\in L^{\square}}|l\rangle\langle l|\otimes A(g_{0})+h_{\mathcal{S}^{\triangle}}+h_{\mathcal{E}^{\triangle}}.\label{eq:A_g_triangle}
+\end{equation}
+Note that $G^{\triangle}=G^{\square}$ whenever the gate diagram for $G$ contains no edges or self-loops. 
+
+\begin{comment}
+We use the following explicit expressions for the self-loop set and edge set in the gate diagram for $G^{\triangle}$:
+\[
+\mathcal{S}^{\triangle}=\left\{ (l,1,1):\, l\in E_{\text{non-edges}}\right\} 
+\]
+\begin{align*}
+\mathcal{E}^{\triangle} & =\bigcup_{q=\in[R]}\left(\mathcal{E}_{\text{step1}}^{q}\cup\mathcal{E}_{\text{step4 }}^{q}\right)\\
+\mathcal{E}_{\text{step1}}^{q} & =\left\{ (q_{\text{in}},0,7),(d(q,1),0,3)\right\} ,\left\{ (q_{\text{in}},1,5),(d(q,1),1,1)\right\} \\
+ & \left(\bigcup_{s=1}^{R-1}\left\{ (d(q,s),0,7),(d(q,s+1),0,3)\right\} \cup\left\{ (d(q,s),1,5),(d(q,s+1),1,1)\right\} \right)\\
+ & \bigcup\left\{ (d(q,R),0,7),(q_{\text{out}},0,3)\right\} \cup\left\{ (d(q,R),1,5),(q_{\text{out}}1,1)\right\} \\
+\mathcal{E}_{\text{step4}}^{q} & =\left\{ (d(q,s),0,1),(e_{00}(q,s),\alpha(q,s),1)\right\} \cup
+\end{align*}
+\end{comment}
+
+%-----------------------------------------------------------------------------
+\subsubsection*{Definition of $G^{\diamondsuit}$}
+
+We also define a gate graph $G^{\diamondsuit}$ with gate diagram obtained from that of $G^{\triangle}$ by removing all edges (but leaving the self-loops). Note that $G^{\diamondsuit}$ has a component for each diagram element $l\in L^{\square}$. The components corresponding to diagram elements without a self-loop (those with $l\in L^{\square}\setminus E_{\text{non-edges}}$) have adjacency matrix $A(g_{0})$; those with a self-loop ($l\in E_{\text{non-edges}}$) have adjacency matrix $A(g_{0})+|1,1\rangle\langle1,1|\otimes\II$, so
+\begin{align}
+A(G^{\diamondsuit}) & =\sum_{l\in L^{\square}}|l\rangle\langle l|\otimes A(g_{0})+h_{\mathcal{S}^{\triangle}}\label{eq:A_G_diamond_defn_line1}\\
+ & =\sum_{l\in L^{\square}\setminus E_{\text{non-edges}}}|l\rangle\langle l|\otimes A(g_{0})+\sum_{l\in E_{\text{non-edges}}}|l\rangle\langle l|\otimes\left(A(g_{0})+|1,1\rangle\langle1,1|\otimes\II\right).\label{eq:A_G_diamond_defn}
+\end{align}
+
+%-----------------------------------------------------------------------------
+\subsubsection*{Example}
+
+We provide an example of this construction in \fig{example_G_Gtilde} (which shows a gate graph and an occupancy constraints graph) and \fig{big_example_G_square} (which describes the derived gate graphs $G^{\square}$, $G^{\triangle}$, and $G^{\diamondsuit}$).
+
+%\begin{figure}
+%\subfloat[][]{
+%\label{fig:example_G_GtildeA}
+%\begin{tikzpicture}[scale=0.5]
+%% The gate graph G 
+%\draw[thick,looseness=1.3] (0,-2.2cm) to [out=180,in=180] (0,-3.8cm);
+%\draw[thick,looseness = 200] (2.43,-4.7) to [out = 45, in = -45] (2.42,-4.7);  
+% \foreach \offset/\unitary/\label in {0/H/1,-2.5/HT/2,-5/1/3}
+%{   
+%\begin{scope}[yshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (1.22cm, .75cm) {\large{$\unitary$}};   
+% \node at (1.22cm, 2cm){\large{$\label$}};   
+%\end{scope}}  
+%\end{tikzpicture}
+%}
+%\hspace{4cm}
+%\subfloat[][]{
+%\label{fig:example_G_GtildeB}
+%\begin{tikzpicture}[scale=0.5]
+%% The graph G_tilde
+% \draw[fill=black,draw=black] (1,0) circle (.66mm);
+%\node at (1.5,0) {1};
+% \draw[fill=black,draw=black] (1,-2.5) circle (.66mm);
+%\node at (1.5,-2.5) {2};
+% \draw[fill=black,draw=black] (1,-5) circle (.66mm);
+%\node at (1.5,-5) {3};
+%\draw[thick] (1,0) -- (1,-2.5);
+%\end{tikzpicture}
+%}
+%
+%\caption{An example \subfig{example_G_GtildeA} Gate diagram for a gate graph $G$ and \subfig{example_G_GtildeB} Occupancy constraints graph $G^{\text{occ}}$. In the text we describe how these two ingredients are mapped to a gate graph $G^{\square}$; the gate diagram for $G^{\square}$ is shown in \fig{big_example_G_square}.\label{fig:example_G_Gtilde}}
+%\end{figure}
+%\begin{figure}
+%
+%\begin{tikzpicture}[scale=0.68]
+%\path[use as bounding box](-4,-25) rectangle (18.5,7);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% q=1/2 shared elements
+%\begin{scope}[yshift=-5cm]
+%%%%%%%%% e00
+%\foreach \offset/\unitary/\label in
+%{-1/1/{e_{00}(1,2)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+%\end{scope}}
+%%%%%%%%%%%%%% e10
+%\foreach \offset/\unitary/\label in
+%{-3/1/{e_{01}(1,2)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}}; 
+%\end{scope}}
+%\begin{scope}
+%%%%%%%%% e01
+%\foreach \offset/\unitary/\label in
+%{6.5/1/{e_{10}(1,2)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+%\end{scope}}
+%%%%%%%%%%%%%% e11
+%\foreach \offset/\unitary/\label in
+%{17/1/{e_{11}(1,2)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}}; 
+%\end{scope}}
+%\end{scope}
+%\draw[thick,looseness = 2.6] (6.86,6.2) to [out = 95, in = 110] (-1,1.2); 
+%\draw[thick,looseness = 0.5] (3.43,-4.8) to [out = 180, in = 225] (-1,0.3); 
+%\draw[thick,looseness = 1.2] (3.43,-5.7) to [out = 250, in = 250] (-3,0.3); 
+%\draw[thick,looseness = 0.7] (6.86,5.3) to [out = 180, in = 180] (6.5,1.2); 
+%\draw[thick,looseness = 0.8] (5.86,-4.8) to [out = 80, in = 170] (6.5,0.3); 
+%
+%\draw[thick,looseness = 2] (9.29,5.3) to [out =-80, in = 180] (17,1.2);  
+%\draw[thick,looseness = 1.3] (13.5,-10) to [out =5, in = 250] (17,0.3);
+%\draw[thick,looseness = 0.66] (5.86,-10) to [out =-5, in = 184] (13.5,-10);
+%\draw[thick,looseness = 0.66] (5.86,-5.7) to [out =-80, in = 175] (5.86,-10);
+%\draw[thick,looseness = 2] (9.29,6.2) to [out =80, in = 120] (-3,1.2); 
+%\end{scope}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% q=1
+%\begin{scope}
+%\begin{scope}[yshift=3cm]
+%% The rectangles above q=1, odd ones
+%\foreach \offset/\unitary/\label in
+%{2.1/1/{e_{00}(1,1)},10.9/1/{e_{00}(1,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+%\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
+%\end{scope}}  
+%\end{scope}
+%\begin{scope}[yshift=3cm]
+%% The rectangles above q=1, even ones
+%\foreach \offset/\unitary/\label in
+%{3.9/1/{e_{01}(1,1)},12.7/1/{e_{01}(1,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {1.25/black,0/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+%\draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
+%\end{scope}}  
+%\draw[thick,looseness = 1.2] (3.43,-1.8) to [out = 180, in = 180] (2.1,1.2); 
+%\draw[thick,looseness = 0.5] (5.86,-1.8) to [out = 0, in = 0] (5.15,1.2); 
+%\draw[thick,looseness = 0.5] (10.29,-1.8) to [out = 180, in = 180] (10.9,1.2); 
+%\draw[thick,looseness = 1.2] (12.72,-1.8) to [out = 0, in = 0] (13.95,1.2); 
+%\end{scope}
+%\begin{scope}[yshift=-3cm]
+%% The rectangles below q=1, odd ones
+%\foreach \offset/\unitary/\label in
+%{2.1/1/{e_{10}(1,1)},10.9/1/{e_{10}(1,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+%\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
+%\end{scope}}  
+%\end{scope}
+%\begin{scope}[yshift=-3cm]
+%% The rectangles below q=1, even ones
+%\foreach \offset/\unitary/\label in
+%{3.9/1/{e_{11}(1,1)},12.7/1/{e_{11}(1,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {1.25/black,0/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+%\draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
+%\end{scope}}  
+%\draw[thick,looseness = 1.2] (3.43,3.3) to [out = 180, in = 180] (2.1,1.2); 
+%\draw[thick,looseness = 0.5] (5.86,3.3) to [out = 0, in = 0] (5.15,1.2); 
+%\draw[thick,looseness = 0.5] (10.29,3.3) to [out = 180, in = 180] (10.9,1.2); 
+%\draw[thick,looseness = 1.2] (12.72,3.3) to [out = 0, in = 0] (13.95,1.2); 
+%\end{scope}
+%  % The connections 
+% \foreach \y in {0.925,.55}{  
+%  \draw[thick] (2.43,\y) -- (3.43,\y);
+%	\draw[thick] (5.86,\y) -- (6.86,\y);	
+%	\draw[thick] (9.29,\y) -- (10.29,\y);
+%	\draw[thick] (12.72,\y) -- (13.72,\y);
+%}
+%  % The rectangles 
+% \foreach \offset/\unitary/\label in {0/1/1_{\mathrm{in}},3.43/1/{d(1,1)},6.86/1/{d(1,2)},10.29/1/{d(1,3)},13.72/H/1_{\mathrm{out}}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (1.22cm, .75cm) {\large{$\unitary$}};   
+% \node at (1.22cm, 2cm){\large{$\label$}};   
+%\end{scope}}  
+%\end{scope}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% q=2
+%\begin{scope}[yshift=-11cm]
+%\begin{scope}[yshift=3cm]
+%% The rectangles above q=2, odd ones
+%\foreach \offset/\unitary/\label in
+%{6.5/1/{e_{00}(2,2)},10.9/1/{e_{00}(2,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+%\end{scope}}  
+%\end{scope}
+%\begin{scope}[yshift=3cm]
+%% The rectangles above q=2, even ones
+%\draw[thick,looseness = 0.7] (6.86,-1.8) to [out = 180, in = 180] (6.5,1.2); 
+%\draw[thick,looseness = 0.75] (9.29,-1.8) to [out = 0, in = 0] (9.55,1.2); 
+%\draw[thick,looseness = 0.5] (10.29,-1.8) to [out = 180, in = 180] (10.9,1.2); 
+%\draw[thick,looseness = 1.2] (12.72,-1.8) to [out = 0, in = 0] (13.95,1.2); 
+%\foreach \offset/\unitary/\label in
+%{8.3/1/{e_{01}(2,2)},12.7/1/{e_{01}(2,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {1.25/black,0/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+%\end{scope}}  
+%\end{scope}
+%\begin{scope}[yshift=-3cm]
+%% The rectangles below q=2, odd ones
+%\foreach \offset/\unitary/\label in
+%{6.5/1/{e_{10}(2,2)},10.9/1/{e_{10}(2,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+%\end{scope}}  
+%\end{scope}
+%\begin{scope}[yshift=-3cm]
+%% The rectangles below q=2, even ones
+%\foreach \offset/\unitary/\label in
+%{8.3/1/{e_{11}(2,2)},12.7/1/{e_{11}(2,3)}}
+%{
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {1.25/black,0/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+%\draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
+%\end{scope}}   
+%\draw[thick,looseness = 0.7] (6.86,3.3) to [out = 180, in = 180] (6.5,1.2); 
+%\draw[thick,looseness = 0.75] (9.29,3.3) to [out = 0, in = 0] (9.55,1.2); 
+%\draw[thick,looseness = 0.5] (10.29,3.3) to [out = 180, in = 180] (10.9,1.2); 
+%\draw[thick,looseness = 1.2] (12.72,3.3) to [out = 0, in = 0] (13.95,1.2); 
+%\end{scope}
+%  % The connections 
+% \foreach \y in {0.925,.55}{  
+%  \draw[thick] (2.43,\y) -- (3.43,\y);
+%	\draw[thick] (5.86,\y) -- (6.86,\y);	
+%	\draw[thick] (9.29,\y) -- (10.29,\y);
+%	\draw[thick] (12.72,\y) -- (13.72,\y);
+%}
+%  % The rectangles 
+% \foreach \offset/\unitary/\label in {0/1/2_{\mathrm{in}},3.43/1/{d(2,1)},6.86/1/{d(2,2)},10.29/1/{d(2,3)},13.72/HT/2_{\mathrm{out}}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (1.22cm, .75cm) {\large{$\unitary$}};   
+% \node at (1.22cm, 2cm){\large{$\label$}};   
+%\end{scope}}
+%\end{scope}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% q=3
+%\begin{scope}[yshift=-21cm]
+%%%%%%%%%%%%%% Edge and self-loop from G
+%\draw[thick,dotted,looseness = 200] (16.15,0.3) to [out = 45, in = -45] (16.14,0.3); 
+%\draw[thick,dotted,looseness = 1] (0,1.2) to [out =180, in = 180] (0,10.3);
+%
+%\begin{scope}[yshift=3cm]
+%% The rectangles above q=3, odd ones
+%\foreach \offset/\unitary/\label in
+%{2.1/1/{e_{00}(3,1)},6.5/1/{e_{00}(3,2)},10.9/1/{e_{00}(3,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+%\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
+%\end{scope}}  
+%\end{scope}
+%\begin{scope}[yshift=3cm]
+%% The rectangles above q=3, even ones
+%\foreach \offset/\unitary/\label in
+%{3.9/1/{e_{01}(3,1)},8.3/1/{e_{01}(3,2)},12.7/1/{e_{01}(3,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {1.25/black,0/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+%\draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
+%\end{scope}}  
+%\draw[thick,looseness = 1.2] (3.43,-1.8) to [out = 180, in = 180] (2.1,1.2); 
+%\draw[thick,looseness = 0.5] (5.86,-1.8) to [out = 0, in = 0] (5.15,1.2); 
+%\draw[thick,looseness = 0.7] (6.86,-1.8) to [out = 180, in = 180] (6.5,1.2); 
+%\draw[thick,looseness = 0.75] (9.29,-1.8) to [out = 0, in = 0] (9.55,1.2); 
+%\draw[thick,looseness = 0.5] (10.29,-1.8) to [out = 180, in = 180] (10.9,1.2); 
+%\draw[thick,looseness = 1.2] (12.72,-1.8) to [out = 0, in = 0] (13.95,1.2); 
+%\end{scope}
+%\begin{scope}[yshift=-3cm]
+%% The rectangles below q=3, odd ones
+%\foreach \offset/\unitary/\label in
+%{2.1/1/{e_{10}(3,1)},6.5/1/{e_{10}(3,2)},10.9/1/{e_{10}(3,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,1.25/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%\node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+%\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
+%\end{scope}}  
+%\end{scope}
+%\begin{scope}[yshift=-3cm]
+%% The rectangles below q=3, even ones
+%\foreach \offset/\unitary/\label in
+%{3.9/1/{e_{11}(3,1)},8.3/1/{e_{11}(3,2)},12.7/1/{e_{11}(3,3)}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
+%  \foreach \x /\color in {1.25/black,0/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+% \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+%\draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
+%\end{scope}}  
+%\draw[thick,looseness = 1.2] (3.43,3.3) to [out = 180, in = 180] (2.1,1.2); 
+%\draw[thick,looseness = 0.5] (5.86,3.3) to [out = 0, in = 0] (5.15,1.2); 
+%\draw[thick,looseness = 0.7] (6.86,3.3) to [out = 180, in = 180] (6.5,1.2); 
+%\draw[thick,looseness = 0.75] (9.29,3.3) to [out = 0, in = 0] (9.55,1.2); 
+%\draw[thick,looseness = 0.5] (10.29,3.3) to [out = 180, in = 180] (10.9,1.2); 
+%\draw[thick,looseness = 1.2] (12.72,3.3) to [out = 0, in = 0] (13.95,1.2); 
+%\end{scope}
+%  % The connections 
+% \foreach \y in {0.925,.55}{  
+%  \draw[thick] (2.43,\y) -- (3.43,\y);
+%	\draw[thick] (5.86,\y) -- (6.86,\y);	
+%	\draw[thick] (9.29,\y) -- (10.29,\y);
+%	\draw[thick] (12.72,\y) -- (13.72,\y);
+%}
+%  % The rectangles 
+% \foreach \offset/\unitary/\label in {0/1/3_{\mathrm{in}},3.43/1/{d(3,1)},6.86/1/{d(3,2)},10.29/1/{d(3,3)},13.72/1/3_{\mathrm{out}}}
+%{   
+%\begin{scope}[xshift=\offset cm]       
+%\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+%  \foreach \x /\color in {0/black,2.43/gray}
+%{     \foreach \y in {1.2,.95,.55,.3}
+%{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+%    }} 
+%  \node at (1.22cm, .75cm) {\large{$\unitary$}};   
+% \node at (1.22cm, 2cm){\large{$\label$}};   
+%\end{scope}}  
+%\end{scope}
+%\end{tikzpicture}
+%
+%\caption{The gate diagram for $G^{\triangle}$ (only solid lines) and $G^{\square}$ (including dotted lines) derived from the example gate graph $G$ and occupancy constraints graph $G^{\text{occ}}$ from \fig{example_G_Gtilde}. The gate diagram for $G^{\diamondsuit}$ is obtained from that of $G^{\triangle}$ by removing all edges (but leaving the self-loops).\label{fig:big_example_G_square}}
+%\end{figure}
+
+
+%=============================================================================
+\subsection{The gate graph $G^{\diamondsuit}$}
+\label{sec:The-gate-graph_G_DIAMOND}
+
+We now solve for the $e_{1}$-energy ground states of the adjacency matrix $A(G^{\diamondsuit})$. Write $g_{1}$ for the graph with adjacency matrix
+\[
+A(g_{1})=A(g_{0})+|1,1\rangle\langle1,1|\otimes\II
+\]
+(i.e., $g_0$ with $8$ self-loops added), so (recalling equation \eq{A_G_diamond_defn}) each component of $G^{\diamondsuit}$ is either $g_{0}$ or $g_{1}$. Recall from \sec{Encoding-a-Computation} that $A(g_{0})$ has four orthonormal $e_{1}$-energy ground states $|\psi_{z,a}\rangle$ with $z,a\in\{0,1\}$. It is also not hard to verify that the $e_{1}$-energy ground space of $A(g_{1})$ is spanned by two of these states $|\psi_{0,a}\rangle$ for $a\in\{0,1\}$. Now letting $|\psi_{z,a}^{l}\rangle=|l\rangle|\psi_{z,a}\rangle$, we choose a basis $\mathcal{W}$ for the $e_{1}$-energy ground space of $A(G^{\diamondsuit})$ where each basis vector is supported on one of the components:
+\begin{equation}
+\mathcal{W}=\big\{ |\psi_{z,a}^{l}\rangle:\, z,a\in\{0,1\},\, l\in L^{\square}\setminus E_{\text{non-edges}}\big\} \cup \big\{ |\psi_{0,a}^{l}\rangle:\, a\in\{0,1\},\, l\in E_{\text{non-edges}}\big\} .\label{eq:definition_of_D}
+\end{equation}
+The eigenvalue gap of $A(G^{\diamondsuit})$ is equal to that of either $A(g_{0})$ or $A(g_{1})$. Since $g_{0}$ and $g_{1}$ are specific $128$-vertex graphs we can calculate their eigenvalue gaps using a computer; we get $\gamma(A(g_{0})-e_{1})=0.7785\ldots$ and $\gamma(A(g_{1})-e_{1})=0.0832\ldots$. Hence
+\begin{align}
+\gamma(A(G^{\diamondsuit})-e_{1}) & \geq 0.0832\ldots > \frac{1}{13}.\label{eq:one_thirteenth_bound}
+\end{align}
+
+The ground space of $A(G^{\diamondsuit})$ has dimension 
+\begin{align}
+|\mathcal{W}|=4\big|L^{\square}\big|  -2\left|E_{\text{non-edges}}\right|
+&=\begin{cases}
+4\left(5R^{2}+2R-4|E(G^{\text{occ}})|\right)-2\left(4R^{2}-8|E(G^{\text{occ}})|\right) & R\text{ odd}\\
+4\left(5R^{2}-3R-4|E(G^{\text{occ}})|\right)-2\left(4R(R-1)-8|E(G^{\text{occ}})|\right) & R\text{ even}
+\end{cases}\nonumber \\
+&= \begin{cases}
+12R^{2}+8R & R\text{ odd}\\
+12R^{2}-4R & R\text{ even}.
+\end{cases}\label{eq:num_basis_D}
+\end{align}
+
+We now consider the $N$-particle Hamiltonian $H(G^{\diamondsuit},N)$ and characterize its nullspace.
+
+\begin{lemma}
+\label{lem:The-nullspace-of_Hdiamond}The nullspace of $H(G^{\diamondsuit},N)$
+is 
+\[
+\mathcal{I}_{\diamondsuit}=\spn\{ \Sym(|\psi_{z_{1},a_{1}}^{q_{1}}\rangle|\psi_{z_{2},a_{2}}^{q_{2}}\rangle\ldots|\psi_{z_{N},a_{N}}^{q_{N}}\rangle):|\psi_{z_{i},a_{i}}^{q_{i}}\rangle\in\mathcal{W}\text{ and }q_{i}\neq q_{j}\text{ for all distinct }i,j\in[N]\} 
+\]
+where $\mathcal{W}$ is given in equation \eq{definition_of_D}. The smallest nonzero eigenvalue satisfies $\gamma(H(G^{\diamondsuit},N)) > \frac{1}{300}$.
+\end{lemma}
+
+\begin{proof}
+For the first part of the proof we use the fact that the basis vectors $|\psi_{z,a}^{l}\rangle\in\mathcal{W}$ span the $e_{1}$-eigenspace of the component $G_{l}^{\diamondsuit}$ of $G^{\diamondsuit}$ corresponding to the diagram element $l\in L^{\square},$ i.e., the nullspace of $H(G_{l}^{\diamondsuit},1)$. Furthermore, no component of $G^{\diamondsuit}$ supports a two-particle frustration-free state, i.e., $\lambda_{2}^{1}(g_{0})>0$ and $\lambda_{2}^{1}(g_{1})>0$ (by \lem{2particle}). Now applying \lem{BH_disconnected_graphs} we see that $\mathcal{I}_{\diamondsuit}$ is the nullspace of $H(G^{\diamondsuit},N)$. We also see that the smallest nonzero eigenvalue $\gamma(H(G^{\diamondsuit},N))$ is either $\lambda_{2}^{1}(g_{0})$, $\lambda_{2}^{1}(g_{1})$, $\gamma(H(g_{0},1))$, or $\gamma(H(g_{1},1))$. These constants can be calculated numerically using a computer; they are $\lambda_{2}^{1}(g_{0})=0.0035\ldots$, $\lambda_{2}^{1}(g_{1})=0.0185\ldots$, $\gamma(H(g_{0},1))=0.7785\ldots$, and $\gamma(H(g_{1},1))=0.0832\ldots$. Hence
+\[
+\gamma(H(G^{\diamondsuit},N))\geq\min\{ \lambda_{2}^{1}(g_{0}),\lambda_{2}^{1}(g_{1}),\gamma(H(g_{0},1)),\gamma(H(g_{1},1))\} > \frac{1}{300}. \qedhere
+\]
+\end{proof}
+
+%=============================================================================
+\subsection{The adjacency matrix of the gate graph $G^{\triangle}$}
+\label{sec:The-gate-graph_G_triangle}
+
+We begin by solving for the $e_{1}$-energy ground space of the adjacency matrix $A(G^{\triangle})$. From equations \eq{A_g_triangle} and \eq{A_G_diamond_defn_line1} we have
+\begin{equation}
+A(G^{\triangle})=A(G^{\diamondsuit})+h_{\mathcal{E}^{\triangle}}.\label{eq:A_g_diamond_triangle}
+\end{equation}
+Recall the $e_{1}$-energy ground space of $A(G^{\diamondsuit})$ is spanned by $\mathcal{W}$ from equation \eq{definition_of_D}. Since $h_{\mathcal{E}^{\triangle}}\geq0$ it follows that $A(G^{\triangle})\geq e_{1}$. To solve for the $e_{1}$-energy groundpsace of $A(G^{\triangle})$ we construct superpositions of vectors from $\mathcal{W}$ that are in the nullspace of $h_{\mathcal{E}^{\triangle}}$. To this end we consider the restriction
+\begin{equation}
+h_{\mathcal{E}^{\triangle}}\big|_{\spn\left(\mathcal{W}\right)}.\label{eq:restriction_h_triangle}
+\end{equation}
+We now show that it is block diagonal in the basis $\mathcal{W}$ and we compute its matrix elements.
+
+First recall from equation \eq{h_edges} that
+\begin{equation}
+h_{\mathcal{E}^{\triangle}}=\sum_{\left\{ (l,z,t),(l^{\prime},z^{\prime},t^{\prime})\right\} \in\mathcal{E}^{\triangle}}\left(|l,z,t\rangle+|l^{\prime},z^{\prime},t^{\prime}\rangle\right)\left(\langle l,z,t|+\langle l^{\prime},z^{\prime},t^{\prime}|\right)\otimes\II.\label{eq:equation_for_h_epsilon_triangle}
+\end{equation}
+The edges $\left\{ (l,z,t),(l^{\prime},z^{\prime},t^{\prime})\right\} \in\mathcal{E}^{\triangle}$ can be read off from \fig{replace_gate_diagram} and \fig{add_edges}, respectively (referring back to \fig{diagram_elements} for our convention regarding the labeling of nodes on a diagram element). The edges from \fig{replace_gate_diagram} are
+\begin{equation}
+\left\{ (q_{\mathrm{in}},z,t),(d(q,1),z,t^{\prime})\right\} ,\left\{ (d(q,2),z,t),(d(q,3),z,t^{\prime})\right\} ,\ldots,\left\{ (d(q,R),z,t),(q_{\mathrm{out}},z,t^{\prime})\right\} \label{eq:epsilon_triangle_set1}
+\end{equation}
+with $q\in[R]$ and $\left(z,t,t^{\prime}\right)=(0,7,3)\text{ or }(1,5,1)$, 
+% \amc{(recall that these are locations at which the identity is applied to the input state)},
+and where $d(q,q)$ does not appear if $R$ is even (i.e., $d(q,q-1)$ is followed by $d(q,q+1)$. The edges from \fig{add_edges} are 
+\begin{align}
+\left\{ \left(d(q,s),0,1\right),(e_{00}(q,s),\alpha(q,s),1)\right\}  & ,\left\{ \left(d(q,s),1,3\right),(e_{10}(q,s),\alpha(q,s),1)\right\}, \label{eq:epsilon_triangle_set2}\\
+\left\{ \left(d(q,s),0,5\right),(e_{01}(q,s),\alpha(q,s),1)\right\}  & ,\{\left(d(q,s),1,7\right),(e_{11}(q,s),\alpha(q,s),1)\}\nonumber 
+\end{align}
+with $q,s\in[R]$ and $q\neq s$ if $R$ is even, and where 
+\[
+\alpha(q,s)=\begin{cases}
+1 & q>s\text{ and }\{q,s\}\in E(G^{\text{occ}})\\
+0 & \text{otherwise}.
+\end{cases}
+\]
+The set $\mathcal{E}^{\triangle}$ consists of all edges \eq{epsilon_triangle_set1} and \eq{epsilon_triangle_set2}.
+
+We claim that \eq{restriction_h_triangle} is block diagonal with a block $\mathcal{W}_{(z,a,q)}\subseteq\mathcal{W}$ of size
+\[
+\left|\mathcal{W}_{(z,a,q)}\right|=\begin{cases}
+3R+2 & R\text{ odd}\\
+3R-1 & R\text{ even}
+\end{cases}
+\]
+for each for each triple $(z,a,q)$ with $z,a\in\{0,1\}$ and $q\in[R]$. Using equation \eq{num_basis_D} we confirm that $|\mathcal{W}|=4R\left|\mathcal{W}_{(z,a,q)}\right|$, so this accounts for all basis vectors in $\mathcal{W}$. The subset of basis vectors for a given block is
+\begin{align}
+\mathcal{W}_{(z,a,q)} 
+&=\big\{ |\psi_{z,a}^{q_{\text{in}}}\rangle,|\psi_{z,a}^{q_{\text{out}}}\rangle\big\} \cup\big\{ |\psi_{z,a}^{d(q,s)}\rangle\colon s\in[R],\, s\neq q\text{ if }R\text{ even}\big\} \nonumber \\
+ &\quad \cup \big\{ |\psi_{\alpha(q,s),a}^{e_{zx}(q,s)}\rangle\colon x\in\{0,1\},\, s\in[R],\, s\neq q\text{ if }R\text{ even}\big\} .\label{eq:subset_W}
+\end{align}
+Using equation \eq{equation_for_h_epsilon_triangle} and the description of $\mathcal{E}^{\triangle}$ from \eq{epsilon_triangle_set1} and \eq{epsilon_triangle_set2}, one can check by direct inspection that \eq{restriction_h_triangle} only has nonzero matrix elements between basis vectors in $\mathcal{W}$ from the same block. We also compute the matrix elements between vectors from the same block. For example, if $R$ is odd or if $R$ is even and $q\neq1$, there are edges $\left\{ (q_{\text{in}},0,7),(d(q,1),0,3)\right\} ,\left\{ (q_{\text{in}},1,5),(d(q,1),1,1)\right\} \in\mathcal{E^{\triangle}}$. Using the fact that $|\psi_{z,a}^{l}\rangle=|l\rangle|\psi_{z,a}\rangle$ where $|\psi_{z,a}\rangle$ is given by \eq{psi0m} and \eq{psi1m}, we compute the relevant matrix elements:
+\begin{align*}
+&\langle\psi_{z,a}^{q_{\text{in}}}|h_{\mathcal{E}^{\triangle}}|\psi_{z,a}^{d(q,1)}\rangle \\ 
+&\quad=\langle\psi_{z,a}^{q_{\text{in}}}|\Bigg(\sum_{(z',t,t^{\prime})\in\{(0,7,3),(1,5,1)\}}\left(|q_{\text{in}},z',t\rangle+|d(q,1),z',t^{\prime}\rangle\right)\left(\langle q_{\text{in}},z',t|+\langle d(q,1),z',t^{\prime}|\right)\otimes\II\Bigg)|\psi_{z,a}^{d(q,1)}\rangle\\
+&\quad=\sum_{(z',t,t^{\prime})\in\{(0,7,3),(1,5,1)\}}\langle\psi_{z,a}|\left(|z',t\rangle\langle z',t^{\prime}|\otimes\II\right)|\psi_{z,a}\rangle
+=\frac{1}{8}.
+\end{align*}
+\begin{comment}
+Similarly, we have
+\begin{align*}
+&\langle\psi_{z,a}^{d(q,1)}|h_{\mathcal{E}^{\triangle}}|\psi_{z,a}^{d(q,1)}\rangle
+\\&\quad=\langle\psi_{z,a}^{d(q,1)}|\Bigg(\sum_{(z',t,t^{\prime})\in\{(0,7,3),(1,5,1)\}}\left(|q_{\text{in}},z',t\rangle+|d(q,1),z',t^{\prime}\rangle\right)\left(\langle q_{\text{in}},z',t|+\langle d(q,1),z',t^{\prime}|\right)\otimes\II
++\text{3 terms from other neighbors}\Bigg)|\psi_{z,a}^{d(q,1)}\rangle\\ & \quad
+=\sum_{(z',t^{\prime})\in\{(0,3),(1,1)\}}\langle\psi_{z,a}|\left(|z',t^{\prime}\rangle\langle z',t^{\prime}|\otimes\II\right)|\psi_{z,a}\rangle
++\text{3 similar terms}
+=\frac{1}{2}.
+\end{align*}
+\end{comment}
+Continuing in this manner, we compute the principal submatrix of \eq{restriction_h_triangle} corresponding to the set $\mathcal{W}_{(z,a,q)}$. This matrix is shown in \fig{mat_els_for_a_blockA}. In the Figure each vertex is associated with a state in the block and the weight on a given edge is the matrix element between the two states associated with vertices joined by that edge. The diagonal matrix elements are described by the weights on the self-loops. The matrix described by \fig{mat_els_for_a_blockA} is the same for each block.
+
+%\begin{figure}
+%\centering
+%\subfloat[][The matrix $h_{\mathcal{E}}^{\triangle}|_{\spn(\mathcal{W})}$ is block diagonal in the basis $\mathcal{W}$, with a block $\mathcal{W}_{(z,a,q)}$ for each $z,a \in \{0,1\}$ and $q\in\{1,\ldots, R\}$. The states involved in a given block and the matrix elements between them are depicted.
+%% Here $\alpha (q,s)$ is $1$ if $q>s$ and $\{ q,s\}\in E(G^{\text{occ}})$ and zero otherwise. The number of basis vectors in the block is $3R+2$ if $R$ is odd and $3R-1$ if $R$ is even.
+%]{\label{fig:mat_els_for_a_blockA}
+%\begin{tikzpicture}[scale=1.6]
+%\foreach \x in {1,2,4}
+%{
+%  \draw[fill=black,draw=black] (\x cm, 0) circle (.5mm) ;
+%
+%\draw[looseness = 200] (\x,0) to [out = 80, in = 10] (\x-.01,0);
+%}
+%\draw[fill=black,draw=black] (0 cm, 0) circle (.5mm) ;
+%\draw[fill=black,draw=black] (5 cm, 0) circle (.5mm) ;
+%\draw[looseness = 200] (5,0) to [out = 45, in = -45] (4.99,0);
+%\draw[looseness = 200] (0,0) to [out = 135, in = 225] (-.01,0);
+%
+%\draw (0,0)--(1,0)--(2,0)--(2.5,0);
+%\draw (3.5,0)--(4,0)--(5,0);
+%\node at (3,0) {\Large{$\ldots$}};
+%\foreach \x in {1,2,4}
+%{
+%  \draw[fill=black,draw=black] (\x cm, 1.5) circle (.5mm) ;
+%	\draw[fill=black,draw=black] (\x cm, -1.5) circle (.5mm) ;
+%	\draw (\x,1.5)--(\x,0)--(\x,-1.5);
+%
+%\draw[looseness = 200] (\x,1.5) to [out = 45, in = 135] (\x-.01,1.5);
+%\draw[looseness = 200] (\x,-1.5) to [out = -45, in = 225] (\x-.01,-1.5);
+%}
+%%%%%%%%%%%% The states
+%
+%%%%%%%%%%%top row
+%\node at (1,2.3) {$|\psi_{\alpha(q,1),a}^{e_{z0}(q,1)}\rangle$};
+%\node at (2,2.3) {$|\psi_{\alpha(q,2),a}^{e_{z0}(q,2)}\rangle$};
+%\node at (4,2.3) {$|\psi_{\alpha(q,R),a}^{e_{z0}(q,R)}\rangle$};
+%
+%%%%%%%% middle row
+%\node at (-0.8,0){$|\psi_{z,a}^{q_{\text{in}}}\rangle$};
+%\node at (1.4,-0.3){$|\psi_{z,a}^{d(q,1)}\rangle$};
+%\node at (2.4,-0.3){$|\psi_{z,a}^{d(q,2)}\rangle$};
+%\node at (4.5,-0.3){$|\psi_{z,a}^{d(q,R)}\rangle$};
+%\node at (5.8,0){$|\psi_{z,a}^{q_{\text{out}}}\rangle$};
+%%%%%%%%% bottom row
+%
+%\node at (1,-2.3) {$|\psi_{\alpha(q,1),a}^{e_{z1}(q,1)}\rangle$};
+%\node at (2,-2.3) {$|\psi_{\alpha(q,2),a}^{e_{z1}(q,2)}\rangle$};
+%\node at (4,-2.3) {$|\psi_{\alpha(q,R),a}^{e_{z1}(q,R)}\rangle$};
+%
+%\node at (-0.3,0.3){$\nicefrac{1}{8}$};
+%
+%\node at (0.5,0.15){$\nicefrac{1}{8}$};
+%\node at (1.6,0.15){$\nicefrac{1}{8}$};
+%
+%\node at (1.3,0.5){$\nicefrac{1}{2}$};
+%\node at (2.3,0.5){$\nicefrac{1}{2}$};
+%\node at (4.3,0.5){$\nicefrac{1}{2}$};
+%
+%\node at (0.75,2){$\nicefrac{1}{8}$};
+%\node at (0.85,.85){$\nicefrac{1}{8}$};
+%\node at (0.85,-.85){$\nicefrac{1}{8}$};
+%\node at (0.75,-2){$\nicefrac{1}{8}$};
+%
+%\node at (1.75,2){$\nicefrac{1}{8}$};
+%\node at (1.85,.85){$\nicefrac{1}{8}$};
+%\node at (1.85,-.85){$\nicefrac{1}{8}$};
+%\node at (1.75,-2){$\nicefrac{1}{8}$};
+%
+%\node at (3.75,2){$\nicefrac{1}{8}$};
+%\node at (3.85,.85){$\nicefrac{1}{8}$};
+%\node at (3.85,-.85){$\nicefrac{1}{8}$};
+%\node at (3.75,-2){$\nicefrac{1}{8}$};
+%
+%\node at (4.6,0.15){$\nicefrac{1}{8}$};
+%\node at (5.3,0.3){$\nicefrac{1}{8}$};
+%
+%\end{tikzpicture}
+%}
+%\\
+%\subfloat[][After multiplying some of the basis vectors by $-1$, the matrix depicted in \subfig{mat_els_for_a_blockA} is transformed into $1/8$ times the Laplacian matrix of this graph.]{\label{fig:mat_els_for_a_blockB}
+%\begin{tikzpicture}[scale=1.6]
+%\foreach \x in {0,1,2,4,5}
+%{
+%  \draw[fill=black,draw=black] (\x cm, 0) circle (.5mm) ;
+%}
+%\draw (0,0)--(1,0)--(2,0)--(2.5,0);
+%\draw (3.5,0)--(4,0)--(5,0);
+%\node at (3,0) {\Large{$\ldots$}};
+%\foreach \x in {1,2,4}
+%{
+%  \draw[fill=black,draw=black] (\x cm, 1) circle (.5mm) ;
+%	\draw[fill=black,draw=black] (\x cm, -1) circle (.5mm) ;
+%	\draw (\x,1)--(\x,0)--(\x,-1);
+%}
+%\draw [decorate,decoration={brace,amplitude=10pt}] (1,1.25) -- (4,1.25) node [black,midway,yshift=17]  {$R$ (for $R$ odd) or $R-1$ (for $R$ even)};
+%\end{tikzpicture}
+%}
+%\caption{\label{fig:mat_els_for_a_block}}
+%\end{figure}
+
+For each triple $(z,a,q)$ with $z,a\in\{0,1\}$ and $q\in[R]$, define
+\begin{equation}
+|\phi_{z,a}^{q}\rangle=\begin{cases}
+\frac{1}{\sqrt{3R+2}}\left(|\psi_{z,a}^{q_{\mathrm{in}}}\rangle+\sum_{j\in[R]}\left(-1\right)^{j}\left(|\psi_{z,a}^{d(q,j)}\rangle-|\psi_{\alpha(q,j),a}^{e_{z0}(q,j)}\rangle-|\psi_{\alpha(q,j),a}^{e_{z1}(q,j)}\rangle\right)+|\psi_{z,a}^{q_{\mathrm{out}}}\rangle\right) & R\text{ odd}\\
+\frac{1}{\sqrt{3R-1}}\left(|\psi_{z,a}^{q_{\mathrm{in}}}\rangle+\left(\sum_{j<q}-\sum_{j>q}\right)\left(-1\right)^{j}\left(|\psi_{z,a}^{d(q,j)}\rangle-|\psi_{\alpha(q,j),a}^{e_{z0}(q,j)}\rangle-|\psi_{\alpha(q,j),a}^{e_{z1}(q,j)}\rangle\right)+|\psi_{z,a}^{q_{\mathrm{out}}}\rangle\right) & R\text{ even.}
+\end{cases}\label{eq:phi_z_a_q}
+\end{equation}
+Next we show that these states span the ground space of $A(G^{\triangle})$.  The choice to omit $d(q,q)$ for $R$ even ensures that $|\psi^{q_{\text{in}}}_{z,a}\rangle$ and $|\psi^{q_{\text{out}}}_{z,a}\rangle$ have the same sign in these ground states.
+
+\begin{lemma}
+\label{lem:A(G_triangle)}
+An orthonormal basis for the $e_{1}$-energy ground space of $A(G^{\triangle})$ is given by the states
+\[
+\left\{ |\phi_{z,a}^{q}\rangle:\, z,a\in\{0,1\},\, q\in[R]\right\} 
+\]
+defined by equation \eq{phi_z_a_q}. The eigenvalue gap is bounded as 
+\begin{equation}
+  \gamma(A(G^{\triangle})-e_{1}) > \frac{1}{(30R)^{2}}.
+\label{eq:G^triangle_lower_bnd}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The $e_1$-energy ground space of $A(G^{\triangle})$ is equal to the nullspace of \eq{restriction_h_triangle}. Since this operator is block diagonal in the basis $\mathcal{W}$, we can solve for the eigenvectors in the nullspace of each block. Thus, to prove the first part of the Lemma, we analyze the $|\mathcal{W}_{(z,a,q)}|\times|\mathcal{W}_{(z,a,q)}|$ matrix described by \fig{mat_els_for_a_blockA} and show that \eq{phi_z_a_q} is the unique vector in its nullspace. We first rewrite it in a slightly different basis obtained by multiplying some of the basis vectors by a phase of $-1$. Specifically, we use the basis
+\[
+\left\{
+   |\psi_{z,a}^{q_{\mathrm{in}}}\rangle,
+  -|\psi_{z,a}^{d(q,1)}\rangle,
+   |\psi_{\alpha(q,1),a}^{e_{z0}(q,1)}\rangle,
+   |\psi_{\alpha(q,1),a}^{e_{z1}(q,1)}\rangle,
+   |\psi_{z,a}^{d(q,2)}\rangle,
+  -|\psi_{\alpha(q,2),a}^{e_{z0}(q,2)}\rangle,
+  -|\psi_{\alpha(q,2),a}^{e_{z1}(q,2)}\rangle,
+   \ldots,
+   |\psi_{z,a}^{q_{\mathrm{out}}}\rangle
+\right\} 
+\]
+where the state associated with each vertex on one side of a bipartition of the graph is multiplied by $-1$; these are the phases appearing in equation \eq{phi_z_a_q}. Changing to this basis replaces the weight $\frac{1}{8}$ on each edge in \fig{mat_els_for_a_blockA} by $-\frac{1}{8}$ and does not change the weights on the self-loops. The resulting matrix is $\frac{1}{8}L_{0}$, where $L_{0}$ is the Laplacian matrix of the graph shown in \fig{mat_els_for_a_blockB}. Now we use the fact that the Laplacian of any connected graph has smallest eigenvalue zero, with a unique eigenvector equal to the all-ones vector. Hence for each block we get an eigenvector in the nullspace of \eq{restriction_h_triangle}) given by \eq{phi_z_a_q}. Ranging over all $z,a\in\{0,1\}$ and $q\in[R]$ gives the claimed basis for the $e_1$-energy ground space of $A(G^{\triangle})$.
+
+To prove the lower bound, we use the Nullspace Projection Lemma (\lem{npl}) with 
+\[
+H_{A}=A(G^{\diamondsuit})-e_{1}\qquad H_{B}=h_{\mathcal{E}^{\triangle}}
+\]
+and where $S=\spn(\mathcal{W})$ is the nullspace of $H_{A}$ as shown in \sec{The-gate-graph_G_DIAMOND}. Since it is block diagonal in the basis $\mathcal{W}$, the smallest nonzero eigenvalue of \eq{restriction_h_triangle} is equal to the smallest nonzero eigenvalue of one of its blocks. The matrix for each block is $\frac{1}{8}L_{0}$. Thus we can lower bound the smallest nonzero eigenvalue of $H_B|_S$ using standard bounds on the smallest nonzero eigenvalue of the Laplacian $L$ of a graph $G$. In particular, Theorem 4.2 of reference \cite{Moh91} shows that 
+\begin{equation*}
+\gamma(L) \ge \frac{4}{|V(G)| \diam(G)} \ge \frac{4}{|V(G)|^2}
+\end{equation*}
+(where $\diam(G)$ is the diameter of $G$). Since the size of the graph in \fig{mat_els_for_a_blockB} is either $3R-1$ or $3R+2$, we have
+\begin{equation*}
+\gamma(H_{B}|_{S})=\frac{1}{8}\gamma(L_{0}) \geq \frac{1}{8}\frac{4}{\left(3R+2\right)^{2}}\geq\frac{1}{32R^{2}}
+\end{equation*}
+since $R\geq2$. Using this bound and the fact that $\gamma(H_{A})>\frac{1}{13}$ (from equation \eq{one_thirteenth_bound}) and $\left\Vert H_{B}\right\Vert =2$ (from equation \eq{h_E_bound}) and plugging into \lem{npl} gives
+\[
+\gamma(A(G^{\triangle})-e_{1})\geq\frac{\frac{1}{13}\cdot\frac{1}{32R^{2}}}{\frac{1}{13}+\frac{1}{32R^{2}}+2}\geq\frac{1}{(32+13+832)R^{2}}>\frac{1}{(30R)^{2}}. \qedhere
+\]
+\end{proof}
+
+%=============================================================================
+\subsection{The Hamiltonian $H(G^{\triangle},N)$}
+
+We now consider the $N$-particle Hamiltonian $H(G^{\triangle},N)$ and solve for its nullspace. We use the following fact about the subsets $\mathcal{W}_{(z,a,q)}\subset\mathcal{W}$ defined in equation \eq{subset_W}.
+
+\begin{definition}
+\label{defn:overlap_diagram_element}
+We say $\mathcal{W}_{(z_{1},a_{1},q_{1})}$ and $\mathcal{W}_{(z_{2},a_{2},q_{2})}$ \emph{overlap on a diagram element} if there exists $l\in L^{\square}$ such that $|\psi_{x_{1},b_{1}}^{l}\rangle\in\mathcal{W}_{(z_{1},a_{1},q_{1})}$ and $|\psi_{x_{2},b_{2}}^{l}\rangle\in\mathcal{W}_{(z_{2},a_{2},q_{2})}$ for some $x_{1},x_{2},b_{1},b_{2}\in\{0,1\}$.
+\end{definition}
+
+\begin{fact}
+[Key property of $\mathcal{W}_{(z,a,q)}$]\label{fct:block_property}
+Sets $\mathcal{W}_{(z_{1},a_{1},q_{1})}$ and $\mathcal{W}_{(z_{2},a_{2},q_{2})}$ overlap on a diagram element if and only if $q_{1}=q_{2}$ or $\{q_{1},q_{2}\}\in E(G^{\text{occ}})$.
+\end{fact}
+This fact can be confirmed by direct inspection of the sets $\mathcal{W}_{(z,a,q)}$. If $q_{1}=q_{2}=q$ the diagram element $l$ on which they overlap can be chosen to be $l=q_{\mathrm{in}}$; if $q_{1}\neq q_{2}$ and $\{q_{1},q_{2}\}\in E(G^{\text{occ}})$ then $l=e_{z_{1}z_{2}}(q_{1},q_{2})=e_{z_{2}z_{1}}(q_{2},q_{1})$.
+% \dg{NOTE: I would remove the part of this sentence after the colon}
+Conversely, if $\{q_1,q_2\} \notin E(G^{\text{occ}})$ with $q_1 \ne q_2$, then there is no overlap.
+% : the only edges between diagram elements labeled by $q_1$ and $q_2$ are those corresponding to edges of $G^{\text{occ}}$, as shown in \fig{add_edges}(A) (see also the example in \fig{step-by-step}).
+
+We show that the nullspace $\mathcal{I}_{\triangle}$ of $H(G^{\triangle},N)$ is 
+\begin{equation}
+\mathcal{I}_{\triangle}=\spn\{ \Sym(|\phi_{z_{1},a_{1}}^{q_{1}}\rangle|\phi_{z_{2},a_{2}}^{q_{2}}\rangle\ldots|\phi_{z_{N},a_{N}}^{q_{N}}\rangle)\colon 
+\text{$z_{i},a_{i}\in\{0,1\}$, $q_{i}\in[R]$, $q_{i}\neq q_{j}$, and $\{q_{i},q_{j}\}\notin E(G^{\text{occ}})$}\}.
+\label{eq:I_triangle}
+\end{equation}
+Note that $\mathcal{I}_{\triangle}\subset\mathcal{Z}_{N}(G^{\triangle})$ is very similar to $\mathcal{I}(G,G^{\text{occ}},N)\subset\mathcal{Z}_{N}(G)$ (from equation \eq{occup_space_defn}) but with each single-particle state $|\psi_{z,a}^{q}\rangle\in\mathcal{Z}_{N}(G)$ replaced by $|\phi_{z,a}^{q}\rangle\in\mathcal{Z}_{N}(G^{\triangle})$.
+
+\begin{lemma}
+\label{lem:The-nullspace-of_H_triangle}The nullspace of $H(G^{\triangle},N)$ is $\mathcal{I}_{\triangle}$ as defined in equation \eq{I_triangle}. Its smallest nonzero eigenvalue is 
+\begin{equation}
+\gamma(H(G^{\triangle},N)) > \frac{1}{\left(17R\right)^{7}}.\label{eq:lowerbound_HG_triangle}
+\end{equation}
+\end{lemma}
+
+In addition to \fct{block_property}, we use the following simple fact in the proof of the Lemma.
+
+\begin{fact}
+\label{fct:lin_alg_fact}
+Let $|p\rangle=c|\alpha_{0}\rangle+\sqrt{1-c^{2}}|\alpha_{1}\rangle$ with $\langle\alpha_{i}|\alpha_{j}\rangle=\delta_{ij}$ and $c\in[0,1]$. Then
+\[
+|p\rangle\langle p|=c^{2}|\alpha_{0}\rangle\langle\alpha_{0}|+M
+\]
+where $\left\Vert M\right\Vert \leq1-\frac{3}{4}c^{4}$.
+\end{fact}
+
+To prove this Fact, one can calculate $\left\Vert M\right\Vert =\frac{1}{2}(1-c^{2})+\frac{1}{2}\sqrt{1+2c^{2}-3c^{4}}$ and use the inequality $\sqrt{1+x}\leq1+\frac{x}{2}$ for $x\geq-1$.
+
+\begin{proof}[Proof of \protect\lem{The-nullspace-of_H_triangle}]
+Using equation \eq{A_g_diamond_triangle} and the fact that the smallest eigenvalues of $A(G^{\diamondsuit})$ and $A(G^{\triangle})$ are the same (equal to $e_{1}$, from \sec{The-gate-graph_G_DIAMOND} and \lem{A(G_triangle)}), we have
+\begin{equation}
+H(G^{\triangle},N)=H(G^{\diamondsuit},N)+\sum_{w=1}^{N}h_{\mathcal{E}^{\triangle}}^{(w)}\bigg|_{\mathcal{Z}_{N}(G^{\triangle})}.\label{eq:H_G^triangle,diamond}
+\end{equation}
+Recall from \lem{The-nullspace-of_Hdiamond} that the nullspace of $H(G^{\diamondsuit},N)$ is $\mathcal{\mathcal{I}_{\diamondsuit}}$. We consider 
+\begin{equation}
+\sum_{w=1}^{N}h_{\mathcal{E}^{\triangle}}^{(w)}\bigg|_{\mathcal{I}_{\diamondsuit}}.\label{eq:restriction to script R}
+\end{equation}
+We show that its nullspace is equal to $\mathcal{I}_{\triangle}$ (establishing the first part of the Lemma), and we lower bound its smallest nonzero eigenvalue. Specifically, we prove
+\begin{equation}
+\gamma\left(\sum_{w=1}^{N}h_{\mathcal{E}^{\triangle}}^{(w)}\bigg|_{\mathcal{I}_{\diamondsuit}}\right)>\frac{1}{(9R)^{6}}.\label{eq:bound_R6}
+\end{equation}
+
+Now we prove equation \eq{lowerbound_HG_triangle} using this bound. We apply the Nullspace Projection Lemma (\lem{npl}) with $H_{A}$ and $H_{B}$ given by the first and second terms in equation \eq{H_G^triangle,diamond}; in this case the nullspace of $H_{A}$ is $S=\mathcal{I}_{\diamondsuit}$ (from \lem{The-nullspace-of_Hdiamond}). Now applying \lem{npl} and using the bounds $\gamma(H_{A})>\frac{1}{300}$ (from \lem{The-nullspace-of_Hdiamond}), $\left\Vert H_{B}\right\Vert \leq N\left\Vert h_{\mathcal{E}^{\triangle}}\right\Vert =2N\leq2R$ (from equation \eq{h_E_bound} and the fact that $N\leq R$), and the bound \eq{bound_R6} on $\gamma(H_{B}|_{S})$, we find
+\[
+\gamma(H(G^{\triangle},N))\geq\frac{\frac{1}{300(9R)^{6}}}{\frac{1}{300}+\frac{1}{(9R)^{6}}+2R}\geq\left(\frac{1}{9^6+300+600\cdot 9^6}\right)\frac{1}{R^{7}}>\frac{1}{\left(17R\right)^{7}}.
+\]
+
+To complete the proof we must establish that the nullspace of \eq{restriction to script R} is $\mathcal{I}_{\triangle}$ and prove the lower bound \eq{bound_R6}. To analyze \eq{restriction to script R} we use the fact (established in \sec{The-gate-graph_G_triangle}) that \eq{restriction_h_triangle} is block diagonal with a block $\mathcal{W}_{(z,a,q)}\subset\mathcal{W}$ for each triple $(z,a,q)$ with $z,a\in\{0,1\}$ and $q\in[R]$. The operator \eq{restriction to script R} inherits a block structure from this fact. For any basis vector 
+\begin{equation}
+\Sym(|\psi_{z_{1},a_{1}}^{q_{1}}\rangle|\psi_{z_{2},a_{2}}^{q_{2}}\rangle\ldots|\psi_{z_{N},a_{N}}^{q_{N}}\rangle)\in\mathcal{I}_{\diamondsuit},
+\label{eq:basis_vector_in_scriptF}
+\end{equation}
+we define a set of occupation numbers
+\[
+\mathcal{N}=\left\{ N_{(x,b,r)} \colon x,b\in\{0,1\},\, r\in[R]\right\} 
+\]
+where
+\[
+  N_{(x,b,r)}
+  =|\{j \colon |\psi_{z_{j},a_{j}}^{q_{j}}\rangle\in\mathcal{W}_{(x,b,r)}\}|.
+\]
+Now observe that \eq{restriction to script R} conserves the set of occupation numbers and is therefore block diagonal with a block for each possible set $\mathcal{N}$. 
+
+For a given block corresponding to a set of occupation numbers $\mathcal{N}$, we write $\mathcal{I}_{\diamondsuit}(\mathcal{N})\subset\mathcal{\mathcal{I}_{\diamondsuit}}$ for the subspace spanned by basis vectors \eq{basis_vector_in_scriptF} in the block. We classify the blocks into three categories depending on $\mathcal{N}$.
+
+\begin{mdframed}[frametitle=Classification of the blocks of \eq{restriction to script R} according to $\mathcal{N}$]
+Consider the following two conditions on a set $\mathcal{N}=\{ N_{(x,b,r)}\colon x,b\in\{0,1\},\, r\in[R]\}$
+of occupation numbers:
+\begin{enumerate}[label=(\alph*)]
+\item $N_{(x,b,r)}\in\{0,1\}$ for all $x,b\in\{0,1\}$ and
+$r\in[R]$. If this holds, write $\left(y_{i},c_{i},s_{i}\right)$ for the nonzero occupation numbers (with some arbitrary ordering), i.e., $N_{(y_{i},c_{i},s_{i})}=1$ for $i\in[N]$.
+\item The sets $\mathcal{W}_{(y_{i},c_{i},s_{i})}$ and $\mathcal{W}_{(y_{j},c_{j},s_{j})}$
+do not overlap on a diagram element for all distinct $i,j\in[N]$.
+\end{enumerate}
+We say a block is of type 1 if $\mathcal{N}$ satisfies (a) and (b). We say it is of type 2 if $\mathcal{N}$ does not satisfy (a). We say it is of type 3 if $\mathcal{N}$ satisfies (a) but does not satisfy (b).
+\end{mdframed}
+
+Note that every block is either of type 1, 2, or 3. We consider each type separately. Specifically, we show that each block of type $1$ contains one state in the nullspace of \eq{restriction to script R} and, ranging over all blocks of this type, we obtain a basis for $\mathcal{I}_{\triangle}$. We also show that the smallest nonzero eigenvalue within a block of type 1 is at least $\frac{1}{32R^{2}}$. Finally, we show that blocks of type 2 and 3 do not contain any states in the nullspace of \eq{restriction to script R} and that the smallest eigenvalue within any block of type 2 or 3 is greater than $\frac{1}{(9R)^{6}}$. Hence, the nullspace of \eq{restriction to script R} is $\mathcal{I}_{\triangle}$ and its smallest nonzero eigenvalue is lower bounded as in equation \eq{bound_R6}.
+
+\medskip
+
+\noindent \textbf{Type 1}
+
+\smallskip
+
+\noindent Note (from \defn{overlap_diagram_element}) that (b) implies $q\neq r$ whenever 
+\[
+|\psi_{x,b}^{q}\rangle\in\mathcal{W}_{(y_{i},c_{i},s_{i})}\text{ and }|\psi_{z,a}^{r}\rangle\in\mathcal{W}_{(y_{j},c_{j},s_{j})}
+\]
+for distinct $i,j\in[N]$. Hence 
+\begin{align*}
+\mathcal{\mathcal{I}_{\diamondsuit}}(\mathcal{N}) & =\spn\{ \Sym(|\psi_{z_{1},a_{1}}^{q_{1}}\rangle|\psi_{z_{2},a_{2}}^{q_{2}}\rangle\ldots|\psi_{z_{N},a_{N}}^{q_{N}}\rangle)\colon q_{i}\neq q_{j}\text{ and }|\psi_{z_{j},a_{j}}^{q_{j}}\rangle\in\mathcal{W}_{(y_{j},c_{j},s_{j})}\} \\
+ & =\spn\{ \Sym(|\psi_{z_{1},a_{1}}^{q_{1}}\rangle|\psi_{z_{2},a_{2}}^{q_{2}}\rangle\ldots|\psi_{z_{N},a_{N}}^{q_{N}}\rangle)\colon|\psi_{z_{j},a_{j}}^{q_{j}}\rangle\in\mathcal{W}_{(y_{j},c_{j},s_{j})}\}.
+\end{align*}
+From this we see that 
+\[
+\dim(\mathcal{I}_{\diamondsuit}(\mathcal{N}))=\prod_{j=1}^{N}\left|{\mathcal{W}_{(y_{j},c_{j},s_{j})}}\right|=\begin{cases}
+\left(3R+2\right)^{N} & R\text{ odd}\\
+\left(3R-1\right)^{N} & R\text{ even.}
+\end{cases}
+\]
+We now solve for all the eigenstates of \eq{restriction to script R} within the block. 
+
+It is convenient to write an orthonormal basis of eigenvectors of the $|\mathcal{W}_{(z,a,q)}|\times|\mathcal{W}_{(z,a,q)}|$ matrix described by \fig{mat_els_for_a_blockA} as 
+\begin{equation}
+|\phi_{z,a}^{q}(u)\rangle, \quad u\in[|\mathcal{W}_{(z,a,q)}|]\label{eq:phi_u}
+\end{equation}
+and their ordered eigenvalues as
+\[
+\theta_{1}\leq\theta_{2}\leq\ldots\leq\theta_{|\mathcal{W}_{(z,a,q)}|}.
+\]
+From the proof of \lem{A(G_triangle)}, the eigenvector with smallest eigenvalue $\theta_{1}=0$ is $|\phi_{z,a}^{q}\rangle=|\phi_{z,a}^{q}(1)\rangle$ and $\theta_{2}\geq\frac{1}{32R^{2}}$. For any $u_{1},u_{2},\ldots,u_{N}\in [|\mathcal{W}_{(z,a,q)}|]$, the state 
+\[
+\Sym(|\phi_{y_{1},c_{1}}^{s_{1}}(u_{1})\rangle|\phi_{y_{2},c_{2}}^{s_{2}}(u_{2})\rangle\ldots|\phi_{y_{N},c_{N}}^{s_{N}}(u_{N})\rangle)
+\]
+is an eigenvector of \eq{restriction to script R} with eigenvalue $\sum_{j=1}^{N}\theta_{j}.$ Furthermore, states corresponding to different choices of $u_{1},\ldots,u_{N}$ are orthogonal, and ranging over all $\dim(\mathcal{I}_{\diamondsuit}(\mathcal{N}))$ choices we get every eigenvector in the block. The smallest eigenvalue within the block is $N\theta_{1}=0$ and there is a unique vector in the nullspace, given by
+\begin{equation}
+\Sym(|\phi_{y_{1},c_{1}}^{s_{1}}\rangle|\phi_{y_{2},c_{2}}^{s_{2}}\rangle\ldots|\phi_{y_{N},c_{N}}^{s_{N}}\rangle)\label{eq:vector_type1}
+\end{equation}
+(recall $|\phi_{z,a}^{q}\rangle=|\phi_{z,a}^{q}(1)\rangle$). The smallest nonzero eigenvalue of \eq{restriction to script R} within the block is $(N-1)\theta_{1}+\theta_{2}=\theta_{2}\geq\frac{1}{32R^{2}}$.
+
+Finally, we show that the collection of states \eq{vector_type1} obtained from all blocks of type 1 spans the space $\mathcal{I}_{\triangle}$. Each block of type 1 corresponds to a set of occupation numbers 
+\[
+N_{(y_{1},c_{1},s_{1})}=N_{(y_{2},c_{2},s_{2})}=\cdots=N_{(y_{N},c_{N},s_{N})}=1\quad\text{(with all other occupation numbers zero)}
+\]
+and gives a unique vector \eq{vector_type1} in the nullspace of $H(G^{\triangle},N)$. The sets $\mathcal{W}_{(y_{i},c_{i},s_{i})}$ and $\mathcal{W}_{(y_{j},c_{j},s_{j})}$ do not overlap on a diagram element for all distinct $i,j\in[N]$. Using \fct{block_property} we see this is equivalent to $s_{i}\neq s_{j}$ and $\{s_{i},s_{j}\}\notin E(G^{\text{occ}})$ for distinct $i,j\in[N]$. Hence the set of states \eq{vector_type1} obtained from of all blocks of type 1 is 
+\[
+\left\{ \Sym(|\phi_{y_{1},c_{1}}^{s_{1}}\rangle|\phi_{y_{2},c_{2}}^{s_{2}}\rangle\ldots|\phi_{y_{N},c_{N}}^{s_{N}}\rangle)\colon y_{i},c_{i}\in\{0,1\},\, s_{i}\in[R],\, s_{i}\neq s_{j},\,\{s_{i},s_{j}\}\notin E(G^{\text{occ}})\right\} 
+\]
+which spans $\mathcal{I}_{\triangle}$.
+
+\medskip
+
+\noindent \textbf{Type 2}
+
+\smallskip
+
+\noindent If $\mathcal{N}$ is of type 2 then there exist $x,b\in\{0,1\}$ and $r\in[R]$ such that $N_{(x,b,r)}\geq2$. We show there are no eigenvectors in the nullspace of \eq{restriction to script R} within a block of this type and we lower bound the smallest eigenvalue within the block. Specifically, we show
+\begin{equation}
+\min_{|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})}\langle\kappa|\sum_{w=1}^{N}h_{\mathcal{E}^{\triangle}}^{(w)}|\kappa\rangle >\frac{1}{(9R)^6}.\label{eq:boundfortype2}
+\end{equation}
+First note that all $|\kappa\rangle\in\mathcal{I}_{\diamondsuit}$ satisfy $(A(G^{\diamondsuit})-e_{1})^{(w)}|\kappa\rangle=0$ for each $w\in [N]$, which can be seen using the definition of $\mathcal{I}_{\diamondsuit}$ and the fact that $\mathcal{W}$ spans the nullspace of $A(G^{\diamondsuit})-e_{1}$. Using this fact and equation \eq{A_g_diamond_triangle}, we get
+\begin{equation}
+\min_{|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})}\langle\kappa|\sum_{w=1}^{N}h_{\mathcal{E}^{\triangle}}^{(w)}|\kappa\rangle=\min_{|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})}\langle\kappa|\sum_{w=1}^{N}\left(A(G^{\triangle})-e_{1}\right)^{(w)}|\kappa\rangle.\label{eq:min_over_blockFbl}
+\end{equation}
+Now we use the operator inequality 
+\begin{align}
+  \sum_{w=1}^{N}\left(A(G^{\triangle})-e_{1}\right)^{(w)}
+  & \geq\gamma\left(\sum_{w=1}^{N}\left(A(G^{\triangle})-e_{1}\right)^{(w)}\right)\cdot
+    \left(1-\Pi^{\triangle}\right) \nonumber \\
+  &= \gamma(A(G^{\triangle})-e_{1})\cdot\left(1-\Pi^{\triangle}\right)
+   > \frac{1}{(30R)^{2}}\left(1-\Pi^{\triangle}\right),
+\label{eq:op_ineq_A_Gtriangle}
+\end{align}
+where $\Pi^{\triangle}$ is the projector onto the nullspace of $\sum_{w=1}^{N}\left(A(G^{\triangle})-e_{1}\right)^{(w)}$, and where in the last step we used \lem{A(G_triangle)}. Plugging equation \eq{op_ineq_A_Gtriangle} into equation \eq{min_over_blockFbl} gives
+\begin{equation}
+\min_{|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})}\langle\kappa|\sum_{w=1}^{N}h_{\mathcal{E}^{\triangle}}^{(w)}|\kappa\rangle>\frac{1}{(30R)^{2}}\Big(1-\max_{|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})}\langle\kappa|\Pi^{\triangle}|\kappa\rangle\Big).\label{eq:bound1}
+\end{equation}
+
+In the following we show that $\langle\kappa|\Pi^{\triangle}|\kappa\rangle=\langle\kappa|\Pi_{\mathcal{N}}^{\triangle}|\kappa\rangle$ for all $|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})$, where $\Pi_{\mathcal{N}}^{\triangle}$ is a Hermitian operator with
+\begin{equation}
+  1-\big\Vert \Pi_{\mathcal{N}}^{\triangle}\big\Vert \ge \frac{3}{4}\left(\frac{1}{4R}\right)^{4} = \frac{3}{1024R^4}.
+  \label{eq:bound_norm_pi_triangle_n}
+\end{equation}
+Plugging this into \eq{bound1} gives 
+\[
+\min_{|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})}\langle\kappa|\sum_{w=1}^{N}h_{\mathcal{E}^{\triangle}}^{(w)}|\kappa\rangle>\frac{3}{(30R)^2 \cdot 1024R^4}>\frac{1}{(9R)^6}.
+\]
+
+To complete the proof, we exhibit the operator $\Pi_{\mathcal{N}}^{\triangle}$ and show that its norm is bounded as \eq{bound_norm_pi_triangle_n}. Using \lem{A(G_triangle)} we can write $\Pi^{\triangle}$ explicitly as
+\begin{equation}
+\Pi^{\triangle}=\sum_{(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}}\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}\label{eq:Pi_N_triangle}
+\end{equation}
+where 
+\begin{align*}
+\mathcal{P}_{(\vec{z},\vec{a},\vec{q})} & =|\phi_{z_{1},a_{1}}^{q_{1}}\rangle\langle\phi_{z_{1},a_{1}}^{q_{1}}|\otimes|\phi_{z_{2},a_{2}}^{q_{2}}\rangle\langle\phi_{z_{2},a_{2}}^{q_{2}}|\otimes\cdots\otimes|\phi_{z_{N},a_{N}}^{q_{N}}\rangle\langle\phi_{z_{N},a_{N}}^{q_{N}}|\\
+\mathcal{Q} & =\left\{ (z_{1},\ldots z_{N},a_{1},\ldots,a_{N},q_{1},\ldots,q_{N}):\, z_{i},a_{i}\in\{0,1\}\text{ and }q_{i}\in[R]\right\} .
+\end{align*}
+For each $(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}$ we also define a space 
+\[
+S_{(\vec{z},\vec{a},\vec{q})}=\spn(\mathcal{W}_{(z_{1},a_{1},q_{1})})\otimes\spn(\mathcal{W}_{(z_{2},a_{2},q_{2})})\otimes\cdots\otimes\spn(\mathcal{W}_{(z_{N},a_{N},q_{N})}).
+\]
+Note that $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}$ has all of its support in $S_{(\vec{z},\vec{a},\vec{q})}$, and that
+\begin{equation}
+S_{(\vec{z},\vec{a},\vec{q})}\perp S_{(\vec{z}^{\prime},\vec{a}^{\prime},\vec{q}^{\prime})}\text{ for distinct }(\vec{z},\vec{a},\vec{q}),(\vec{z}^{\prime},\vec{a}^{\prime},\vec{q}^{\prime})\in\mathcal{Q}.\label{eq:perp_S}
+\end{equation}
+Therefore $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}\mathcal{P}_{(\vec{z}^{\prime},\vec{a}^{\prime},\vec{q}^{\prime})}=0$ for distinct $(\vec{z},\vec{a},\vec{q}),(\vec{z}^{\prime},\vec{a}^{\prime},\vec{q}^{\prime})\in\mathcal{Q}$. (Below we use similar reasoning to obtain a less obvious result.) Note that $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}$ is orthogonal to $\mathcal{I}_{\diamondsuit}(\mathcal{N})$ unless 
+\begin{equation}
+\left|\left\{ j:(z_{j},a_{j},q_{j})=(w,u,v)\right\} \right|=N_{(w,u,v)}\text{ for all }w,u\in\{0,1\},\, v\in[R].\label{eq:satisfy_occ_numbers}
+\end{equation}
+We restrict our attention to the projectors that are not orthogonal to $\mathcal{I}_{\diamondsuit}(\mathcal{N})$. Letting $\mathcal{Q}(\mathcal{N})\subset\mathcal{Q}$ be the set of $(\vec{z},\vec{a},\vec{q})$ satisfying equation \eq{satisfy_occ_numbers}, we have
+\begin{equation}
+\langle\kappa|\sum_{(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}}\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}|\kappa\rangle=\langle\kappa|\sum_{(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})}\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}|\kappa\rangle\quad\text{for all }|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N}).\label{eq:restrict_attention_mathcalN}
+\end{equation}
+
+Since $N_{(x,b,r)}\geq2$, note that in each term $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}$ with $(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})$, the operator 
+\[
+|\phi_{x,b}^{r}\rangle\langle\phi_{x,b}^{r}|\otimes|\phi_{x,b}^{r}\rangle\langle\phi_{x,b}^{r}|
+\]
+appears between two of the $N$ registers (tensored with rank-1 projectors on the other $N-2$ registers). Using equation \eq{phi_z_a_q} we may expand $|\phi_{x,b}^{r}\rangle$ as a sum of states from $\mathcal{W}_{(x,b,r)}$. This gives
+\[
+|\phi_{x,b}^{r}\rangle|\phi_{x,b}^{r}\rangle=c_{0}|\psi_{x,b}^{r_{\text{in}}}\rangle|\psi_{x,b}^{r_{\text{in}}}\rangle+\left(1-c_{0}^{2}\right)^{\frac{1}{2}}|\Phi_{x,b}^{r}\rangle
+\]
+where $c_{0}$ is either $\frac{1}{3R+2}$ (if $R$ is odd) or $\frac{1}{3R-1}$ (if $R$ is even), and where $|\psi_{x,b}^{r_{\text{in}}}\rangle|\psi_{x,b}^{r_{\text{in}}}\rangle$ is orthogonal to $|\Phi_{x,b}^{r}\rangle$. Note that each of the states $|\phi_{x,b}^{r}\rangle|\phi_{x,b}^{r}\rangle$, $|\psi_{x,b}^{r_{\text{in}}}\rangle|\psi_{x,b}^{r_{\text{in}}}\rangle$, and $|\Phi_{x,b}^{r}\rangle$ lie in the space 
+\begin{equation}
+\spn(\mathcal{W}_{(x,b,r)})\otimes\spn(\mathcal{W}_{(x,b,r)}).
+\label{eq:tensor_prod_WW}
+\end{equation}
+Now applying \fct{lin_alg_fact} gives
+\begin{equation}
+|\phi_{x,b}^{r}\rangle\langle\phi_{x,b}^{r}|\otimes|\phi_{x,b}^{r}\rangle\langle\phi_{x,b}^{r}|=c_{0}^{2}|\psi_{x,b}^{r_{\text{in}}}\rangle\langle\psi_{x,b}^{r_{\text{in}}}|\otimes|\psi_{x,b}^{r_{\text{in}}}\rangle\langle\psi_{x,b}^{r_{\text{in}}}|+M_{x,b}^{r}\label{eq:expand_phi_phi_proj}
+\end{equation}
+where $M_{x,b}^{r}$ is a Hermitian operator with all of its support on the space \eq{tensor_prod_WW} and
+\begin{equation}
+\left\Vert M_{x,b}^{r}\right\Vert \leq1-\frac{3}{4}c_{0}^{4}\leq1-\frac{3}{4}\left(\frac{1}{3R+2}\right)^{4}\leq1-\frac{3}{4}\frac{1}{(4R)^4}
+\end{equation}
+since $R\geq2$. For each $(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})$ we define $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}^{M}$ to be the operator obtained from $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}$ by replacing
+\[
+|\phi_{x,b}^{r}\rangle\langle\phi_{x,b}^{r}|\otimes|\phi_{x,b}^{r}\rangle\langle\phi_{x,b}^{r}|\mapsto M_{x,b}^{r}
+\]
+on two of the registers (if $N_{(x,b,r)}>2$ there is more than one way to do this; we fix one choice for each $(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})$). Note that $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}^{M}$ has all of its support in the space $S_{(\vec{z},\vec{a},\vec{q})}$. Using \eq{perp_S} gives
+\[
+\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}^{M}\mathcal{P}_{(\vec{z}^{\prime},\vec{a}^{\prime},\vec{q}^{\prime})}^{M}=0\text{ for distinct }(\vec{z},\vec{a},\vec{q}),(\vec{z}^{\prime},\vec{a}^{\prime},\vec{q}^{\prime})\in\mathcal{Q}(\mathcal{N}).
+\]
+Using equation \eq{expand_phi_phi_proj} and the fact that
+\[
+\langle\kappa|\Big(|\psi_{x,b}^{r_{\text{in}}}\rangle\langle\psi_{x,b}^{r_{\text{in}}}|^{(w_{1})}\Big)\Big(|\psi_{x,b}^{r_{\text{in}}}\rangle\langle\psi_{x,b}^{r_{\text{in}}}|^{(w_{2})}\Big)|\kappa\rangle=0\quad\text{for all }|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})\text{ and distinct }w_{1},w_{2}\in[N]
+\]
+(which can be seen from the definition of $\mathcal{I}_\diamondsuit$), we have 
+\[
+\langle\kappa|\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}|\kappa\rangle=\langle\kappa|\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}^{M}|\kappa\rangle\quad\text{for all }|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N}).
+\]
+Hence, letting 
+\begin{equation}
+\Pi_{\mathcal{N}}^{\triangle}=\sum_{(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})}\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}^{M},\label{eq:pi_triangle_N}
+\end{equation}
+we have $\langle\kappa|\Pi^{\triangle}|\kappa\rangle=\langle\kappa|\Pi_{\mathcal{N}}^{\triangle}|\kappa\rangle$ for all $|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})$. To obtain the desired bound \eq{bound_norm_pi_triangle_n} on the norm of $\Pi_{\mathcal{N}}^{\triangle}$, we use the fact that the norm of a sum of pairwise orthogonal Hermitian operators is upper bounded by the maximum norm of an operator in the sum, so
+\begin{equation}
+\big\Vert \Pi_{\mathcal{N}}^{\triangle}\big\Vert 
+=\Bigg\Vert \sum_{(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})}\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}^{M}\Bigg\Vert 
+=\max_{(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})}\big\Vert \mathcal{P}_{(\vec{z},\vec{a},\vec{q})}^{M}\big\Vert 
+=\left\Vert M_{x,b}^{r}\right\Vert \leq1-\frac{3}{4}\frac{1}{\left(4R\right)^{4}}.
+\label{eq:bound_on_norm_pi_n_triangle}
+\end{equation}
+
+\medskip
+
+\noindent \textbf{Type 3}
+
+\smallskip
+
+\noindent If $\mathcal{N}$ is of type 3 then $N_{(x,b,r)}\in\{0,1\}$
+for all $x,b\in\{0,1\}$ and $r\in[R]$, and 
+\[
+N_{(y,c,s)}=N_{(t,d,u)}=1
+\]
+for some $(y,c,s)\neq(t,d,u)$ with either $u=s$ or $\{u,s\}\in E(G^{\text{occ}})$ (using property (b) and \fct{block_property}). We show there are no eigenvectors in the nullspace of \eq{restriction to script R} within a block of this type and we lower bound the smallest eigenvalue within the block. We establish the same bound \eq{boundfortype2} as for blocks of Type 2.
+
+The proof is very similar to that given above for blocks of Type 2. In fact, the first part of proof is identical, from equation \eq{min_over_blockFbl} up to and including equation \eq{restrict_attention_mathcalN}. That is to say, as in the previous case we have
+\begin{equation}
+\langle\kappa|\sum_{(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}}\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}|\kappa\rangle=\langle\kappa|\sum_{(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})}\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}|\kappa\rangle\quad\text{for all }|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N}).\label{eq:restrict_attention_mathcalN-1}
+\end{equation}
+In this case, since $N_{(y,c,s)}=N_{(t,d,u)}=1$, in each term $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}$ with $(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})$, the operator 
+\[
+|\phi_{y,c}^{s}\rangle\langle\phi_{y,c}^{s}|\otimes|\phi_{t,d}^{u}\rangle\langle\phi_{t,d}^{u}|
+\]
+appears between two of the $N$ registers (tensored with rank 1 projectors on the other $N-2$ registers). Using equation \eq{phi_z_a_q} we may expand $|\phi_{y,c}^{s}\rangle$ and $|\phi_{t,d}^{u}\rangle$ as superpositions (with amplitudes $\pm\frac{1}{\sqrt{3R+2}}$ if $R$ is odd or $\pm\frac{1}{\sqrt{3R-1}}$ if $R$ is even) of the basis states from $\mathcal{W}_{(y,c,s)}$ and $\mathcal{W}_{(t,d,u)}$ respectively. Since $\mathcal{W}_{(y,c,s)}$ and $\mathcal{W}_{(t,d,u)}$ overlap on some diagram element, there exists $l\in L^{\square}$ such that $|\psi_{x_{1},b_{1}}^{l}\rangle\in\mathcal{W}_{(y,c,s)}$ and $|\psi_{x_{2},b_{2}}^{l}\rangle\in\mathcal{W}_{(t,d,u)}$ for some $x_{1},x_{2},b_{1},b_{2}\in\{0,1\}$. Hence
+\[
+|\phi_{y,c}^{s}\rangle|\phi_{t,d}^{u}\rangle=c_{0}\left(\pm|\psi_{x_{1},b_{1}}^{l}\rangle|\psi_{x_{2},b_{2}}^{l}\rangle\right)+\left(1-c_{0}^{2}\right)^{\frac{1}{2}}|\Phi_{y,c,t,d}^{s,u}\rangle
+\]
+where $c_{0}$ is either $\frac{1}{3R+2}$ (if $R$ is odd) or $\frac{1}{3R-1}$ (if $R$ is even). Now applying \fct{lin_alg_fact} we get
+\begin{equation}
+|\phi_{y,c}^{s}\rangle\langle\phi_{y,c}^{s}|\otimes|\phi_{t,d}^{u}\rangle\langle\phi_{t,d}^{u}|=c_{0}^{2}|\psi_{x_{1},b_{1}}^{l}\rangle\langle\psi_{x_{1},b_{1}}^{l}|\otimes|\psi_{x_{2},b_{2}}^{l}\rangle\langle\psi_{x_{2},b_{2}}^{l}|+M_{y,c,t,d}^{s,u}\label{eq:expand_phi_phi_proj-1-1}
+\end{equation}
+where $\Vert M_{y,c,t,d}^{s,u}\Vert \leq1-\frac{3}{4}\left(\frac{1}{4R}\right)^{4}$. For each $(\vec{z},\vec{a},\vec{q})\in\mathcal{Q}(\mathcal{N})$ we define $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}^{M}$ to be the operator obtained from $\mathcal{P}_{(\vec{z},\vec{a},\vec{q})}$ by replacing
+\[
+|\phi_{y,c}^{s}\rangle\langle\phi_{y,c}^{s}|\otimes|\phi_{t,d}^{u}\rangle\langle\phi_{t,d}^{u}|\mapsto M_{y,c,t,d}^{s,u}
+\]
+on two of the registers and we let $\Pi_{\mathcal{N}}^{\triangle}$ be given by \eq{pi_triangle_N}. Then, as in the previous case, $\langle\kappa|\Pi^{\triangle}|\kappa\rangle=\langle\kappa|\Pi_{\mathcal{N}}^{\triangle}|\kappa\rangle$ for all $|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})$ and using the same reasoning as before, we get the bound \eq{bound_norm_pi_triangle_n} on $\Vert \Pi_{\mathcal{N}}^{\triangle}\Vert $. Using these two facts we get the same bound on the smallest eigenvalue within a block of type 3 as the bound we obtained for blocks of type 2:
+\begin{align*}
+\min_{|\kappa\rangle\in\mathcal{I}_{\diamondsuit}(\mathcal{N})}\langle\kappa|\sum_{w=1}^{N}h_{\mathcal{E}^{\triangle}}^{(w)}|\kappa\rangle &>\frac{1}{(30R)^{2}}\left(1-\big\Vert \Pi_{\mathcal{N}}^{\triangle}\big\Vert \right)>\frac{1}{(9R)^{6}}.\qedhere
+\end{align*}
+\end{proof}
+
+%=============================================================================
+\subsection{The gate graph $G^{\square}$ }
+
+We now consider the gate graph $G^{\square}$ and prove \lem{oc}. We first show that $G^{\square}$ is an $e_{1}$-gate graph. From equations \eq{A_G_squAre}, \eq{h_se_square}, and \eq{A_g_triangle} we have
+\begin{equation}
+A(G^{\square})=A(G^{\triangle})+h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}.\label{eq:A_g_square_triangle}
+\end{equation}
+\lem{A(G_triangle)} characterizes the $e_{1}$-energy ground space of $G^{\triangle}$ and gives an orthonormal basis $\{|\phi_{z,a}^{q}\rangle\colon z,a\in\{0,1\},\, q\in[R]\}$ for it. To solve for the $e_{1}$-energy ground space of $A(G^{\square})$, we solve for superpositions of the states $\{|\phi_{z,a}^{q}\rangle\}$ in the nullspace of $h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}$.
+
+Recall the definition of the sets $\mathcal{E}^{0}$ and $\mathcal{S}^{0}$. From \sec{Definitions-and-Notation_G_square}, each node $(q,z,t)$ in the gate diagram for $G$ is associated with a node $\new(q,z,t)$ in the gate diagram for $G^{\square}$ as described by \eq{node_mapping_G_G_square}. This mapping is depicted in \fig{replace_gate_diagram} by the black and grey arrows. Applying this mapping to each pair of nodes in the edge set $\mathcal{E}^{G}$ and each node in the self-loop set $\mathcal{S}^{G}$ of the gate diagram for $G$, we get the sets $\mathcal{E}^{0}$ and $\mathcal{S}^{0}$. Hence, using equations \eq{h_loops} and \eq{h_edges},
+\begin{align}
+h_{\mathcal{S}^0} &=\sum_{(q,z,t)\in \mathcal{S}^G} |{\new(q,z,t)}\rangle\langle{\new(q,z,t)}|\otimes \II \label{eq:hS0}\\
+h_{\mathcal{E}^0} &=\sum_{\{(q,z,t),(q^\prime,z^\prime,t^\prime)\}\in \mathcal{E}^G} \left(|{\new(q,z,t)}\rangle+|{\new(q^\prime,z^\prime,t^\prime)}\rangle\right)\left(\langle{\new(q,z,t)}|+\langle{\new(q^\prime,z^\prime,t^\prime)}|\right)\otimes \II.\label{eq:hE0}
+\end{align}
+
+Using equation \eq{phi_z_a_q}, we see that for all nodes $(q,z,t)$ in the gate diagram for $G$ and for all $j\in\{0,\ldots,7\}$, $x,b\in\{0,1\}$, and $r\in[R]$,
+\begin{align}
+\langle{\new(q,z,t),j}|\phi^r_{x,b}\rangle & =\sqrt{c_0}
+\begin{cases}
+\langle q_{\mathrm{in}},z,t,j|\psi^{r_{\mathrm{in}}}_{x,b}\rangle & \text{ if $(q,z,t)$ is an input node}\\
+\langle q_{\mathrm{out}},z,t,j|\psi^{r_{\mathrm{out}}}_{x,b}\rangle & \text{ if $(q,z,t)$ is an output node}
+\end{cases}\nonumber \\
+&=\sqrt{c_0}\delta_{r,q} \langle z,t,j|\psi_{x,b}\rangle
+\label{eq:mat_el_newnodes}
+\end{align}
+where $c_0$ is $\frac{1}{3R+2}$ if $R$ is odd or $\frac{1}{3R-1}$ if $R$ is even, and where $|\psi_{x,b}\rangle$ is defined by equations \eq{psi0m} and \eq{psi1m}. The matrix element on the left-hand side of this equation is evaluated in the Hilbert space $\mathcal{Z}_1 (G^\square)$ where each basis vector corresponds to a vertex of the graph $G^\square$; these vertices are labeled $(l,z,t,j)$ with $l\in L^\square$, $z\in\{0,1\}$, $t\in[8]$, and $j\in\{0,\ldots,7\}$. However, from \eq{mat_el_newnodes} we see that
+\begin{equation}
+\underbrace{\langle \new(q,z,t),j|\phi^r_{x,b}\rangle}_{\text{in } \mathcal{Z}_1 (G^\square)}=\sqrt{c_0}\underbrace{\langle q,z,t,j|\psi^r_{x,b}\rangle}_{\text{in } \mathcal{Z}_1 (G)} \label{eq:twoHspaces}
+\end{equation}
+where the right-hand side is evaluated in the Hilbert space $\mathcal{Z}_1 (G)$.
+
+Putting together equations \eq{hS0}, \eq{hE0}, and \eq{twoHspaces} gives
+\begin{equation}
+\langle\phi_{z,a}^{q}|h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}|\phi_{x,b}^{r}\rangle=\langle\psi_{z,a}^{q}|h_{\mathcal{E}^{G}}+h_{\mathcal{S}^{G}}|\psi_{x,b}^{r}\rangle\cdot\begin{cases}
+\frac{1}{3R+2} & R\text{ odd}\\
+\frac{1}{3R-1} & R\text{ even}
+\end{cases}\label{eq:h_eG_hsG}
+\end{equation}
+for all $z,a,x,b\in\{0,1\}$ and $q,r\in[R]$. On the left-hand side of this equation, the Hilbert space is $\mathcal{Z}_{1}(G^{\square})$; on the right-hand side it is $\mathcal{Z}_{1}(G)$.
+
+We use equation \eq{h_eG_hsG} to relate the $e_1$-energy ground states of $A(G)$ to those of $A(G^\square)$. Since $G$ is an $e_{1}$-gate graph, there is a state 
+\[
+|\Gamma\rangle=\sum_{z,a,q}\alpha_{z,a,q}|\psi_{z,a}^{q}\rangle\in\mathcal{Z}_{1}(G)
+\]
+that satisfies $A(G)|\Gamma\rangle=e_1|\Gamma\rangle$ and hence $h_{\mathcal{E}^{G}}|\Gamma\rangle=h_{\mathcal{S}^{G}}|\Gamma\rangle=0$. Letting
+\[
+|\Gamma^{\prime}\rangle=\sum_{z,a,q}\alpha_{z,a,q}|\phi_{z,a}^{q}\rangle\in\mathcal{Z}_{1}(G^{\square})
+\]
+and using equation \eq{h_eG_hsG}, we see that $\langle\Gamma^{\prime}|h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}|\Gamma^{\prime}\rangle=0$ and therefore $\langle\Gamma^{\prime}|A(G^{\square})|\Gamma^{\prime}\rangle=e_{1}$. Hence $G^{\square}$ is an $e_{1}$-gate graph. Moreover, the linear mapping from $\mathcal{Z}_{1}(G)$ to $\mathcal{Z}_{1}(G^\square)$ defined by
+\begin{equation}
+|\psi_{z,a}^{q}\rangle \mapsto |\phi_{z,a}^{q}\rangle\label{eq:map_1particle}
+\end{equation}
+maps each $e_{1}$-energy eigenstate of $A(G)$ to an $e_{1}$-energy eigenstate of $A(G^{\square})$.
+
+Now consider the $N$-particle Hamiltonian $H(G^{\square},N)$. Using equation \eq{A_g_square_triangle} and the fact that both $A(G^{\square})$ and $A(G^{\triangle})$ have smallest eigenvalue $e_{1}$, we have
+\[
+H(G^{\square},N)=H(G^{\triangle},N)+\sum_{w=1}^{N}\left(h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}\right)^{(w)}\bigg|_{\mathcal{Z}_{N}(G^{\square})}.
+\]
+Recall from \lem{A(G_triangle)} that the nullspace of the first term is $\mathcal{I}_{\triangle}$. The $N$-fold tensor product of the mapping \eq{map_1particle} acts on basis vectors of $\mathcal{I}(G,G^{\text{occ}},N)$ as 
+\begin{equation}
+\Sym(|\psi_{z_{1},a_{1}}^{q_{1}}\rangle|\psi_{z_{2},a_{2}}^{q_{2}}\rangle\ldots|\psi_{z_{N},a_{N}}^{q_{N}}\rangle)
+\mapsto
+\Sym(|\phi_{z_{1},a_{1}}^{q_{1}}\rangle|\phi_{z_{2},a_{2}}^{q_{2}}\rangle\ldots|\phi_{z_{N},a_{N}}^{q_{N}}\rangle),
+\label{eq:N_particle_mapping}
+\end{equation}
+where $z_{i},a_{i}\in\{0,1\},\; q_{i}\neq q_{j},\;\text{and }\{q_{i},q_{j}\}\notin E(G^{\text{occ}})$.
+Clearly this defines an invertible linear map between the two spaces
+$\mathcal{I}(G,G^{\text{occ}},N)$ and $\mathcal{I}_{\triangle}$. Let $|\Theta\rangle\in\mathcal{I}(G,G^{\text{occ}},N)$
+and write $|\Theta^{\prime}\rangle\in\mathcal{I}_{\triangle}$ for its image under the map \eq{N_particle_mapping}. Then 
+\begin{equation}
+\langle\Theta^{\prime}|H(G^{\square},N)|\Theta^{\prime}\rangle=\langle\Theta^{\prime}|\sum_{w=1}^{N}\left(h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}\right)^{(w)}|\Theta^{\prime}\rangle=\langle\Theta|\sum_{w=1}^{N}\left(h_{\mathcal{E}^{G}}+h_{\mathcal{S}^{G}}\right)^{(w)}|\Theta\rangle\cdot\begin{cases}
+\frac{1}{3R+2} & R\text{ odd}\\
+\frac{1}{3R-1} & R\text{ even}
+\end{cases}\label{eq:Theta_Theta_prime_eqn}
+\end{equation}
+where in the first equality we used the fact that $|\Theta^\prime\rangle$ is in the nullspace $\mathcal{I}_{\triangle}$ of $H(G^\triangle,N)$ and in the second equality we used equation \eq{h_eG_hsG} and the fact that $\langle\phi_{z,a}^{q}|\phi_{x,b}^{r}\rangle=\langle\psi_{z,a}^{q}|\psi_{x,b}^{r}\rangle$. We now complete the proof of \lem{oc} using equation \eq{Theta_Theta_prime_eqn}.
+
+%-----------------------------------------------------------------------------
+\subsubsection*{Case 1: $\lambda_{N}(G,G^{\text{occ}})\leq a$}
+
+In this case there exists a state $|\Theta\rangle\in\mathcal{I}(G,G^{\text{occ}},N)$ satisfying 
+\[
+\langle\Theta|\sum_{w=1}^{N}\left(h_{\mathcal{E}^{G}}+h_{\mathcal{S}^{G}}\right)^{(w)}|\Theta\rangle\leq a.
+\]
+From equation \eq{Theta_Theta_prime_eqn} we see that the state $|\Theta^{\prime}\rangle\in\mathcal{I}_{\triangle}$ satisfies $\langle\Theta^{\prime}|H(G^{\square},N)|\Theta^{\prime}\rangle\leq\frac{a}{3R-1}\leq\frac{a}{R}$. 
+
+%-----------------------------------------------------------------------------
+\subsubsection*{Case 2: $\lambda_{N}(G,G^{\text{occ}})\geq b$}
+
+In this case 
+\begin{align*}
+\lambda_{N}(G,G^{\text{occ}})=\min_{|\Theta\rangle\in\mathcal{I}(G,G^{\text{occ}},N)}\langle\Theta|H(G,G^{\text{occ}},N)|\Theta\rangle & = \min_{|\Theta\rangle\in\mathcal{I}(G,G^{\text{occ}},N)}\langle\Theta|\sum_{w=1}^{N}\left(h_{\mathcal{E}^{G}}+h_{\mathcal{S}^{G}}\right)^{(w)}|\Theta\rangle\geq b.
+\end{align*}
+ Now applying equation \eq{Theta_Theta_prime_eqn} gives
+\begin{equation}
+\min_{|\Theta^{\prime}\rangle\in\mathcal{I}_{\triangle}}\langle\Theta^{\prime}|H(G^{\square},N)|\Theta^{\prime}\rangle=\min_{|\Theta^{\prime}\rangle\in\mathcal{I}_{\triangle}}\langle\Theta^{\prime}|\sum_{w=1}^{N}\left(h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}\right)^{(w)}|\Theta^{\prime}\rangle\geq\frac{1}{3R+2}b.\label{eq:bound_thetaprime}
+\end{equation}
+This establishes that the nullspace of $H(G^{\square},N)$ is empty, i.e., $\lambda_{N}^{1}(G^{\square})>0$, so $\lambda_{N}^{1}(G^{\square})=\gamma(H(G^{\square},N))$. We lower bound $\lambda_{N}^{1}(G^{\square})$ using the Nullspace Projection Lemma (\lem{npl}) with
+\[
+H_{A}=H(G^{\triangle},N)\qquad H_{B}=\sum_{w=1}^{N}\left(h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}\right)^{(w)}\bigg|_{\mathcal{Z}_{N}(G^{\square})}
+\]
+and where the nullspace of $H_{A}$ is $S=\mathcal{I}_{\triangle}$. We apply \lem{npl} and use the bounds $\gamma(H_{A})>\frac{1}{\left(17R\right)^{7}}$ (from \lem{The-nullspace-of_H_triangle}), $\gamma(H_{B}|_{S})\geq\frac{b}{3R+2}$ (from equation \eq{bound_thetaprime}), and $\left\Vert H_{B}\right\Vert \leq N\left\Vert {h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}}\right\Vert \leq3N\leq3R$ (using equations \eq{h_E_bound} and \eq{h_S_bound} and the fact that $N\leq R$) to find 
+\begin{align*}
+\lambda_{N}^{1}(G^{\square}) &= \gamma(H(G^{\square},N)) \\
+ &\geq \frac{b}{(3R+2)(17R)^7(\frac{1}{(17R)^{7}}+\frac{b}{3R+2}+3R)} \\
+ & \geq\frac{b}{R^{9}} \cdot \frac{1}{3+2+b\cdot(17)^{7}+3\cdot\left(3+2\right)(17)^{7}} \\
+ & >\frac{b}{(13R)^{9}}
+\end{align*}
+where in the denominator we used the fact that $b\leq1$.
+
+\begin{comment}
+(FROM THE OLD PROOF)
+
+\begin{lemma}
+Let $h$ be the $\left(n+1\right)\times(n+1)$ matrix defined as 
+\[
+h=\begin{pmatrix}
+na^{2} & ab & ac & ac & \ldots & ac\\
+ab & b^{2} & 0 & 0 & \ldots & 0\\
+ac & 0 & c^{2} & 0 & \ldots & 0\\
+ac & 0 & 0 & c^{2} & \ldots & 0\\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots\\
+ac & 0 & 0 & 0 & \ldots & c^{2}
+\end{pmatrix}
+\]
+with $c>b>a>0$ and basis states labeled $|0\rangle,\ldots,|n\rangle$ from left to right and top to bottom. Then $h\geq0$, the unique eigenvector with eigenvalue zero is
+\[
+|\phi\rangle=\frac{1}{\sqrt{a^{2}+b^{2}+\left(n-1\right)c^{2}}}\left(a|0\rangle-b|1\rangle-c\sum_{j=2}^{n}|j\rangle\right),
+\]
+and the smallest nonzero eigenvalue satisfies $\gamma(h)\geq b^{2}-ab$.
+\end{lemma}
+
+\begin{proof}
+First change basis to 
+\[
+\{|0\rangle,|1\rangle,|\alpha_{0}\rangle,|\alpha_{1}\rangle,\ldots,|\alpha_{n-2}\rangle\}
+\]
+where $|\alpha_{k}\rangle=\left(\sqrt{n-1}\right)^{-1}\sum_{j=2}^{n}e^{\frac{2\pi ijk}{n-1}}|j\rangle$.
+In this basis $h$ is given by
+\[
+\begin{pmatrix}
+na^{2} & ab & ac\sqrt{n-1} & 0 & \ldots & 0\\
+ab & b^{2} & 0 & 0 & \ldots & 0\\
+ac\sqrt{n-1} & 0 & c^{2} & 0 & \ldots & 0\\
+0 & 0 & 0 & c^{2} & \ldots & 0\\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots\\
+0 & 0 & 0 & 0 & \ldots & c^{2}
+\end{pmatrix}
+\]
+ and its eigenvalues are $c^{2}$ (with multiplicity $n-1$) along
+with the eigenvalues of the top left $3\times3$ submatrix, which
+are 
+\[
+\left\{ 0,\frac{1}{2}\left(b^{2}+c^{2}+a^{2}n\pm\sqrt{\left(c^{2}-b^{2}+a^{2}n\right)^{2}+4a^{2}b^{2}-4a^{2}c^{2}}\right)\right\} .
+\]
+ One can easily confirm that the zero eigenvector is $|\phi\rangle$
+as given in the statement of the Lemma. Using the inequality $\sqrt{\left(c^{2}-b^{2}+a^{2}n\right)^{2}+4a^{2}b^{2}-4a^{2}c^{2}}\leq\left(c^{2}-b^{2}+a^{2}n\right)+2ab$
+gives 
+\[
+\frac{1}{2}\left(b^{2}+c^{2}+a^{2}n-\sqrt{\left(c^{2}-b^{2}+a^{2}n\right)^{2}+4a^{2}b^{2}-4a^{2}c^{2}}\right)\geq\frac{1}{2}\left(2b^{2}-2ab\right)=b^{2}-ab.
+\]
+From this (and the fact that $c^{2}\geq b^{2}-ab\geq0$) we see that $h\geq0$ and we get the bound $\gamma(h)\geq b^{2}-ab$, which completes the proof.
+\end{proof}
+\end{comment}
+
+
+
 
 \subsection{Completeness and Soundness}
 
