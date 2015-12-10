@@ -90,6 +90,8 @@ Now that we understand the eigenstates of a discretized, one-dimensional, free p
 
 With this construction, the eigenvalue equation must still be satisfied along the semi-infinite paths, and thus the form of the eigenstates along the paths must still be of the form $e^{i k x}$ for some $k$ and $x$.  However, we can no longer assume that $k$ is real, as the fact that the attached semi-infinite paths are only infinite in one direction allow for an exponentially decaying amplitudes along the paths.  Additionally, we can have nontrivial correlations between the amplitudes among the different paths.
 
+Note that much of this discussion can be found in \cite{CG12}.
+
 \subsection{Infinite path and a Graph}
 
 In the most simple example, let us attached a graph $\widetilde{G}$ to an infinite path.  In particular, we assume that $\widetilde{G}$ is attached to a single vertex of the infinite path, and that the graph is attached by adding an edge from each vertex in $S\subset V(\widetilde{G})$ to one specific vertex of the infinite path, which we label $0$.  Calling this new graph $G$, the adjacency matrix of $G$ is then
@@ -127,7 +129,7 @@ With this assumption, let us first look at the case where $A_k = 1$ and $D_k = 0
 so that $1+ B_k  =C_k$.  Note that this is reminiscent of a scattering state, with reflection amplitude $B_k$ and transmission amplitude $C_k$, so that we take this intuition.  
 
 
-
+%%%%%%%%%%%%%%%
 \subsection{General graphs}
 
 
@@ -137,58 +139,150 @@ More generally, let $\widehat{G}$ be any finite graph, with $n+m$ vertices and a
 \end{equation}
 where $A$ is an $N\times N$ matrix, $B$ is an $m\times N$ matrix, and $D$ is an $m\times m$ matrix.  When examining graph scattering, we will be interested in the graph $G$ given by the graph-join of $\widehat{G}$ and $N$ semi-infinite paths, with an additional edge between each of the first $N$ vertices of $\widehat{G}$ and the first vertex of one semi-infinite path.  
 
-We shall label label the first $N$ vertices of the graph $\widehat{G}$ as $(1,i)$, where $i\in[N]$, as these correspond to the first vertex in each semi-infinite path.  We refer to the other $m$ vertices of $\widehat{G}$ as $w\in [m]$, and we refer to the vertices on the $N$ semi-infinite paths as $(x,i)$, where $i\in[N]$ labels which infinite path the vertex is located on (corresponding to which vertex $(1,i)$ the path is attatched to), while $x\in \NN$ and $x\geq 2$ labels the distance along the semi-infinite path the vertex is located.  With this labeling of the vertices of $G$, the adjacency matrix of $G$ is then given by
+We shall label label the first $N$ vertices of the graph $\widehat{G}$ as $(1,i)$, where $i\in[N]$, as these correspond to the first vertex in each semi-infinite path, and we will call these the \textit{terminal vertices}.  We refer to the other $m$ vertices of $\widehat{G}$ as the \textit{internal vertices} of $\widehat{G}$, and label them as $w\in[m]$, and we refer to the vertices on the $N$ semi-infinite paths as $(x,i)$, where $i\in[N]$ labels which infinite path the vertex is located on (corresponding to which vertex $(1,i)$ the path is attatched to), while $x\in \NN$ and $x\geq 2$ labels the distance along the semi-infinite path the vertex is located.  With this labeling of the vertices of $G$, the adjacency matrix of $G$ is then given by
 \begin{equation}
   A(G) = A(\widehat{G}) + \sum_{j=1}^N \sum_{x=1}^\infty \big(\ketbra{x,j}{x+1,j} + \ketbra{x+1,j}{x,j}\big).
 \end{equation}
 
 At this point, we want to examine the possible eigenstates of the matrix $A(G)$.  It turns out that there are 3 different kinds of eigenstates, corresponding to the different qualitative properties of the eigenstate along the semi-infinite paths.
 
+While we will mostly be interested in the third such type, it is important to understand the other kinds of eigenstates.
+
+%%%%
 \subsubsection{Confined bound states}
 
-The easiest states to analyze are the confined bound states, which are eigenstates in which the only nonzero amplitudes are on vertices inside the finite graph $\widehat{G}$.  In particular, these eigenstates are normalizable, and their restriction to the space spanned by the vectors 
+The easiest states to analyze are the confined bound states, which are eigenstates in which the only nonzero amplitudes are on vertices inside the finite graph $\widehat{G}$. If any vertex on the semi-infinite paths has nonzero amplitude for some eigenstate of the Hamiltonian, then the form of the Hamiltonian forces all vertices on that path to have nonzero amplitude, and thus these confined bound states are exactly those states that have finite support in the basis of vertex states.  
 
+To find these confined bound states, we restrict our Hilbert space to the space spanned by the internal vertices of $\widehat{G}$. The states of interest then correspond to the eigenstates of $D$ (the induced adjacency matrix of $A(G)$ when restricted to the internal vertices of $\widehat{G}$) with the additional restriction that the state lies in the nullspace of $B^\dag$, so that we can extend this state to the full Hilbert space by simply assuming all other amplitudes are zero.    
 
-Note that there are no restrictions on the eigenvalues of these states, other than those that are inherited from any restrictions placed on it by $D$.
+As we originally assumed that there are only $m$ internal vertices of $\widehat{G}$, there are at most $m$ such confined bound states.  Additionally, note that there are no restrictions on the eigenvalues of these states, other than those that are inherited from any restrictions placed on it by $D$ (such as the energy being bounded by the maximum degree of $\widehat{D}$).
 
+%%%%
 \subsubsection{Unconfined bound states}
 
-The next interesting states are those that are not confined to the finite graph $\widehat{G}$, and thus they must take the form $e^{i k x}$ along the semi-infinite paths.  However, as we assume that the state is normalizable, we have to assume that $k\notin \RR$, and further that $\Im(k) < 0$.   
-
-With this assumption, we have that the amplitudes along the paths decay exponentially, so that the state is bound to the graph $\widehat{G}$.  
-
-Note that the energy of the eigenstate is given by 
+The next possible type of eigenstates are those that are not confined to the finite graph $\widehat{G}$ but are still normalizable.  Since these states still have amplitude along the semi-infinite paths, we know that they must be of the form $Ae^(i k x)$, for some $A$ and $k$.  However, when $k$ is not real (corresponding to a decaying amplitude along the paths), we have that
 \begin{equation}
-  E = e^{i k } + e^{-i k}
+  2 \cos(k) = 2\cos(k_r + i k_i) = 2 \cos(k_r) \cosh(k_i) - i \sin(k_r) \sinh(k_i).
 \end{equation}
-and as $E$ must be real, we have that $k = i \kappa + n\pi$ for $\kappa <0$.  We can assume that $n$ is either 0 or 1, as well.
+Hence, if we assume that the state is normalizable, then $k_i \neq 0$, and as the adjacency matrix is Hermitian, we must have that the eigenvalue is real, forcing $k_r = \pi n$ for some $n\in \NN$.  Note that this then implies that $e^{i k} = z$, for some $z\in(-1,1)\setminus\{0\}$ (where $0$ corresponds to the confined bound states).
 
-\todo{Finish this section, and figure out what values of $\kappa$ are possible}
+\todo{Finish this section, and determine whether this is  finite or infinite.}
 
-\todo{Are there only finitely many such $\kappa$, or is there a range of values?}
-
+%%%%
 \subsubsection{Half-bound states}
 
-The half-bound states are the limit of the states as $\kappa \rightarrow 0$.  In particular, they are those states where the amplitude along the infinite paths take the form $(\pm 1)^x$.  I don't really know much about them.
+The half-bound states are the limit of the states as $\kappa \rightarrow 0$.  In particular, they are those states where the amplitude along the infinite paths take the form $(\pm 1)^x$.  These states aren't quite bound, in that they are not normalizable, but they are also not quite scattering states, as they correspond to non-moving scattering states.  They won't play much of a role in this paper, but I did want to mention them.
 
-\todo{Finish this section, make it important}
-
-
+%%%%
 \subsubsection{Scattering states}
 
 We finally reach the point of scattering states, or those states we can use for computational tasks.  We first assume that we are orthogonal to all bound states, and in particular that we are othogonal to all confined bound states.  This allows us to uniquely construct the scattering states (without this assumption, if there existed a confined bound state at the appropriate energy, then we could simply add any multiple of the confined bound state to get a different scattering state).
 
-Taking some intuition from the classical case, we will construct a state corresponding to sending a particle in along one of the semi-infinite paths.  Namely, we will assume that one of the paths has a portion of its amplitude of the form $e^{i k x} + S_{i,i}(k)e^{-i k x}$ for $k\in (-\pi, 0)$, and that the rest of the paths have amplitudes given by $S_{i,q}(k)e^{ikx}$.  More concretely, we assume that the form of the states is given on the infinite paths by
+Taking some intuition from the classical case, we will construct a set of states that correspond to sending a particle in towards the graph $\widehat{G}$ along one of the semi-infinite paths and understanding how it scatters off of the graph.  Namely, for each $i\in[N]$ we will assume that there exists a state with amplitude along the $i$-th path of the form $e^{i k x} + S_{i,i}(k)e^{-i k x}$ for $k\in (-\pi, 0)$, and that the rest of the paths have amplitudes given by $S_{i,q}(k)e^{ikx}$.  More concretely, we assume that the form of the states is given on the infinite paths by
 \begin{equation}
-  \braket{x,q}{\scat_{j}(k)} = \delta_{j,q} e^{i k x} + S_{qj} e^{i k x}.
+  \braket{x,q}{\scat_{j}(k)} = \delta_{j,q} e^{-i k x} + S_{qj} e^{i k x}.
 \end{equation}
-We then need to see whether such an eigenstate exists.
+We then need to see whether such an eigenstate exists.  In this case, note that $S_{qj}$ corresponds to the transmitted amplitude along the $q$-th path if the particle was incident along the $j$-th path.
 
-In particular, if we assume that such an eigenstate exists, and that 
-\todo{Finish this section}
+If we continue to make the assumption that these states exist, we can also write the amplitudes of the $m$ interval vertices as a column vector, as $\vec{\psi}_i(k)$, in which $\vec{\psi}_{i(k)}$ is the projection of $\ket{\scat_j(k)}$ onto the internal vertices of $\widehat{G}$.  We can then collect these vectors into an $N\times m$ matrix, namely
+\begin{equation}
+  \Psi(k) := \begin{pmatrix} \vec{\psi}_1(k) & \vec{\psi}_2(k) & \cdots & \vec{\psi}_N(k)\end{pmatrix}
+\end{equation}
+\todo{check if this is correct $N\times m$ or $m\times N$}
+
+Noting that the amplitudes for $\vec{\scat_j(k)}$ on the terminal vertices is given by $ e^{-i k} \ket{1,j} + S_{j}(k)e^{ik}$ (thinking of $S_{j}(k)$ as a vector), we can then collect all of the eigenvalue equations for the vertices in $\widehat{G}$ (both internal and termal) as
+\begin{equation}
+  \begin{pmatrix} A & B^\dag \\
+    B & D\end{pmatrix} \begin{pmatrix}  e^{-i k} \II + S(k) e^{i k}\\ \Psi(k)\end{pmatrix} 
+    + \begin{pmatrix} e^{-2 i k} \II + e^{2 i k} S(k)\\ 0\end{pmatrix} = 
+    2 \cos(k) \begin{pmatrix}  e^{-i k} \II + S(k) e^{i k}\\ \Psi(k)\end{pmatrix}.
+\end{equation}
+
+By examining the lower half of this matrix equation, we can see that
+\begin{equation}
+  \Psi(z) = \frac{1}{2 \cos(k) \II - D} \big( e^{-ik} B + e^{i k} B S(z)\big),
+\end{equation}
+which gives the amplitudes of the internal vertices in terms of the scattering matrix.
+
+If we then examine the upper half of the matrix equation, we find that
+\begin{align}
+  A\big(e^{-ik} \II+ e^{i k} S(k)\big) + B^\dag \Psi(k) + \big(e^{-2 ik}\II + e^{2 i k} S(z)\big) &= 2 \cos(k) \big(e^{-ik} \II + e^{i k} S(k)\big)&\Rightarrow\\
+  -\Bigg(\II - e^{ik}\Big(A + B^\dag \frac{1}{2 \cos(k) - D} B\Big)\Bigg)S(k) &= \II - e^{-ik}\Big(A + B^\dag \frac{1}{2 \cos(k) - D} B\Big).
+\end{align}
+Hence, if we define
+\begin{equation}
+  Q(k) = \II - e^{ik}\Big( A + B^\dag \frac{1}{2 \cos(k) - D} B\Big),
+\end{equation}
+we find that
+\begin{equation}
+  S(k) = - Q(k)^{-1} Q(-k).
+\end{equation}
+
+Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist for all $k$ in which the matrix operations defining $S(k)$ are well defined for all 
+\todo{make this coherent}
+
+%%%%
+\subsubsection{Easier calculation of $S$-matrix}
+\todo{come up with a better name of this cycle}
 
 
+While the above is useful for most values of $k\in(-pi,0)$, unfortunately there are specific values of $k$ (such as those for which $D$ has eigenvalue $2\cos(k)$) in which the above analysis doesn't hold do to the singularity of some particular matrices.  If we want to show that these scattering states exist for all $k\in (-\pi,0)$, we need to somehow show that these singularities are just a problem of the analysis and are not intrinsic barriers to existence.
 
+Along these lines, let us extend our analysis to complex $z$, instead of only focusing on the real line.  As such, let us define the matrix
+\begin{equation}
+  \gamma(z) := \begin{pmatrix}  z A - \II & z B^\dag\\
+    z B & zD - (1+z^2) \II\end{pmatrix}.
+    \label{eq:gamma_def}
+\end{equation}
+
+Note that 
+\begin{align}
+  \begin{pmatrix} \II & zB^\dag\\
+    0 & z D - (1+ z^2) \II \end{pmatrix}
+    \begin{pmatrix} - Q(z) & 0\\
+      \frac{z}{zD - (1+ z^2)\II}B & \II\end{pmatrix} 
+      &= \begin{pmatrix} -Q(z) + z B^\dag \frac{1}{D - (z + z^{-1})} B & z B^\dag\\
+        zB & zD - (1+z^2)\II\end{pmatrix} \\
+        &= \gamma(z)
+\end{align}
+Additionally, if we note that the inverse of a block diagonal matrix can be written as
+\begin{equation}
+  \begin{pmatrix} X & Y \\
+  Z & W\end{pmatrix}^{-1} = \begin{pmatrix} \big(X - Y W^{-1} Z\big)^{-1} & - X^{-1} Y \big(W - Z X^{-1} Y\big)^{-1}\\
+    - W^{-1} Z \big(X - Y W^{-1} Z\big)^{-1} & \big(W - Z X^{-1} Y\big)^{-1}\end{pmatrix},
+\end{equation}
+then we can see that
+\begin{align}\gamma(z)^{-1} &= \begin{pmatrix} - Q(z) & 0\\
+      \frac{z}{zD - (1+ z^2)\II}B & \II\end{pmatrix}^{-1} \begin{pmatrix} \II & zB^\dag\\
+    0 & z D - (1+ z^2) \II \end{pmatrix}^{-1}\\
+    &= \begin{pmatrix}
+      - Q(z)^{-1} & 0\\
+      \frac{z}{z D - (1+z^2)\II} B Q(z)^{-1} & \II
+    \end{pmatrix}
+    \begin{pmatrix}
+      \II & - B^{\dag} \frac{z}{zD - (1+z^2)\II}\\
+      0 & \frac{1}{zD - (1+z^2)\II}
+    \end{pmatrix}.
+\end{align}
+We can then use this to see that
+\begin{align}
+  -\gamma (z)^{-1} \gamma(z^{-1}) &= \begin{pmatrix}
+      - Q(z)^{-1} & 0\\
+      \frac{z}{z D - (1+z^2)\II} B Q(z)^{-1} & \II
+    \end{pmatrix}
+    \begin{pmatrix}
+      \II & - B^{\dag} \frac{z}{zD - (1+z^2)\II}\\
+      0 & \frac{1}{zD - (1+z^2)\II}
+    \end{pmatrix}
+    \begin{pmatrix} \II & z^{-1}B^\dag\\
+    0 & z^{-1} D - (1+ z^{-2}) \II \end{pmatrix}
+    \begin{pmatrix} - Q\big(z^{-1}\big) & 0\\
+      \frac{z^{-1}}{z^{-1}D - (1+ z^{-2})\II}B & \II\end{pmatrix} 
+\end{align}
+
+\todo{finish section}
+
+%%%%%%%%%%%%%%%
 \subsection{Scattering matrix properties}
 
 While the use of the $\gamma$ matrix gives an explicit construction of the form of the eigenstates on the internal vertices, it is also useful to note that the scattering matrix at a particular momentum $k$ can be expressed as
@@ -225,7 +319,7 @@ where we used the fact that $Q(z)$ and $Q(z^{-1})$ commute.
 
 Putting this together, we have that $S(k)$ is a symmetric, unitary matrix for all $k$.
 
-
+%%%%%%%%%%%%%%%%%
 \subsection{Orthonormality of the scattering states}
 
 We now establish the delta-function normalization of the scattering states. Let 
