@@ -266,7 +266,7 @@ then we can see that
 \end{align}
 We can then use this to see that
 \begin{align}
-  -\gamma (z)^{-1} \gamma(z^{-1}) &= \begin{pmatrix}
+  \gamma (z)^{-1} \gamma(z^{-1}) &= \begin{pmatrix}
       - Q(z)^{-1} & 0\\
       \frac{z}{z D - (1+z^2)\II} B Q(z)^{-1} & \II
     \end{pmatrix}
@@ -277,8 +277,37 @@ We can then use this to see that
     \begin{pmatrix} \II & z^{-1}B^\dag\\
     0 & z^{-1} D - (1+ z^{-2}) \II \end{pmatrix}
     \begin{pmatrix} - Q\big(z^{-1}\big) & 0\\
-      \frac{z^{-1}}{z^{-1}D - (1+ z^{-2})\II}B & \II\end{pmatrix} 
+      \frac{z^{-1}}{z^{-1}D - (1+ z^{-2})\II}B & \II\end{pmatrix} \\
+  &=  \begin{pmatrix}
+      - Q(z)^{-1} & 0\\
+      \frac{z}{z D - (1+z^2)\II} B Q(z)^{-1} & \II
+    \end{pmatrix}
+    \begin{pmatrix}
+      \II & 0\\
+      0 &z^{-2}\II \end{pmatrix}
+    \begin{pmatrix} - Q\big(z^{-1}\big) & 0\\
+      \frac{z^{-1}}{z^{-1}D - (1+ z^{-2})\II}B & \II\end{pmatrix} \\
+   &= \begin{pmatrix}
+      - Q(z)^{-1} & 0\\
+      \frac{z}{z D - (1+z^2)\II} B Q(z)^{-1} &z^{-2} \II
+    \end{pmatrix}
+    \begin{pmatrix} - Q\big(z^{-1}\big) & 0\\
+      \frac{z^{-1}}{z^{-1}D - (1+ z^{-2})\II}B & \II\end{pmatrix} \\
+  &= \begin{pmatrix}
+      Q(z)^{-1}Q(z^{-1}) & 0\\
+      \frac{1}{D - (z+z^{-1})\II }B \big(z^{-2} \II - Q(z)^{-1}Q(z^{-1}) \big) & z^{-2}\II
+    \end{pmatrix}\\
+  &= -\begin{pmatrix}
+      S(z) & 0\\
+     z^{-1} \Psi(s) & -z^{-2}\II
+    \end{pmatrix}\label{eq:gamma_gives_S}
 \end{align}
+
+As such, we can write we have a nice representation of the scattering matrix and the interior amplitudes in terms of the matrix $\gamma$.  If we then note that
+\begin{equation}
+  \gamma(z)^{-1} = \frac{1}{\det \gamma(z)} \adj \gamma (z)
+\end{equation}
+where $\adj \gamma (z)$ is the adjugate matrix of $\gamma(z)$, then by \eq{gamma_gives_S} we can then see that the entries of $S(z)$ are rational functions of $z$. 
 
 \todo{finish section}
 
@@ -321,6 +350,8 @@ Putting this together, we have that $S(k)$ is a symmetric, unitary matrix for al
 
 %%%%%%%%%%%%%%%%%
 \subsection{Orthonormality of the scattering states}
+
+\todo{go over this section more}
 
 We now establish the delta-function normalization of the scattering states. Let 
 \begin{align*}
@@ -383,13 +414,17 @@ we have
  Adding equation \eq{pi1} to equation \eq{pi2_pi3} gives
 equation \eq{delta}.
 
-\todo{Do they span the space of states, if you also include the bound states?}
+\todo{These form an orthonormal basis if you also include the bound states, but this is Theorem 1 from Andrew and David's Levison's Theorem II paper.  I'm not sure if I should include it.}
 
 \section{Applications of graph scattering}
 
 \subsection{NAND Trees}
 
-\todo{I need to give an explanation of this}
+The motivating idea for understanding graph scattering was an explicit algorithm that computes the value of a NAND tree with $N$ leaves in $\OO(\sqrt{N})$ time.  In particular, a NAND tree is a complete binary tree of depth $\log N$, where each leaf has a particular binary value.  Each node of the tree is then assigned a binary value by evaluating the NAND of its children, and the value of the entire tree is the value of the root node.  Classically, any randomized algorithm requires $\OO(N^{0.753})$ queries to the roots in order to evaluate the value of the tree, and thus this gives an example of a quantum speedup.
+
+The reason that we are interested in this is that the original algorithm uses graph scattering as the actual algorithm.  In particular, a binary tree is attached to an infinite path at the root, and then additional vertices are attached to the leaves depending on whether the binary value is 0 or 1.  It turns out that at energy 0 (i.e., momentum $-\pi/2$), such a tree has perfect transmission from one path to the other if the tree evaluates to 1, and perfect reflection if the tree evaluates to 0.  Hence, if a wave packet with momentum centered around $-\pi/2$ is scattered off of such a graph, then if we determine the location of the particle after it has scattered we evaluate the tree. 
+
+In this case, the requisite size of the wavepacket turns out to be $\OO(\sqrt{N})$, and thus this amount of time is required in order for the scattering to occur.  As such, this turns out to be the amount of queries in the continuous query model.
 
 \subsection{Momentum dependent actions}
 
