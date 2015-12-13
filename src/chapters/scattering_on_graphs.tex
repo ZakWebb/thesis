@@ -424,32 +424,34 @@ The motivating idea for understanding graph scattering was an explicit algorithm
 
 The reason that we are interested in this is that the original algorithm uses graph scattering as the actual algorithm.  In particular, a binary tree is attached to an infinite path at the root, and then additional vertices are attached to the leaves depending on whether the binary value is 0 or 1.  It turns out that at energy 0 (i.e., momentum $-\pi/2$), such a tree has perfect transmission from one path to the other if the tree evaluates to 1, and perfect reflection if the tree evaluates to 0.  Hence, if a wave packet with momentum centered around $-\pi/2$ is scattered off of such a graph, then if we determine the location of the particle after it has scattered we evaluate the tree. 
 
-In this case, the requisite size of the wavepacket turns out to be $\OO(\sqrt{N})$, and thus this amount of time is required in order for the scattering to occur.  As such, this turns out to be the amount of queries in the continuous query model.
+In this case, the requisite size of the wavepacket turns out to be $\OO(\sqrt{N})$, and thus this amount of time is required in order for the scattering to occur.  This is closely related to the number of queries to the values of the input variables in order to compute the value of the tree, and thus this is a quantum algorithm that has a provable speedup over classical computing.
 
 \subsection{Momentum dependent actions}
 
-While the NAND trees gives a good example of how the process works, we can generalize the idea to work at momenta other than \todo{what momenta}.  In particular, we can attempt to find graph gadgets such that the scattering behaviour at some particular momenta is fixed.
+While the NAND trees gives a good example of how the process works, in that the scattering evaluates a binary function, we can use similar ideas in order to have nontrivial scattering behavior.  In particular, the NAND tree algorithm utilizes the fact that some graph either completely reflects or transmits at one particular momenta in order to evaluate the function, but we can also create graphs that have different behaviors at different momenta, or that perfectly transmits to some subset of the attached paths (i.e., generalizations to multiple semi-infinite paths).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{R/T gadets}
 
-The easiest thing we could hope for are exactly similar to the NAND trees experiment, in that if there are only two attached semi-infite paths, then at some fixed momenta it either completely transmits, or it completely reflects.  
+The easiest thing we could hope for are exactly similar to the NAND trees experiment, in that if there are only two attached semi-infite paths, then at some fixed momenta it either completely transmits, or it completely reflects.  However, in contrast to the NAND tree, we will only work with a single graph, and use it to filter out some momenta.
+
+Basically, the idea behind R/T gadgets is to perfectly transmit at some momenta, while perfectly reflecting at other momenta.  This will then allow us to filter out certain unwanted wavepackets, and allow us to only deal with the momenta of interest.  Further, these simple gadgets can be used as a simple building block in the construction of other graphs, allowing us to have more complicated graphs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Momentum Switches}
 
-We can generalize this idea of complete reflection or transmission to something called a momentum switch, in that with three inputs/outputs, for some chosen semi-infinite path, all incoming wavepackets at some momenta completely transmit to a second path, while all incoming wavepackets at some other particular momenta transmit to the third.
+In addition to a simple graph that only reflects or transmits certain momenta, we can generalize the idea to a kind of routing behavior.  In particular, we can attempt to construct a graph with three attached semi-infinite paths, in which when a wavepacket is incident on one particular path, it either perfectly transmits to the second path, or it perfectly transmits to the third path, depending on the incident momenta.  In this way, we construct something like a momentum dependent railroad switch, sending different wavepackets to different locations.
+
+In the grand scheme of things, this is extremely useful, as it allows for more general momentum dependent actions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Encoded unitary}
 
+Finally, we can also encode unitary actions using these graphs, in that by necessity these scattering matrices must be unitary.  In particular, let us examine what happens to a graph with four attached semi-infinite paths, when at some chosen momentum a wavepacket from either of the first two paths gets perfectly transmits to the last two paths.  In this case, the S-matrix becomes a block matrix, with the two $2\times 2$ blocks in the diagonal both zero matrices.  As such, the off diagonal matrices must also be unitary, and if we think of the two input paths as an encoded qubit (with a wavepacket along one path corresponding to an encoded $\ket{0}$ state and a wavepacket along the other path correpsonding to an encoded $\ket{1}$ state) then this scattering procedure performs some encoded unitary transformation on the qubit.
 
-4 input/output, must go from in to out.
-
-This is as very particular behavior.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Constructing graphs
@@ -457,7 +459,8 @@ This is as very particular behavior.
 
 \section{Construction of graphs with particular scattering behavior}
 
-Note that while these scattering behaviors at particular momenta are easy to calculate, no efficient way currently exists to find a graph with a given scattering matrix, or even to tell whether or not such a graph exists.  However, there are some special types of graphs that allow us to do this.
+While we have shown that the scattering behavior of some given graph is easy to compute, finding a graph with a given scattering behavior is much more difficult.  We don't even know whether such an operation is decidable, and thus constructing an efficient algorithm for finding a graph with a given scattering behavior seems unlikely.  However, there are specific behaviors at particular momenta in which constructions are known, and some small sized graphs that have been found via exhaustive searches.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -618,7 +621,7 @@ Thus the gadget from \fig{gen_mom_con} is a momentum switch between $\mathcal{R}
 \end{proof}
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Encoded unitaries}
 
 While there is no efficient method to find graphs that apply some fixed encoded unitary, it is possible to search over all small graphs that have some particular implementation.
@@ -629,7 +632,9 @@ In particular, we have that these graphs have nice scattering behaviors, and wil
 
 Additionally, it is possible to combine some graphs in a manner that can be used 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Various facts about scattering}
 
 These are facts that will be of use to us.
