@@ -218,7 +218,7 @@ we find that
   S(k) = - Q(k)^{-1} Q(-k).
 \end{equation}
 
-Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist for all $k$ in which the matrix operations defining $S(k)$ are well defined for all 
+Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist for all $k$ in which the matrix operations defining $S(k)$ are well defined for all momenta
 \todo{make this coherent}
 
 %%%%
@@ -555,6 +555,149 @@ so the restriction of $\ket{\sc_1(k)}$ to $g_0$ must be an eigenvector (since $p
 Hence the restriction of $\ket{\sc_1(k)}$ to $V(g_0)$ is an eigenvector of the induced subgraph, with the additional property that the sum of the amplitudes at vertices connected to $p$ is nonzero.
 \end{proof}
 
+%%%%%%%%%%
+\subsubsection{Explicit constructions}
+
+While the above gives a nice abstract explanation for the construction of R/T gadgets, it doesn't provide us with a concrete example without the graphs that satisfy the assumptions of the lemmas.  As such, let us look at two simple graphs.
+
+As a first example, suppose $G_0$ is a finite path of length $l_1+l_2-2$ connected to $a$ at the $l_1$th vertex, as shown in \fig{RT_path}.  We determine the reflection and transmission sets as a function of $l_1$ and $l_2$.
+
+%\begin{figure}
+%\centering
+%\begin{tikzpicture}[
+%  thin,
+%  vertex/.style={circle,draw=black,fill=black,inner sep=1.25pt,
+%    minimum size =0mm},
+%  attach/.style={circle,draw=black,fill=white,inner sep=1.25pt,
+%    minimum size =0mm},
+%  dots/.style={circle,fill=black,inner sep=.5pt,
+%    minimum size= 0pt}]
+%    
+%    \draw (-1,-1) -- (1,-1);
+%    \draw (0,0) -- (0,-1);
+%    
+%    \node[attach,label=270:{$(1,1)$}] at (-1,-1) {};
+%    \node[attach,label=270:{$(1,2)$}] at (1,-1) {};
+%    \node[vertex,label={[label distance=.25*\baselineskip]270:{$ a $}},] at (0,-1) {};
+%    \node[vertex] at (0,0) {};
+%    
+%    % left branch
+%    \draw (0,0) -- (135:1.5);
+%    \draw[densely dotted] (135:1.5) -- (135: 2.25);
+%    
+%    \draw[densely dotted] (135:2.75) -- (135:3.5);
+%    \draw (135:3.5) -- (135:5);
+%    
+%    \foreach \r in {1,5,4}{
+%      \node[vertex] at (135:\r) {};
+%    }
+%    
+%
+%    \foreach \n /\p in {1/5,2/4,{l_1-1}/1}{
+%      \node at (135:\p) [label={225:$\n$}] {};
+%    }
+%    
+%    
+%    % right branch
+%    \draw (0,0) -- (45:1.5);
+%    \draw[densely dotted] (45:1.5) -- (45: 2.25);
+%    
+%    \draw[densely dotted] (45:3.75) -- (45:4.5);
+%    \draw (45:4.5) -- (45:6);
+%        
+%    \foreach \r in {1,6,5}{
+%      \node[vertex] at (45:\r) {};
+%    }    
+%    
+%    
+%    \foreach \n /\p in {{l_1}/0,{l_1+1}/1,{l_1+l_2-2}/5,{l_1+l_2-1}/6}{
+%      \node at (45:\p)[label=315:{$\n$}]{};
+%    }    
+%
+%\end{tikzpicture}
+%\caption{An R/T gadget built from a path of length $l_1+l_2-2$. }
+%\label{fig:RT_path}
+%\end{figure}
+
+Using \lem{reflect_reqs}, we see that perfect reflection occurs at momentum $k\in (-\pi,0)$ if and only if the path has an eigenvector with eigenvalue $2\cos(k)$ with non-zero amplitude on vertex $l_1$.  Recall that the path of length $L$ (where the length of a path is its number of edges) has eigenvectors $|\psi_j\rangle$ for $j\in [L+1]$ given by
+\begin{equation}
+  \langle x | \psi_j \rangle = \sin\left(\frac{ \pi j x}{L+2}\right)\label{eq:vecs_line}
+\end{equation}
+with eigenvalues $\lambda_j = 2 \cos(\pi j/(L+2))$.  Hence
+\[
+  \mathcal{R}_{\mathrm{path}} = \left\{ -\frac{\pi j}{l_1 + l_2} \colon j\in [l_1 + l_2 - 1] \text{ and } \frac{jl_1}{l_1+l_2} \not\in \ZZ\right\}.
+\]
+
+To characterize the momenta at which perfect transmission occurs, consider the induced subgraph obtained by removing the $l_1$th vertex from the path of length $l_1+l_2-2$ (a path of length $l_1-2$ and a path of length $l_2-2$). We can choose bases for the eigenspaces of this induced subgraph so that each eigenvector has all of its support on one of the two paths, and has nonzero amplitude on one of the vertices $l_1-1$ or $l_1+1$. Thus \lem{transmit_reqs} implies that $\hat{G}$ perfectly transmits for all momenta in the set
+\[
+  \mathcal{T}_{\mathrm{path}} = \left\{- \frac{\pi j}{l_1} \colon j\in [l_1-1]\right\} \cup \left\{-\frac{\pi j}{l_2 } \colon j \in [l_2-1]\right\}.
+\]
+
+For example, setting $l_1 = l_2 = 2$, we get $\mathcal{T}_{\mathrm{path}} = \{-\frac{\pi}{2}\}$ and $\mathcal{R}_{\mathrm{path}} = \{-\frac{\pi}{4}, -\frac{3\pi}{4}\}$.
+
+
+Now let us suppose $G_0$ is a cycle of length $r$. Labeling the vertices by $x \in [r]$, where $x=r$ is the vertex attached to the path (as shown in \fig{RT_cycle}), the eigenvectors of the $r$-cycle are
+\[
+  \langle x | \phi_m\rangle = e^{{2 \pi i x m}/{r}}
+\]
+with eigenvalue $2 \cos(2 \pi m/r)$, where $m\in [r]$. For each momentum $k=-2 \pi m/r \in (-\pi,0)$, there is an eigenvector with nonzero amplitude on the vertex $r$ (i.e., $\langle r | \phi_m\rangle\neq 0$), so \lem{reflect_reqs} implies that perfect reflection occurs at each momentum in the set
+\[
+  \mathcal{R}_{\mathrm{cycle}} = \left\{ -\frac{\pi j}{r} \colon \text{$j$ is even and $j\in [r-1]$}\right\}.
+\]
+
+%\begin{figure}
+%\centering
+%\begin{tikzpicture}[
+%  thin,
+%  vertex/.style={circle,draw=black,fill=black,inner sep=1.25pt,
+%    minimum size =0mm},
+%  attach/.style={circle,draw=black,fill=white,inner sep=1.25pt,
+%    minimum size =0mm},
+%  dots/.style={circle,fill=black,inner sep=.5pt,
+%    minimum size= 0pt}]
+%    \draw (-1,-2) -- (1,-2);
+%    \draw (0,-2) -- (0,-1);
+%    
+%    \node[attach] at (-1,-2) {};
+%    \node at (-1,-2.35) {$(1,1)$};
+%    \node[attach] at (1,-2) {};
+%    \node at (1,-2.35) {$(1,2)$};
+%    \node[vertex] at (0,-2) {};
+%    \node at (0,-2.35) {$a$};
+%    
+%    \foreach \t in {150, 210, 270, 330, 30}{
+%      \node[vertex] at (\t: 1) {};
+%    }
+%    
+%    \foreach \t in {210, 270, 330, 30}{
+%      \draw (\t:1) -- (\t - 60:1);
+%    }
+%    
+%    \draw (150:1) -- (135:.897);
+%    \draw (30:1) -- (45:.897);
+%    
+%    \draw[densely dotted] (45:.897) -- (75:.897);
+%    \draw[densely dotted] (135:.897) -- (105:.897);
+%    
+%    \foreach \t / \n in {210 / 1, 150 / 2, 30 / {r-2}, -30 / {r-1}}{
+%      \node at (\t:1.5) {$\n$};
+%    }
+%    
+%    \node at (.26,-1.15) {$r$};
+%  
+%\end{tikzpicture}
+%\caption{An R/T gadget built from an $r$-cycle.}
+%\label{fig:RT_cycle}
+%\end{figure}
+
+To see which momenta perfectly transmit, we use \lem{transmit_reqs}. Consider the induced subgraph obtained by removing vertex $r$. This subgraph is a path of length $r-2$ and has eigenvalues $2\cos(\pi m/r)$ for $m \in [r-1]$ as discussed in the previous section. Using the expression \eq{vecs_line} for the eigenvectors, we see that the sum of the amplitudes on the two ends is nonzero for odd values of $m$.  Perfect transmission occurs for each of the corresponding momenta:  
+\[
+  \mathcal{T}_{\mathrm{cycle}} = \left\{ -\frac{\pi j}{r} \colon \text{$j$ is odd and $j\in [r-1]$}\right\}.
+\]
+
+For example, the $4$-cycle (i.e., square) has $\mathcal{T}_{\mathrm{cycle}} = \{-\frac{\pi}{4},-\frac{3\pi}{4}\}$ and $\mathcal{R}_{\mathrm{cycle}} = \{-\frac{\pi}{2}\}$.  
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Momentum switches}
@@ -620,6 +763,12 @@ As before, it is easy to check that this a momentum-$k^\prime$ scattering state 
 Thus the gadget from \fig{gen_mom_con} is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
 \end{proof}
 
+\subsubsection{Explicit examples}
+
+
+
+\todo{work this section}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Encoded unitaries}
@@ -628,30 +777,80 @@ While there is no efficient method to find graphs that apply some fixed encoded 
 
 \missingcite{Find this small graphs thing}
 
-In particular, we have that these graphs have nice scattering behaviors, and will be useful in the long run.
+Essentially, the main idea behind this method is that since we can easily compute the scattering matrix for a particular graph at a particular momentum, if we want to find a graph that has some prescribed scattering behavior at a prescribed momenta we simply assume that such a graph exists with a particular number of internal vertices, and then search over all graphs of that size.  While this exhaustive search is not guaranteed to find such a graph, a surprising number of systems can be found with this structure.  
 
-Additionally, it is possible to combine some graphs in a manner that can be used 
+In particular, if we restrict ourselves to simple momenta, in which the energy $2\cos(k)$ is in some simple extension of the rationals, then most simple scattering behaviors can be found.  
+
+Graphs that end up being of particular use are those that allow for encoded unitary transformations.  As such, we want to find graphs in which the attached paths can be partitioned into two sets, corresponding to input paths and output paths.  We then want the scattering matrices at some particular momenta to be block matrices, with the diagonal blocks being zero matrices.
+
+While this puts a large restriction on the graphs, many such graphs have been found.  In particular \missingcite{small graphs scattering stuff} has run an exhaustive search for such matrices up to size \todo{find size}.  Some graphs that will be of particular interest to us are those that serve as a universal set of gates at two particular momenta.  In particular, we will find uses for graphs that at momenta $-\frac{\pi}{4}$ implement a phase gate and implement a basis changing gate, and graphs that at momenta $-\frac{\pi}{2}$ implement a Hadamard gate. 
+
+These graphs are as follows:
+\todo{show these graphs}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Various facts about scattering}
 
-These are facts that will be of use to us.
+While we have the previous constructions that yield graphs with particular behavior, we will also want to understand some simple relations between graphs and their respective scattering matrices.  In particular, understanding what properties are necessary in order to have a given scattering matrix, and understanding the relation between various the scattering matrices of various momenta.
 
-\subsection{Degree-3 graphs are sufficent}
+\subsection{Degree-3 graphs are sufficient}
 
-Replace each vertex by a path of fixed length.  I should turn this into a lemma.
+One of the most simple assumptions that could be made is that certain scattering behaviors require high degree graphs.  In particular, the idea that having many connections might allow for some additional correlations between the outputs on larger graphs.  
 
-\begin{lemma} Let $\widehat{G}$ be a finite graph, and let $M$ be a finite set of rational multiples of $\pi$.  There exists a degree 3 graph $\widehat{H}$ such that the scattering matrix arising from $\widehat{H}$ is equal to the scattering matrix arising from $\widehat{G}$ for each $ki\in M$.
+If we restrict our attention to only a finite number of rational momenta, however, this does not turn out to be the case.  We can show that any graph can be replaced by a degree three graph with an identical scattering behavior at some fixed momenta.  In particular, we show that a single vertex can be replaced by a finite path while still satisfying the eigenvalue equation at some fixed momenta, which determine the length of the path.
+
+As a degree two graphs are the graph joins of cycles and paths, degree three graphs are the smallest graphs to have nontrivial scattering behaviors.  This lemma shows that, in a certain sense, they are also all that are required.
+
+
+\begin{lemma} Let $\widehat{G}$ be a finite graph, and let $M$ be a finite set of rational multiples of $\pi$.  If $v\in V(G)$ is a degree $d$ vertex, there exists a graph $H$ that extends $G$ with the vertex $v$ being replaced by a degree $\lceil \frac{d}{2}\rceil +1$ subgraph such that the scattering matrices at the momenta $k\in M$ are preserved.
+\label{lem:degree_reduction}
 \end{lemma}
 \begin{proof}
-  The graph $\widehat{H}$ is constructed from $\widehat{G}$ by replacing each vertex with large degree by a path of some length related to the momenta in $M$.  If the path is taken to be the correct size, by inspecting the resulting eigenvectors we can show that the scattering amplitudes of the new graph are equal to the scattering graphs of the old graph.
+  The main idea behind this proof is to partition the vertices adjacent to $v$ into two sets, and then replace $v$ by a finite path, with the two sets connected to opposites ends of the finite path.  By choosing the length of the path correctly, we can show that the amplitudes at either end of the path can be taken as the same amplitude of $v$ at each momenta in $M$, so that the eigenvalue equation remains satisfied with the same amplitudes on every vertex other than $v$, keeping the scattering matrices the same.  
   
-  In particular, let $\widehat{G}$ be as described, and let $w\in V(G)$ be any vertex of degree $d>3$.  Additionally, let $L$ be the least integer such that $Lk/\pi \in \ZZ$ for each $k\in M$ (i.e., the least common multiple of the denominators of each $k\in M$).  Let $\widetilde{H}$ be the graph obtained by 
+  In particular, let $v$ be the degree $d$ vertex in $G$, and let $S = \{w\in V(G) : w\sim v\}$.  Additionally, let us arbitrarily partition $S$ into two sets, $S_1$ and $S_2$, such that $\big||S_1|-|S_2|\big| \leq 1$.
   
-  \todo{Finish this proof}
+  As each $k\in M$ is a finite set of rational multiples of $\pi$, there exists some $m'\in \NN$ such that for each $k\in M$, $mk = 2\pi j$ for some $j\in \NN$.  Let us then examine the graph $H$ where $v$ is replaced by a path of length $m+1$ and $S_1$ is attached to one end of the path while $S_2$ is attached to the other end.  Explicitly:
+  \begin{align}
+    V(H) &= V(G)\setminus \{v\} \cup \{(v,j): j\in [m+1]\}\\
+    E(H) &= \big\{ e\in E(G) : v\notin e\big\} \cup \big\{ \{(v,j),(v,j+1)\} : j\in [m]\big\} \cup \nonumber\\
+    &\qquad \big\{ \{s, (v,0)\} : s\in S_1\big\} \cup \big\{ \{s,(v,m)\} : s\in S_2\big\}.
+  \end{align}
+  
+  Now, for any $k\in M$, let $\ket{\phi}$ be an eigenstate of $A(G)$ with eigenvalue $2\cos(k)$.  We will show that there exists an eigenstate $\ket{\psi}$ of $A(H)$ with energy $2\cos(k)$ such that for any $w\in V(G)\setminus \{v\}$, $\braket{w}{\phi} = \braket{w}{\psi}$.  Concretely, for any vertex other than $v$, let us define $\ket{\psi}$ in this manner, and note that $\ket{\psi}$ satisfies the eigenvalue equation with energy $2\cos(k)$ for all vertices other than those in $S$ or those replacing $v$ by assumption.  Additionally, let 
+  \begin{equation}
+    \alpha = \sum_{w\in S_1} \braket{w}{\phi} \qquad \beta = \braket{v}{\phi} \qquad \gamma = \sum_{w\in S_2} \braket{w}{\phi}.
+  \end{equation}
+  We will then defined the amplitude along the path replacing the vertex $v$ as
+  \begin{equation}
+    \braket{(v,j)}{\psi} = \beta \cos(k j) + \frac{\gamma - \beta\cos(k)}{\sin(k)} \sin( k j).
+  \end{equation}
+  Note that $\braket{(v,0)}{\psi} = \braket{(v,m)}{\psi} = \beta = \braket{v}{\phi}$, and thus the eigenvalue equation is satisfied at all vertices in $S$ with energy $2\cos(k)$.  As the eigenstates along a path with energy $2\cos(k)$ are scalar multiples of $\sin(k x)$ and $\cos(k j)$, we can also see that the eigenvalue equation is necessarily satisfied for all $(v,j)$ with $j\neq 0$ and $j\neq m$.
+  
+  If we then examine the eigenvalue equation at $(v,0)$, we can see that
+  \begin{align}
+    \sum_{s\in S_1} \braket{s}{\psi} + \braket{(v,1)}{\psi} &= \alpha + \beta \cos(k) + \frac{\gamma - \beta \cos(k)}{\sin(k)} \sin (k) \\
+      &= \alpha + \gamma \\
+      &= 2 \cos(k) \beta = 2 \cos(k) \braket{(v,0)}{\psi}
+  \end{align}
+  where the third equality follows from the fact that $\ket{\phi}$ satisfies the eigenvalue equation at $v$ with eigenvalue $2\cos(k)$. 
+  
+  Let us finally examine the eigenvalue equation at $(v,m)$, noting that
+  \begin{align}
+    \sum_{s\in S_2} \braket{s}{\psi} + \braket{(v,m-1)}{\psi} &=\gamma + \beta \cos(k (m-1)) + \frac{\gamma - \beta \cos(k)}{\sin(k)} \sin (k(m-1)) \\
+      &= \gamma + \beta \cos(k)   -  \big(\gamma - \beta \cos(k)\big)\\
+      &= 2 \cos(k) \beta = 2 \cos(k) \braket{(v,0)}{\psi}
+  \end{align}
+  where the second equality follows from some trigonometric identities. We can then see that $\ket{\psi}$ satisfies the eigenvalue equation at $(v,m)$ with energy $2\cos(k)$.
+  
+  Putting this together, we have that $\ket{\psi}$ is an eigenvector of $A(H)$ with energy $2\cos(k)$ such that $\ket{\psi}$ and $\ket{\phi}$ are identical on those vertices contained in both $G$ and $H$.  As this result holds for any energy $2\cos(k)$ eigenvector of $A(G)$, and as the two graphs are identical along the semi-inifinite paths, we have that the scattering matrices for these two graphs are identical, and thus the scattering matrices are preserved under this degree reduction procedure.
 \end{proof}
+
+By repeated use of this lemma, we can then see that if we are only interested in the scattering behavior of a graph at particular momenta, then we need only examine degree three graphs.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -775,7 +974,6 @@ Now consider the state obtained by replacing $\sqrt{2}$ with $-\sqrt{2}$:
 This is a $-\sqrt{2}$-eigenvector of $H$, which can be confirmed using the fact that $\ket{c}$ is a $2$-eigenvector of $H^2$. As $\langle{x,2} | H \ket{c} = \langle x,2 \ket{c} = 0$ for all $x\geq 1$, $\langle x,2 \ket{\overline{\sc}_1(-\tfrac{\pi}{4})} = 0$ for all $x\geq 1$. Furthermore the amplitude at vertex $(x_0,1)$ is nonzero, i.e.,  $\langle x_0,1 \ket{\overline{\sc}_1(-\tfrac{\pi}{4})} \neq 0$, and hence $\ket{\overline{\sc}_1(-\tfrac{\pi}{4})}$ has a component orthogonal to the space of confined bound states (which have zero amplitude on both semi-infinite paths).  Hence, there exists a scattering state with eigenvalue $-\sqrt{2}$ with no amplitude on path 2. By \fct{zero_ampl}, the gadget perfectly reflects at momentum $-\frac{3\pi}{4}$.  It follows that no perfect R/T gadget (and hence no perfect momentum switch) exists between these momenta.
 
 This proof technique can also establish non-existence of momentum switches between other pairs of momenta $k$ and $p$.  For example, a slight modification of the above proof shows that no momentum switch exists between $k = -\frac{\pi}{6}$ and $p = -\frac{5\pi}{6}$. 
-
 
 
 \end{document}
