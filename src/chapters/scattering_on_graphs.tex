@@ -218,8 +218,7 @@ we find that
   S(k) = - Q(k)^{-1} Q(-k).
 \end{equation}
 
-Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist for all $k$ in which the matrix operations defining $S(k)$ are well defined for all momenta
-\todo{make this coherent}
+Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist for all $k$ in which the matrix operations defining $S(k)$ are well defined.  In particular, we take the inverse of $2\cos(k)\II - D$, and the inverse of $Q(k)$.  These only possibly have problems when 
 
 %%%%
 \subsubsection{Easier calculation of $S$-matrix}
@@ -309,7 +308,7 @@ As such, we can write we have a nice representation of the scattering matrix and
 \end{equation}
 where $\adj \gamma (z)$ is the adjugate matrix of $\gamma(z)$, then by \eq{gamma_gives_S} we can then see that the entries of $S(z)$ are rational functions of $z$. 
 
-\todo{finish section}
+\todo{this still doesn't explain why we can define the S-matrix this way when things aren't invertable explanation}
 
 %%%%%%%%%%%%%%%
 \subsection{Scattering matrix properties}
@@ -805,7 +804,7 @@ If we restrict our attention to only a finite number of rational momenta, howeve
 As a degree two graphs are the graph joins of cycles and paths, degree three graphs are the smallest graphs to have nontrivial scattering behaviors.  This lemma shows that, in a certain sense, they are also all that are required.
 
 
-\begin{lemma} Let $\widehat{G}$ be a finite graph, and let $M$ be a finite set of rational multiples of $\pi$.  If $v\in V(G)$ is a degree $d$ vertex, there exists a graph $H$ that extends $G$ with the vertex $v$ being replaced by a degree $\lceil \frac{d}{2}\rceil +1$ subgraph such that the scattering matrices at the momenta $k\in M$ are preserved.
+\begin{lemma} Let $\widehat{G}$ be a finite graph, and let $M$ be a finite set of rational multiples of $\pi$.  If $v\in V(G)$ is a degree $d$ vertex, there exists a graph $H$ that extends $G$ with the vertex $v$ being replaced by a degree-$(\lceil \frac{d}{2}\rceil +1)$ subgraph such that the scattering matrices at the momenta $k\in M$ are preserved.
 \label{lem:degree_reduction}
 \end{lemma}
 \begin{proof}

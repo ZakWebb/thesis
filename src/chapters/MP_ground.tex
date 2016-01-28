@@ -12,19 +12,71 @@
 \begin{document}
 
 \chapter{Ground energy of multi-particle quantum walk}
+\label{chap:MP_ground}
 
 \section{Introduction}
-\subsection{Containment in QMA}
+
+With our proof that the ground state problem for a single-particle quantum walk is \QMA-complete, we would now like to examine the corresponding problem for the multi-particle quantum walk.  The similarities between the two systems make us expect that very similar results will hold for the multi-particle case, but we will again need to examine the problem in a lot of detail.
+
+In particular, the \QMA-completeness for the single particle walk was relatively straightforward, in that there is really only one particle to deal with.  Because of this, we understand the dynamics and can exactly analyze the system on which things interact, leading to exact solutions for the energies of the resulting Hamiltonian.  With the MPQW, a full analysis is currently beyond our knowledge, and our universality construction relied on a reduction to the cases with at most two interacting particles.  In order to show that finding the ground energy of a MPQW is \QMA-complete using our techniques, we'd need to again reduce to the case of a small number of particles.
+
+To make this reduction, we will show that the problem is \QMA-hard when restricted to the problem where the interaction term adds (almost) no energy to the ground state, so that the ground state is contained within the span of single-particle states that don't overlap.  With this restriction, we will still have correlations between many particles, but we will be able to analyze the correlations and determine the corresponding ground energy.
+
+\section{MPQW Hamiltonian ground-energy problem}
+
+In order to make things precise, we will fix a particular finite-range interaction, and show that with this fixed interaction, the resulting question is \QMA-complete to solve.  In particular let $\mathcal{U}$ be an interaction with finite support and no negative coefficients.  For a particular graph $G$, we can then define a Hamiltonian on such a graph as
+\todo{find a correct way to define $\mathcal{U}$}
+\begin{equation}
+H_{f,G} = \sum_{(i,j)\in E(G)} a_ia_j + a_j a_i + \sum_{i,j\in V(G)} U_{d(i,j)}(n_i,n_j) = H_{G,\text{move}} + H_{G,\text{int}}.
+\end{equation}
+Note that because of the positivity restrictions placed on $\mathcal{U}$, we have that $H_{G,\text{int}}$ is positive semi-definite, and thus the ground energy of $H_{f,G}$ is at least the ground energy of $H_{G,\text{move}}$.
+
+With this particular interaction, we can then construct the corresponding problem. 
+
+Note that these Hamiltonians actually act on an infinite dimensional Hilbert space, in that the number of particles is unbounded.  In order to reduce the complexity of these problems to a reasonable amount, we restrict our attention to a particular number of particles.  Once again, as each term in the Hamiltonian preserves the number of particles, we have that $H_{\mathcal{U},G}$ decomposes into blocks with a particular particle number, and we represent these blocks as $\overline{H}_{\mathcal{U},G}^N$.  
+
+\begin{problem}[$\mathcal{U}$-interaction MPQW Hamiltonion]
+  Given as input a $K$-vertex graph $G$, a number of particles $N$, a real number $c$, and a precision parameter $\epsilon = 1/T$, where the positive integers $N$ and $T$ are given in unary, and the graph $G$ is given as its adjacency matrix (a $K\times K$ symmetric $0$-$1$ matrix), the $\mathcal{U}$-interaction MPQW Hamiltonian problem is to determine whether the smallest eigenvalue of $\overline{H}_{\mathcal{U},G}^N$ is at most $c$ or is at least $c+\epsilon$, with a promise that one of these two cases hold.
+\end{problem}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{MPQW Hamiltonian is contained in \QMA}
+\label{sec:containment_in_QMA}
+
+To prove that $\mathcal{U}$-interaction MPQW Hamiltonian problem is contained in \QMA, we provide a verification algorithm satisfying the requirements of \defn{QMA}. In the Definition this algorithm is specified by a circuit involving only one measurement of the output qubit at the end of the computation. The procedure we describe below, which contains intermediate measurements in the computational basis, can be converted into a verification circuit of the desired form by standard techniques.
+
+We are given an instance specified by $G$, $N$, $c$, and $\epsilon$. We are also given an input state $|\phi\rangle$ of $n_{\text{input}}$ qubits, where $n_{\text{input}}=\lceil \log_{2}D_{N}\rceil $ and $D_{N}$ is the dimension of $\mathcal{Z}_{N}(G)$ as given in equation \eq{DN}. Note, using the inequality $\binom{a}{b} \leq a^{b}$ in equation \eq{DN}, that $n_{\text{input}}=\mathcal{O}(K\log\left(N+K\right))$, where $K=|V|$ is the number of vertices in the graph $G$. We embed $\mathcal{Z}_{N}(G)$ into the space of $n_{\text{input}}$ qubits straightforwardly as the subspace spanned by the first $D_{N}$ standard basis vectors (with lexicographic ordering, say). The first step of the verification procedure is to measure the projector onto this space $\mathcal{Z}_{N}(G)$. If the measurement outcome is $1$ then the resulting state $|\phi^{\prime}\rangle$ is in $\mathcal{Z}_{N}(G)$ and we continue; otherwise we reject.
+
+In the second step of the verification procedure, the goal is to measure $\bar{H}_{G}^{N}$ in the state $|\phi^{\prime}\rangle$. The Hamiltonian $\bar{H}_{G}^{N}$ is sparse and efficiently row-computable, with norm
+\[
+\left\Vert \bar{H}_{G}^{N}\right\Vert \leq\left\Vert H_{G}^{N}\right\Vert \leq N\left\Vert A(G)\right\Vert +\left\Vert \sum_{k\in V}\hat{n}_{k}\left(\hat{n}_{k}-1\right)\right\Vert \leq NK+N^{2}.
+\]
+We use phase estimation (see for example \cite{CEMM98}) to estimate the energy of $|\phi^{\prime}\rangle$, using sparse Hamiltonian simulation \cite{AT03} to approximate evolution according to $\bar{H}_{G}^{N}$. We choose the parameters of the phase estimation so that, with probability at least $\frac{2}{3}$, it produces an approximation $E$ of the energy with error at most $\frac{\epsilon}{4}$. This can be done in time $\poly(N,K,\frac{1}{\epsilon})$. If $E\leq c+\frac{\epsilon}{2}$ then we accept; otherwise we reject.
+
+We now show that this verification procedure satisfies the completeness and soundness requirements of \defn{QMA}. For a yes instance, an eigenvector of $\bar{H}_{G}^{N}$ with eigenvalue $e\leq c$ is accepted by this procedure as long as the energy $E$ computed in the phase estimation step has the desired precision. To see this, note that we measure $\left|E-e\right|\leq\frac{\epsilon}{4}$, and hence $E\leq c+\frac{\epsilon}{4}$, with probability at least $\frac{2}{3}$.  For a no instance, write $|\phi^{\prime}\rangle\in\mathcal{Z}_{N}(G)$ for a state obtained after passing the first step. The value $E$ computed by the subsequent phase estimation step satisfies $E\geq c+\frac{3\epsilon}{4}$ with probability at least $\frac{2}{3}$, in which case the state is rejected. From this we see that the probability of accepting a no instance is at most $\frac{1}{3}$.
+
+
+
 \subsection{Reduction to frustration-free case}
 
+While showing that this problem is contained in \QMA is relatively easy, the reduction to 
 
-\section{Constructing the underlying graph for QMA-hardness}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Constructing the underlying graph for \QMA-hardness}
 
+At this point, we will want to explicitly construct the graph for which our \QMA-hardness result will hold.  As such, we will at this point restrict our attention to a particular interaction, $\mathcal{U}$.  While the basic idea behind these graphs will not change, the exact graph will depend on both the smallest distance that the interactions occur, as well as the largest distance.  We will want to construct a foundational graph that does not have a two-particle ground state, and also we will want to ensure that our connections between these building blocks will not have multiple particles interacting except on specially chosen building blocks.
+
+As such, let us assume that the minimum distance that the interaction $\mathcal{U}$ has non-zero interactions is $\dmin$, while the maximum distance is $\dmax$.  Our graph will only depend on these two quantities.
+
+%%%%%%%%%%%%%%%
 \subsection{Gate graphs}
 
-In this Section we define a class of graphs (\emph{gate graphs}) and a diagrammatic notation for them (\emph{gate diagrams}). We also discuss the Bose-Hubbard model on these graphs.
+In this subsection we define a class of graphs (\emph{gate graphs}) and a diagrammatic notation for them (\emph{gate diagrams}) that will allow us to construct the overall graph. We will also discuss the MPQW Hamiltonian acting on these graphs, with a particular emphasis on the low-energy states.
 
-Every gate graph is constructed using a specific $128$-vertex graph $g_{0}$ as a building block. This graph is shown in \fig{g_0} and discussed in \sec{Encoding-a-Computation}. In \sec{Gate-graphs-and} we define gate graphs and gate diagrams. A gate graph is obtained by adding edges and self-loops (in a prescribed way) to a collection of disjoint copies of $g_{0}$.
+Every gate graph is constructed using a specific, finite-sized graph $g_{0}$ as a building block. This graph is shown in \fig{g_0} (for graphs with $\dmin <= 3$ and discussed in \sec{Encoding-a-Computation}. In \sec{Gate-graphs-and} we define gate graphs and gate diagrams. A gate graph is obtained by adding edges and self-loops (in a prescribed way) to a collection of disjoint copies of $g_{0}$.
+
+\todo{Rewrite this intro}
 
 In \sec{FF_State} we discuss the ground states of the Bose-Hubbard model on gate graphs. For any gate graph $G$, the smallest eigenvalue $\mu(G)$ of the adjacency matrix $A(G)$ satisfies $\mu(G)\geq-1-3\sqrt{2}$. It is convenient to define the constant
 \begin{equation}
@@ -36,6 +88,8 @@ In \sec{Occupancy-constraints} we consider a class of subspaces that, like $\mat
 
 
 \subsubsection{The graph $g_0$}
+
+The graph $g_{0}$ shown in \fig{g_0} is constructed using the method of \chap{SP_ground}, with the single qubit circuit with 
 
 The graph $g_{0}$ shown in \fig{g_0} is closely related to a single-qubit circuit $\mathcal{C}_{0}$ with eight gates $U_{j}$ for $j\in[8]$, where 
 \begin{align*}

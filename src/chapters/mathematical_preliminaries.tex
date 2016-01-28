@@ -15,11 +15,89 @@
 
 \section{Complexity Theory}
 
-Definition of QMA, languages, etcetera.
+While this thesis is for the physics department, many of the results require some basic quantum complexity theory.  In particular, the computer science idea for classification of computational problems in terms of the requisite resources gives a particularly nice interpretation of why certain physical systems don't equilbriate, and give a simple explanation on why certain systems do not have a known closed form solution.
+
+This is a simple introduction, with a focus designed to make the rest of this thesis comprehensible to those without a background in complexity theory.  For a more formal introduction to Complexity Theory, I would recommend \cite{SipserToC}, with a more in depth review found in \cite{ABCC}.  For a focus on complexity as found in quantum information, I would recommend \cite{Wat09}.
+
+\subsection{Languages and promise problems}
+
+The main foundation of computational complexity is in the classification of languages based on the requisite number of resources to determine whether some string is in a language.  Unfortunately, this requires the definition of many of these terms.  
+
+In particular, what exactly is a string?  Any person who has taken a basic programming class knows that a string is simply a word, but the mathematical definition is slightly more complicated.  In particular, we first need to define an alphabet, and then define a string over a particular alphabet.  
+\begin{definition}[Alphabet] An alphabet is a finite collection of symbols.
+\end{definition}
+Usually, an arbitrary alphabet is denoted by $\Gamma$, while the binary alphabet is denoted by $\Sigma = \{0,1\}$.  Usually, the particular alphabet has no impact on a particular complexity result, as any finite alphabet can be represented via the binary alphabet with overhead that is logarithmic in the size of the alphabet (basically, just use a binary encoding of the new alphabet).  
+
+With this definition of an alphabet, a string is simply a finite sequence of elements from the alphabet.  In particular, we define $\Gamma^n$ to be all length $n$ sequences of elements from $\Gamma$, and then define
+\begin{equation}
+  \Gamma^* = \bigcup_{n=0}^\infty \Gamma^n.
+\end{equation}
+With this $\Gamma^*$ is the set of all strings over $\Gamma$.
+
+With this, computational complexity then deals with understanding subsets of these strings.  In particular, let $\Pi_{\text{yes}}$ be a subset of $\Gamma^*$.  The language problem related to $\Pi_{\text{yes}}$ is then to understand what resources are necessary to determine whether a given $x\in \Gamma^*$ is also contained in $\Pi_{\text{yes}}$.  This can be trivial, such as for the case of $\Pi_{\text{yes}} = \Gamma^*$, or it can be impossible, such as in the case of the famous Halting Problem.
+
+\todo{Find halting problem stuff}
+
+Related to these language problems are promise problems, in which there are two subsets of $\Gamma^*$, namely $\Pi_{\text{yes}}$ and $\Pi_{\text{no}}$, such that $\Pi_{\text{yes}} \cap \Pi_{\text{no}} = \emptyset$.  We are then \emph{promised} that the $x\in \Gamma^*$ that we need to sort is contained either $\Pi_{\text{yes}} \cup \Pi_{\text{no}}$.  This generally opens up some more interesting problems, as without this restriction certain complexity classes do not make sense.
+
+\subsection{Turing machines}
+
+Up to this point, we have only discussed various classifications of strings, and stated that we will want to understand the various resources required to sort a given string into one of two different strings, but we have not explained how these resources are defined.  There are various ways to do this, depending on the various computational model one is interested in, but at the highest level, we really only need to define a Turing machine.
+
+These are a mathematical construction, that allow for the explicit definition of algorithms.  In particular, they consist of a ``finite-state machine'' and an infinite tape.  The finite-state machine is essentially just a small number of internal states, and the infinite state represents the ability to write down and then read an unbounded amount of information.  The intuitive idea behind this construction is that the finite-state machine encodes some finite algorithm (which does not depend on the input to the algorithm), while the infinite tape holds the input to the problem, along with a workspace so that the Turing machine can keep track of various pieces of information.
+
+More concretely, 
+
+\todo{Get turing Machine stuff}
+
+\subsubsection{Reductions}
+
+Note that up to this point, we have not noticed any relations between different languages.  
+
+
+\subsection{Useful complexity classes}
+
+Once we have an understanding of what defines a relation, and how these are related, we can attempt to classify those languages that require different resources in order to solve.
+
+\subsubsection{Classical complexity classes}
+
+  Perhaps the most well known question in computational complexity is the \PP vs \NP problem.  However, what exactly are these classes.  At a most basic level, one can think of \PP as those classification problems that have an efficient classical solution, while \NP are those that can be checked in an efficient manner.  
+
+
+\begin{definition}[\PP]
+  A promise problem ...
+\end{definition}
+
+\begin{definition}[\NP]
+  A promise problem ...
+\end{definition}
+
+
+\subsubsection{Bounded-Error Quantum Polynomial Time}
+
+Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consists of those problems that can be solved by a quantum computer efficiently.
+
+
+\begin{definition}[\BQP] A promise problem $\Pi = (\Pi_{\text{yes}},\Pi_{\text{no}})$ if there exist polynomials 
+\end{definition}
+
+\subsubsection{Quantum Merlin-Arthur}
+
+In addition to having an understanding of when a quantum computer can solve a particular problem, we will also want an understanding of those problems that most likely cannot be 
+
+
+\begin{definition}[\QMA]  A promise problem $\Pi = (\Pi_{\text{yes}},\Pi_{\text{no}})$ if there ..
+
+\end{definition}
+
 
 \section{Various Mathematical Lemmas}
 
+In addition to these various complexity results, it will also be useful to have a list of certain mathematical lemmas that will be used several times in the thesis.  These lemmas might also be of independent interest.
+
 \subsection{Truncation Lemma}
+
+Perhaps the first such lemma we called the truncation lemma.  The idea behind this lemma is to approximate the evolution of a state under some particular Hamiltonian with another, where the differences between the two Hamiltonians only occur far from the support of the given state.  One would expect that since the state must evolve ``far'' in order to reach the differs between the two Hamiltonians, the evolution between the two will be close.  This lemma makes this intuition precise.
 
 \begin{lemma}[Truncation Lemma]
 \label{lem:trunc}
@@ -43,6 +121,9 @@ Then, for all $0\leq t \leq T$,
         \left(\delta + 2^{-N_0}(1+\delta)\right).
 \]
 \end{lemma}
+
+This lemma actually combines two different methods.  The first assumes that the 
+
 
 \begin{proposition}
 \label{pro:trunc_prop}Let $H$ be a Hamiltonian acting on a Hilbert

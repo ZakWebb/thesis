@@ -12,29 +12,85 @@
 \begin{document}
 
 \chapter{Ground energy of quantum walk}
+\label{chap:SP_ground}
 
 To get some flavor for \QMA-completeness results.
 
-\section{Encoding computations as states}
+Now that we have shown the universality of these Quantum Walk Hamiltonians via time evolution, we might want to ask related computational questions about these systems.  In particular, once the computational universality of a system is shown, people often ask about the related ground energy problem.  The reason for this is that many of these systems that allow for universal computation via time evolution also allow for the encoding of a computation in the ground space, which along with some energy penalties, allow one to show that the ground energy problem is \QMA-hard. 
 
-\subsection{History states}
+The point of this chapter is to give a decent introduction to the flavor of \QMA-hardness proofs, as well as providing a \QMA-complete problem that might be more accessible to classical computer scientists.
 
-\section{Determining ground energy of a sparse adjacency matrix is QMA-complete}
+%======================================================================
+\section{The ground-energy problem}
 
-\subsection{Kitaev Hamiltonian}
+Essentially, we know that the single-particle quantum walk is governed by the adjacency matrix of the underlying graph.  In particular, the Hamiltonian is exactly equal to the adjacency matrix, and thus asking questions about the ground energy of a single-particle quantum walk is simply asking a question about the smallest eigenvalue of a particular adjacency matrix.
 
+However, the Hilbert space on which the quantum walk acts is necessarily exponential in size, with efficiently computable matrix entries.  As such, this is a question about very specific types of matrices.
+
+\begin{problem}[$d$-sparse graph eigenvalue problem] Given a $d$-sparse, row-computable graph $G$, and two constants $a< b$, is the smallest eigenvalue of $A(G)$ below $a$ or above $b$, with the guarantee that one of these cases occur.
+\end{problem}
+
+While this problem is definitely inspired from quantum walks, it actually makes on reference to quantum mechanics.
+
+\subsection{Containment in \QMA}
+
+The proof that this problem is in \QMA follows many other such Hamiltonian problems.  In particular, this proof strategy works for any system in which we can evolve according to a particular Hamiltonian.
+
+The main idea is to be given a particular state, and use phase estimation to determine the energy of the given state, up to some error.  In the case that the smallest eigenvalue of the system is below $a$, the prover can provide the corresponding eigenvector encoded in a quantum state.  The phase estimation algorithm will then (with high probability) find this eigenvalue, and the system will accept.  If the smallest eigenvalue is above $b$, then no matter what state the prover provides, the phase estimation algorithm will project onto one of the eigenstates and determine the corresponding eigenvalue, which will necessarily be above $b$.
+
+More concretely, we have 
+
+
+
+%======================================================================
+\section{\QMA-hardness}
+
+The main way that this works is that we will use the well known Kitaev Hamiltonian, with some particular changes so that we get taken to a Hamiltonian of a particular form.  Once we have that form, we can easily see that the result we want.
+
+%%%%%%%%%%%%%%%%%%%%%
+\subsection{Kitaev Hamiltonian}\label{sec:Kitaev_Hamiltonian}
+
+With the definition of the class \QMA, the requirement is that for each input there exists some quantum circuit and some particular input state that the circuit either accepts or rejects.  When attempting to prove that a particular Hamiltonian has a similar computational power, we need to construct a ``circuit-to-Hamiltionian'' map.  The predominant (and really only) such map is the so-called Kitaev-Hamiltonian.
+
+In this mapping, we attempt to encode the computation into the ground space of the Hamiltonian, in a similar manner to how the proof that 3-SAT is NP-Hard encodes the entire computation of a nondeterministic Turing Machine.
+\todo{NP-hardness of 3-Sat reference}
+However, we run into the problem of locality, in that it is hard to enforce that the states corresponding to neighboring time steps are really reachable by a single particular unitary.  
+
+Kitaev worked around this problem by having both a clock and a state register, with the computation encoded as an entangled state between these two registers.  In this way, by having a projection into those states that evolve correctly for a particular time step, we can have a local check for the correctness of evolution.
+
+In particular, if a given circuit $C$ acts on $\CC^{2^m}$ and can be written as $C = U_{T}U_{T-1} \cdots U_1$, then the Kitaev Hamiltonian $H_C$ acts on the Hilbert space $\CC^{2^m}\otimes \CC^{T+1}$, and can be written as
+\begin{equation}
+  H_C = \sum_{t=0}^{T-1} \big(\II_{\CC^{2^m}}\otimes \ket{t} - U_{t+1} \otimes \ket{t+1}\big) \big(\II_{\CC^{2^m}}\otimes \bra{t} - U_{t+1}^\dag \otimes \bra{t+1}\big) = \sum_{t=0}^{T-1} H_t
+\end{equation}
+Note that each term $H_t$ is a projector off those states of the form
+\begin{equation}
+  \ket{\psi} \otimes \ket{t} + U_{t+1} \ket{\psi} \otimes \ket{t+1}.
+\end{equation}
+Hence, we have that the ground state of $H_C$ corresponds to the history states:
+\begin{equation}
+  \ket{\psi_\text{hist}} = \sum_{t=0}^T U_t U_{t-1} \cdots U_1 \ket{\psi} \otimes \ket{t}.
+\end{equation}
+These states encode the computation, as for a given initial state $\ket{\psi}$, the projection onto the time register gives the state of the computation at time $t$.  Note that the energy gap for this Hamiltonian is exactly $1 - \cos(\pi/T)$, as the Hamiltonian is unitarily equivalent to a quantum walk on a line of length $T$.
+
+With this mapping corresponding to a particular circuit, we can then force the initial state to have a particular form by adding in projectors tensored with a projection onto the $\ket{t=0}$ state, with a similar projection for the requisite form of the final state.  Putting everything together we then have a $\log$-local Hamiltonian that will have a polynomial gap depending on whether the initial circuit accepted or rejected.
+
+This is one of the simple ways in which a Hamiltonian is shown to be \QMA-hard.
+
+%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Transformation to Adjacency Matrix}
 
-We suppose $\mathcal{C}_{x}$ implements a unitary 
+While the above prescription works well for the conversion to local-Hamiltonians in the general case, in the situation we are interested in we want all of the non-zero matrix elements to be the same value.  As the matrix elements of $H_C$ are related to the matrix values of the unitaries involved in the circuit $C$, we thus want to force the matrix values of $C$ to all be of the same form.
+
+To enforce this, we suppose $\mathcal{C}_{x}$ implements a unitary 
 \begin{equation}
 U_{\mathcal{C}_{x}}=U_{M}\ldots U_{2}U_{1}\label{eq:single_qubit_circuit}
 \end{equation}
- where each $U_{i}$ is from the universal gate set 
-\[
+ where each $U_{i}$ is from the gate set 
+\begin{equation}
 \mathcal{G}=\{H,HT,\left(HT\right)^{\dagger},\left(H\otimes\II\right)\CNOT\}
-\]
+\end{equation}
 with 
-\[
+\begin{equation}
 H=\frac{1}{\sqrt{2}}\begin{pmatrix}
 1 & 1\\
 1 & -1
@@ -47,25 +103,33 @@ H=\frac{1}{\sqrt{2}}\begin{pmatrix}
 0 & 0 & 0 & 1\\
 0 & 0 & 1 & 0
 \end{pmatrix}.
-\]
-The verification circuit $\mathcal{C}_{x}$ has an $n_{\text{input}}$-qubit input register and $n-n_{\text{input}}$ ancilla qubits initialized to $|0\rangle$ at the beginning of the computation. One of these $n$ qubits serves as an output qubit.
+\end{equation}
+Note that this gate set is universal, as we can easily simulate the gate set $\{H, T, \CNOT\}$ with gates from $\mathcal{G}$ since $H^2 = \II$ and we can thus cancel the $H$ terms before the interesting portion of the gates.  Further, each non-zero matrix element of these unitaries has norm $2^{-1/2}$, as we wanted.
 
-It will be convenient to consider 
-\[
+However, when we look at one of the local terms in the Hamiltonian, we find that not all of the matrix elements have the same norm.  In particular, we find that
+\begin{align}
+  H_t &= \big(\II_{\CC^{2^m}} \otimes \ket{t} - U_{t+1}\otimes\ket{t+1} \big) \big(\II_{\CC^{2^m}} \otimes \bra{t} - U_{t+1}^\dag \otimes \bra{t+1}\big)\\
+         &= \II_{\CC^{2^m}} \otimes \big(\ketbra{t}{t} + \ketbra{t+1}{t+1}\big) - \big( U_{t+1} \otimes \ketbra{t+1}{t} + U_{t+1}^\dag \otimes \ketbra{t}{t+1}\big). \label{eq:circuit_to_Hamiltonian_term}
+\end{align}
+
+While each off-diagonal term is either zero or has norm $2^{-1/2}$ in \eq{circuit_to_Hamiltonian_term}, the diagonal terms have norm 1.  When each term is summed, we almost have that they sum to a term proportional to the identity, which we can deal with, but unfortunately the boundary terms (with $t=0$ or $t=T$) are only involved in one unitary.  However, this problem can be avoided by having circular time, in which we both compute and uncompute the comptutation.  With this, each timestep is involved in exactly two local terms, and thus the diagonal term is proportional to the identity.
+
+With this, it will be convenient to consider 
+\begin{equation}
   U_{\mathcal{C}_{x}}^{\dagger}U_{\mathcal{C}_{x}}=W_{2M}\ldots W_{2}W_{1}
-\]
+\end{equation}
 where
-\[
+\begin{equation}
 W_{t}=\begin{cases}
 U_{t} & 1\leq t\leq M\\
 U_{2M+1-t}^{\dagger} & M+1 \le t \le 2M.
 \end{cases}
-\]
-As in \sec{Encoding-a-Computation} we start with a version of the Feynman-Kitaev Hamiltonian \cite{Fey85,KSV02}
-\begin{equation}
-H_{x}=-\sqrt{2}\sum_{t=1}^{2M}\left(W_{t}^{\dagger}\otimes|t\rangle\langle t+1|+W_{t}\otimes|t+1\rangle\langle t|\right)\label{eq:H_x}
 \end{equation}
-acting on the Hilbert space $\mathcal{H}_{\text{comp}} \otimes \mathcal{H}_{\text{clock}}$ where $\mathcal{H}_{\text{comp}} = \left(\CC^{2}\right)^{\otimes n}$ is an $n$-qubit computational register and $\mathcal{H}_{\text{clock}}=\CC^{2M}$ is a $2M$-level register with periodic boundary conditions (i.e., we let $|2M+1\rangle=|1\rangle$). Note that 
+As in \sec{Kitaev_Hamiltonian} we start with a version of the Feynman-Kitaev Hamiltonian \cite{Fey85,KSV02}
+\begin{equation}
+H_{C}=-\sqrt{2}\sum_{t=1}^{2M}\left(W_{t}^{\dagger}\otimes|t\rangle\langle t+1|+W_{t}\otimes|t+1\rangle\langle t|\right)\label{eq:H_x}
+\end{equation}
+acting on the Hilbert space $\mathcal{H}_{\text{comp}} \otimes \mathcal{H}_{\text{clock}}$ where $\mathcal{H}_{\text{comp}} = \left(\CC^{2}\right)^{\otimes m}$ is an $m$-qubit computational register and $\mathcal{H}_{\text{clock}}=\CC^{2M}$ is a $2M$-level register with periodic boundary conditions (i.e., we let $|2M+1\rangle=|1\rangle$). Note that 
 \begin{equation}
 V^{\dagger}H_{x}V=-\sqrt{2}\sum_{t=1}^{2M}\left(\II\otimes|t\rangle\langle t+1|+\II\otimes|t+1\rangle\langle t|\right)\label{eq:V_H_V}
 \end{equation}
@@ -228,5 +292,14 @@ Now applying \lem{npl} using this bound, the fact that $\left\Vert H_{B}\right\V
 \gamma(A_{x}-e_{1}\cdot\II)\geq\frac{\frac{1}{60M^{4}n}}{\frac{1}{20M^{3}n}+\frac{1}{3M}+1}\geq\frac{1}{120M^{4}n}.
 \]
 Since $H_{B}|_{S_{A}}$ has an empty nullspace, $A_{x}-e_{1}\cdot\II$ has an empty nullspace, and this is a lower bound on its smallest eigenvalue.
+
+%=============================================================================
+\section{Extensions and Discussion}
+
+While this result is interesting in its own right, as it shows that finding the ground energy of a sparse, row-computable matrix is $\QMA$-complete, perhaps the most interesting result is that nothing particularly quantum is involved in the definition of the problem.  In particular, the only condition we have on the matrix is that it is sparse, and row-computable.  This condition might allow for a more natural understanding for more classically-minded computer scientists, as a \QMA-complete problem could be stated without having to delve into any quantum computing.
+
+As an additional problem, since the circuit-to-Hamiltonian map creates a 7-regular, simple graph, one might wonder if the removal of these conditions are necessary when the boundary terms are added.  This is obviously going to be necessary, as otherwise we would have that determining the lowest eigenvalue of a Laplacian is \QMA-complete, but it is a well known fact that the smallest eigenvalue of a Laplacian is zero.  
+
+\todo{Write more}
 
 \end{document}
