@@ -12,13 +12,58 @@
 \begin{document}
 
 \chapter{Mathematical Preliminaries}
+\label{chap:mathematical_preliminaries}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mathematical notation}
+\label{sec:mathematical_notation}
+
+\todo{fill this in}
+
+$[k] = \{1,\cdots, k\}$.
+
+$M^{(w)} = \II^{\otimes w-1} \otimes M \otimes \II^{N- w}$
+
+$A(G)$ is the adjacency matrix of $G$.  $V(G)$ are the vertices of $G$, and $E(G)$ is the edge set of $G$.
+
+$\mu(A)$ is the smallest non-zero eigenvalue of the positive semi-definite matrix $A$
+
+$A\big|_\mathcal{S}$ is the restriction of $A$ to the subspace $\mathcal{S}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quantum information}
+\label{sec:quantum_information}
+
+
+I should at least state a couple of things.
+
+Hadamard gate,
+
+Circuit
+
+universality,
+
+etc.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Indistinguishable particles}
+\label{sec:indistinguishable_particles}
+
+I have a lot of things about indistinguishable particles.  I should really only talk about it in one place.  I think this would be a great place.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Complexity Theory}
+\label{sec:completity_theory}
+
 
 While this thesis is for the physics department, many of the results require some basic quantum complexity theory.  In particular, the computer science idea for classification of computational problems in terms of the requisite resources gives a particularly nice interpretation of why certain physical systems don't equilbriate, and give a simple explanation on why certain systems do not have a known closed form solution.
 
 This is a simple introduction, with a focus designed to make the rest of this thesis comprehensible to those without a background in complexity theory.  For a more formal introduction to Complexity Theory, I would recommend \cite{SipserToC}, with a more in depth review found in \cite{ABCC}.  For a focus on complexity as found in quantum information, I would recommend \cite{Wat09}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Languages and promise problems}
 
 The main foundation of computational complexity is in the classification of languages based on the requisite number of resources to determine whether some string is in a language.  Unfortunately, this requires the definition of many of these terms.  
@@ -40,6 +85,7 @@ With this, computational complexity then deals with understanding subsets of the
 
 Related to these language problems are promise problems, in which there are two subsets of $\Gamma^*$, namely $\Pi_{\text{yes}}$ and $\Pi_{\text{no}}$, such that $\Pi_{\text{yes}} \cap \Pi_{\text{no}} = \emptyset$.  We are then \emph{promised} that the $x\in \Gamma^*$ that we need to sort is contained either $\Pi_{\text{yes}} \cup \Pi_{\text{no}}$.  This generally opens up some more interesting problems, as without this restriction certain complexity classes do not make sense.
 
+%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Turing machines}
 
 Up to this point, we have only discussed various classifications of strings, and stated that we will want to understand the various resources required to sort a given string into one of two different strings, but we have not explained how these resources are defined.  There are various ways to do this, depending on the various computational model one is interested in, but at the highest level, we really only need to define a Turing machine.
@@ -50,15 +96,17 @@ More concretely,
 
 \todo{Get turing Machine stuff}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Reductions}
 
 Note that up to this point, we have not noticed any relations between different languages.  
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Useful complexity classes}
 
 Once we have an understanding of what defines a relation, and how these are related, we can attempt to classify those languages that require different resources in order to solve.
 
+%%%
 \subsubsection{Classical complexity classes}
 
   Perhaps the most well known question in computational complexity is the \PP vs \NP problem.  However, what exactly are these classes.  At a most basic level, one can think of \PP as those classification problems that have an efficient classical solution, while \NP are those that can be checked in an efficient manner.  
@@ -72,7 +120,7 @@ Once we have an understanding of what defines a relation, and how these are rela
   A promise problem ...
 \end{definition}
 
-
+%%%
 \subsubsection{Bounded-Error Quantum Polynomial Time}
 
 Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consists of those problems that can be solved by a quantum computer efficiently.
@@ -81,6 +129,7 @@ Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consis
 \begin{definition}[\BQP] A promise problem $\Pi = (\Pi_{\text{yes}},\Pi_{\text{no}})$ if there exist polynomials 
 \end{definition}
 
+%%%
 \subsubsection{Quantum Merlin-Arthur}
 
 In addition to having an understanding of when a quantum computer can solve a particular problem, we will also want an understanding of those problems that most likely cannot be 
@@ -90,11 +139,11 @@ In addition to having an understanding of when a quantum computer can solve a pa
 
 \end{definition}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Various Mathematical Lemmas}
 
 In addition to these various complexity results, it will also be useful to have a list of certain mathematical lemmas that will be used several times in the thesis.  These lemmas might also be of independent interest.
-
+%%%%%%%%%%%%%%%%%
 \subsection{Truncation Lemma}
 
 Perhaps the first such lemma we called the truncation lemma.  The idea behind this lemma is to approximate the evolution of a state under some particular Hamiltonian with another, where the differences between the two Hamiltonians only occur far from the support of the given state.  One would expect that since the state must evolve ``far'' in order to reach the differs between the two Hamiltonians, the evolution between the two will be close.  This lemma makes this intuition precise.
@@ -213,9 +262,12 @@ The choice $\eta=2$ gives the stated conclusion.
 
 Note that it would be slightly better to take a smaller value of $\eta$.  However, this does not significantly improve the final result; the above bound is simpler and sufficient for our purposes.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Nullspace Projection Lemma}
 
+When we discuss the ground spaces and ground energies of various Hamiltonians, we will often want to know what happens to the ground spaces and ground energies when two such Hamiltonians are added together (such as adding penalties enforcing particular initial states).  As such, the Nullspace Projection Lemma exactly discusses how such systems add together.  As far as I am aware this lemma was initially used (implicitly) by Mizel et. al.  
+\todo{find correct reference}
+We then used this in our proof of the \QMA-completeness for the Bose-Hubbard model.  We then found an additional place that used a similar lemma, with slightly better bounds.  While the improvement is minor, here is a proof of the improved bound (and note that the improvement was left as a proof for the reader in the newer result).
 \begin{lemma}[Nullspace Projection Lemma]
 Let $H_A$ and $H_B$ be positive semi-definite matrices.  Suppose that the nullspace, $S$, of $H_A$ is nonempty, and that 
 \begin{equation}

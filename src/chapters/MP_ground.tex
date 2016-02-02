@@ -14,7 +14,9 @@
 \chapter{Ground energy of multi-particle quantum walk}
 \label{chap:MP_ground}
 
-\section{Introduction}
+
+%\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 With our proof that the ground state problem for a single-particle quantum walk is \QMA-complete, we would now like to examine the corresponding problem for the multi-particle quantum walk.  The similarities between the two systems make us expect that very similar results will hold for the multi-particle case, but we will again need to examine the problem in a lot of detail.
 
@@ -22,6 +24,7 @@ In particular, the \QMA-completeness for the single particle walk was relatively
 
 To make this reduction, we will show that the problem is \QMA-hard when restricted to the problem where the interaction term adds (almost) no energy to the ground state, so that the ground state is contained within the span of single-particle states that don't overlap.  With this restriction, we will still have correlations between many particles, but we will be able to analyze the correlations and determine the corresponding ground energy.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{MPQW Hamiltonian ground-energy problem}
 
 In order to make things precise, we will fix a particular finite-range interaction, and show that with this fixed interaction, the resulting question is \QMA-complete to solve.  In particular let $\mathcal{U}$ be an interaction with finite support and no negative coefficients.  For a particular graph $G$, we can then define a Hamiltonian on such a graph as
@@ -58,9 +61,41 @@ We now show that this verification procedure satisfies the completeness and soun
 
 
 
-\subsection{Reduction to frustration-free case}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Frustration-free}
 
-While showing that this problem is contained in \QMA is relatively easy, the reduction to 
+
+While showing that this problem is contained in \QMA is relatively easy, in our proof of \QMA-hardness we will want to impose additional structure on the problem.  In particular, we will want the problem to have the extra promise that if the particular instance is a yes instance, then the interaction term will essentially add no energy to the ground state.  In particular, we will want the ground state of the system to be a ground state for each term in the Hamilonian individually, which is usually a statement that the Hamiltonian is frustration-free.
+
+The reason that this helps us is that it actually allows us to determine the actual ground energies of various Hamiltonians, and lets us convert the problem to one of adding positive semi-definite matrices.  This allows us to use our Nullspace Projection Lemma (\lem{NPL}), and give strong bounds on the resulting eigenvalue gaps.  Additionally, the guarantee that certain Hamilonians are frustration-free will allow us to give some additional results on various spin systems.
+
+
+
+\todo{does this work for both bosons and fermions?.  I think it will, but I'm not sure.  It might not be worth it to discuss fermions right now.}
+
+With all of this, let $G$ be a graph, and let us assume that the interaction is $\mathcal{U}$.  If we then restrict to the $N$-particle sector, we have that the Hamiltonian is given by
+\begin{align}
+  H_{\mathcal{U},G}^N &= \sum_{(i,j) \in E(G)} a_i^\dag a_j + a_j^\dag a_i + \sum_{i,j\in V(G)} \mathcal{U}_{d(i,j)}(n_i,n_j)\\
+    &= \sum_{w=1}^N A(G)^{(w)} + \sum_{i,j\in V(G)} \mathcal{U}_{d(i,j)} (\hat{n}_i,\hat{n}_j)
+\end{align}
+where
+\begin{equation}
+  \hat{n}_i = \sum_{w=1}^N \ketbra{i}{i}^{(w)}.
+\end{equation}
+
+While $H_{\mathcal{U},G}^N$ acts on the entire $|V|^N$ dimensional system of distinguishable particles, we want to deal with indistinguishable particles (and in particular bosonic particles).  As such, we will want to look at the restriction of $H_{\mathcal{U},G}^N$ to the bosonic subspace:
+\begin{equation}
+  \overline{H}_{\mathcal{U},G}^N := H_{\mathcal{U},G}^N \big|_{\mathcal{Z}_N(G)}
+\end{equation}
+
+\todo{check boson/fermion}
+
+At this point, it will be extremely useful to add a term proportional to the identity in order to make a positive semidefinite operator. In particular, we can efficiently calculate the 
+
+
+With this actually out of the way, we will want to actually define this frustration-free problem.  Once again, it will be defined in terms of some particular interaction.  
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Constructing the underlying graph for \QMA-hardness}
@@ -89,23 +124,18 @@ In \sec{Occupancy-constraints} we consider a class of subspaces that, like $\mat
 
 \subsubsection{The graph $g_0$}
 
-The graph $g_{0}$ shown in \fig{g_0} is constructed using the method of \chap{SP_ground}, with the single qubit circuit with 
+The graph $g_{0}$ shown in \fig{g_0} is constructed using the method of \chap{SP_ground}, with the single qubit circuit corresponding to a sequence of $H$ and $HT$ gates.  The idea is to force the ground state of the resulting graph to correspond to these computations while also spreading the wave-function over most of the vertices.  In this way, we can use the ground state to compute these single-particle unitaries while also forcing the graph to only have single-particle frustration free states.
 
-The graph $g_{0}$ shown in \fig{g_0} is closely related to a single-qubit circuit $\mathcal{C}_{0}$ with eight gates $U_{j}$ for $j\in[8]$, where 
+In particular, let $k = \max\{\dmin+1, 4\}$, and then let us look at the single-qubit circuit $\mathcal{C}_0$ with $k$ gates $U_j$, for $j\in[k]$, where 
 \begin{align*}
-U_{1} & =U_{2}=U_{7}=U_{8}=H\qquad U_{3}=U_{5}=HT\qquad U_{4}=U_{6}=\left(HT\right)^{\dagger}
+U_{1}=HT\qquad U_{2}=\left(HT\right)^{\dagger}
 \end{align*}
-with 
-\[
-H=\frac{1}{\sqrt{2}}\begin{pmatrix}
-1 & 1\\
-1 & -1
-\end{pmatrix}\qquad T=\begin{pmatrix}
-1 & 0\\
-0 & e^{i\frac{\pi}{4}}
-\end{pmatrix}.
-\]
+and the rest of the $U_j=H$.  We can then use the circuit to graph construction from \chap{SP_ground} to construct a simple graph with the ground space spanned by the history states of this circuit.  
+
+
 In this section we map this circuit to the graph $g_{0}$. The mapping we use can be generalized to map an arbitrary quantum circuit with any number of qubits to a graph, but for simplicity we focus here on $g_{0}$. In \app{complexity_smallest_graph_eig} we discuss the more general mapping and use it to prove that computing (in a certain precise sense specified in the Appendix) the smallest eigenvalue of a sparse, efficiently row-computable symmetric $0$-$1$ matrix is QMA-complete.
+
+\todo{fix the $g_0$ graph}
 
 %\begin{figure}
 %\centering

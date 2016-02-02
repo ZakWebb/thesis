@@ -30,7 +30,7 @@ However, the Hilbert space on which the quantum walk acts is necessarily exponen
 \begin{problem}[$d$-sparse graph eigenvalue problem] Given a $d$-sparse, row-computable graph $G$, and two constants $a< b$, is the smallest eigenvalue of $A(G)$ below $a$ or above $b$, with the guarantee that one of these cases occur.
 \end{problem}
 
-While this problem is definitely inspired from quantum walks, it actually makes on reference to quantum mechanics.
+While this problem is definitely inspired from quantum walks, it actually makes no reference to quantum mechanics.
 
 \subsection{Containment in \QMA}
 
@@ -54,13 +54,15 @@ With the definition of the class \QMA, the requirement is that for each input th
 
 In this mapping, we attempt to encode the computation into the ground space of the Hamiltonian, in a similar manner to how the proof that 3-SAT is NP-Hard encodes the entire computation of a nondeterministic Turing Machine.
 \todo{NP-hardness of 3-Sat reference}
-However, we run into the problem of locality, in that it is hard to enforce that the states corresponding to neighboring time steps are really reachable by a single particular unitary.  
+However, we run into a problem on how to insure that neighboring time steps are only seperated by a single local unitary.  In the classical case we can write down the entire state of the system at each timestep, or else only write down the changes that occur at each time step.  In the first case we run into a problem in that information is copied between time steps, which is impossible for a general state by the no-cloning theorem
+\todo{reference no-cloning}
+while the second case quickly becomes infeasible as the changes to the quantum state might effect many basis states.
 
-Kitaev worked around this problem by having both a clock and a state register, with the computation encoded as an entangled state between these two registers.  In this way, by having a projection into those states that evolve correctly for a particular time step, we can have a local check for the correctness of evolution.
+Kitaev worked around this problem by enlarging the Hilbert space on which the circuit acts, by having both a clock and a state register.  The computation of the system was then encoded as an entangled state between these two registers.  In this way, by having a projection into those states that evolve correctly for a particular time step, we can have a local check for the correctness of evolution.
 
-In particular, if a given circuit $C$ acts on $\CC^{2^m}$ and can be written as $C = U_{T}U_{T-1} \cdots U_1$, then the Kitaev Hamiltonian $H_C$ acts on the Hilbert space $\CC^{2^m}\otimes \CC^{T+1}$, and can be written as
+In particular, if a given circuit $\mathcal{C}$ acts on $\CC^{2^m}$ and can be written as $\mathcal{C} = U_{T}U_{T-1} \cdots U_1$, then the Kitaev Hamiltonian $H_\mathcal{C}$ acts on the Hilbert space $\CC^{2^m}\otimes \CC^{T+1}$, and can be written as
 \begin{equation}
-  H_C = \sum_{t=0}^{T-1} \big(\II_{\CC^{2^m}}\otimes \ket{t} - U_{t+1} \otimes \ket{t+1}\big) \big(\II_{\CC^{2^m}}\otimes \bra{t} - U_{t+1}^\dag \otimes \bra{t+1}\big) = \sum_{t=0}^{T-1} H_t
+  H_\mathcal{C} = \sum_{t=0}^{T-1} \big(\II_{\CC^{2^m}}\otimes \ket{t} - U_{t+1} \otimes \ket{t+1}\big) \big(\II_{\CC^{2^m}}\otimes \bra{t} - U_{t+1}^\dag \otimes \bra{t+1}\big) = \sum_{t=0}^{T-1} H_t
 \end{equation}
 Note that each term $H_t$ is a projector off those states of the form
 \begin{equation}
@@ -74,36 +76,23 @@ These states encode the computation, as for a given initial state $\ket{\psi}$, 
 
 With this mapping corresponding to a particular circuit, we can then force the initial state to have a particular form by adding in projectors tensored with a projection onto the $\ket{t=0}$ state, with a similar projection for the requisite form of the final state.  Putting everything together we then have a $\log$-local Hamiltonian that will have a polynomial gap depending on whether the initial circuit accepted or rejected.
 
-This is one of the simple ways in which a Hamiltonian is shown to be \QMA-hard.
+One can then show that this Hamiltonian will have a low energy eigenvector if and only if the corresponding circuit $\mathcal{C}$ has an accepting input.
 
 %%%%%%%%%%%%%%%%%%%%%%
 \subsection{Transformation to Adjacency Matrix}
 
-While the above prescription works well for the conversion to local-Hamiltonians in the general case, in the situation we are interested in we want all of the non-zero matrix elements to be the same value.  As the matrix elements of $H_C$ are related to the matrix values of the unitaries involved in the circuit $C$, we thus want to force the matrix values of $C$ to all be of the same form.
+While the above prescription works well for the conversion to local-Hamiltonians in the general case, in the situation we are interested in we want all of the non-zero matrix elements to be the same value.  As the matrix elements of $H_\mathcal{C}$ are related to the matrix values of the unitaries involved in the circuit $\mathcal{C}$, we thus want to force the matrix values of $\mathcal{C}$ to all be of the same form.
 
-To enforce this, we suppose $\mathcal{C}_{x}$ implements a unitary 
+To enforce this, we suppose $\mathcal{C}$ implements a unitary 
 \begin{equation}
 U_{\mathcal{C}_{x}}=U_{M}\ldots U_{2}U_{1}\label{eq:single_qubit_circuit}
 \end{equation}
- where each $U_{i}$ is from the gate set 
+ where each $U_{i}$ acts as
 \begin{equation}
 \mathcal{G}=\{H,HT,\left(HT\right)^{\dagger},\left(H\otimes\II\right)\CNOT\}
 \end{equation}
-with 
-\begin{equation}
-H=\frac{1}{\sqrt{2}}\begin{pmatrix}
-1 & 1\\
-1 & -1
-\end{pmatrix} \quad T=\begin{pmatrix}
-1 & 0\\
-0 & e^{i\frac{\pi}{4}}
-\end{pmatrix}\quad\CNOT=\begin{pmatrix}
-1 & 0 & 0 & 0\\
-0 & 1 & 0 & 0\\
-0 & 0 & 0 & 1\\
-0 & 0 & 1 & 0
-\end{pmatrix}.
-\end{equation}
+on some qubits, and the identity on the rest.
+
 Note that this gate set is universal, as we can easily simulate the gate set $\{H, T, \CNOT\}$ with gates from $\mathcal{G}$ since $H^2 = \II$ and we can thus cancel the $H$ terms before the interesting portion of the gates.  Further, each non-zero matrix element of these unitaries has norm $2^{-1/2}$, as we wanted.
 
 However, when we look at one of the local terms in the Hamiltonian, we find that not all of the matrix elements have the same norm.  In particular, we find that
@@ -112,11 +101,11 @@ However, when we look at one of the local terms in the Hamiltonian, we find that
          &= \II_{\CC^{2^m}} \otimes \big(\ketbra{t}{t} + \ketbra{t+1}{t+1}\big) - \big( U_{t+1} \otimes \ketbra{t+1}{t} + U_{t+1}^\dag \otimes \ketbra{t}{t+1}\big). \label{eq:circuit_to_Hamiltonian_term}
 \end{align}
 
-While each off-diagonal term is either zero or has norm $2^{-1/2}$ in \eq{circuit_to_Hamiltonian_term}, the diagonal terms have norm 1.  When each term is summed, we almost have that they sum to a term proportional to the identity, which we can deal with, but unfortunately the boundary terms (with $t=0$ or $t=T$) are only involved in one unitary.  However, this problem can be avoided by having circular time, in which we both compute and uncompute the comptutation.  With this, each timestep is involved in exactly two local terms, and thus the diagonal term is proportional to the identity.
+While each off-diagonal term is either zero or has norm $2^{-1/2}$ in \eq{circuit_to_Hamiltonian_term}, the diagonal terms have norm 1.  When each term is summed, we almost have that the sum of the diagonal terms are proportional to the identity, but unfortunately the boundary terms (with $t=0$ or $t=T$) are only involved in one unitary.  However, this problem can be avoided by having circular time, in which we both compute and uncompute the comptutation.  With this, each timestep is involved in exactly two local terms, and thus the diagonal term is proportional to the identity.
 
 With this, it will be convenient to consider 
 \begin{equation}
-  U_{\mathcal{C}_{x}}^{\dagger}U_{\mathcal{C}_{x}}=W_{2M}\ldots W_{2}W_{1}
+  U_{\mathcal{C}}^{\dagger}U_{\mathcal{C}}=W_{2M}\ldots W_{2}W_{1}
 \end{equation}
 where
 \begin{equation}
@@ -125,52 +114,53 @@ U_{t} & 1\leq t\leq M\\
 U_{2M+1-t}^{\dagger} & M+1 \le t \le 2M.
 \end{cases}
 \end{equation}
-As in \sec{Kitaev_Hamiltonian} we start with a version of the Feynman-Kitaev Hamiltonian \cite{Fey85,KSV02}
+As in \sec{Kitaev_Hamiltonian} we start with a version of the Feynman-Kitaev Hamiltonian (with a different norm) \cite{Fey85,KSV02} acting on the Hilbert space $\mathcal{H}_{\text{comp}} \otimes \mathcal{H}_{\text{clock}}$ where $\mathcal{H}_{\text{comp}} = \left(\CC^{2}\right)^{\otimes m}$ is an $m$-qubit computational register and $\mathcal{H}_{\text{clock}}=\CC^{2M}$ is a $2M$-level register with periodic boundary conditions (i.e., we let $|2M+1\rangle=|1\rangle$). However, we then subtract a term proportional to the identity, which yields the Hamiltonian
 \begin{equation}
-H_{C}=-\sqrt{2}\sum_{t=1}^{2M}\left(W_{t}^{\dagger}\otimes|t\rangle\langle t+1|+W_{t}\otimes|t+1\rangle\langle t|\right)\label{eq:H_x}
+  H_{\mathcal{C}}=-\sqrt{2}\sum_{t=1}^{2M}\left(W_{t}^{\dagger}\otimes|t\rangle\langle t+1|+W_{t}\otimes|t+1\rangle\langle t|\right).\label{eq:H_x}
 \end{equation}
-acting on the Hilbert space $\mathcal{H}_{\text{comp}} \otimes \mathcal{H}_{\text{clock}}$ where $\mathcal{H}_{\text{comp}} = \left(\CC^{2}\right)^{\otimes m}$ is an $m$-qubit computational register and $\mathcal{H}_{\text{clock}}=\CC^{2M}$ is a $2M$-level register with periodic boundary conditions (i.e., we let $|2M+1\rangle=|1\rangle$). Note that 
+
+Note that 
 \begin{equation}
-V^{\dagger}H_{x}V=-\sqrt{2}\sum_{t=1}^{2M}\left(\II\otimes|t\rangle\langle t+1|+\II\otimes|t+1\rangle\langle t|\right)\label{eq:V_H_V}
+  V^{\dagger}H_{\mathcal{C}}V=-\sqrt{2}\sum_{t=1}^{2M}\left(\II\otimes|t\rangle\langle t+1|+\II\otimes|t+1\rangle\langle t|\right)\label{eq:V_H_V}
 \end{equation}
 where 
-\[
-V=\sum_{t=1}^{2M}\bigg(\prod_{j=t-1}^{1}W_{j}\bigg)\otimes|t\rangle\langle t|
-\]
+\begin{equation}
+  V=\sum_{t=1}^{2M}\bigg(\prod_{j=t-1}^{1}W_{j}\bigg)\otimes|t\rangle\langle t|
+\end{equation}
 and $W_{0}=1$. Since $V$ is unitary, the eigenvalues of $H_{x}$ are the same as the eigenvalues of \eq{V_H_V}, namely 
-\[
--2\sqrt{2}\cos\left(\frac{\pi \ell}{M}\right)
-\]
+\begin{equation}
+  -2\sqrt{2}\cos\left(\frac{\pi \ell}{M}\right)
+\end{equation}
 for $\ell=0,\ldots,2M-1$. The ground energy of \eq{V_H_V} is $-2\sqrt{2}$ and its ground space is spanned by 
-\[
+\begin{equation}
   |\phi\rangle\frac{1}{\sqrt{2M}}\sum_{j=1}^{2M}|t\rangle,
   \quad|\phi\rangle\in\Lambda
-\]
+\end{equation}
 where $\Lambda$ is any orthonormal basis for $\mathcal{H}_{\mathrm{comp}}$. A basis for the ground space of $H_{x}$ is therefore 
-\[
-V\bigg(|\phi\rangle\frac{1}{\sqrt{2M}}\sum_{j=1}^{2M}|t\rangle\bigg)=\frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}|\phi\rangle|t\rangle
-\]
+\begin{equation}
+  V\bigg(|\phi\rangle\frac{1}{\sqrt{2M}}\sum_{j=1}^{2M}|t\rangle\bigg)=\frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}|\phi\rangle|t\rangle
+\end{equation}
  where $|\phi\rangle\in\Lambda$. The first excited energy of $H_{x}$ is 
-\[
-\eta=-2\sqrt{2}\cos\left(\frac{\pi}{M}\right)
-\]
+\begin{equation}
+  \eta=-2\sqrt{2}\cos\left(\frac{\pi}{M}\right)
+\end{equation}
 and the gap between ground and first excited energies is lower bounded as 
 \begin{equation}
-\eta+2\sqrt{2}\geq\sqrt{2}\frac{\pi^{2}}{M^{2}}\label{eq:bound_on_eta}
+  \eta+2\sqrt{2}\geq\sqrt{2}\frac{\pi^{2}}{M^{2}}\label{eq:bound_on_eta}
 \end{equation}
 (using the fact that $1-\cos(x)\leq\frac{x^{2}}{2}$).
 
-The universal set $\mathcal{G}$ is chosen so that each gate has nonzero entries that are integer powers of $\omega=e^{i\frac{\pi}{4}}$.  Correspondingly, the nonzero standard basis matrix elements of $H_{x}$ are also integer powers of $\omega=e^{i\frac{\pi}{4}}$. We consider the $8\times8$ shift operator
-\[
-S=\sum_{j=0}^{7}|j+1\text{ mod 8}\rangle\langle j|
-\]
+The universal set $\mathcal{G}$ is chosen so that each gate has nonzero entries that are integer powers of $\omega=e^{i\frac{\pi}{4}}$.  Correspondingly, the nonzero standard basis matrix elements of $H_{\mathcal{C}}$ are also integer powers of $\omega=e^{i\frac{\pi}{4}}$. We consider the $8\times8$ shift operator
+\begin{equation}
+  S=\sum_{j=0}^{7}|j+1\text{ mod 8}\rangle\langle j|
+\end{equation}
 and note that $\omega$ is an eigenvalue of $S$ with eigenvector
-\[
-|\omega\rangle=\frac{1}{\sqrt{8}}\sum_{j=0}^{7}\omega^{-j}|j\rangle.
-\]
-We modify $H_{x}$ as follows. For each operator $-\sqrt{2}H$, $-\sqrt{2}HT$, $-\sqrt{2}(HT)^{\dagger}$, or $-\sqrt{2}\left(H\otimes\II\right)\CNOT$ appearing in equation \eq{H_x}, define another operator that acts on $\CC^{2}\otimes\CC^{8}$ or $\CC^{4}\otimes\CC^{8}$ (as appropriate) by replacing nonzero matrix elements with powers of the operator $S$:
+\begin{equation}
+  |\omega\rangle=\frac{1}{\sqrt{8}}\sum_{j=0}^{7}\omega^{-j}|j\rangle.
+\end{equation}
+We modify $H_{\mathcal{C}}$ as follows. For each operator $-\sqrt{2}H$, $-\sqrt{2}HT$, $-\sqrt{2}(HT)^{\dagger}$, or $-\sqrt{2}\left(H\otimes\II\right)\CNOT$ appearing in equation \eq{H_x}, define another operator that acts on $\CC^{2}\otimes\CC^{8}$ or $\CC^{4}\otimes\CC^{8}$ (as appropriate) by replacing nonzero matrix elements with powers of the operator $S$:
 \begin{align*}
-\omega^{k} &\mapsto S^{k}.
+  \omega^{k} &\mapsto S^{k}.
 \end{align*}
 Matrix elements that are zero are mapped to the $8\times8$ all-zeroes matrix. Write $B(W)$ for the operators obtained by making this replacement, e.g., 
 \begin{align*}
@@ -186,22 +176,22 @@ Adjoining an 8-level ancilla as a third register and making this replacement in 
 \begin{align}
 H_{\mathcal{\text{prop}}} & =\sum_{t=1}^{2M}\left(B(W_{t})^{\dagger}_{13}\otimes|t\rangle\langle t+1|_2+B(W_{t})_{13}\otimes|t+1\rangle\langle t|_2\right)\label{eq:Hprop-1}
 \end{align}
-which is a symmetric $0$-1 matrix (the subscripts indicate which registers the operators act on). Note that $H_{\text{prop}}$ commutes with $S$ (acting on the $8$-level ancilla) and therefore is block diagonal with eight sectors. In the sector where $S$ has eigenvalue $\omega$, $H_{\text{prop}}$ is identical to the Hamiltonian $H_x$ that we started with (see equation \eq{H_x}). There is also a sector (where $S$ has eigenvalue $\omega^*$) where the Hamiltonian is the complex conjugate of $H_x$. We will add a term to $H_{\text{prop}}$ that introduces an energy penalty for states in any of the other six sectors, ensuring that none of these states lie in the ground space.
+which is a symmetric $0$-1 matrix (the subscripts indicate which registers the operators act on). Note that $H_{\text{prop}}$ commutes with $S$ (acting on the $8$-level ancilla) and therefore is block diagonal with eight sectors. In the sector where $S$ has eigenvalue $\omega$, $H_{\text{prop}}$ is identical to the Hamiltonian $H_{\mathcal{C}}$ that we started with (see equation \eq{H_x}). There is also a sector (where $S$ has eigenvalue $\omega^*$) where the Hamiltonian is the element-wise complex conjugate of $H_{\mathcal{C}}$. We will add a term to $H_{\text{prop}}$ that introduces an energy penalty for states in any of the other six sectors, ensuring that none of these states lie in the ground space.
 
 To see what kind of energy penalty is needed, we lower bound the eigenvalues of $H_{\text{prop}}$. Note that for each $W\in\mathcal{G}$, $B(W)$ contains at most 2 ones in each row or column. Looking at equation \eq{Hprop-1} and using this fact, we see that each row and each column of $H_{\text{prop}}$ contains at most four ones (with the remaining entries all zero). Therefore $\|H_{\text{prop}}\| \leq4$, so every eigenvalue of $H_{\text{prop}}$ is at least $-4$.
 
 The matrix $A_{x}$ associated with the circuit $\mathcal{C}_{x}$ acts on the Hilbert space 
-\[
+\begin{equation}
 \mathcal{H}_{\text{comp}}\otimes\mathcal{H}_{\text{clock}}\otimes\mathcal{H}_{\text{anc}}
-\]
+\end{equation}
 where $\mathcal{H}_{\text{anc}}=\CC^{8}$ holds the $8$-level ancilla.  We define 
 \begin{equation}
 A_{x}=H_{\text{prop}}+H_{\text{penalty}}+H_{\text{input}}+H_{\text{output}}\label{eq:A_x_eqn}
 \end{equation}
  where 
-\[
+\begin{equation}
 H_{\text{penalty}}=\II\otimes\II\otimes\left(S^{3}+S^{4}+S^{5}\right)
-\]
+\end{equation}
 is the penalty ensuring that the ancilla register holds either
 $|\omega\rangle$ or $|\omega^*\rangle$ and the terms
 \begin{align*}
@@ -223,14 +213,16 @@ whereas in any other sector $H_{\text{penalty}}$ has eigenvalue at least $-1$ an
 \end{align}
 where $|\phi\rangle$ ranges over the basis $\Lambda$ for $\mathcal{H}_{\text{comp}}$ and $*$ denotes (elementwise) complex conjugation. 
 
+At this point, we then have a symmetric 0-1 matrix whose ground-space is spanned by history states.  While we have not yet shown that determining the ground energy of this matrix is \QMA-hard, this graph is the result of our circuit-to-graph mapping.
+
 %=============================================================================
 \subsection{Upper bound on the smallest eigenvalue for yes instances}
 \label{sec:mappingyes}
 
 Suppose $x$ is a yes instance; then there exists some $n_{\text{input}}$-qubit state $|\psi_{\text{input}}\rangle$ satisfying $\text{AP}\left(\mathcal{C}_{x},|\psi_{\text{input}}\rangle\right)\geq1-\frac{1}{2^{|x|}}$. Let
-\[
+\begin{equation}
 |\text{wit}\rangle=\frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}\left(|\psi_{\text{input}}\rangle|0\rangle^{\otimes n-n_{\text{input}}}\right)|t\rangle|\omega\rangle
-\]
+\end{equation}
 and note that this state is in the $e_{1}$-energy ground space of
 $H_{\text{prop}}+H_{\text{penalty}}$ (since it has the form \eq{gs_Hprop_Hpen1}).
 One can also directly verify that $|\text{wit}\rangle$ has zero energy for $H_{\text{input}}$. Thus
@@ -255,18 +247,18 @@ We backtrack slightly to obtain bounds on the eigenvalue gaps of the Hamiltonian
 since $-5-e_{1}\approx0.24\ldots>\frac{1}{5}$. The first inequality above follows from the fact that every eigenvalue of $H_{\text{prop}}$ in the range $[e_{1},-5)$ is also an eigenvalue of $H_{x}$ (as discussed above) and the bound \eq{bound_on_eta} on the energy gap of $H_{x}$.
 
 Now use the Nullspace Projection Lemma (\lem{npl}) with 
-\[
+\begin{equation}
 H_{A}=H_{\text{prop}}+H_{\text{penalty}}-e_{1}\cdot\II\qquad H_{B}=H_{\text{input}}.
-\]
+\end{equation}
 Note that $H_{A}$ and $H_{B}$ are positive semidefinite. Let $S_{A}$ be the ground space of $H_{A}$ and consider the restriction $H_{B}|_{S_{A}}$. Here it is convenient to use the basis for $S_{A}$ given by \eq{gs_Hprop_Hpen1} and \eq{gs_Hprop_Hpen2} with $|\phi\rangle$ ranging over the computational basis states of $n$ qubits. In this basis, $H_{B}|_{S_{A}}$ is diagonal with all diagonal entries equal to $\frac{1}{2M}$ times an integer, so $\gamma(H_{B}|_{S_{A}})\geq\frac{1}{2M}$. We also have $\gamma(H_{A})\geq\frac{1}{5M^{2}}$ from equation \eq{gamma_Ha}, and clearly $\left\Vert H_{B}\right\Vert \leq n$. Thus \lem{npl} gives
 \begin{equation}
 \gamma(H_{\text{prop}}+H_{\text{penalty}}+H_{\text{input}}-e_{1}\cdot\II)\geq\frac{\left(\frac{1}{5M^{2}}\right)\left(\frac{1}{2M}\right)}{\frac{1}{5M^{2}}+\frac{1}{2M}+n}\geq\frac{1}{10M^{3}\left(1+n\right)}\geq\frac{1}{20M^{3}n}.\label{eq:lowerbound_uptoinput}
 \end{equation}
 
 Now consider adding the final term $H_{\mathrm{output}}$. We use \lem{npl} again, now setting 
-\[
+\begin{equation}
 H_{A}=H_{\text{prop}}+H_{\mathrm{penalty}}+H_{\mathrm{input}}-e_{1}\cdot\II\qquad H_{B}=H_{\mathrm{output}}.
-\]
+\end{equation}
 Let $S_{A}$ be the ground space of $H_{A}$. Note that it is spanned by states of the form \eq{gs_Hprop_Hpen1} and \eq{gs_Hprop_Hpen2} where $|\phi\rangle=|\psi\rangle|0\rangle^{\otimes n-n_{\text{input}}}$ and $|\psi\rangle$ ranges over any orthonormal basis of the $n_{\text{input}}$-qubit input register. The restriction $H_{B}|_{S_{A}}$ is block diagonal, with one block for states of the form 
 \begin{equation}
 \frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}\left(|\psi\rangle|0\rangle^{\otimes n-n_{\text{input}}}\right)|t\rangle|\omega\rangle\label{eq:block1}
@@ -276,21 +268,21 @@ and another block for states of the form
 \frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}\left(W_{t-1}W_{t-2}\ldots W_{1}\right)^{*}\left(|\psi\rangle^{*}|0\rangle^{\otimes n-n_{\text{input}}}\right)|t\rangle|\omega^{*}\rangle.\label{eq:block2}
 \end{equation}
 We now show that the minimum eigenvalue of $H_{B}|_{S_{A}}$ is nonzero, and we lower bound it. We consider the two blocks separately. By linearity, every state in the first block can be written in the form \eq{block1} for some state $|\psi\rangle$. Thus the minimum eigenvalue within this block is the minimum expectation of $H_{\text{output}}$ in a state \eq{block1}, where the minimum is taken over all $n_{\text{input}}$-qubit states $|\psi\rangle$. This is equal to 
-\[
+\begin{equation}
 \min_{|\psi\rangle}\frac{1}{2M}\left(1-\text{AP}(\mathcal{C}_{x},|\psi\rangle)\right)\geq\frac{1}{3M}
-\]
+\end{equation}
 where we used the fact that $\text{AP}\left(\mathcal{C}_{x},|\psi\rangle\right)\leq\frac{1}{3}$ for all $|\psi\rangle$. Likewise, every state in the second block can be written as \eq{block2} for some state $|\psi\rangle$, and the minimum eigenvalue within this block is 
-\[
+\begin{equation}
 \min_{|\psi\rangle}\frac{1}{2M}\left(1-\text{AP}(\mathcal{C}_{x},|\psi\rangle)^{*}\right)\geq\frac{1}{3M}
-\]
+\end{equation}
 (since $\text{AP}(\mathcal{C}_{x},|\psi\rangle)^{*}=\text{AP}(\mathcal{C}_{x},|\psi\rangle)\leq\frac{1}{3}$). Thus we see that $H_{B}|_{S_{A}}$ has an empty nullspace, so its smallest eigenvalue is equal to its smallest nonzero eigenvalue, namely 
-\[
+\begin{equation}
 \gamma(H_{B}|_{S_{A}})\geq\frac{1}{3M}.
-\]
+\end{equation}
 Now applying \lem{npl} using this bound, the fact that $\left\Vert H_{B}\right\Vert =1$, and the fact that $\gamma(H_{A})\geq\frac{1}{20M^{3}n}$ (from equation \eq{lowerbound_uptoinput}), we get 
-\[
+\begin{equation}
 \gamma(A_{x}-e_{1}\cdot\II)\geq\frac{\frac{1}{60M^{4}n}}{\frac{1}{20M^{3}n}+\frac{1}{3M}+1}\geq\frac{1}{120M^{4}n}.
-\]
+\end{equation}
 Since $H_{B}|_{S_{A}}$ has an empty nullspace, $A_{x}-e_{1}\cdot\II$ has an empty nullspace, and this is a lower bound on its smallest eigenvalue.
 
 %=============================================================================
@@ -299,6 +291,8 @@ Since $H_{B}|_{S_{A}}$ has an empty nullspace, $A_{x}-e_{1}\cdot\II$ has an empt
 While this result is interesting in its own right, as it shows that finding the ground energy of a sparse, row-computable matrix is $\QMA$-complete, perhaps the most interesting result is that nothing particularly quantum is involved in the definition of the problem.  In particular, the only condition we have on the matrix is that it is sparse, and row-computable.  This condition might allow for a more natural understanding for more classically-minded computer scientists, as a \QMA-complete problem could be stated without having to delve into any quantum computing.
 
 As an additional problem, since the circuit-to-Hamiltonian map creates a 7-regular, simple graph, one might wonder if the removal of these conditions are necessary when the boundary terms are added.  This is obviously going to be necessary, as otherwise we would have that determining the lowest eigenvalue of a Laplacian is \QMA-complete, but it is a well known fact that the smallest eigenvalue of a Laplacian is zero.  
+
+\todo{can I use the same techniques as the self-loop removal to remove self-loops from this system?}
 
 \todo{Write more}
 
