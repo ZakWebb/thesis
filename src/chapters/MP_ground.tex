@@ -90,11 +90,97 @@ While $H_{\mathcal{U},G}^N$ acts on the entire $|V|^N$ dimensional system of dis
 
 \todo{check boson/fermion}
 
-At this point, it will be extremely useful to add a term proportional to the identity in order to make a positive semidefinite operator. In particular, we can efficiently calculate the 
+At this point, it will be extremely useful to add a term proportional to the identity in order to make a positive semidefinite operator. In particular, if we let $\mu(G)$ be the smallest eigenvalue of $A(G)$, we can consider 
+\begin{equation}
+  H_{\mathcal{U}}(G,N) = \overline{H}_{\mathcal{U},G}^n - N \mu(G)
+\end{equation}
+which is a positive-semidefinite matrix.  Additionally, as $\mu(G)$ can be efficiently computed using a classical polynomial-time algorithm, we have that the complexity of approximating the ground energy of $H_{\mathcal{U}}(G,N)$ is equivalent to the complexity of approximating the ground energy of $\overline{H}_{\mathcal{U},G}^N$.  
 
+We shall write
+\begin{equation}
+  0 \leq \lambda_N^1(G) \leq \lambda_N^2(G) \leq \cdots \leq \lambda_N^{D_N} (G)
+\end{equation}
+for the eigenvalues of $H_{\mathcal{U}}(G,N)$ and $\{\ket{\lambda_N^j(G)}\}$ for the associated eigenvectors.
 
-With this actually out of the way, we will want to actually define this frustration-free problem.  Once again, it will be defined in terms of some particular interaction.  
+Note that when $\lambda_N^1(G) = 1$, the ground energy of the $N$-particle MPQW Hamiltonian $\overline{H}_{\mathcal{U},G}^N$ is equal to $N$ times the single-particle ground energy $\mu(G)$.  In this case, we say that the $N$-particle MPQW Hamiltonian is frustration free, as the ground state minimizes both the movement term and the interaction term.  We also define frustration freeness for $N$-particle states.
+\begin{definition}[Frustration-free state]  
+If $\ket{\psi}\in \mathcal{Z}_{N}(G)$ satisfies $H_{\mathcal{U}}(G,N) \ket{\psi} = 0$, then we say that $\ket{\psi}$ is an $N$-particle frustration-free state for $\mathcal{U}$ on $G$.
+\end{definition}
 
+%%%%%
+\subsubsection{Basic properties}
+
+We now give some basic properties of $H_{\mathcal{U}}(G,N)$.  In particular we will want to understand how the eigenvalues of the Hamiltonian change when we increase the number of particles, as well as understand such a system when looking at many disconnected copies of graphs.
+
+\begin{lemma}
+  For all $N>1$, $\lambda_{N+1}^1(G) \geq \lambda_{N}^1(G)$.
+\end{lemma}
+\begin{proof}
+\todo{Fix this for an arbitrary interaciton}
+Let $\widehat{n}_{i}^{N}$ be the number operator \eq{n_hat} defined in the $N$-particle space and let $\widehat{n}_{i}^{N+1}$ be the corresponding operator in the $\left(N+1\right)$-particle space. Note that
+\[
+\widehat{n}_{i}^{N+1} = \widehat{n}_{i}^{N}\otimes\II+|i\rangle\langle i|^{(N+1)} \geq \widehat{n}_{i}^{N}\otimes\II.
+\]
+Using this and the fact that $A(G)\geq\mu(G)$, we get 
+\[
+H_{G}^{N+1}-\left(N+1\right)\mu(G)\geq\left(H_{G}^{N}-N\mu(G)\right)\otimes\II.
+\]
+Hence 
+\begin{align*}
+\lambda_{N+1}^{1}(G) & =\min_{|\psi\rangle\in\mathcal{Z}_{N+1}(G)\colon \langle\psi|\psi\rangle=1}\langle\psi|H_{G}^{N+1}-\left(N+1\right)\mu(G)|\psi\rangle\\
+ & \geq\min_{|\psi\rangle\in\mathcal{Z}_{N}(G)\otimes\CC^{|V|}\colon \langle\psi|\psi\rangle=1}\langle\psi|\left(H_{G}^{N}-N\mu(G)\right)\otimes\II |\psi\rangle\\
+ & =\lambda_{N}^{1}(G)
+\end{align*}
+(using the fact that $\mathcal{Z}_{N+1}(G)\subset\mathcal{Z}_{N}(G)\otimes\CC^{|V|}$). 
+\end{proof}
+We will encounter graphs $G$ with more than one component. In the cases of interest, the smallest eigenvalue of the adjacency matrix for each component is the same. The following Lemma shows that the eigenvalues of $H(G,N)$ on such a graph can be written as sums of eigenvalues for the components. In this Lemma (and throughout the paper), we let $[k] = \{1,2,\ldots,k\}$.
+
+\begin{lemma}
+\label{lem:BH_disconnected_graphs}
+Suppose $G=\bigcup_{i=1}^{k}G_{i}$ with $\mu(G_{1})=\mu(G_{2})=\cdots=\mu(G_{k})$. The eigenvalues of $H(G,N)$ are 
+\[
+\sum_{i\in[k]\colon N_{i}\neq0}\lambda_{N_{i}}^{y_{i}}(G_{i})
+\]
+where $N_{1},\ldots,N_{k}\in\{0,1,2,\ldots\}$ with $\sum_{i}N_{i}=N$ and $y_{i}\in[D_{N_{i}}].$ The corresponding eigenvectors are (up to normalization) 
+\begin{equation}
+\Sym\Bigg(\prod_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg).
+\label{eq:eigvecs_disconnected}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Recall that the action of $H_{G}-N\mu(G)$ on the Hilbert space \eq{occupation_num_states} is the same as the action of $H(G,N)$ on the Hilbert space $\mathcal{Z}_{N}(G)$. States in these Hilbert spaces are identified via the mapping described in equation \eq{occup_num_symmetrized}. It is convenient to prove the Lemma by working with the second-quantized Hamiltonian $H_{G}$. We then translate our results into the first-quantized picture to obtain the stated claims.
+
+For a graph with $k$ components, equation \eq{Bose-Hubbard_Ham} gives 
+\begin{equation}
+H_{G}=\sum_{i=1}^{k}H_{G_{i}}\label{eq:H_G_disconnected}
+\end{equation}
+where $[H_{G_{i}},H_{G_{j}}]=0.$ Label each vertex of $G$ by $(a,b)$ where $b\in[k]$ and $a\in[|V_{b}|]$, where $V_{b}$ is the vertex set of the component $G_{b}$. An occupation number basis state \eq{occupation_num_states} can be written 
+\begin{equation}
+|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle.\label{eq:prod_basis_occ_num}
+\end{equation}
+The Hamiltonian $H_{G}-N\mu(G)$ conserves the number of particles $N_{b}$ in each component $b$. Within the sector corresponding to a given set $N_{1},\ldots,N_{k}$ with $\sum_{i \in [k]} N_i=N$, we have
+\begin{align*}
+& \left(H_{G}-N\mu(G)\right)|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\\
+&\quad =\big(H_{G_1}-N_1\mu(G_1)|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle\big)|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\\
+&\qquad+|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle\big(H_{G_2}-N_2\mu(G_2)|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\big)\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle + \cdots\\
+&\qquad+|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots\big(H_{G_k}-N_k\mu(G_k)|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\big),
+\end{align*}
+where we used the fact that $\mu(G_i)=\mu(G)$ for $i\in[k]$.  From this equation we see that the eigenstates of $H_{G}$ can be obtained as product states with $k$ factors in the basis \eq{prod_basis_occ_num}. In each such product state, the $i$th factor is an eigenstate of $H_{G_{i}}-N_{i}\mu(G_{i})=H_{G_{i}}-N_{i}\mu(G)$ in the $N_{i}$-particle sector, with eigenvalue $\lambda_{N_{i}}^{j_{i}}(G_{i})$. Rewriting this result in the ``first-quantized'' language, we obtain the Lemma. 
+\end{proof}
+
+%%%%%%%%%%%%
+\subsubsection{\QMA-hard problem}
+
+With all of these definitions floating around, it will then be useful to actually define the basic problem that we will show is \QMA-hard.  In particular, we have that for any positive integer $\alpha$, the following problem:
+
+\begin{problem}[$\alpha$-frustration-free$\mathcal{U}$-interaction MPQW Hamiltonian]
+  We are given as input a $K$-vertex simple graph $G$, a number of particles $N\leq K$, and a precision parameter $\epsilon = 1/T$, where the positive integers $N$ and $T \geq 4K$ are given in unary, and the graph $G$ is given as its adjacency matrix (a $K\times K$ symmetric $0$-$1$ matrix). We arp promised that either $\lambda_N^1(G) \leq \epsilon^\alpha$ (a yes instance), or else that $\lambda_N^1(G) \geq \epsilon + \epsilon^\alpha$ (a no instance) and we are asked to decide which is the case.
+\end{problem}
+
+Note that for each interaction type, this is an infinite family of problems.  The positive integer $\alpha$ parameterizes how much the yes cases can deviate from a true frustration-free case.  The reason that we define the problem in such a way is that it will facilitate the reduction found in \chap{spin_ground}.
+
+Note that this is a special case of the $\mathcal{U}$-interaction MPQW Hamiltonian, with $c = N\mu(G) + \epsilon^\alpha$.  As such, if we show that the $\alpha$-frustration free $\mathcal{U}$-interaction MPQW Hamiltonian problem is \QMA-hard, we will also show that the non-frustration-free problem is \QMA-complete.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -103,6 +189,8 @@ With this actually out of the way, we will want to actually define this frustrat
 At this point, we will want to explicitly construct the graph for which our \QMA-hardness result will hold.  As such, we will at this point restrict our attention to a particular interaction, $\mathcal{U}$.  While the basic idea behind these graphs will not change, the exact graph will depend on both the smallest distance that the interactions occur, as well as the largest distance.  We will want to construct a foundational graph that does not have a two-particle ground state, and also we will want to ensure that our connections between these building blocks will not have multiple particles interacting except on specially chosen building blocks.
 
 As such, let us assume that the minimum distance that the interaction $\mathcal{U}$ has non-zero interactions is $\dmin$, while the maximum distance is $\dmax$.  Our graph will only depend on these two quantities.
+
+Additionally, we will want the eventual graph to be a simple graph, so that there is always at most a single edge between two vertices and no self-loops.  Unfortunately, our proof strategy will involve adding many positive semi-definite terms to the adjacency matrix, which correspond to adding in edges and self-loops.  As such, we will instead force every vertex in the graph to contain a self-loop, so that by removing all of the self loops we only shift the energy levels by a constant amount.  Keep this in mind, as the eventual graph is defined.
 
 %%%%%%%%%%%%%%%
 \subsection{Gate graphs}
@@ -130,10 +218,23 @@ In particular, let $k = \max\{\dmin+1, 4\}$, and then let us look at the single-
 \begin{align*}
 U_{1}=HT\qquad U_{2}=\left(HT\right)^{\dagger}
 \end{align*}
-and the rest of the $U_j=H$.  We can then use the circuit to graph construction from \chap{SP_ground} to construct a simple graph with the ground space spanned by the history states of this circuit.  
+and the rest of the $U_j=H$.  We can then use the circuit to graph construction from \chap{SP_ground} to construct a simple graph with the ground space spanned by the history states of this circuit.  Note that this transformation includes an uncomputation as well, so that there will be a total of $2k$ time-steps, and that the time is cyclic (so that $2k+1 = 0$).
+
+In particular, remembering that $B(U)$ is the operator that takes $\omega \mapsto S$, where $S$ is the shift operator acting on $\CC^{8}$, we will have that the portion of the adjacency matrix corresponding to the computation acts on the Hilbert space $\CC^{2}\otimes \CC^{2k} \otimes \CC^8$, and is equal to
+\begin{equation}
+  H_{\prop} = -\sqrt{2} \sum_{t=0}^{2k} B(W_{t+1})_{13} \otimes \ketbra{t+1}{t} + B(W_{t+1}^\dag)_{13} \otimes \ketbra{t}{t+1}.
+\end{equation}
+With this, term, along a penalty to the $\CC^8$ Hilbert space given by
+\begin{equation}
+  H_{\text{pen}} = \II_{\CC^2} \otimes \II_{\CC^{2k}} \otimes \big( S^3 + S^4 + S^3\big)
+\end{equation}
+will allow us to construct the adjacency matrix of $g(0)$, namely
+\begin{equation}
+  A(g_0) = H_{\prop} + H_{\text{pen}}
+\end{equation}
 
 
-In this section we map this circuit to the graph $g_{0}$. The mapping we use can be generalized to map an arbitrary quantum circuit with any number of qubits to a graph, but for simplicity we focus here on $g_{0}$. In \app{complexity_smallest_graph_eig} we discuss the more general mapping and use it to prove that computing (in a certain precise sense specified in the Appendix) the smallest eigenvalue of a sparse, efficiently row-computable symmetric $0$-$1$ matrix is QMA-complete.
+
 
 \todo{fix the $g_0$ graph}
 
@@ -4107,6 +4208,16 @@ From this (and the fact that $c^{2}\geq b^{2}-ab\geq0$) we see that $h\geq0$ and
 
 \subsection{Completeness and Soundness}
 
-\section{Open questions}
+Well fuck.
+
+
+\section{Discussion and open problems}
+
+While these results generalized the problem of the Bose-Hubbard model to arbitrary interactions between bosons, it leaves open the related question of fermions.  I would expect that our proof would naturally extend to fermions as well, but the extensions where too extensive to finish in time for this thesis.
+
+Making the eventual graph regular.
+
+Remove the restriction to fixed particle number.  Currently, this corresponds to 
+
 
 \end{document}
