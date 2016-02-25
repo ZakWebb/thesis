@@ -33,3 +33,6 @@
 
 ## hyperref
 *.brf
+
+## externalized tikz files
+*/plots*
