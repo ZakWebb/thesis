@@ -1,0 +1,693 @@
+\documentclass[../thesis-main/thesis-main]{subfiles}
+\begin{document}
+
+\begin{theorem}
+  Let $\widehat{G}$ be an $(N+m)$-vertex graph, let $G$ be the graph obtained from $\widehat{G}$ by attaching $N$ semi-infinite paths to the first $N$ of its vertices, and let $S$ be the corresponding $S$-matrix.  Let $\ket{\psi_j(0)}$ be a cut-off Gaussian distribution with momentum $k$ and standard deviation $\sigma$ centered at $\mu$, with the cut-off at a distance $L$ from the center.  Namely, let 
+  \begin{equation}
+    \ket{\psi^j(0)} = \gamma \sum_{x = \mu - L}^{\mu + L} e^{- i k x} e^{- (x - \mu)^2/2\sigma^2} \ket{x,j}  \label{eq:guass_start_defn},
+  \end{equation}
+  where $\gamma$ is the normalization of $\ket{\psi^j(0)}$.  Then let us define the state 
+  \begin{equation}
+    \ket{\alpha^j(t)} =\begin{cases}  \gamma e^{-2 i t \cos k} \sum_{x = \mu(t) -L}^{\mu(t)+L} e^{-i k x} e^{ -(x - \mu(t))^2/2\sigma^2} 
+    			 \ket{x,j} & t < \frac{\mu-L}{2|\sin k|}\\
+			 \gamma e^{-2 i t \cos k} \sum_{x = \mu(t)-L}^{\mu(t) + L} \sum_{q=1}^N  S_{qj}(k) e^{i k x} e^{-(x + \mu(t))^2/2\sigma^2} \ket{x,q} & t > \frac{\mu+L}{2|\sin k|},\end{cases}\label{eq:guass_approximation_defn}
+  \end{equation}
+  where
+  \begin{equation}
+    \mu(t) = \mu - \lceil 2 t \sin(k)\rceil.
+  \end{equation}
+  If $\sigma = c_1 \frac{ L}{\sqrt{\log L}}$ for some constant $c_1$, we then have that for $0 < t < \frac{\mu - L}{2|\sin k|}$ and for $\frac{\mu + L}{2|\sin k|} < t < c_2 L$ (assuming the bounds make sense),  
+  \begin{equation}
+    \norm{e^{-i H_g t} \ket{\psi^j(0)} - \ket{\alpha^j (t)}} \leq \chi \sqrt{\frac{\log L}{L}},
+  \end{equation}  
+  for some constant $\chi$.
+\end{theorem}
+
+To simply many of these equations, it will be useful to define a function
+\begin{equation}
+  h_L^\sigma(\phi) = \sum_{n = -L}^L e^{i \phi n} e^{-\frac{ x^2}{2\sigma^2}}. 
+  \label{eq:h_L_defn}
+\end{equation}
+This function is closely related to the $\Theta(z,q)$ is the Jacobi theta function, for which we refer the reader to Chapter 10 of \cite{SSCA} for a broad overview.  $\Theta$ is defined for all complex $z$ and all $q$ with positive imaginary part, and is related to our $h$ as 
+\begin{equation}
+  h_{\infty}^\sigma(\phi) = \sum_{n = -\infty}^\infty e^{ i \phi n} e^{ - \frac{ n^2}{2\sigma^2}} = \Theta\Bigg(\frac{\phi}{2\pi}, \frac{i}{2\pi \sigma^2} \Bigg).
+\end{equation}
+
+Using this equality, we can then use Theorem 1.6 from Chapter 10 of \cite{SSCA} to see that
+\begin{equation}
+  h_{\infty}^\sigma (\phi) = \Theta\Bigg(\frac{\phi}{2\pi}, \frac{i}{2\pi \sigma^2} \Bigg) = \sqrt{2\pi} \sigma e^{ - \frac{\sigma^2\phi^2}{2}} \Theta \big(i \phi\sigma^2, 2\pi i \sigma^2 \big) =  \sqrt{2\pi} \sigma e^{ - \frac{\sigma^2\phi^2}{2}}  h_{\infty}^{1/(2\pi \sigma)}\big(2\pi i \phi \sigma^2 \big).
+  \label{eq:discrete_fourier_transform}
+\end{equation}
+This can be viewed as a discrete version of a Fourier transform, as the summand goes from a Gaussian distribution with standard deviation $\sigma$ to one that has standard deviation $\sigma^{-1}$.  Additionally, note that the argument to the $h$ function is now complex.
+
+Let us now give some bounds comparing the various $h_L^\sigma$.  Note that this simple bound for the normal distribution came from \cite{Cook09}.  Assuming that $L > 0$, and that $\phi$ is real, we have that
+\begin{align}
+  \big|h_{\infty}^{\sigma}(\phi) - h_{L}^{\sigma}(\phi) \big| &= \Big| \sum_{n=L+1}^\infty 2 \cos (n\phi) e^{- \frac{n^2}{2\sigma^2}}\Big|\\
+   &\leq 2 \sum_{n = L+1}^\infty e^{ -\frac{n^2}{2\sigma^2}}\\ 
+   &\leq 2 \int_{L}^\infty e^{- \frac{x^2}{2\sigma^2}} dx\\
+   &= 2 \sigma \int_{L/\sigma}^\infty e^{- \frac{u^2}{2}}{du}\\
+   &< 2 \sigma \int_{L/\sigma}^\infty \frac{\sigma u}{L} e^{-\frac{u^2}{2}} du\\
+   &= \frac{2 \sigma^2}{L} e^{- \frac{L^2}{2\sigma^2}}\label{eq:hL_bound},
+\end{align}
+while if $L = 0$ we instead have
+\begin{align}
+  \big|h_{\infty}^{\sigma}(\phi) - 1 \big| &= \Big| \sum_{n=1}^\infty 2 \cos (n\phi) e^{- \frac{n^2}{2\sigma^2}}\Big|\\
+   &\leq 2e^{- \frac{1}{2\sigma^2}} +  \sum_{n = 2}^\infty e^{ -\frac{n^2}{2\sigma^2}}\\ 
+   &\leq 2e^{- \frac{1}{2\sigma^2}} + 2 \int_{1}^\infty e^{- \frac{x^2}{2\sigma^2}} dx\\
+   &< 2 e^{- \frac{1}{2\sigma^2}} +  2\sigma^2 e^{-\frac{1}{2\sigma^2}}\\
+   &= 2(1+ \sigma^2) e^{-\frac{1}{2\sigma^2}}.
+\end{align}
+These two bounds will allow us to approximate many of the relevant numbers.  
+
+We will now try to bound the size of $h_\infty^\sigma(\phi)$, for small (but real) $\sigma$ and imaginary $\phi$ (so as to use the discrete Fourier transform).  In particular, if we assume that $1 > \sigma^2 |\phi|$, we will have
+\begin{align}
+  h_\infty^\sigma(\phi) &= \sum_{n=-\infty}^\infty e^{i n \phi} e^{- \frac{n^2}{2\sigma^2}}\\
+    &= 1 + \sum_{n=1}^\infty 2 \cos(n \phi) e^{-\frac{n^2}{2\sigma^2}}\\
+    &\leq 1 + 2 \sum_{n=1}^\infty e^{ -\frac{n^2}{2\sigma^2} + n |\phi|}\\
+%    &= 1 + 2 e^{ \frac{\sigma^2|\phi|^2 }{2}}\sum_{n=1}^\infty  \exp\Big[ -\frac{n^2}{2\sigma^2} + n |\phi| - \frac{ \sigma^2 |\phi|^2}{2}  \Big]\\
+    &< 1 + 2 e^{- \frac{1}{2\sigma^2} + |\phi|} + 2 e^{ \frac{\sigma^2|\phi|^2 }{2}}\sum_{n=2}^\infty \exp\Big[ -\frac{1}{2}\Big(\frac{n}{\sigma} - \sigma |\phi|\Big)^2 \Big]\\
+    &< 1 + 2 e^{ - \frac{1}{2\sigma^2} + |\phi|} + 2 e^{ \frac{\sigma^2|\phi|^2 }{2}}\int_{1}^\infty  \exp\Big[ -\frac{1}{2}\Big(\frac{x}{\sigma} - \sigma |\phi|\Big)^2 \Big]dx\\
+    &= 1 + 2 e^{-\frac{1}{2\sigma^2} + |\phi|} + 2 \sigma e^{ \frac{\sigma^2|\phi|^2 }{2}} \int_{\frac{1}{\sigma} - \sigma|\phi|}^\infty e^{-\frac{u^2}{2}} du\\
+    &< 1 + 2 e^{-\frac{1}{2\sigma^2} + |\phi|} + \frac{2 \sigma e^{\frac{\sigma^2|\phi|^2}{2}}}{\frac{1}{\sigma} - \sigma |\phi|} \int_{\frac{1}{\sigma} - \sigma|\phi|}^\infty u e^{-\frac{u^2}{2}} du\\
+    &= 1 + 2 e^{-\frac{1}{2\sigma^2} + |\phi|} + \frac{2 \sigma}{\frac{1}{\sigma} - \sigma |\phi|} e^{-\frac{1}{2\sigma^2} + \phi}\\
+    &= 1 + 2 \Bigg[ \frac{ 1 + (1-|\phi|) \sigma^2}{1 - \sigma^2|\phi|}\Bigg]e^{-\frac{1}{2\sigma^2} + \phi} \label{eq:h_bound}
+\end{align}
+
+
+We will want to show that $\ket{\alpha^j(t)}$ is always normalized for $t < \frac{\mu - L}{2|\sin k|}$ and for $t > \frac{\mu + L}{2|\sin k|}$.  In the first case, we have that 
+\begin{align}
+   \braket{\alpha_j(t)}{\alpha_j(t)} &= \gamma^2 \sum_{x = \mu(t) - L}{\mu(t) + L} e^{ -\frac{(x-\mu(t))^2}{\sigma^2}} = \gamma^2 h_{L}^{\sigma/\sqrt{2}} (0) = 1,
+\end{align}
+where we used the fact that the approximated wavepacket had not yet hit the finite graph.  In the second case, we instead have
+\begin{align}
+  \braket{\alpha_j(t)}{\alpha_j(t)} &= \gamma^2 \sum_{x = \mu(t) - L}{\mu(t) + L} \sum_{q = 1}^N S_{qj(k)}^*S_{qj}(k) e^{ -\frac{(x-\mu(t))^2}{\sigma^2}} \\
+   &= \gamma^2 \sum_{x = \mu(t) - L}{\mu(t) + L}  e^{ -\frac{(x-\mu(t))^2}{\sigma^2}} = 1
+\end{align}
+where we used the fact that $S$ is a unitary matrix, and our previous results.  
+
+Additionally, it will be helpful to actually have bounds on $\gamma^{-2}$.  In particular, we have that
+\begin{align}
+  \gamma^{-2} &= h_{L}^{\sigma/\sqrt{2}}(0)   < h_{\infty}^{\sigma/\sqrt{2}}(0)
+     = \sqrt{\pi} \sigma h_{\infty}^{1/(\pi \sigma \sqrt{2})} (0)
+     \leq \sqrt{\pi} \sigma \Big[ 1 + 2 \Big( 1 + \frac{1}{2\pi^2\sigma^2}\Big) e^{ - \pi^2\sigma^2}\Big]
+\end{align}
+as an upper bound, while
+\begin{align}
+  \gamma^{-2} &= h_{L}^{\sigma/\sqrt{2}}(0) = h_{\infty}^{\sigma/\sqrt{2}}(0) - \big( h_{L}^{\sigma/\sqrt{2}}(0) - h_\infty^{\sigma/\sqrt{2}}(0)\big) \geq \sqrt{\pi} \sigma - \frac{\sigma^2}{L} e^{-\frac{L^2}{\sigma^2}} \\
+   &= \sqrt{\pi} \sigma \Big(1 - \frac{\sigma}{L\sqrt{\pi}} e^{ - \frac{L^2}{\sigma^2}}\Big) 
+\end{align}
+can be used as a lower bound.  However, these bounds are not particular nice to use and thus we will use the slightly weaker bounds of
+\begin{align}
+  \gamma^{-2} & \leq \sqrt{\pi}\sigma \big[ 1 + 3 e^{-\pi^2 \sigma^2}\big]\label{eq:gaussian_gamma_upper_bound}
+\end{align}
+and
+\begin{align}
+  \gamma^{-2} & \geq \sqrt{\pi} \sigma \big[ 1 - e^{-\frac{L^2}{\sigma^2}}\big],\label{eq:gaussian_gamma_lower_bound}
+\end{align}
+where we assume that $L > \sigma > 1$.
+
+\begin{proof}
+
+
+
+The main idea behind this proof will be to show that $\ket{\psi_j(0)}$ and $\ket{\alpha_j(t)}$ are both well approximated by a Gaussian distribution over momentum states near $k$, and then show that the time evolved Gaussian approximation of $\ket{\psi_j(0)}$ is well approximated by the Gaussian approximation for $\ket{\alpha_j(t)}$.  
+
+In particular, let us examine the inner product between a scattering state $\ket{\scat_j(k+\phi)}$ and $\ket{\alpha_j(t)}$.  We can see that
+\begin{align}
+  &\braket{\scat_j(k+\phi)}{\alpha_j(t)}\nonumber\\
+  &\qquad= \begin{cases} 
+      \gamma e^{-2 i t \cos k} \sum_{x=\mu(t)-L}^{\mu(t)+L} \Big(e^{i \phi x} + S_{qj}^*(k+\phi) e^{-i(2k + \phi)x}\Big) e^{ -\frac{(x-\mu(t))^2}{2\sigma^2}}
+        & t < \frac{\mu - L}{2|\sin(k)|}\\
+      \gamma e^{-2 i t \cos k} \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{q=1}^N \Big(\delta_{qj} e^{i (2k+\phi) x}\\
+      \qquad \qquad \qquad \qquad\qquad  + S_{qj}^*(k+\phi) S_{qj}(k) e^{-i\phi x}\Big) e^{ -\frac{(x+\mu(t))^2}{2\sigma^2}}& t > \frac{\mu + L}{2|\sin(k)|}
+      \end{cases} 
+ \end{align}
+While this looks like somewhat complicated expression, most of the amplitude results from the terms multiplied by $e^{\pm i \phi x}$.  If we approximate $S_{qj}^*(k+\phi)$ by $S_{qj}^*(k)$, for either of the time ranges the above expression can be seen as $e^{-2it \cos k} e^{ i \phi \mu(t)} h_L^\sigma(\phi)$ plus some small error terms.  Additionally, for $\phi$ small compared to $\sigma$, $h_\infty^\sigma(\phi) \propto e^{-\frac{\sigma^2\phi^2}{2}}$,  so let us define
+\begin{align}
+  \ket{w_j(t)} = \eta e^{- 2 i t \cos k}\int_{-\delta}^{\delta} \frac{d\phi}{2\pi} e^{ i \phi \mu(t)} e^{-\frac{\sigma^2\phi^2}{2}}\ket{\scat_{j}(k+\phi)} \label{eq:gaussian_w_defn}
+\end{align}
+where $\delta$ is a constant that we will define later, and where $\eta$ is an approximate normalization factor defined as
+\begin{align}
+  \eta^{-2} = \int_{-\infty}^{\infty} \frac{d\phi}{2\pi} e^{-\sigma^2\phi^2} = \frac{1}{2 \sqrt{\pi} \sigma}
+\end{align}
+The state $\ket{w_j(t)}$ will be our Gaussian approximation to the state $\ket{\alpha_j(t)}$.  
+
+Note that the states $\ket{w_j(t)}$ are not exactly normalized, but that 
+\begin{align}
+  \braket{w_j(t)}{w_j(t)} &= \eta^2  \int_{-\delta}^\delta \frac{d\phi}{2\pi}  e^{-\sigma^2\phi^2} =  \eta^2  \int_{-\infty}^\infty \frac{d\phi}{2\pi}  e^{-\sigma^2\phi^2} - 2 \eta^2 \int_{\delta}^\infty \frac{d\phi}{2\pi} e^{-\sigma^2 \phi^2} \\
+  &= 1 - \frac{2 \sigma}{\sqrt{\pi}} \int_{\delta}^\infty d\phi e^{-\sigma^2\phi^2}.
+\end{align}
+Hence, we have that
+\begin{align}
+  \braket{w_j(t)}{w_j(t)} & \geq 1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2}
+\end{align}
+and
+\begin{align}
+  \braket{w_j(t)}{w_j(t)} & \leq 1 - \frac{ 2\sigma \delta}{\sqrt{\pi}(2 \sigma^2 \delta^2 + 1)}e^{- \sigma^2 \delta^2}
+\end{align}
+
+
+\begin{comment}
+
+In particular, we can use the bound of \eq{h_bound} to see
+\begin{align}
+  \eta^{-2} 
+  &\leq 2  \sigma^2\int_{0}^\delta d\phi \Big[ h_{\infty}^{1/(2\pi\sigma)} \big(2 \pi i \phi \sigma^2\big)\Big]^2\\
+  &\leq 2\sigma^2 \int_{0}^\delta d\phi \Bigg(1 + 2 \Bigg[ \frac{ 1 + (1 - 2\pi \phi \sigma^2) \frac{1}{4\pi^2\sigma^2}}{1 - \frac{1}{4\pi^2 \sigma^2} (2\pi\phi\sigma^2)}\Bigg]e^{-\frac{(2\pi\sigma)^2}{2} + 2\pi \phi\sigma^2}\Bigg)^2\\
+  & = 2 \sigma^2 \int_{0}^\delta d\phi \Bigg( 1 + 2 \Bigg[ 1 + \frac{1}{2\pi \sigma^2}\frac{1}{2\pi- \phi}\Bigg] e^{2\pi \sigma^2 (\phi - \pi)}\Bigg)^2\\
+  & < 2 \sigma^2 \delta\Bigg( 1 + 2 \Bigg[ 1 + \frac{1}{2\pi \sigma^2}\frac{1}{2\pi - \delta}\Bigg] e^{2\pi \sigma^2 (\delta - \pi)}\Bigg)^2
+\end{align}
+and if $\delta < \pi/2$, we find that
+\begin{equation}
+  \eta^{-2}  < 2 \sigma^2 \delta \big( 1 + 4 e^{-\pi^2 \sigma^2}\big).
+\end{equation}
+If we then note that for purely imaginary $\theta$, $h_L^\sigma(\theta) < h_{L+1}^\sigma(\theta)$ as the additional terms are always positive, and that $h_0^\sigma(\theta) = 1$, we can also bound this value by
+\begin{equation}
+  \eta^{-2} > 2 \sigma^2 \int_{0}^\delta d \phi e^{ - \sigma^2 \phi^2}
+   > 2\sigma^2 \int_{0}^\delta d\phi e^{-\sigma^2\delta^2}= 2 \sigma^2 \delta e^{-\sigma^2\delta^2}
+\end{equation}
+
+\end{comment}
+
+We will also want to know the overlap of these approximations with the states that they will approximate, namely $\ket{\alpha_j(t)}$.  If $t < \frac{\mu - L}{2|\sin k|}$, then we have that
+\begin{align}
+  \braket{w_j(t)}{\alpha_j(t)} &= \eta e^{2 i t \cos k} \int_{-\delta}^\delta \frac{d\phi}{2\pi} \braket{\scat_j(k+\phi)}{\alpha_j(t)}  e^{-\frac{\sigma^2\phi^2}{2}} e^{ - i \phi \mu(t)}\\
+  &= \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{ 2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big( h_L^\sigma(\phi) + S_{jj}^*(k+\phi) e^{-2 i (\phi + k) \mu(t)}h_L^\sigma(2k+\phi) \big)\\
+  &= \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_\infty^\sigma(\phi) +\gamma \eta\int_{-\delta}^\delta \frac{d\phi}{2\pi}e^{-\frac{\sigma^2\phi^2}{2}}  \big( h_L^\sigma(\phi) - h_\infty^\sigma(\phi)\big) \nonumber \\
+  & \qquad + \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{-2 i (\phi + k)\mu(t)}e^{-\frac{\sigma^2\phi^2}{2}}  h_\infty^\sigma(2k + \phi)  \nonumber\\
+  &\qquad + \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{-2 i (\phi + k)\mu(t)}e^{-\frac{\sigma^2\phi^2}{2}}  \big(h_L^\sigma(2k+\phi) - h_\infty^\sigma(2k + \phi) \big).
+\end{align}
+If $t > \frac{\mu + L}{2|\sin k|}$, we instead have 
+\begin{align}
+  \braket{w_j(t)}{\alpha_j(t)} &= \eta e^{2 i t \cos k} \int_{-\delta}^\delta \frac{d\phi}{2\pi} \braket{\scat_j(k+\phi)}{\alpha_j(t)} e^{-\frac{\sigma^2\phi^2}{2}} e^{ - i \phi \mu(t)}\\
+    &= \gamma\eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi)\mu(t)} S_{jj}(k) e^{-\frac{\sigma^2\phi^2}{2}} h_{L}^\sigma(2k+\phi)\nonumber\\
+    &\qquad +\gamma\eta \sum_{q=1}^N \int_{-\delta}^\delta \frac{d\phi}{2\pi}  S_{qj}^*(k+\phi) S_{qj}(k)e^{-\frac{\sigma^2\phi^2}{2}}  h_L^\sigma(\phi)\\
+    &= \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_\infty^\sigma(\phi)
+      + \gamma \eta\sum_{q=1}^N \int_{-\delta}^\delta \frac{d\phi}{2\pi} \big(S_{qj}^*(k+\phi )- S_{qj}^*(k)\big) S_{qj}(k)e^{-\frac{\sigma^2\phi^2}{2}} h_{\infty}^\sigma(\phi)\nonumber\\
+    &\qquad  + \gamma \eta\sum_{q=1}^N \int_{-\delta}^{\delta} \frac{d\phi}{2\pi} S_{qj}^*(k+\phi)S_{qj}(k) e^{-\frac{\sigma^2\phi^2}{2}} \big(h_L^\sigma(\phi) - h_\infty^\sigma(\phi)\big) \nonumber\\
+    &\qquad + \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi)\mu(t)} S_{jj}(k) e^{-\frac{\sigma^2\phi^2}{2}}  h_\infty^\sigma(2k+\phi)\nonumber \\
+    &\qquad + \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi)\mu(t)} S_{jj}(k)e^{-\frac{\sigma^2\phi^2}{2}}  \big(h_{L}^\sigma(2k+\phi) - h_\infty^\sigma(2k+\phi )\big).
+\end{align}
+In both cases, most of the norm comes from the first term, and the rest will be small error terms.  In particular, we see that
+\begin{align}
+   \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_\infty^\sigma(\phi) &= \frac{\sigma}{\sqrt{2\pi}} \int_{-\delta}^\delta d\phi e^{-\sigma^2 \phi^2} h_{\infty}^{1/(2\pi\sigma)}(2\pi i \sigma^2 \phi)\\
+   &\leq \frac{2\sigma}{\sqrt{2\pi}} \int_0^\delta d\phi e^{ - \sigma^2 \phi^2} \Big[ 1 + 2 \Big( 1 + \frac{1}{2\pi \sigma^2} \frac{1}{ 2\pi - \phi}\Big) e^{ - 2\pi \sigma^2 (\pi - \phi)}\Big]\\
+   & \leq \frac{2\sigma}{\sqrt{2\pi}} \Big[ 1 + 2 \Big( 1 + \frac{1}{2\pi \sigma^2} \frac{1}{ 2\pi - \delta }\Big) e^{ - 2\pi \sigma^2 (\pi - \delta)}\Big] \int_{0}^{\delta} d\phi e^{ - \sigma^2 \phi^2} \\
+   &\leq \frac{1}{\sqrt{2}} \Big[ 1 + 3 e^{ - \pi^2 \sigma^2}\Big]\label{eq:gaussian_approx_gh}
+\end{align}
+where we assumed that $\delta < \frac{\pi}{2}$. If we also note that $h_L^\sigma(i\phi) \geq 1$ for all $L$ and all real $\phi$, we have 
+\begin{align}
+  \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_\infty^\sigma(\phi) &= \frac{\sigma}{\sqrt{2\pi}} \int_{-\delta}^\delta d\phi e^{-\sigma^2 \phi^2} h_{\infty}^{1/(2\pi\sigma)}(2\pi i \sigma^2 \phi)\\
+  &\geq \frac{\sigma}{\sqrt{2\pi}} \int_{-\delta}^\delta d\phi e^{-\sigma^2\phi^2} \\
+  &= \sigma \sqrt{2\pi} \eta^{-2} \braket{w_j(t)}{w_j(t)}\\
+  & \geq \frac{1}{\sqrt{2}}\Big( 1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2}\Big).
+\end{align}
+
+Now let us assume that $t < \frac{\mu - L}{2|\sin k |}$ and examine the first case.  We can use the bound of \eq{hL_bound} to see that
+\begin{align}
+  \Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big(h_{L}^\sigma(\phi) - h_{\infty}^\sigma(\phi)\big) \Big| &\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big| h_L^\sigma(\phi) - h_\infty^\sigma(\phi)\big|\\
+   &\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi}  \frac{2\sigma^2}{L} e^{- \frac {L^2}{2\sigma^2}}e^{-\frac{\sigma^2\phi^2}{2}}\\
+   & \leq \frac{\sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} \int_{-\infty}^\infty d\phi e^{ - \frac{\sigma^2 \phi^2}{2}}\\
+   &= \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}\label{eq:gaussian_approx_L_to_infinity},
+\end{align}
+For the third term, we can continue to use the relations for the $h$ functions and note that
+\begin{align}
+ &\Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{- 2 i (\phi + k)\mu(t)} h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}} \Big| \nonumber\\
+  & \qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} h_{\infty}^\sigma(2k+\phi) e^{-\frac{\sigma^2\phi^2}{2}} \\
+  & \qquad = \int_{-\delta}^\delta  \frac{d\phi}{\sqrt{2\pi}} \sigma e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)} h_{\infty}^{1/(2\pi\sigma)}(2\pi i (2k+\phi) \sigma^2) \\
+  &\qquad \leq \frac{\sigma}{\sqrt{2\pi}} \int_{-\delta}^{\delta} d\phi e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)}\Big( 1 + 2 \Big[ 1 + \frac{1}{2\pi \sigma^2} \frac{1}{ 2\pi - |2k + \phi|}\Big] e^{- 2\pi \sigma^2 (\pi - |2k + \phi|)}\Big)\label{eq:gaussian_k_offset_midstep}
+\end{align}
+where we used equation \eq{h_bound} in the third step.  If $2|k|+ \delta < \pi$, then $h_{\infty}^{1/(2\pi\sigma)} (2k+\phi)$ can be bounded by $2$ for $\sigma > (\pi - 2|k| - \delta)^{-1}$.  We then have
+\begin{align}
+ \Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{- 2 i (\phi + k)\mu(t)} h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}}\Big|&\leq \sqrt{\frac{2}{\pi}} \sigma \int_{-\delta}^\delta d\phi e^{- \frac{\sigma^2}{2} \big( (2k + \phi)^2 + \phi^2\big)}\\
+  & = \sqrt{\frac{2}{\pi}} \sigma \int_{-\delta}^{\delta} d\phi e^{ -\sigma^2 k^2 - \sigma^2 (k + \phi)^2}\\
+  & \leq \sqrt{\frac{2}{\pi}} \sigma e^{-\sigma^2 k^2} \int_{-\infty}^\infty d\phi e^{ -\sigma^2 \phi^2}\\
+  & = \sqrt{2} e^{-\sigma^2 k^2}.
+\end{align}
+However, if we instead have that  $2|k| + \delta > \pi$, then we can instead bound equation \eq{gaussian_k_offset_midstep}  as
+\begin{align}
+&\Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{- 2 i (\phi + k)\mu(t)} h_\infty^\sigma(2 k+\phi)e^{-\frac{\sigma^2\phi^2}{2}}\Big| \nonumber\\
+  & \qquad \leq \sqrt{\frac{2}{\pi}} \sigma \int_{-\delta}^{\delta}d\phi e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)}\Bigg( 1 + 2 \Bigg[ 1 + \frac{1}{2\pi \sigma^2} \frac{1}{ 2\pi - |2k + \phi|}\Bigg] e^{- 2\pi \sigma^2 (\pi - |2k + \phi|)}\Bigg)\\
+  &\qquad \leq 4 \sqrt{\frac{2}{\pi}}\sigma \int_{-\delta}^{\delta} d\phi e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)} e^{2 \pi \sigma^2 (2 |k| + \delta - \pi)}\\
+  &\qquad =4 \sqrt{\frac{2}{\pi}}\sigma \int_{-\delta}^{\delta} d\phi  e^{  2\sigma^2 \big(-k^2 +2\pi |k| -\pi^2 + \pi \delta - k\phi - \frac{\phi^2}{2} \big)}\\
+  &\qquad =4 \sqrt{\frac{2}{\pi}}\sigma e^{2\sigma^2[-(\pi - |k|)^2 + \pi \delta]}\int_{-\delta}^{\delta} d\phi e^{  -\sigma^2 (\phi^2 + 2k\phi )}\\
+  &\qquad \leq 4 \sqrt{\frac{2}{\pi}}\sigma e^{2\sigma^2[-(\pi - |k|)^2 + (\pi + |k|) \delta]} \int_{-\delta}^{\delta} d\phi e^{- \sigma^2 \phi^2}\\
+  & \qquad \leq 4\sqrt{2} e^{ -\sigma^2 (\pi - |k|)^2}
+  \end{align}
+where we assumed that $\delta < \frac{(\pi-|k|)^2}{\pi + |k|}$.  In either case, we have that 
+\begin{align}
+\Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{- 2 i (\phi + k)\mu(t)} h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}}\Big|
+  & \leq 4 \sqrt{2} e^{ - \sigma^2 \delta}\label{eq:gaussian_cross_term_bound}.
+\end{align}
+Finally, we can again use the same argument as in equation  \eq{gaussian_approx_L_to_infinity}  to see that in to bound the final term as
+\begin{align}
+  & \Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{2 i (\phi + k)\mu(t)} \big( h_L^\sigma (2k + \phi) - h_{\infty}^\sigma(2k+\phi)\big) e^{-\frac{\sigma^2\phi^2}{2}}\Big| \nonumber\\
+  & \qquad \leq  \int_{-\delta}^\delta \frac{d\phi}{2\pi} \big|h_L^\sigma(2k + \phi) - h_\infty^\sigma(2k+\phi)\big| e^{-\frac{\sigma^2\phi^2}{2}}\\
+  & \qquad \leq \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}
+\end{align}
+where we used \eq{gaussian_approx_L_to_infinity} in the last line.  This is sufficient for us to bound the norm of $\braket{w_j(t)}{\alpha_j(t)}$ for small $t$.
+
+With all of these bounds, we then have that if $t < \frac{\mu - L}{2|\sin k|}$, since most of the amplitude of $\braket{\alpha_j(t)}{w_j(t)}$ is on the term equal to $\braket{w_j(t)}{w_j(t)}$, 
+\begin{align}
+  \norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 &= \braket{\alpha_j(t)} {\alpha_j(t)} + \braket{w_j(t)}{w_j(t)} - 2 \Re\big[ \braket{\alpha_j(t)}{w_j(t)} \big]\\
+  & \leq 1 + \braket{w_j(t)}{w_j(t)}\nonumber\\
+  &\qquad  - 2\gamma\eta  \Bigg[ \frac{1}{\sqrt{2}} \braket{w_j(t)}{w_j(t)} - \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}} - 4 \sqrt{2} e^{-\sigma^2 \delta} - \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}  \Bigg] \\
+  & = 1 + \big( 1 - \sqrt{2} \gamma \eta\big) \braket{w_j(t)}{w_j(t)} + 4 \sqrt{2} \gamma \eta \Big[\frac{ \sigma}{\sqrt{\pi} L} e^{ - \frac{L^2}{2\sigma^2}} + 2 e^{ - \sigma^2 \delta} \Big] 
+\end{align}
+We can then use our bounds on $\gamma$ from equations \eq{gaussian_gamma_upper_bound} and \eq{gaussian_gamma_lower_bound}, along with the bounds on $\braket{w_j(t)}{w_j(t)}$ to see that
+\begin{align}
+  &\norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 \nonumber\\
+  &\qquad \leq 1 + \Big[ 1 - \sqrt{2} \sqrt{2\sqrt{\pi} \sigma} \frac{1}{\sqrt{ \sqrt{\pi} \sigma}} \Big( 1 + 3 e^{ - \pi^2\sigma^2} \Big)^{-1/2} \Big] \Big( 1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2}\Big)\nonumber\\
+  &\qquad \qquad + 4 \sqrt{2} \sqrt{2\sqrt{\pi} \sigma} \frac{1}{\sqrt{ \sqrt{\pi} \sigma}} \Big[ 1 - e^{-\frac{L^2}{2\sigma^2}}\Big]^{-1/2}  \Big[\frac{ \sigma}{\sqrt{\pi} L} e^{ - \frac{L^2}{2\sigma^2}} + 2 e^{ - \sigma^2 \delta} \Big] \\
+  & \qquad \leq 1 + \Big[ 1 - 2 + 3 e^{-\pi^2 \sigma^2}\Big] \Big( 1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2}\Big)
+    + 8 \Big[1 + e^{ - \frac{L^2}{\sigma^2}}\Big]  \Big[\frac{ \sigma}{\sqrt{\pi} L} e^{ - \frac{L^2}{2\sigma^2}} + 2 e^{ - \sigma^2 \delta} \Big] \\
+  &\qquad\leq  3 e^{ - \pi^2 \sigma^2}  + \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2} + \frac{ 16\sigma}{\sqrt{\pi} L} e^{ - \frac{L^2}{2\sigma^2}} + 32 e^{ - \sigma^2 \delta}\\
+  &\qquad \leq 36 e^{ - \sigma^2 \delta}  + \frac{16 \sigma}{\sqrt{\pi}L} e^{ - \frac{L^2}{2\sigma^2}}
+\end{align}
+where we assumed that $\sigma > (\delta \sqrt{\pi})^{-1}$.
+
+
+If we now examine the cases for which $t > \frac{\mu + L}{2|\sin k|}$, we have some slightly different errors to bound, but most will utilize the same tricks.  The one that needs different ideas, however, will utilize the fact that $S$ is a matrix of bounded rational functions.  In particular, the Lipschitz constant
+\begin{align}
+  \Gamma &= \max_{q,j\in [N]} \max_{p\in [-\pi,\pi]} \Bigg| \frac{d}{dk'} S_{qj}(k') \Big|_{k' = p} \Bigg|
+\end{align}
+is well defined.  Using this, we then have that
+\begin{align}
+  &\Big|\int_{-\delta}^\delta \frac{d\phi}{2\pi} \big(S_{qj}^*(k+\phi )- S_{qj}^*(k)\big) S_{qj}(k) e^{-\frac{\sigma^2\phi^2}{2}}h_{\infty}^\sigma(\phi)\Big| \nonumber\\
+   & \qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} \big|S_{qj}^*(k+\phi )- S_{qj}^*(k)\big|e^{-\frac{\sigma^2\phi^2}{2}}h_{\infty}^\sigma(\phi)\\
+   & \qquad\leq \frac{\kappa}{\pi} \int_{0}^\delta d\phi \phi e^{-\frac{\sigma^2\phi^2}{2}}h_\infty^\sigma(\phi)\\
+   & \qquad = \kappa\sigma \sqrt{\frac{2}{\pi}}\int_0^\delta d\phi \phi e^{-\sigma^2 \phi^2} h_{\infty}^{1/(2\pi\sigma)} (2\pi i \sigma^2 \phi)\\
+   & \qquad \leq \kappa\sigma \sqrt{\frac{2}{\pi}} \big( 1 + 3 e^{-\pi^2\sigma^2}\big) \int_{0}^\delta d\phi \phi e^{ -\sigma^2\phi^2}\\
+   & \qquad = \frac{\kappa}{\sigma \sqrt{2\pi}} \big(1 + 3 e^{-\pi^2 \sigma^2}\big) \big( 1 - e^{-\sigma^2\delta^2}\big)
+\end{align}
+where we used our previous bounds on $h_\infty^\sigma(\phi)$.  We also have
+\begin{align}
+  \Big|\int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{qj}^*(k+\phi) S_{qj}(k) \big(h_{L}^\sigma (\phi) - h_\infty^\sigma(\phi)\big) e^{-\frac{\sigma^2\phi^2}{2}}\Big|
+    & \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi}  \big|h_{L}^\sigma (\phi) - h_\infty^\sigma(\phi)\big| e^{-\frac{\sigma^2\phi^2}{2}}\\
+    & \leq \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}
+\end{align}
+where we use equation \eq{gaussian_approx_L_to_infinity} in the last line.  Continuing to extend our previous results, we can utilize equation \eq{gaussian_cross_term_bound} to see that
+\begin{align}
+  \Bigg| \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi) \mu(t)} S_{jj}(k) e^{-\frac{\sigma^2\phi^2}{2}} h_{\infty}^\sigma(2k+\phi)\Bigg| 
+    & \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi}  e^{-\frac{\sigma^2\phi^2}{2}} h_{\infty}^\sigma(2k+\phi) \leq 4 \sqrt{2} e^{ - \sigma^2 \delta}.
+\end{align}
+Finally, we can again use equation \eq{gaussian_approx_L_to_infinity} to show
+\begin{align}
+  &\Bigg| \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi) \mu(t)} S_{jj}(k) \big( h_{L}^\sigma(2k + \phi) - h_{\infty}^\sigma(2k + \phi) \big)e^{-\frac{\sigma^2\phi^2}{2}}\Bigg|  \nonumber\\
+  &\qquad\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} \big| h_{L}^\sigma(2k + \phi) - h_{\infty}^\sigma(2k + \phi) \big|e^{-\frac{\sigma^2\phi^2}{2}}\\
+  & \qquad \leq \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}.
+\end{align}
+
+We now have the ability to bound the error arising from approximating $\ket{\alpha_j(t)}$ for $t > \frac{\mu + L}{2|\sin k|}$.  In particular, we have
+\begin{align}
+    \norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 &= \braket{\alpha_j(t)} {\alpha_j(t)} + \braket{w_j(t)}{w_j(t)} - 2 \Re\big[ \braket{\alpha_j(t)}{w_j(t)} \big]\\
+  & \leq 1 + \braket{w_j(t)}{w_j(t)} - 2\gamma \eta \Bigg[  \frac{1}{\sqrt{2}} \braket{w_j(t)}{w_j(t)} \nonumber\\
+  & \qquad  - \sum_{q=1}^N  \frac{\kappa}{\sigma \sqrt{2\pi}}\big(1 + 3 e^{-\pi^2 \sigma^2}\big)\big(1 - e^{-\sigma^2 \delta^2}\big) - \sum_{q=1}^N \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}\nonumber\\
+  &\qquad  - 4 \sqrt{2} e^{-\sigma^2 \delta} - \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}\Bigg]\\
+  &\leq 1 + \big(1 - \sqrt{2}\gamma \eta \big) \braket{w_j(t)}{w_j(t)} + 2\gamma\eta \Bigg[ \frac{N \kappa}{\sigma \sqrt{2\pi}} \big(1 + 3 e^{-\pi^2 \sigma^2}\big) \nonumber\\
+  &\qquad + \sqrt{\frac{2}{\pi}} \frac{(N+1)\sigma}{L} e^{ - \frac{L^2}{2\sigma^2}} + 4 \sqrt{2} e^{-\sigma^2\delta} \Bigg].
+\end{align}
+If we use the same bounds as for $t < \frac{\mu -L}{2|\sin k|}$ we find 
+\begin{align}
+  & \norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 \\
+  & \qquad \leq 1 + \big(1 - 2 + 3 e^{-\pi^2 \sigma^2}\big) \Big(1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2 \delta^2} \Big) \nonumber\\
+  &\qquad \qquad \qquad + 2\sqrt{2} \Big( 1 + e^{ - \frac{L^2}{\sigma^2}} \Big)\Bigg( \frac{N \kappa}{\sigma}  + \sqrt{\frac{2}{\pi}} \frac{(N+1)\sigma}{L} e^{-\frac{L^2}{2\sigma^2} }+ 4 \sqrt{2} e^{-\sigma^2 \delta}  \Bigg)\\
+  & \qquad \leq 3 e^{-\pi^2 \sigma^2} + \frac{1}{\delta \sigma \sqrt{\pi}} e^{ - \sigma^2 \delta^2} + 4 \sqrt{2} \Bigg( \frac{N \kappa}{\sigma}  + \sqrt{\frac{2}{\pi}} \frac{(N+1)\sigma}{L} e^{-\frac{L^2}{2\sigma^2} }+ 4 \sqrt{2} e^{-\sigma^2 \delta}\Bigg) \\
+  & \qquad \leq 36  e^{-\sigma^2 \delta} + \frac{32N\kappa}{\sigma} + \frac{8 (N+1)}{\sqrt{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}
+\end{align}
+
+
+At this point, we can now bound the error that arises when approximating $\ket{\alpha_j(t)}$ by a Gaussian for any $t < \frac{\mu -L}{2 |\sin(k)|}$ and for any $t > \frac{\mu +L}{2|\sin(k)|}$.  However, we don't yet know how well $\ket{\alpha_j(t)}$ approximates $\ket{\psi_j(t)}$.  Note, however, that $\ket{\alpha_j(0)} = \ket{\psi_j(0)}$, and thus we already have an approximation to the initial state.  We can then look easily time-evolve this approximation, and compare it to the Gaussian approximation for $\ket{\alpha_j(t)}$. 
+
+Let us define
+\begin{align}
+  \ket{v_j(0)} = \ket{w_j(0)} = \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{ i \phi \mu} e^{ - \frac{\sigma^2 \phi^2}{2}}\ket{\scat_j(k+\phi)}
+\end{align}
+and then define 
+\begin{align}
+  \ket{v_j(t)} = e^{-i H t} \ket{v_j(0)} = \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{ i \phi \mu - 2 i t \cos(k+\phi)} e^{ - \frac{\sigma^2 \phi^2}{2}} \ket{\scat_j(k+\phi)}.
+\end{align}
+We then want to compare this time evolved state with our approximation to $\ket{\alpha_j(t)}$.  We can see 
+\begin{align}
+  \braket{v_j(t)}{w_j(t)} &= \eta^2 \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{ 2i t \cos(k+\phi) - 2 i t \cos(k)} e^{ i \phi \mu - i \phi \mu - i \phi \lceil 2t \sin k\rceil} e^{-\sigma^2 \phi^2}\\
+  &= \eta^2 \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\sigma^2\phi^2} - \eta^2 \int_{-\delta}^\delta \frac{d\phi}{2\pi}\big( 1 - e^{ 2i t \cos(k+\phi) - 2 i t \cos(k) +i \phi \lceil 2t \sin k\rceil} \big)e^{-\sigma^2\phi^2}.
+\end{align}
+The first term is simply the norm of both $\ket{v_j(t)}$ and $\ket{w_j(t)}$, while the third term can be bounded as
+\begin{align}
+ & \Bigg| \int_{-\delta}^\delta \frac{d\phi}{2\pi}\big( 1 - e^{ 2i t \cos(k+\phi) - 2 i t \cos(k) + i \phi \lceil 2t \sin k\rceil} \big)e^{-\sigma^2\phi^2}\Bigg| \\
+ &\qquad\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi}\big| 1 - e^{ 2i t \cos(k+\phi) - 2 i t \cos(k) + i \phi \lceil 2t \sin k\rceil} \big|e^{-\sigma^2\phi^2}\\
+  &\qquad\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi}\big|2 t \cos(k+\phi) - 2 t \cos(k) + \phi \lceil 2t \sin k\rceil \big|e^{-\sigma^2\phi^2}\\
+  &\qquad\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} \Big(2t \big|\cos(k) \cos(\phi) - \sin(k)\sin(\phi) - \cos(k) + \phi\sin(k)\big|+|\phi|\Big)e^{-\sigma^2\phi^2}\\
+  &\qquad\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} \Big( t \big| \cos(k) \phi^2 + \sin(k) |\phi|^3\big| + |\phi|\Big) e^{-\sigma^2\phi^2}\\
+  &\qquad \leq 2 \int_{0}^\delta \frac{d \phi}{2\pi} \big( 2 t \phi^2 + \phi\big) e^{-\sigma^2\phi^2}\\
+  & \qquad \leq \frac{1}{2\pi\sigma^2} + \frac{t}{2\sqrt{\pi} \sigma^3}.
+\end{align}
+Noting that the norm of $\braket{v_j(t)}{v_j(t)}$ doesn't change with time, we have that
+\begin{align}
+  \norm{\ket{v_j(t)} - \ket{w_j(t)}}^2 &= \braket{v_j(t)}{v_j(t)} + \braket{w_j(t)}{w_j(t)} - \braket{v_j(t)}{w_j(t)} - \braket{w_j(t)}{v_j(t)}\\
+  &\leq 2 \eta^2 \int_{\delta}^\delta \frac{d\phi}{2\pi} e^{-\sigma^2 \phi^2} - 2\eta^2 \int_{\delta}^\delta \frac{d\phi}{2\pi }e^{ - \sigma^2 \phi^2} + \frac{2\eta^2}{2\pi \sigma^2} + \frac{2 \eta^2 t}{2\sqrt{\pi} \sigma^3}\\
+  &= 2 \frac{\sqrt{\pi}}{ \sigma} + \frac{2 t }{\sigma^2}.
+\end{align}
+
+Finally, we can combine these three bounds, noting that $\ket{\psi_j(0)} = \ket{\alpha_j(0)}$, and that $\norm{\ket{w_j(t)} - \ket{\alpha_j(t)}} $ is larger for $ t > \frac{\mu+L}{2|\sin k|}$ than for $t < \frac{\mu- L}{2|\sin k|}$.  In particular, we have for all $t \leq \frac{\mu -L}{2 |\sin k|}$ and for all $t > \frac{\mu + L}{2|\sin k|}$ that
+\begin{align}
+  &\norm{ \ket{\psi_j(t)} - \ket{\alpha_j(t)}}\nonumber\\
+   &\qquad \leq \norm{ \ket{\psi_j}{(t)} - \ket{v_j(t)}} + \norm{\ket{ v_j(t)} - \ket{w_j(t)}} + \norm{\ket{w_j(t)} - \ket{\alpha_j(t)}}\\
+  & \qquad \leq \Bigg[ 36 e^{-\sigma^2 \delta} + \frac{16 \sigma}{\sqrt{\pi} L} e^{-\frac{L^2}{\sigma^2}} \Bigg]^{1/2} + \Bigg[ \frac{2 \sqrt{\pi}}{\sigma} + \frac{2t}{\sigma^2}\Bigg]^{1/2} \nonumber\\
+  &\qquad \qquad \qquad + \Bigg[36 e^{ -\sigma^2 \delta} + \frac{32 N \kappa}{\sigma} + \frac{8 (N+1)}{\sqrt{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}} \Bigg] ^{1/2}.
+\end{align}
+If we then assume that $\sigma = \frac{ c_1 L}{\sqrt{\log L}}$ for some constant $c_1$, and that $t < c_2 L$ for some constant $c_2$, we have that for $L$ large enough
+\begin{align}
+  &\norm{ \ket{\psi_j(t)} - \ket{\alpha_j(t)}}\nonumber\\
+   & \qquad \leq \Big( \frac{ c_3}{\sqrt{\log{L}}} \frac{1}{L} \Big)^{1/2} + \Big(\frac{c_4\sqrt{ \log L}}{L} + \frac{ c_2 \log L}{L}   \Big)^{1/2} + \Big( \frac{ c_5\sqrt{\log L}}{L} + \frac{c_6}{L\sqrt{\log L}}\Big)^{1/2}\\
+   &\qquad \leq \chi  \sqrt{\frac{\log L}{L}}
+\end{align}
+for some constant $\chi$.
+
+\end{proof}
+
+Now that we have a bound for the single particle truncated scattering, it will be useful to also have a truncated two-particle scattering on an infinite path.
+
+In particular, let $k\in(-\pi,\pi)$, and let $\mu \in \NN$.  We will define a Gaussian wavepacket centered at $\mu$, with momentum $k$, standard deviation $\sigma$, and cutoff $L$ as the state
+\begin{align}
+  \ket{\chi_{\mu,k}} = \gamma \sum_{x=\mu-L}^{\mu+L} e^{i k x} e^{ -\frac{(x-\mu)^2}{2\sigma^2}} \ket{x},
+\end{align}
+where $\gamma^2$ is a normalization factor given by $\gamma^{-2} = h_L^{\sigma/\sqrt{2}}(0)$.  Note that this is nearly the same state as for single-particle scattering, but now we don't have to deal with the multiple semi-infinite paths and the graph $\widehat{G}$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+Let $H^{(2)}$ be a two-particle Hamiltonian of the form \eq{something} with interaction range at most $C$.  Let $\theta_{\pm}(p_1,p_2)$ be given by equation \eq{something_else}.  Let $k_1\in (-\pi,0)$ and let $k_2 \in (0,\pi)$, let $L,\mu, \nu \in \NN$ with $L>0$ and $\mu < \nu - 2 L$, and let $\sigma > 0$.  Let us then define the states
+\begin{align}
+  \ket{\psi(0)}_{\pm} = \frac{1}{\sqrt{2}} \big( \ket{\chi_{\mu, k_1}} \ket{\chi_{\nu, k_2}} \pm  \ket{\chi_{\nu,k_2}}\ket{\chi_{\mu,k_1}}\big),
+\end{align}
+and 
+\begin{align}
+  &\ket{\alpha (t)}_{\pm} \nonumber\\
+  &\qquad= \frac{e^{-2 i t (\cos(k_1) + \cos(k_2))}}{\sqrt{2}} 
+    e^{i \theta_{\pm}(t)} \big( \ket{\chi_{\mu(t),k_1}}\ket{\chi_{\nu(t),k_2}}  \pm \ket{\chi_{\nu(t),k_2}}\ket{\chi_{\mu(t),k_1}}\big) ,
+\end{align}
+where
+\begin{align}
+  \mu(t) = \mu - \lceil 2 t \sin k_1\rceil, \quad
+  \nu(t) = \nu - \lceil 2 t \sin k_2\rceil, \quad \text{and} \quad 
+  \theta_{\pm}(t)=\begin{cases}0 & t < \frac{ \nu - \mu - 2 L}{2 \sin k_2 - 2\sin k_1}\\
+  \theta_{\pm}(k_1,k_2)& t > \frac{\nu - \mu + 2 L}{2 \sin k_2 - 2 \sin k_1}.\end{cases}
+\end{align}
+If $\sigma = \frac{ L}{2\sqrt{\log L}}$, and if $0 \leq t < \frac{ \nu - \mu - 2 L}{2 \sin k_2 - 2\sin k_1}$ or if $\frac{\nu - \mu + 2L}{2 \sin k_2 - 2\sin k_1}< t < c L$ for some constant $c$, then 
+\begin{align}
+  \norm{e^{ - i H^2 t} \ket{\psi(0)}_{\pm} - \ket{\alpha(t)}}_{\pm} \leq \chi_2 \sqrt{\frac{\log L}{L}}
+\end{align}
+for some constant $\chi_2$.
+\end{theorem}
+The proof of this theorem is going to follow the exact same method as for the single-particle finite wavepacket proof.
+
+\begin{proof}
+The main idea behind this proof will be to show that $\ket{\psi(0)}$ and $\ket{\alpha (t)}$ are both well approximated by a Gaussian distribution over eigenstates of $H^{(2)}$ with momenta near $k_1$ and $k_2$, and then show that time evolving the Gaussian approximation for $\ket{\psi(0)}$ is well approximated by the Gaussian approximation for $\ket{\alpha(t)}$.  
+  
+In particular, let us examine the inner product between an eigenstate $\ket{\scat (p_1;p_2)}_{\pm}$ and $\ket{\alpha(t)}_{\pm}$.  Note that $\ket{\scat(p_1;p_2)}_{\pm}$ has no overlap with $\ket{\alpha(t)}_{\mp}$, and 
+\begin{align}
+  &{}_{\pm}\braket{\scat(p_1;p_2)}{\alpha(t)}_\pm \nonumber\\
+  & \qquad= \frac{e^{-2 i  t (\cos(k_1) + \cos(k_2)) + i\theta_{\pm}(t)}}{\sqrt{2}} \big({}_{\pm}\braket{\scat (p_1;p_2)}{\chi_{\mu(t),k_1},\chi_{\nu(t),k_2}}  \pm {}_{\pm}\braket{\scat(p_1;p_2)}{\chi_{\nu(t),k_2},\chi_{\mu(t),k_1}}\big).
+\end{align}
+We will then want to investigate the overlap between $\ket{\scat(p_1;p_2)}$ and the cut-off Gaussian approximations.  In particular, if we assume that $s - r > 2 L$, then 
+\begin{align}
+   &_{\pm}\braket{\scat(p_1;p_2)}{\chi_{r,k_1},\chi_{s,k_2}}\nonumber\\
+    &\qquad= \gamma^2\sum_{x=r-L}^{r+L} \sum_{y=s-L}^{L} e^{ik_1x}e^{-\frac{(x-r)^2}{2\sigma^2}} e^{i k_2 y}e^{-\frac{(y-s)^2}{2\sigma^2}} \braket{\scat(p_1;p_2)}{x,y}\\
+   &\qquad= \gamma^2\sum_{x=r-L}^{r+L} \sum_{y=s-L}^{s+L} e^{i (k_1 x + k_2 y)} e^{-\frac{(x-r)^2 + (y-s)^2}{2\sigma^2}} \frac{e^{i p_1 \frac{x+y}{2}}}{\sqrt{2}} \Big( e^{  i p_2 | x - y|} \pm e^{-i\theta_{\pm}(p_1,p_2) - i p_2 |x-y|}\Big)\\
+   &\qquad = \gamma^2\frac{e^{i (k_1 r + k_2 s + p_1 \frac{r+s}{2} + p_2 (s - r))}}{\sqrt{2}} \sum_{x=-L}^{L} \sum_{y=-L}^L e^{ -\frac{ x^2 + y^2}{2\sigma^2}}e^{i ( k_1 + \frac{p_1}{2} -p_2) x} e^{i (k_2 + \frac{p_1}{2} + p_2)y} \nonumber\\
+   &\qquad \qquad + \gamma^2 \frac{e^{i (k_1 r + k_2 s + p_1 \frac{r+s}{2} + p_2 (r-s) - i \theta_\pm(p_1,p_2))}}{\sqrt{2}} \sum_{x=-L}^{L} \sum_{y=-L}^L e^{ -\frac{ x^2 + y^2}{2\sigma^2}}e^{i ( k_1 + \frac{p_1}{2} +p_2) x} e^{i (k_2 + \frac{p_1}{2} - p_2)y}\\
+   &\qquad = \gamma^2\frac{e^{i (k_1 + \frac{p_1}{2} - p_2) r + i (k_2 + \frac{p_1}{2} + p_2)s}}{\sqrt{2}} h_L^\sigma\bigg( k_1 + \frac{p_1}{2} - p_2\bigg) h_{L}^\sigma \bigg(k_2 + \frac{p_1}{2} + p_2\bigg)\nonumber\\
+   &\qquad \qquad +\gamma^2 \frac{e^{i (k_1 + \frac{p_1}{2} + p_2) r + i (k_2 + \frac{p_1}{2} - p_2)s - i\theta_{\pm}(p_1,p_2)}}{\sqrt{2}} h_L^\sigma\bigg( k_1 + \frac{p_1}{2} + p_2\bigg) h_{L}^\sigma \bigg(k_2 + \frac{p_1}{2} - p_2\bigg).
+\end{align}
+If $s - r < -2L$, then nearly the same argument holds, and we find
+\begin{align}
+   &_{\pm}\braket{\scat(p_1;p_2)}{\chi_{r,k_1},\chi_{s,k_2}}\nonumber\\
+   &\qquad = \gamma^2 \frac{e^{i (k_1 + \frac{p_1}{2} + p_2) r + i (k_2 + \frac{p_1}{2} - p_2)s}}{\sqrt{2}} h_L^\sigma\bigg( k_1 + \frac{p_1}{2} + p_2\bigg) h_{L}^\sigma \bigg(k_2 + \frac{p_1}{2} - p_2\bigg)\nonumber\\
+   &\qquad \qquad +\gamma^2\frac{e^{i (k_1 + \frac{p_1}{2} - p_2) r + i (k_2 + \frac{p_1}{2} + p_2)s - i\theta_{\pm}(p_1,p_2)}}{\sqrt{2}} h_L^\sigma\bigg( k_1 + \frac{p_1}{2} - p_2\bigg) h_{L}^\sigma \bigg(k_2 + \frac{p_1}{2} + p_2\bigg).
+\end{align}
+Putting these bounds together, if we define $p_1 = -(k_1 + k_2)$ and $2 p_2 = k_1 - k_2$, we find that for $t < \frac{\nu - \mu - 2L}{2 \sin k_2 - 2 \sin k_1}$
+\begin{align}
+  &{}_{\pm}\braket{\scat(p_1 + \phi_1 ; p_2 + \phi_2)}{\alpha(t)}_{\pm} \nonumber\\
+  &\qquad    = \gamma^2e^{-2 i  t (\cos(k_1) + \cos(k_2))} e^{i \phi_1\frac{\mu(t) + \nu(t)}{2}} \Bigg[e^{i \phi_2 (\nu(t) - \mu(t)) } h_{L}^\sigma \bigg(\frac{\phi_1}{2} - \phi_2\bigg) h_L^\sigma\bigg( \frac{\phi_1}{2} + \phi_2\bigg)\nonumber\\
+  &\qquad\qquad \pm e^{ i (2 p_2+\phi_2)(\mu(t) - \nu(t)) - i \theta_{\pm}(p_1 + \phi_1, p_2+\phi_2)}h_L^\sigma\bigg(\frac{\phi_1}{2} - 2p_2 - \phi_2 \bigg) h_L^\sigma\bigg(\frac{\phi_1}{2} + 2 p_2 + \phi_2\bigg)\Bigg].
+\end{align}
+In nearly the same manner, if $ t > \frac{\nu - \mu + 2 L}{2 \sin k_2 - 2 \sin k_1}$, we have
+\begin{align}
+  &{}_{\pm}\braket{\scat(p_1 + \phi_1 ; p_2 + \phi_2)}{\alpha(t)}_{\pm} \nonumber\\
+  &\qquad    = \gamma^2e^{-2 i  t (\cos(k_1) + \cos(k_2)) + i \theta_{\pm}(p_1,p_2)} e^{i\phi_1\frac{\mu(t) + \nu(t)}{2}} \Bigg[e^{i \phi_2 (\nu(t) - \mu(t)) - i \theta_{\pm}(p_1 + \phi_1, p_2+\phi_2) } h_{L}^\sigma \bigg(\frac{\phi_1}{2} - \phi_2\bigg) h_L^\sigma\bigg( \frac{\phi_1}{2} + \phi_2\bigg)\nonumber\\
+  &\qquad\qquad \pm e^{ i (2 p_2+\phi_2)(\mu(t) - \nu(t)) }h_L^\sigma\bigg(\frac{\phi_1}{2} - 2p_2 - \phi_2 \bigg) h_L^\sigma\bigg(\frac{\phi_1}{2} + 2 p_2 + \phi_2\bigg)\Bigg].
+\end{align}
+
+With these useful inner products, we can now define our Gaussian approximations.  In particular, we will define the states
+\begin{align}
+  \ket{w(t)} &= \eta e^{ - 2 i t (\cos k_1 + \cos k_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2}\big)} e^{i  \phi_2 (\nu(t) - \mu(t))} e^{ -\frac{ \sigma^2 \phi_1^2}{4}} e^{ -\sigma^2 \phi_2^2} \ket{\scat(p_1 + \phi_1; p_2 + \phi_2)}_{\pm}
+\end{align} 
+where
+\begin{align}
+  \eta^{-2} &= \int_{-\infty}^\infty \int_{-\infty}^\infty \frac{d\phi_1 d\phi_2}{4\pi^2} e^{ -\sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2 \big)} = \frac{1}{4\pi\sigma^2}.
+\end{align}
+While the states $\ket{w(t)}$ are not exactly normalized, we have that
+\begin{align}
+   \braket{w(t)}{w(t)} &= \eta^2 \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2}  e^{ -\sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2 \big)} &= 1  - \frac{\eta^2}{\pi^2} \int_\delta^{\infty} \int_{\delta}^\infty d\phi_1d\phi_2 e^{ - \sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2\big)}\\
+   & \geq  1 - \frac{1}{\pi \delta^2 \sigma^2}e^{- \frac{5 \sigma^2 \delta^2}{2}},
+\end{align}
+and as the second term on the right hand side is non-negative, we have that $\braket{w(t)}{w(t)} \leq 1$.
+
+As in the single-particle case, we will want to show that the overlap between $\ket{w}$ and $\ket{\alpha(t)}_\pm$ is nearly 1.  In particular, for $0 \leq t < \frac{\nu(t) - \mu(t) - 2 L}{2 \sin k_2 - 2 \sin k_1}$, we then have that
+\begin{align}
+  &\braket{w(t)}{\alpha(t)}_\pm \nonumber\\
+  &\qquad= \eta \gamma^2  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d \phi_2}{4\pi^2}  e^{-\frac{\sigma^2 \phi_1^2}{4}}  e^{- \sigma^2 \phi_2^2}\Big[h_L^\sigma \big(\frac{\phi_1}{2} - \phi_2 \big) h_L^\sigma\Big( \frac{\phi_1}{2} + \phi_2 \Big) \nonumber\\
+  & \qquad \quad\pm e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))} h_L^\sigma\Big(\frac{\phi_1}{2} - 2 p_2 - \phi_2\Big) h_L^\sigma\Big(\frac{\phi_1}{2}+ 2 p_2 + \phi_2\Big)\Big]\\
+  & \qquad = \eta\gamma^2 \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \Bigg[ h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \nonumber\\
+  &\qquad\quad 
+   + \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\nonumber\\
+   &\qquad \quad\pm e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}  \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + 2p_2+ \phi_2 \Big)\Big] \nonumber\\
+   &\qquad \quad \qquad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2p_2- \phi_2\Big)\Big]\nonumber\\
+   &\qquad \quad\pm e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg].
+\end{align}
+While this expression looks rather complicated, most of the amplitude is a result of the first term in the integrand, and the rest of the terms are simply small error terms resulting from approximating $h_L^\sigma$ by $h_\infty^\sigma$ or cross terms between the pre- and post-scattering amplitudes.  As such, we will bound each term individually, giving upper and lower bounds on the first term, and only upper bounds on the norm of the latter terms.
+
+For the first term, we have
+\begin{align}
+  &\int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} h_\infty^\sigma \Big(\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big( \frac{\phi_1}{2} + \phi_2\Big)\nonumber\\
+  & \qquad =  \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2} h_\infty^{1/(2\pi \sigma)} \Big[2 \pi i \sigma^2 \Big(\frac{\phi_1}{2} - \phi_2 \Big)\Big]h_\infty^{1/(2\pi \sigma)} \Big[2 \pi i \sigma^2 \Big(\frac{\phi_1}{2} +\phi_2 \Big)\Big]\\
+ & \qquad \geq \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2}\\
+ & \qquad = \frac{1}{2} \braket{w(t)}{w(t)}
+\end{align}
+where we used the fact that $h_\infty^\sigma(i \phi) \geq 1$.  Using the upper bounds on $h$, we also have that
+\begin{align}
+&\int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} h_\infty^\sigma \Big(\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big( \frac{\phi_1}{2} + \phi_2\Big)\nonumber\\
+& \qquad \leq \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2} \Bigg[1 + 2 \Big(1 + \frac{ 1}{\pi \sigma^2} \frac{1}{4 \pi -  | \phi_1 - 2\phi_2|} \Big)e^{-2\pi^2 \sigma^2 + \pi \sigma^2 (\phi_1 - 2 \phi_2)} \Bigg]\nonumber\\
+& \qquad \qquad \times   \Bigg[1 + 2 \Big(1 + \frac{ 1}{\pi \sigma^2} \frac{1}{4 \pi -  | \phi_1+ 2\phi_2|} \ \Big)e^{-2\pi^2 \sigma^2 +   \pi \sigma^2 (\phi_1 + 2 \phi_2)} \Bigg]\\
+& \qquad \leq \frac{1}{2} \Big[1 + 3 e^{ -  \pi^2 \sigma^2 \big(2 \pi - 3\delta\big)} \Big]^2  \braket{w(t)}{w(t)}
+\end{align}
+where we assumed that $2\pi > 3 \delta$, and that $\sigma \geq 1$. 
+
+For the second term, note that for any $\varphi_1$, $\varphi_2$, and for any $L > \sigma \geq 1$, we have that
+\begin{align}
+  &\big| \big(h_L^\sigma(\varphi_1) + h_{\infty}^\sigma(\varphi_1)\big)\big(h_L^\sigma(\varphi_2) - h_\infty^\sigma(\varphi_2) \big) \big| \nonumber\\
+  &\qquad\leq \big| h_L^\sigma(\varphi_1) + h_{\infty}^\sigma(\varphi_1)\big| \frac{2\sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}\\
+   & \qquad\leq \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }\Big [ 2 + \big|h_L^\sigma (\varphi_2) - h_\infty^\sigma(\varphi_2) \big| + 2 \big| 1 - h_\infty^\sigma(\varphi_2) \big| \Big]\\
+   & \qquad \leq  \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }\Big [ 2 +   \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }  + 4 (1 + \sigma^2) e^{ -\frac{1}{2\sigma^2}}\Big]\\
+   & \qquad \leq \frac{24 \sigma^4}{L}  e^{ - \frac{L^2}{2\sigma^2}}.
+\end{align}
+If we then use this bound for the integrand, we have 
+\begin{align}
+  &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\Bigg|\nonumber\\
+  & \qquad \leq  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \frac{24 \sigma^4}{L}  e^{-\frac{L^2}{2\sigma^2}}\\
+  & \qquad \leq \frac{6\sigma^4}{\pi^2 L}  e^{ - \frac{ L^2}{2\sigma^2}}\int_{-\infty}^\infty \int_{-\infty}^\infty  d\phi_1 d\phi_2 e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}\\
+  & \qquad = \frac{ 12 \sigma^2}{\pi L}  e^{ - \frac{L^2}{2\sigma^2}}.
+\end{align}
+
+For the third term, we can use the same argument, and we have
+\begin{align}
+    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   \nonumber\\
+   &\quad \times\Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + 2p_2+ \phi_2 \Big)\Big]\nonumber\\
+   &\quad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2p_2- \phi_2\Big)\Big]\Bigg|\nonumber\\
+   &\qquad \qquad \leq \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{ - \frac{L^2}{2\sigma^2}} \leq \frac{ 12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}}.
+\end{align}
+
+For the fourth term, we instead need to use the fact that $h(\phi)$ rapidly decreases for large $\phi$.  In particular, if we assume that $\sigma^{-1} < 2\pi - |k_1| - |k_2|$, we have
+\begin{align}
+    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
+    &  \qquad \leq  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big)\\
+    &\qquad = \frac{\sigma^2}{2\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)} \nonumber\\
+    &\qquad \qquad \qquad \times h_{\infty}^{1/(2\pi\sigma)} \Big[2\pi i \sigma^2 \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)\Big] h_\infty^{1/(2\pi\sigma)}\Big[ 2\pi i \sigma^2  \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Big]\\
+    & \leq  \frac{\sigma^2}{2\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)}\big( 1 + 3 e^{ - 2 \pi \sigma^2 ( \pi - | 2 p_2 + \phi_2 - \frac{\phi_1}{2} | )}\big) \big( 1 + 3 e^{ - 2 \pi \sigma^2 ( \pi - | 2 p_2 + \phi_2 + \frac{\phi_1}{2} | )}\big) 
+\end{align}
+At this point, if $\pi > |k_1| + |k_2|$, we can choose $\delta$ so that $\pi > |k_1| + |k_2| + 2\delta$ and thus 
+\begin{align}
+    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
+    &  \qquad \leq \frac{8\sigma^2}{\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)}\\
+    & \qquad \leq \frac{8 \sigma}{\sqrt{\pi}} \int_{-\delta}^\delta d\phi_2 e^{ - 2\sigma^2 ( p_2^2 + (p_2 + \phi_2)^2)}\\
+    &\qquad \leq 4\sqrt{2} e^{ -2 \sigma^2 p_2^2} = 4\sqrt{2} e^{-\frac{\sigma^2}{2} (k_2-k_1)^2}.
+\end{align}
+However, if $\pi \leq |k_1| + |k_2|$, we can instead bound the functions approximating $h$ by their largest value, which is attained when $2\phi_2 \pm \phi_1 = 3 \delta$.  In particular, we have
+\begin{align}
+    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
+    &  \qquad \leq \frac{8\sigma^2}{\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)} e^{ 4 \pi \sigma^2 ( 2|p_2| + \frac{3\delta}{2} - \pi)} \\
+    & \qquad \leq \frac{8 \sigma}{\sqrt{\pi}} e^{4\pi \sigma^2 (2|p_2| + \frac{3}{2}\delta -\pi) - 2 \sigma^2 p_2^2 } \int_{-\delta}^\delta d\phi_2 e^{ -2\sigma^2( p_2 + 2 p_2 \phi_2 + \phi_2^2)}\\
+    &\qquad \leq \frac{16\delta}{\sqrt{\pi}}e^{-\sigma^2 ( 4\pi^2  - 8 \pi |p_2|  + 4 \sigma^2 p_2^2 - 6 \pi \delta + 2\delta^2 - 4 \delta |p_2| )}\\
+    & \qquad \leq \frac{16 \delta}{\sqrt{\pi}} e^{ -\sigma^2 (4 [\pi - |p_2|]^2 - (4|p_2| + 6\pi)\delta)}\\
+    &\qquad \leq \frac{ 16 \delta}{\sqrt{\pi}} e^{ - 3 \sigma^2 \delta}
+\end{align}
+where we assume that $\delta < \frac{ (\pi - |p_2|)^2}{4|p_2| + 6\pi}$.  We can then put these two bounds together, if we assume that $\delta < p_2^2$ and that $\delta <  \frac{ (\pi - |p_2|)^2}{4|p_2| + 6\pi}$, so that 
+\begin{align}
+    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
+    & \qquad \leq \frac{16 }{\sqrt{\pi}} e^{ - 2 \sigma^2 \delta}.
+\end{align}
+
+We can now combine these results, and thus show that $\ket{\alpha(t)}_{\pm}$ is well approximated by $\ket{w(t)}$ for $0\leq t < \frac{\nu(t) - \mu(t) - 2 L}{2 \sin k_2 - 2 \sin k_1}$.  In particular, we have
+\begin{align}
+   &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
+    &\qquad\leq {}_{\pm}\braket{\alpha(t)}{\alpha(t)}_{\pm} + \braket{w(t)}{w(t)} - \braket{w(t)}{\alpha(t)}_{\pm} - {}_\pm \braket{\alpha(t)}{w(t)}\\
+    &\qquad \leq 1 + \braket{w(t)}{w(t)} - 2 \eta\gamma^2 \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{12 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}} - \frac{12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big).
+\end{align}
+For large enough $\sigma$, $L$, and small enough $\delta$, we have that the term multiplying $\eta\gamma$ is negative, and thus we need to give a lower bound on $\eta\gamma^2$.  We know the value of $\eta$, and as a lower bound on $\gamma^2$ we have
+\begin{align}
+  \gamma^2 = \frac{1}{h_L^{\sigma/\sqrt{2}}(0)} \geq \frac{1}{\sqrt{\pi} \sigma (1 + 3 e^{-\pi^2\sigma^2})} \geq \frac{1}{\sqrt{\pi} \sigma} \big(1 - 3 e^{-\pi^2 \sigma^2}\big).
+\end{align}
+From this, and using our upper bounds on the norm of $\braket{w(t)}{w(t)}$, we have
+\begin{align}
+ &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2 \nonumber\\
+ &\qquad \leq 1 + \braket{w(t)}{w(t)} - 4 \big(1 - 3 e^{-\pi^2 \sigma^2} \big) \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{24 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}}  -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big)\\
+ & \qquad \leq 1 - \braket{w(t)}{w(t)} (1 -6 e^{-\pi^2 \sigma^2}) + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+ & \qquad \leq 1 - \Big( 1 - \frac{1}{\pi \delta^2 \sigma^2} e^{-\frac{5 \sigma^2 \delta^2}{2}} \Big)(1 -6 e^{-\pi^2 \sigma^2}) + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+ & \qquad \leq \frac{1}{\pi \delta^2 \sigma^2} e^{-\frac{5 \sigma^2 \delta^2}{2}} + 6 e^{-\pi^2 \sigma^2} + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+ &\qquad \leq 44 e^{-2 \sigma^2 \delta} + \frac{32 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}.
+\end{align}
+
+Let us now examine how close $\ket{w(t)}$ and $\ket{\alpha(t)}_\pm$ are for $t > \frac{\nu(t) - \mu(t) + 2L}{2\sin k_2 - 2 \sin k_1}$.  In particular, we have for these times that
+\begin{align}
+  &\braket{w(t)}{\alpha(t)}_\pm \nonumber\\
+  &\qquad= \eta \gamma^2 e^{i \theta_{\pm}(p_1,p_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d \phi_2}{4\pi^2}  e^{-\frac{\sigma^2 \phi_1^2}{4}}  e^{- \sigma^2 \phi_2^2}\Big[e^{-i \theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} h_L^\sigma \big(\frac{\phi_1}{2} - \phi_2 \big) h_L^\sigma\Big( \frac{\phi_1}{2} + \phi_2 \Big) \nonumber\\
+  & \qquad \quad\pm e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))} h_L^\sigma\Big(\frac{\phi_1}{2} - 2 p_2 - \phi_2\Big) h_L^\sigma\Big(\frac{\phi_1}{2}+ 2 p_2 + \phi_2\Big)\Big]\\
+  & \qquad = \eta\gamma^2 e^{i \theta_{\pm}(p_1,p_2)}  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \Bigg[ e^{-i \theta_{\pm}(p_1,p_2) }h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \nonumber\\
+  &\qquad\quad \Big(e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} - e^{- i \theta_{\pm}(p_1, p_2)}  \Big) h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \nonumber\\
+ &\qquad \quad  + e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\nonumber\\
+   &\qquad \quad\pm  e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}  \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + 2p_2+ \phi_2 \Big)\Big] \nonumber\\
+   &\qquad \quad \qquad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2p_2- \phi_2\Big)\Big]\nonumber\\
+   &\qquad \quad\pm  e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg].
+\end{align}
+This is nearly an identical overlap as for the small $t$ case, except for the changing angle $\theta_\pm$.  As such, we can bound most of the terms as before.
+
+The first term in the bound is simply
+\begin{align}
+  &e^{i\theta_\pm(p_1,p_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{-i \theta_{\pm}(p_1,p_2) }h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \\
+  &  \qquad = \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \\
+  & \qquad \geq \frac{1}{2} \braket{w(t)}{w(t)}
+\end{align}
+as in the small $t$ case.
+
+The second term is slightly more complicated.  However, remember from equation ?????? \todo{find the correct equation} that $\theta_\pm(p_1+\phi_1,p_2+\phi_2)$ are bounded rational functions of $e^{i\phi_1}$ and $e^{i\phi_2}$.  As such, they are differentiable as functions of both $\phi_1$ and $\phi_2$ on some neighborhood $U$ of $(0,0)$.  Let us assume that $\delta$ is chosen so that $[-\delta,\delta]\times [-\delta,\delta] \subset U$, and now let
+\begin{align}
+  \Gamma = \max_{[-\delta,\delta]\times [-\delta,\delta]} \big|\nabla e^{i \theta_{\pm}(p_1 +\phi_1, p_2 +\phi_2)}\big|
+\end{align}
+From this, we then have that
+\begin{align}
+  &\Bigg|\int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \big(e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} - e^{- i \theta_{\pm}(p_1, p_2)}  \big) h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2)\Bigg|\nonumber\\
+  & \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \big(\phi_1^2 + \phi_2^2 \big) \Gamma h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2)\\
+  & \qquad = \frac{\Gamma\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2} e^{- \frac{\sigma^2 \phi_1^2}{2}}e^{-2\sigma^2 \phi_2^2}( \phi_1^2 + \phi_2^2) h_\infty^{1/(2\pi \sigma)} \Big(2 \pi i \sigma^2 \Big[\frac{\phi_1}{2} - \phi_2 \Big]\Big) h_\infty^{1/(2\pi \sigma)}  \Big(2 \pi i \sigma^2 \Big[\frac{\phi_1}{2} + \phi_2 \Big]\Big) \\
+  & \qquad \leq \frac{\Gamma\sigma^2}{2\pi} (1 + 3 e^{- \pi^2 \sigma^2}) \int_{-\infty}^\infty \int_{-\infty}^\infty {d\phi_1 d\phi_2} e^{- \frac{\sigma^2 \phi_1^2}{2}}e^{-2\sigma^2 \phi_2^2}( \phi_1^2 + \phi_2^2)\\
+  & \qquad \leq \frac{5\Gamma }{2\sigma^2}.
+\end{align}
+
+The third term can be bounded exactly as the second term for small $t$.  In particular, we have bounds on the differences and sums of $h$, and thus 
+\begin{align}
+  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)}\nonumber\\
+  &\qquad \times \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\Bigg|\nonumber\\
+  &\qquad\qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{-\frac{L^2}{2\sigma^2}}\\
+  &\qquad \qquad \leq \frac{12 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}}.
+\end{align}
+In a similar manner, we have that the fourth term can be bounded as the third for small $t$.
+\begin{align}
+  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}e^{- 2i (p_2 + \phi_2)(\mu(t) - \nu(t))} \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\Big] \nonumber\\
+  &\qquad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2 p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2 p_2 - \phi_2\Big)\Big]\Bigg|\nonumber\\
+  & \qquad \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{-\frac{L^2}{2\sigma^2}}\\
+  &\qquad \qquad \leq \frac{12 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}}.
+\end{align}
+
+Finally, we have that the final term can be bounded as
+\begin{align}
+  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{2i (p_2 + \phi_2)(\mu(t) - \nu(t))}h_\infty^\sigma \Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big)h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\Bigg| \nonumber\\
+  & \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}h_\infty^\sigma \Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big)h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\\
+  & \qquad \leq \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}
+\end{align} 
+where we used the bounds for small $t$.
+
+We can then use the bounds on all of the individual terms to show that $\ket{w(t)}$ and $\ket{\alpha(t)}$ are close.  In particular, we have 
+\begin{align}   
+  &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
+    &\qquad\leq {}_{\pm}\braket{\alpha(t)}{\alpha(t)}_{\pm} + \braket{w(t)}{w(t)} - \braket{w(t)}{\alpha(t)}_{\pm} - {}_\pm \braket{\alpha(t)}{w(t)}\\
+    &\qquad \leq 1 + \braket{w(t)}{w(t)} - 2 \eta\gamma^2 \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{5 \Gamma}{2\sigma^2}- \frac{12 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}} - \frac{12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big).
+\end{align}
+If we again use our bounds on $\gamma^2$ and on $\braket{w(t)}{w(t)}$, we find
+\begin{align}
+    &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
+    & \qquad \leq 1 + \braket{w(t)}{w(t)} - 4 (1 - 3 e^{-\pi^2 \sigma^2})\Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{5 \Gamma}{2\sigma^2}- \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big)\\
+    & \qquad \leq 1 - \braket{w(t)}{w(t)} ( 1 - 6 e^{-\pi^2 \sigma^2}) + \frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+    & \qquad \leq 1 - \Big(1 - \frac{1}{\pi \delta^2 \sigma^2} e^{- \frac{5 \sigma^2 \delta^2}{2}} \Big)( 1 - 6 e^{-\pi^2 \sigma^2}) + \frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+    & \qquad \leq \frac{1}{\pi \delta^2 \sigma^2}e^{- \frac{5 \sigma^2 \delta^2}{2}}  + 6 e^{-\pi^2 \sigma^2} +\frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+    & \qquad \leq 44e^{-2\sigma^2 \delta} + \frac{32\sigma^2}{L} e^{- \frac{L^2}{2\sigma^2}} + \frac{5 \Gamma}{2\sigma^2}.
+\end{align}
+
+With these good bounds on our approximations to the expected time-evolved states, it will now be useful to determine the overlap of the actual time-evolved state with our approximations.  Note that $\ket{\alpha(0)}_{\pm} = \ket{\psi(0)}_{\pm}$, and thus we have that $\ket{w(0)}$ is a good approximation to the initial state.  If we define the state
+\begin{align}
+  \ket{v(t)} &= e^{-i H^{(2)}t} \ket{w(0)} \\
+  &= \eta \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{i \phi_1 \big(\frac{\mu + \nu}{2}\big)} e^{i  \phi_2 (\nu - \mu)} e^{ -\frac{ \sigma^2 \phi_1^2}{4}} e^{ -\sigma^2 \phi_2^2} e^{- 4 i t \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2)} \ket{\scat(p_1 + \phi_1; p_2 + \phi_2)}_{\pm}
+\end{align}
+we will have that this state does not change its overlap with $\ket{\psi(t)}$ over time (i.e., $\norm{\ket{v(t)} - \ket{\psi(t)}} = \norm{\ket{v(0)} - \ket{\psi(0)}}$).  Additionally, we will have that $\ket{v(t)}$ and $\ket{w(t)}$ will be close in norm.  As expected, we have
+\begin{align}
+   \braket{v(t)}{w(t)} &= \eta^2 \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2} - \frac{\mu +\nu}{2} \big)} e^{i  \phi_2 (\nu(t) - \mu(t) -\nu + \mu)} \nonumber\\
+   & \qquad \times e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2} e^{ 2 i t\big( 2 \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2) - \cos(k_1) - \cos(k_2)\big)} \\
+   & = \braket{w(t)}{w(t)} - \eta^2 \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2}  e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2}\nonumber\\
+   & \qquad \times \bigg[ 1 - e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2} - \frac{\mu +\nu}{2} \big)} e^{i  \phi_2 (\nu(t) - \mu(t) -\nu + \mu)}e^{ 2 i t\big( 2 \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2) - \cos(k_1) - \cos(k_2)\big)}\bigg] .
+\end{align}
+We can then bound the value of the integrand, using the fact that $|1 - e^{i\theta}| \leq \theta$.  We then have
+\begin{align}
+  &\bigg| 1 - e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2} - \frac{\mu +\nu}{2} \big)} e^{i  \phi_2 (\nu(t) - \mu(t) -\nu + \mu)}e^{ 2 i t\big( 2 \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2) - \cos(k_1) - \cos(k_2)\big)}\bigg|\nonumber\\
+  & \qquad \leq \bigg|-\frac{\phi_1}{2} \big[ \lceil 2 t \sin k_1\rceil + \lceil 2t \sin k_2\rceil \big] - \phi_2 \big[ \lceil 2 t \sin k_2\rceil - \lceil 2t \sin k_1\rceil\big]  \nonumber\\
+  &\qquad \qquad + 2 t \Big[ 2 \cos\Big( \frac{p_1 +\phi_1}{2}\Big) \cos(p_2 + \phi_2) - \cos(k_1) - \cos(k_2) \Big]\bigg|\\
+  & \qquad \leq |\phi_1| + 2 |\phi_2| + 2 t \bigg| 2\cos\Big( \frac{p_1 +\phi_1}{2}\Big) \cos(p_2 + \phi_2) - \cos(k_1) - \cos(k_2)  \nonumber\\
+  & \qquad \qquad - \frac{\phi_1}{2} \big[ \sin k_1 +   \sin k_2\big] - \phi_2 \big[  \sin k_2 -  \sin k_1\big]\bigg|\\
+  &  \qquad \leq |\phi_1| + 2 |\phi_2| + 2 t \bigg| \cos\Big(- k_2 + \frac{\phi_1}{2} + \phi_2 \Big)  + \cos\Big(- k_1 + \frac{\phi_1}{2} - \phi_2 \Big)- \cos(k_1) - \cos(k_2)  \nonumber\\
+  & \qquad \qquad - \Big(\frac{\phi_1}{2} + \phi_2 \Big)\sin k_2  -\Big(\frac{\phi_1}{2} -  \phi_2\Big) \sin k_1 \bigg|\\
+  & \qquad \leq |\phi_1| + 2 |\phi_2| + 2 t \bigg| \cos(k_2) \big[\cos\big( \frac{\phi_1}{2} + \phi_2 \big) - 1\big] - \sin(k_2) \big[\big( \frac{\phi_1}{2} + \phi_2 \big) - \sin\big( \frac{\phi_1}{2} + \phi_2 \big) \big]  \bigg|\nonumber\\
+  & \qquad \qquad + 2t \bigg| \cos(k_1) \Big[\cos\Big(\frac{\phi_1}{2} - \phi_2 \Big) - 1 \Big] - \sin(k_1) \Big[ \frac{\phi_1}{2} - \phi_2 - \sin\Big(  \frac{\phi_1}{2} - \phi_2\Big) \Big] \bigg|\\
+  & \qquad \leq |\phi_1| + 2 |\phi_2| + 2 t  \Big (\frac{\phi_1}{2} + \phi_2\Big)^2 + 2t \Big( \frac{\phi_1}{2} - \phi_2\Big)^2\\
+  & \qquad \leq |\phi_1| +\frac{t}{2} \phi_1^2 + 2 |\phi_2| + 4 t\phi_2^2.
+\end{align}
+We can then use this in the bound, so that
+\begin{align}
+  & \Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2}  e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2} \bigg[ 1 - e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2} - \frac{\mu +\nu}{2} \big)} e^{i  \phi_2 (\nu(t) - \mu(t) -\nu + \mu)}\nonumber\\
+  & \qquad \qquad \qquad \times e^{ 2 i t\big( 2 \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2) - \cos(k_1) - \cos(k_2)\big)}\bigg] \Bigg|\nonumber\\
+  & \qquad \leq  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2}  e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2} \Big[|\phi_1| + \frac{t}{2} \phi_1^2 + 2 |\phi_2| + 4 t \phi_2^2 \Big]\\
+  & \qquad \leq  \int_{0}^\infty \int_{0}^\infty \frac{d\phi_1 d\phi_2}{\pi^2}  e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2} \Big[\phi_1 + \frac{t}{2} \phi_1^2 + 2 \phi_2+ 4 t \phi_2^2 \Big]\\
+  & = \frac{3 t}{8\pi \sigma^4} + \frac{\sqrt{2\pi}}{2\pi^2 \sigma^3}.
+\end{align}
+
+With this, we can then bound the difference between $\ket{v(t)}$ and $\ket{w(t)}$.  In particular, we have
+\begin{align}
+  \norm{\ket{v(t)} - \ket{w(t)}}^2 &= \braket{v(t)}{v(t)} + \braket{w(t)}{w(t)} - \braket{v(t)}{w(t)} - \braket{w(t)}{v(t)}\\
+  & \leq  2 \braket{w(t)}{w(t)} - 2 \Big[ \braket{w(t)}{w(t)}  -\eta^2 \frac{3t}{8\pi \sigma^4} - \eta^2 \frac{\sqrt{2\pi}}{2 \pi^2 \sigma^3}\Big]\\
+  & = \frac{3t}{\sigma^2} + \frac{4 \sqrt{2}}{\sqrt{\pi} \sigma}.
+\end{align}
+
+Finally, we can now bound the norm of the difference between the time evolved $\ket{\psi(t)}$ and the approximation $\ket{\alpha(t)}_{\pm}$.  In particular, if we once again note that $\ket{\alpha(0)}_\pm = \ket{\psi(0)}_{\pm}$, and remember that $\ket{v(t)} = e^{- i H^{(2)} t} \ket{v(0)}$, we have
+\begin{align}
+  &\norm{ \ket{\psi(t)}_{\pm} - \ket{\alpha(t)}_{\pm}} \nonumber\\
+  &\qquad\leq \norm{\ket{\psi(t)_\pm} - \ket{v(t)}} + \norm{ \ket{\alpha(t)}_{\pm} - \ket{w(t)}} + \norm{\ket{v(t)} - \ket{w(t)}}\\
+   & \qquad\leq \Big( 44 e^{-2 \sigma^2 \delta} + \frac{32 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}\Big)^{1/2} +   \Big(44e^{-2\sigma^2 \delta} + \frac{32\sigma^2}{L} e^{- \frac{L^2}{2\sigma^2}} + \frac{5 \Gamma}{2\sigma^2} \Big)^{1/2}  + \Big(\frac{3t}{\sigma^2} + \frac{4\sqrt{2}}{\sqrt{\pi} \sigma}\Big)^{1/2}.
+\end{align}
+If we have chosen $\sigma = \frac{ L}{2 \sqrt{\log(L)}}$, we then have that for $L$ large enough, if $0 < t < \frac{\nu - \mu - 2L}{2\sin k_2 - 2 \sin k_1}$ or $\frac{\nu - \mu + 2L}{2\sin k_2 - 2 \sin k_1} < t < c L$
+\begin{align}
+  &\norm{ \ket{\psi(t)}_{\pm} - \ket{\alpha(t)}_{\pm}} \nonumber\\
+  &\qquad\leq \Big( \frac{9}{L \log( L)} \Big)^{1/2} + \Big( \frac{10}{L \log( L)} \Big)^{1/2} + \Big( \frac{12 t \log L}{L^2} + \frac{16 \sqrt{2 \log L}}{\sqrt{\pi} L}\Big)^{1/2}\\
+  & \qquad \leq \chi_2 \sqrt{\frac{ \log L}{L}}
+\end{align}
+where $\chi_2$ is a constant.
+\end{proof}
+
+
+
+\biblio
+\end{document}

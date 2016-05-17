@@ -1,0 +1,131 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  The actual g_0 picture
+%
+% I love the way this looks, but I'm not sure if it adds a lot to the discussion.
+
+% Note that this uses a lot of magic numbers, since I don't think there's a way around it in latex
+% In particular, I use explicitly 360/8/4 = 11.25 a lot, along with various scalings 
+
+\begin{tikzpicture}[scale = 1]
+
+  % Unfortunately, I don't think there's a nice way to encode the different circuits
+  % so this is one copy of the C_0 circuit
+  % note that the first corresponds to the initial circuit angle start,
+  % and then the various connections resulting from the \omega\rightarrow S conversion
+  \foreach \copyrot in {0, -45,-90,...,-315}{
+  \begin{scope}[rotate = \copyrot]
+    \foreach \circuitrot/ \shiftaa /\shiftab /\shiftba /\shiftbb in {
+                    0           /4           /4          /5           /1,
+                    -11.25   /4           /3          /4           /7,
+                    -22.5     /4           /4          /4           /0,
+                    -33.75   /4           /3          /4           /0}{
+    \begin{scope}[rotate = \circuitrot]
+      \foreach \zstart / \zend / \shift in {
+                    4.5      /4.5      / \shiftaa,
+                    4.5      /2.25    / \shiftab,
+                    2.25    /4.5      / \shiftba,
+                    2.25    /2.25    / \shiftbb}{
+        \foreach \w in {0,...,7}{
+          \draw[draw=black!20] let \n1={int(mod(\w + \shift,8)) /4 + \zend} in (90:{\w/4 + \zstart} ) -- (78.75: \n1 cm);
+        }
+      }
+    \end{scope}
+    }
+  \end{scope}
+  }
+  
+  
+  \begin{scope}[rotate = 45]
+    \foreach \circuitrot/ \shiftaa /\shiftab /\shiftba /\shiftbb in {
+                    0           /4           /4          /5           /1,
+                    -11.25   /4           /3          /4           /7,
+                    -22.5     /4           /4          /4           /0,
+                    -33.75   /4           /3          /4           /0}{
+    \begin{scope}[rotate = \circuitrot]
+      \foreach \zstart / \zend / \shift in {
+                    4.5      /4.5      / \shiftaa,
+                    4.5      /2.25    / \shiftab,
+                    2.25    /4.5      / \shiftba,
+                    2.25    /2.25    / \shiftbb}{
+        \foreach \w in {0,...,7}{
+          \draw[draw=black!60] let \n1={int(mod(\w + \shift,8)) /4 + \zend} in (90:{\w/4 + \zstart} ) -- (78.75: \n1 cm);
+        }
+      }
+    \end{scope}
+    }
+  \end{scope}
+
+  % for each time step, arrived at by 360/ 8 copies / 4 time for each copy
+  % We will now draw the S^3 + S^4 + S^5 penalties, and the vertices themselves
+  \foreach \timerot in {0,-11.25, -22.5,...,-350}{
+  \begin{scope}[rotate = \timerot ]
+    % for each logical state (i.e. 0/1) extend by a bit
+    \foreach \logicz in {2.25,4.5} {
+    \begin{scope}[yshift = \logicz cm]
+      % Apply the penalty edges
+      \begin{scope}[draw=black!20]
+        \draw (0,1.75) to[out=225,in = 135] (0,.5);
+        \draw (0,1.75) to[out=240,in = 120] (0,.75);
+        \draw (0,1.75) to[out=255,in=105] (0,1);
+  
+        \draw (0,1.5) to[out=315,in = 45] (0,.25);
+        \draw (0,1.5) to[out=300,in=60] (0,.5);
+        \draw (0,1.5) to[out=285,in=75] (0,.75);
+  
+        \draw (0,0) to[out=45,in=315] (0,1.25);
+        \draw (0,0) to[out=60,in=300] (0,1);
+        \draw (0,0) to[out=75,in=285] (0,.75);
+  
+        \draw (0,.25) to[out=135,in=225] (0,1.25);
+        \draw (0,.25) to[out=120,in=240] (0,1);
+  
+        \draw (0,1.25) to[out=240,in=120] (0,.5);
+      \end{scope}
+    
+      % there are 8 vertices for each logical state
+      \foreach \y in {0,.25,...,1.75}{
+        % Actually draw the vertices
+        \draw[fill = black,draw=black] (0,\y cm) circle (.33mm);
+      }
+    \end{scope}
+    }
+  \end{scope}
+  }
+
+  % label one copy of the circuit.
+  \foreach \t/\gate in {0/{HT},1/{T^\dag H},2/H,3/{H}}{
+    \node at ({45 - \t * 11.25} :7.5) {$t = \t$};
+    \draw[->,draw=black] ({42-\t*11.25} :6.75) arc[radius=6.75, start angle = {42-\t*11.25} ,end angle= {36.75-\t*11.25}];
+    \node[fill=white] at ({39.825 - \t * 11.25} :7.5) {$\gate$ };
+  }
+  \node at (0:7.5) {$t = 4$};
+  
+  % highlight one circuit's S^3+S^4+S^5 penalties
+  \foreach \timerot in {157.5,168.75,180,191.25, 202.5} {
+  \begin{scope}[rotate = \timerot ]
+    % for each logical state (i.e. 0/1) extend by a bit
+    \foreach \logicz in {2.25,4.5} {
+    \begin{scope}[yshift = \logicz cm,draw=black!60]
+      % Apply the penalty edges
+      \draw (0,1.75) to[out=225,in = 135] (0,.5);
+      \draw (0,1.75) to[out=240,in = 120] (0,.75);
+      \draw (0,1.75) to[out=255,in=105] (0,1);
+  
+      \draw (0,1.5) to[out=315,in = 45] (0,.25);
+      \draw (0,1.5) to[out=300,in=60] (0,.5);
+      \draw (0,1.5) to[out=285,in=75] (0,.75);
+  
+      \draw (0,0) to[out=45,in=315] (0,1.25);
+      \draw (0,0) to[out=60,in=300] (0,1);
+      \draw (0,0) to[out=75,in=285] (0,.75);
+  
+      \draw (0,.25) to[out=135,in=225] (0,1.25);
+      \draw (0,.25) to[out=120,in=240] (0,1);
+  
+      \draw (0,1.25) to[out=240,in=120] (0,.5);
+    \end{scope}
+    }
+  \end{scope}
+  }
+  
+\end{tikzpicture}

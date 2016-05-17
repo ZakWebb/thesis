@@ -16,271 +16,77 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Finite truncation}
+With the basic understanding of scattering on graphs, we should be able to combine several graphs so as to show that single-particle quantum walks are universal.  While this has already been shown by Andrew Childs \cite{Chi09}, this is a slightly different graph and analysis, which will help with the understanding of the multi-particle case.  In particular, the method for encoding a computation will be to have a long (but finite) path for each computational basis state of the circuit.  We will use several graphs from the previous section so that each gate is implemented with a scattering event.  
 
-I think I should include theorem 1 here (maybe)
-
-\begin{theorem} Let $\widehat{G}$ be an $(N+m)$-vertex graph.  Let $G$ be the graph obtained from $\widetilde{G}$ by attaching semi-infinite paths to the first $N$ of its vertices, and let $S$ be the corresponding $S$-matrix.  Let $H_G$ be the quantum walk Hamiltonian of equation \missingcite{correct equation}. Let $k\in (-\pi,0)$, $M,L\in \NN$, $j\in [N]$, and 
-\begin{equation}
-  \ket{\psi^j(0)} = \frac{1}{\sqrt{L}} \sum_{x=M+1}^{M4L} e^{-i k x} \ket{x,j}.
-\end{equation}
-Let $c_0$ be a constant independent of $L$.  Then, for all $0 \leq t \leq c_0 L$,
-\begin{equation}
-   \Big\|e^{-i H_G t}\ket{\psi^j(0)} - \ket{\alpha^j(t)}\Big\| = \OO(L^{-1/4})
-\end{equation}
-where
-\begin{equation}
-  \ket{\alpha^j(t)} = \frac{1}{\sqrt{L}} e^{-2 i t \cos k} \sum_{x=1}^\infty \sum_{q=1}^N (\delta_{qj} e^{-ikx} R(x- \lfloor 2t \sin k\rfloor ) + S_{qj}(k) e^{ikx} R(-x - \lfloor 2t \sin k\rfloor ) ) \ket{x,q}
-\end{equation}
-with
-\begin{equation}
-  R(l) = \begin{cases} 1 & \text{ if } l- M \in [L]\\
-    0 & \text{ otherwise.}
-    \end{cases}
-\end{equation}
-\end{theorem}
-n this section we prove \thm{singlepart}. The proof is based on (and follows closely) the calculation from the appendix of reference \cite{FGG08}.
-
-Recall from \eq{single_particle_states} that the scattering eigenstates of $H_{G}^{(1)}$ have the
-form
-\[
-\langle x,q|\text{sc}_{j}(k)\rangle=e^{-ikx}\delta_{qj}+e^{ikx}S_{qj}(k)\]
- for each $k\in(-\pi,0)$. 
-
-Before delving into the proof, we first establish that the state $|\alpha^{j}(t)\rangle$ is approximately normalized. This state is not normalized at all times $t$. However, $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\OO(L^{-1})$, as we now show:
-\begin{align*}
-\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle & =\frac{1}{L} \sum_{x=1}^{\infty}\left|e^{-ikx}R(x-\left\lfloor 2t\sin k\right\rfloor)+S_{jj}(k)e^{ikx}R(-x-\left\lfloor 2t\sin k\right\rfloor)\right|^{2} \\
- &\quad   +\frac{1}{L}\sum_{q\neq j}\sum_{x=1}^{\infty}|S_{qj}(k)|^{2} R(-x-\left\lfloor 2t\sin k\right\rfloor) \\
- & = \frac{1}{L}\sum_{x=1}^{\infty}\left[R(x-\left\lfloor 2t\sin k\right\rfloor )+R(-x-\left\lfloor 2t\sin k\right\rfloor)\right] \\
- &  \quad +\frac{1}{L}\sum_{x=1}^{\infty}\left(e^{-2ikx}S_{jj}^{\ast}(k)+e^{2ikx}S_{jj}(k)\right)R(x-\left\lfloor 2t\sin k\right\rfloor)R(-x-\left\lfloor 2t\sin k\right\rfloor) \\
- & = 1\! +\! \frac{1}{L}\sum_{x=1}^{\infty}
- 	\left(e^{-2ikx}S_{jj}^{\ast}(k)\! +\! e^{2ikx}S_{jj}(k)\right)
-   R(x\! -\! \left\lfloor 2t\sin k\right\rfloor)
-   R(-x\! -\!\left\lfloor 2t\sin k\right\rfloor)
-   \! +\!\OO(L^{-1})
-\end{align*}
-where we have used unitarity of $S$ in the second step.
-When it is nonzero, the second term can be written as
-\[
-\frac{1}{L}\sum_{x=1}^{b}\left(e^{-2ikx}S_{jj}^{\ast}(k)+e^{2ikx}S_{jj}(k)\right)
-\]
-where $b$ is the maximum positive integer such that $\{-b,b\}\subset\{M+1+\left\lfloor 2t\sin k\right\rfloor,\ldots,M+L+\left\lfloor 2t\sin k\right\rfloor \}$. Performing
-the sums, we get
-\begin{align*}
-\left|\frac{1}{L}\sum_{x=1}^{b}\left(e^{-2ikx}S_{jj}^{\ast}(k)+e^{2ikx}S_{jj}(k)\right)\right| 
-&= \frac{1}{L} \left|S_{jj}^{\ast}(k)e^{-2ik} \frac{e^{-2ikb}-1}{e^{-2ik}-1} 
-+
-S_{jj}(k)e^{2ik} \frac{e^{2ikb}-1}{e^{2ik}-1} \right|\\
- & \leq \frac{2}{L|{\sin k}|} .
-\end{align*}
-
-Thus we have $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\OO(L^{-1})$.
-
-\begin{proof}[Proof of {\thm{singlepart}}]
-Define
-\[
-|\psi^{j}(t)\rangle=e^{-iH_{G}^{(1)}t}|\psi^{j}(0)\rangle
-\]
-and write
-\[
-|\psi^{j}(t)\rangle=|w^{j}(t)\rangle+|v^{j}(t)\rangle
-\]
-where
-\[
-|w^{j}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}\sum_{q=1}^{N}|\text{sc}_{q}(k+\phi)\rangle\langle\text{sc}_{q}(k+\phi)|\psi^{j}(0)\rangle
-\]
-and $\langle w^{j}(t)|v^{j}(t)\rangle=0$. We take $\epsilon=\frac{\left|\sin k\right|}{2\sqrt{L}}$.
-Now \[
-\langle\text{sc}_{q}(k+\phi)|\psi^{j}(0)\rangle=\frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}\left(e^{i\phi x}\delta_{qj}+e^{-i\left(2k+\phi\right)x}S_{qj}^{\ast}(k+\phi)\right),\]
- so \[
-|w^{j}(t)\rangle=|w_{A}^{j}(t)\rangle+\sum_{q=1}^{N}|w_{B}^{q,j}(t)\rangle\]
- where \begin{align*}
-|w_{A}^{j}(t)\rangle & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}f(\phi)|\text{sc}_{j}(k+\phi)\rangle\\
-|w_{B}^{q,j}(t)\rangle & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}g_{qj}(\phi)|\text{sc}_{q}(k+\phi)\rangle
-\end{align*}
-with
-\begin{align*}
-f(\phi) & = \frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}e^{i\phi x}\\
-g_{qj}(\phi) & = \frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}e^{-i\left(2k+\phi\right)x}S_{qj}^{\ast}(k+\phi).\end{align*}
-We will see that $\ket{\psi^j(t)} \approx \ket{w^j(t)} \approx \ket{w^j_A(t)} \approx \ket{\alpha^j(t)}$.
-
-Now
-\begin{align*}
-\langle w_{A}^{j}(t)|w_{A}^{j}(t)\rangle & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}
- = \frac{1}{L} \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}
- \end{align*}
-but
-\[
-\frac{1}{L} \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}=1
-\]
-and
-\begin{align}
-\frac{1}{L}\left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)} & = \frac{2}{L} \int_{\epsilon}^{\pi}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\nonumber \\
- & \leq \frac{2}{L}\int_{\epsilon}^{\pi}\frac{d\phi}{2\pi}\frac{\pi^{2}}{\phi^{2}}\nonumber \\
- & \leq \frac{\pi}{L\epsilon}.\label{eq:fbound}
-\end{align}
-Therefore
-\[
-1\geq\langle w_{A}^{j}(t)|w_{A}^{j}(t)\rangle\geq1-\frac{\pi}{L\epsilon}.
-\]
-Similarly,
-\[
-\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\left|S_{qj}(k+\phi)\right|^{2}}{L}\frac{\sin^{2}(\frac{1}{2}L(2k+\phi))}{\sin^{2}(\frac{1}{2}(2k+\phi))},\]
-and, using the unitarity of $S$,
-\begin{align*}
-\sum_{q=1}^{N}\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle & = \frac{1}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L(2k+\phi))}{\sin^{2}(\frac{1}{2}(2k+\phi))}\\
- & \leq \frac{1}{L} \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{1}{\sin^{2}(\frac{1}{2}(2k+\phi))}.
-\end{align*}
-Now $|{\sin(k+{\phi}/{2}) - \sin k}| \leq {|\phi|}/{2}$ (by the mean value theorem). So
-\begin{align*}
-\sin^{2}\left(k+\frac{\phi}{2}\right) & \geq \left(\left|\sin k\right|-\left|\frac{\phi}{2}\right|\right)^{2}.
-\end{align*}
-Since $\epsilon=\frac{\left|\sin k\right|}{2\sqrt{L}}<\left|\sin k\right|$
-we then have \begin{align*}
-\sum_{q=1}^{N}\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle & \leq \frac{1}{L} \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{4}{\sin^{2}k}\\
- & = \frac{4\epsilon}{\pi L\sin^{2}k}.\end{align*}
- Hence \begin{align*}
-\langle w^{j}(t)|w^{j}(t)\rangle & \geq \langle w_{A}^{j}(t)|w_{A}^{j}(t)\rangle-2\left|\sum_{q=1}^{N}\langle w_{A}^{j}(t)|w_{B}^{qj}(t)\rangle\right|\\
- & \geq 1-\frac{\pi}{L\epsilon}-2\left\Vert \sum_{q=1}^{n}|w_{B}^{qj}(t)\rangle\right\Vert \\
- & \geq 1-\frac{\pi}{L\epsilon}-2\sum_{q=1}^{n}\left\Vert |w_{B}^{qj}(t)\rangle\right\Vert \\
- & \geq 1-\frac{\pi}{L\epsilon}-4\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}},\end{align*}
-so
-\[
-\langle v^{j}(t)|v^{j}(t)\rangle\leq\frac{\pi}{L\epsilon}+4\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}}
-\]
-since $\langle v^{j}(t)|v^{j}(t)\rangle+\langle w^{j}(t)|w^{j}(t)\rangle=1$.
-Thus
-\begin{align*}
-\left\Vert |\psi^{j}(t)\rangle-|w_{A}^{j}(t)\rangle\right\Vert  & = \left\Vert |v^{j}(t)\rangle+\sum_{q=1}^{N}|w_{B}^{qj}(t)\rangle\right\Vert \\
- & \leq \left(\frac{\pi}{L\epsilon}+4\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}}\right)^{\frac{1}{2}}+2\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}}.
-\end{align*}
-With our choice $\epsilon=\frac{\left|\sin k\right|}{2\sqrt{L}}$,
-we have $\norm{|\psi^{j}(t)\rangle-|w_{A}^{j}(t)\rangle} =\O(L^{-{1}/
-{4}})$.
-
-We now show that
-\begin{equation}
-\left\Vert |w_{A}^{j}(t)\rangle-|\alpha^{j}(t)\rangle\right\Vert =\O(L^{-{1}/{8}}).\label{eq:alpha_w_bound}\end{equation}
-Letting \[
-P=\sum_{q=1}^{N}\sum_{x=1}^{\infty}|x,q\rangle\langle x,q|\]
-be the projector onto the semi-infinite paths, to show equation \eq{alpha_w_bound}
-it is sufficient to show that
-\begin{equation}
-\left\Vert P|w_{A}^{j}(t)\rangle-|\alpha^{j}(t)\rangle\right\Vert = \O(L^{-{1}/{4}})
-\label{eq:bound_inside_lines}
-\end{equation}
-since this implies that
-\begin{align*}
-\left\Vert P|w_{A}^{j}(t)\rangle\right\Vert  & = \left\Vert |\alpha^{j}(t)\rangle\right\Vert + \O(L^{-{1}/{4}})\\
- & = 1+\O(L^{-{1}/{4}})
-\end{align*}
-and hence
-\begin{align}
-\left\Vert \left(1-P\right)|w_{A}^{j}(t)\rangle\right\Vert ^{2} & = \left\Vert |w_{A}^{j}(t)\rangle\right\Vert ^{2}-\left\Vert P|w_{A}^{j}(t)\rangle\right\Vert ^{2}\nonumber \\
- & \leq 1-\left(1+\O(L^{-{1}/{4}})\right)\nonumber \\
- & = \O(L^{-{1}/{4}}).\label{eq:bound_outside_lines}
-\end{align}
-From the above formula we now see that inequality \eq{bound_inside_lines}
-implies \eq{alpha_w_bound}.
-
-Noting that
-\[
-\frac{1}{\sqrt{L}}R(l)=\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi l}f(\phi),
-\]
-we write
-\begin{align}
-\langle x,q|\alpha^{j}(t)\rangle & = e^{-2it\cos k}\left(\delta_{qj}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi\left(x-\left\lfloor 2t\sin k\right\rfloor \right)}f(\phi)\right.\nonumber\\
-&\qquad\qquad\qquad  \left. +S_{qj}(k)e^{ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi\left(-x-\left\lfloor 2t\sin k\right\rfloor \right)}f(\phi)\right).\label{eq:alpha_mat_elements}
-\end{align}
-On the other hand,
-\begin{equation}
-\langle x,q|w_{A}^{j}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}f(\phi)\left(e^{-i\left(k+\phi\right)x}\delta_{qj}+e^{i\left(k+\phi\right)x}S_{qj}(k+\phi)\right).\label{eq:w_a_mat_elements}
-\end{equation}
-Using equations \eq{alpha_mat_elements} and \eq{w_a_mat_elements}
-we can write\[
-P|w_{A}^{j}(t)\rangle=|\alpha^{j}(t)\rangle+\sum_{i=1}^{7}|c_{i}^{j}(t)\rangle\]
- where $P|c_{i}^{j}(t)\rangle=|c_{i}^{j}(t)\rangle$ and \begin{align*}
-\langle x,q|c_{1}^{j}(t)\rangle & = \delta_{qj}e^{-2it\cos k}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\\
-\langle x,q|c_{2}^{j}(t)\rangle & = S_{qj}(k)e^{-2it\cos k}e^{ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\\
-\langle x,q|c_{3}^{j}(t)\rangle & = -\delta_{qj}e^{-2it\cos k}e^{-ikx}\left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)e^{2it\phi\sin k}\\
-\langle x,q|c_{4}^{j}(t)\rangle & = -S_{qj}(k)e^{-2it\cos k}e^{ikx}\left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}e^{i\phi x}f(\phi)e^{2it\phi\sin k}\\
-\langle x,q|c_{5}^{j}(t)\rangle & = \delta_{qj}e^{-ikx}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{-2it\cos\left(k+\phi\right)}-e^{-2it\cos k+2it\phi\sin k}\right)\\
-\langle x,q|c_{6}^{j}(t)\rangle & = S_{qj}(k)e^{ikx}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{i\phi x}f(\phi)\left(e^{-2it\cos\left(k+\phi\right)}-e^{-2it\cos k+2it\phi\sin k}\right)\\
-\langle x,q|c_{7}^{j}(t)\rangle & = e^{ikx}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{i\phi x}e^{-2it\cos\left(k+\phi\right)}f(\phi)\left(S_{qj}(k+\phi)-S_{qj}(k)\right).
-\end{align*}
-We now bound the norm of each of these states:
-\begin{align*}
-\langle c_{1}^{j}(t)|c_{1}^{j}(t)\rangle & = \sum_{q=1}^{N}\sum_{x=1}^{\infty}\left|\delta_{qj}e^{-2it\cos k}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\right|^{2}\\
- & \leq \sum_{q=1}^{N}\sum_{x=-\infty}^{\infty}\left|\delta_{qj}e^{-2it\cos k}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\right|^{2}\\
- & = \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left|e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right|^{2}\\
- & \leq \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left(2t\phi\sin k-\left\lfloor 2t\sin k\right\rfloor \phi\right)^{2}\\
- & \leq \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\phi^{2}
-\end{align*}
-where we have used the facts that $|{e^{is}-1}|^{2} \leq s^{2}$
-for $s\in\mathbb{R}$ and $\left|2t\sin k -\left\lfloor 2t\sin k\right\rfloor \right|<1$. In the above we performed the sum over $x$ using the identity
-\[
-\sum_{x=-\infty}^{\infty} e^{i(\phi-\tilde{\phi})x}=2\pi\delta(\phi-\tilde{\phi}) \text{ for } \phi,\tilde{\phi}\in (-\pi,\pi).
-\]
-We use this fact repeatedly in the following calculations.
-Continuing, we get
-\begin{align*}
-\langle c_{1}^{j}(t)|c_{1}^{j}(t)\rangle & \leq \frac{1}{L} \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\phi^{2}\\
- & \le \frac{1}{L} \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\frac{1}{\sin^{2}(\frac{1}{2}\phi)}\phi^{2}\\
- & \leq \frac{\pi^{2}}{L}
-\end{align*}
-using the fact that $\sin^{2}({\phi}/{2})\geq{\phi^{2}}/{\pi^{2}}$
-for $\phi\in[-\pi,\pi]$. Similarly we bound $\langle c_{2}^{j}(t)|c_{2}^{j}(t)\rangle\leq{\pi^{2}}/{L}$. 
-
-Using equation \eq{fbound} we get 
-\begin{align*}
-\langle c_{3}^{j}(t)|c_{3}^{j}(t)\rangle & \leq \left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\\
- & \leq \frac{\pi}{L\epsilon}\end{align*}
-and similarly for $\langle c_{4}^{j}(t)|c_{4}^{j}(t)\rangle$.
-Next, we have
-\begin{align*}
-\langle c_{5}^{j}(t)|c_{5}^{j}(t)\rangle & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left|e^{-2it\cos\left(k+\phi\right)}-e^{-2it\cos k+2it\phi\sin k}\right|^{2}\\
- & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left(2t\cos\left(k+\phi\right)-2t\cos k+2t\phi\sin k\right)^{2}\\
- & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left(2t\cos k\left(\cos\phi-1\right)+2t\sin k\left(\phi-\sin\phi\right)\right)^{2}\\
- & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}4t^{2}\phi^{4}\\
- & = \frac{4t^{2}}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\phi^{4}\\
- & \leq \frac{4t^{2}}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\pi^{2}\phi^{2}\\
- & = \frac{4\pi}{3L}t^{2}\epsilon^{3}\end{align*}
- and we have the same bound for $|c_{6}^{j}(t)\rangle$. Finally, 
-\begin{align*}
-\langle c_{7}^{j}(t)|c_{7}^{j}(t)\rangle & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\sum_{q=1}^{N}\left|S_{qj}(k+\phi)-S_{qj}(k)\right|^{2}.\end{align*}
-Now, for each $q\in\{1,\ldots,N\}$,
-\[
-\left|S_{qj}(k+\phi)-S_{qj}(k)\right| \leq \Gamma |\phi|
-\]
-where the Lipschitz constant
-\[
-\Gamma = \max_{q,j\in\{1,\ldots,N\}} \max_{k' \in [-\pi,\pi]}\left|\frac{d}{dk'}S_{qj}(k')\right|
-\]
-is well defined since each matrix element $S_{qj}(k')$ is a
-bounded rational function of $e^{ik'}$, as can be seen from equation \eq{smatrixgamma}. Hence
-\begin{align*}
-\langle c_{7}^{j}(t)|c_{7}^{j}(t)\rangle & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}N\Gamma^{2}\phi^{2}\\
- & = \frac{N\Gamma^{2}}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\phi^{2}\\
- & \leq \frac{N\Gamma^{2}}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\pi^{2}\\
- & = N\Gamma^{2}\frac{\pi\epsilon}{L}.
-\end{align*}
-Now using the bounds on the norms of each of these states we get
-\begin{align*}
-\left\Vert P|w_{A}^{j}(t)\rangle-|\alpha^{j}(t)\rangle\right\Vert  & \leq 2\frac{\pi}{\sqrt{L}}+2\sqrt{\frac{\pi}{L\epsilon}}+2\sqrt{\frac{4\pi}{3L}t^{2}\epsilon^{3}}+\sqrt{N\Gamma^{2}\frac{\pi\epsilon}{L}}\\
- & = \O(L^{-{1}/{4}})
-\end{align*}
-using the choice $\epsilon=\frac{|{\sin p}|}{2\sqrt{L}}$ and the fact that $t = \O(L)$. 
-\end{proof}
-
-Note that this analysis assumes that $N = \O(1)$, which is the case in our applications of \thm{singlepart}.
-
-\section{Using scattering for simple computation}
+While the overall graph will be exponential in size, each individual scattering event will only involve either two or four semi-infinite paths, as our choice of universal gate set only mixes at most two computational basis states per gate.  As such, we will be able to analyze the evolution of a sufficiently large wavepacket, and show that the evolution of such a wavepacket follows the expected evolution for a single gate.  By then combining the graphs in such a manner, we will then be able to show that the final location of the wavepacket can be used to evaluate whether the simulated circuit accepts.
 
 
-\section{Encoded two-qubit gates}
-\section{Single-qubit blocks}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Single-gate blocks}
+\label{sec:single_gate_blocks}
+
+Before we encode an entire computation into the evolution of a quantum walker, we first need to be able to encode a single gate.  To do this, we will use the results of \chap{scattering_on_graphs}, as we have already shown how to simulate the evolution of a universal gate set.  Unfortunately, the results of that section do require that each of the input and output paths to be semi-infinite, which will be problematic for combining these evolutions in series.
+
+However, if we examine \lem{SP_wavepacket}, we can see that for all times of interest, most of the amplitude remains close to the graph.  Intuitively, we would thus expect the evolution for these times to remain mostly unchanged if we then remove those vertices far from the graph.  This is actually the bulk of the \lem{NPL}, which we will use to great effect in our proof.
+
+Before we analyze the actual evolution, however, we will want to construct these small graphs themselves.  As such, let us assume that we are working with $n$ qubits, and let us assume that we are applying the unitary $U$, where $U\in \{H, T,\CNOT\}$.  With this assumption, the graph corresponding to  a single gate will then consist of $2^{n+1}$ paths of length $2M+L$, where $M$ and $L$ are integers to be determined, along with a scattering graph $G_U$ that implements the appropriate unitary evolution.  Half of the long paths will correspond to the input paths, while the other half will correspond to the output paths.  We will then connect these paths to the input and output vertices of $G_U$.   In particular, the graph will look like \fig{SP_block}.  
+
+\todo{fix figure}
+
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{SP_block}
+  \input{../tikz/SP_block.tex}
+  \caption{The intuitive idea for a single-particle block.}
+  \label{fig:SP_block}
+\end{figure}
+
+Additionally, as the scattering behavior of graphs is intrinsically related to the momentum of the wavepackets, we will need to decide on this before we finish the construction.  In anticipation of \chap{MP_universality}, as well as the simplicity of certain graphs, our construction will utilize $k = -\dfrac{\pi}{4}$.
+
+%%%%%%%%%%%%%%%%
+\subsection{Construction of $G_U$}
+
+With these choices, the graphs for $G_U$ will be relatively simple.  For all graphs except for the amplitude mixing gate, the subgraphs will simply consist of paths, so that the evolution will essentially just be the same as on a long path, possibly with an encoded change of phase.  For the amplitude mixing gate, things will be slightly di
+
+If $U$ is a $\Tgate$-gate acting on qubit $j$, then the graph $G_U$ will consist of $2^{n-1}$ paths of length $2$ connecting input $x_{\text{in}}$ to $x_{\text{out}}$, where $x_j = 0$, and $2^{n-1}$ paths of length $1$ connecting input $x_{\text{in}}$ to output $x_{\text{out}}$ where $x_{j} = 1$.  In this manner, the scattering amplitude will always have perfect transmision, and different momenta will only result in a different encoded gate (namely that this will be a $-\dfrac{k}{2}$-phase gate as opposed to a $\dfrac{\pi}{8}$-gate.
+
+If $U$ is a $\CNOT$-gate controlled by qubit $i$ and acting on qubit $j$, then this is even more simple than the $\Tgate$-gate.  In particular, the graph $G_U$ will consist of $2^n$ paths of length 2, where input $x$ is connected to output $y$, where $x_k = y_k$ for all $k\neq j$, and $y_j =x_i + x_j - 2 x_i x_j$. 
+
+Finally, if $U$ is the Basis-changing gate acting on qubit $j$, then things become slightly more complicated.  In particular, $G_U$ then consists of $2^{n-1}$ copies of the graph \fig{basis_change}, with inputs $x_{\text{input}}$ and $y_{\text{input}}$ with $x_i = y_i$ for all $i\neq j$, and $x_j = 1-y_j$, and outputs $x_{\text{out}}$ and $y_{\text{out}}$.
+
+These are represented pictoraly in \fig{SP_G_U}.  Note that the paths corresponding to the basis states are ordered to make the figures coherent, and that the ordering depends on which qubits the gate acts.
+
+\todo{make figure}
+
+
+%%%%%%%%%%%%%%%%
+\subsection{Evolution analysis}
+
+An important aspect to note about this graph is that while $G_U$ has exponentially many inputs and outputs, it actually consists of either $2^n$ or $2^{n-1}$ disconnected graphs, as our universal gate set only ever mixes at most two basis states.  As such, each scattering event will only ever deal with finite sized graphs, and we will be able to use \lem{SP_wavepacket} without worry.
+
+In particular, if we assume that the initial state is a superposition of square wavepackets that are all a distance $M$ from the 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Combining blocks}
 
-It might be worthwhile to include a new proof of universal computation of single-particle scattering in this model.
+With the understanding of exactly how a single graphs block is expected to simulate a single circuit, we will want to understand how to combine these blocks so as to be able to perform a simulation of an entire circuit.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Discussion and extensions}
+
+What else can go here?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\biblio
 
 \end{document}

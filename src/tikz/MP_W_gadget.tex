@@ -1,0 +1,114 @@
+\begin{tikzpicture}[scale=1]
+
+
+% Left Connections between 1  and identity seperators
+\foreach \l        /\r in {
+	      3.24  / 3.525,
+	      2.62  / 1.325,
+	      1.04  / 2.425,
+	      0.42  / 0.225
+              } 
+{   
+ \draw[looseness=.66,line width=4pt,color=white] (-2.5,\l) to [out=0,in=180] (-1.5,\r);
+ \draw[looseness=.66] (-2.5,\l) to [out=0,in=180] (-1.5,\r); 
+}
+
+% Connections between H and identity seperators
+\foreach \l        /\r in {
+	      3.24  / 3.525,
+	      2.62  / 2.425,
+	      1.04  / 1.325,
+	      0.42  / 0.225
+              } 
+{   
+ \draw[looseness=.66,line width=4pt,color=white] (1.5,\l) to [out=0,in=180] (2,\r);
+ \draw[looseness=.66] (1.5,\l) to [out=0,in=180] (2,\r); 
+ \draw[looseness=.66,line width=4pt,color=white] (0,\l) to [out=180,in=0] (-0.5,\r);
+ \draw[looseness=.66] (0,\l) to [out=180,in=0] (-0.5,\r); 
+}
+
+% Right Connections between 1  and identity seperators
+\foreach \l        /\r in {
+	     3.525 / 1.04,
+	     2.425 / 3.24,
+	     1.325 / 2.62,
+	     0.225 / 0.42
+              } 
+{   
+ \draw[looseness=.66,line width=4pt,color=white] (3,\l) to [out=0,in=180] (4,\r);
+ \draw[looseness=.66] (3,\l) to [out=0,in=180] (4,\r); 
+}
+
+% The two \II_{0,0}^{1,1} elements on the left
+
+\foreach \yshift /\label in {0 / 4, 2.2 / 3} {
+\begin{scope}[yshift=\yshift cm, xshift = - 4cm]
+  \draw[rounded corners=0.75mm,thick] (0,0) rectangle (1.5 cm, 1.25cm);
+  \node at (.75,.625) {\huge$\II$};   
+  \node at (.75,1.5) {\large\label};
+  \foreach \y in {1.04, .42} {
+    \draw[fill = black, draw = black] (1.5 cm, \y cm) circle (.66mm);
+  }  
+\end{scope}
+}
+
+%  The Two H_{1,1}^{2,2} elements in the center
+
+\foreach \yshift /\label in {0 / 2, 2.2 / 1} {
+\begin{scope}[yshift=\yshift cm]
+  \draw[rounded corners=0.75mm,thick] (0,0) rectangle (1.5 cm, 1.25cm);
+  \node at (.75,.625) {\huge$H$};   
+  \node at (.75,1.5) {\large\label};
+  \foreach \y in {.21,.42,.83,1.04}{   
+    \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }
+  \foreach \y in {1.04, .42} {
+    \draw[fill = gray, draw = gray] (1.5 cm, \y cm) circle (.66mm);
+  }  
+\end{scope}
+}
+
+% The two \II_{0,0}^{1,1} elements on the right
+
+\foreach \yshift /\label in {0 / 6, 2.2 / 5} {
+\begin{scope}[yshift=\yshift cm, xshift = 4cm]
+  \draw[rounded corners=0.75mm,thick] (0,0) rectangle (1.5 cm, 1.25cm);
+  \node at (.75,.625) {\huge$\II$};   
+  \node at (.75,1.5) {\large\label};
+  \foreach \y in {1.04, .42} {
+    \draw[fill = black, draw = black] (0 cm, \y cm) circle (.66mm);
+  }  
+\end{scope}
+}
+
+
+
+% Identity elements splitting the other six unitaries
+
+\setcounter{mycount}{7}
+\foreach \xshift in {-1.5,  2}
+{
+\foreach \yshift in {3.075,1.975,0.875,-0.225}{
+
+\begin{scope}[shift = {(\xshift,\yshift)}]
+  \draw[rounded corners = 0.75mm,thick] (0,0) rectangle (1 cm, .6cm);
+  \node at (.5cm , .3 cm) {$\II$};
+  \node at (.5cm , .8 cm) {$\arabic{mycount}$};
+  \stepcounter{mycount}
+  \draw[fill = black, draw=black] (0 cm, .15 cm) circle (.66mm);
+  \draw[fill = black, draw=black] (0 cm, .45 cm) circle (.66mm);
+  \draw[fill = gray,  draw =gray ] (1 cm, .45 cm) circle (.66mm);  
+  
+  % Self-loops on the second input node
+  \draw[looseness=50,draw = black] (0cm, .14 cm) to [out = 210, in = 150] (0cm, .16cm);
+\end{scope}
+}}
+
+
+\node at (0.23,3.03) {$\alpha$};
+\node at (0.23,2.41) {$\beta$};
+\node at (0.23,0.83) {$\delta$};
+\node at (0.23,0.21) {$\gamma$};
+
+
+\end{tikzpicture}

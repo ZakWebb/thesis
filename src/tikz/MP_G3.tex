@@ -1,0 +1,85 @@
+\begin{tikzpicture}[scale=.8,yscale=.8]
+  
+  % Gray Grid Lines 
+\foreach \y in {2,4}
+{   
+\draw[draw=black!20] (0,\y cm) -- (15.7 cm, \y cm); 
+} 
+\foreach \x in {2.618,5.236,7.854,10.472,13.09}
+{   
+\draw[draw=black!20] (\x cm, 0cm) -- (\x cm, 6cm); 
+} 
+\setcounter{mycount}{1}; 
+\foreach \y in {5,3,1}
+{   
+\node at (-.6,\y) {$i = \arabic{mycount}$\addtocounter{mycount}{1}}; 
+}
+\foreach \x in {0, ...,5}
+{   
+\node at ( 2.618*\x + 1.31,6.3) {$j = \x$}; 
+}
+  % Lower Links
+\foreach \y in {.4,1,2.4,3}
+{   
+\draw (1.9,\y) -- (13.8,\y); 
+}
+  % Upper Links
+\foreach \y in {5.41,4.81}
+{   
+\draw (4.93,\y) -- (10.78,\y); 
+}
+  % Boundary Graphs
+\foreach \xscope /\scale in {0.5/1,15.2/-1}
+{ 
+	\foreach \yscope in {1.81,3.81}
+	{    
+		\begin{scope}[yshift = \yscope cm,xshift = \xscope cm,xscale=\scale]     
+		\draw[rounded corners = .75mm,thick] (0,0) -- (.6,0) -- (.6,-.5) --(1.4,-.5) -- (1.4,-1.618) -- (0,-1.618) -- cycle;
+        \draw[fill=black] (1,-.5) circle (.66mm);    
+		\draw[fill=black] (1.4,-.81) circle (.66mm);       
+		\draw[fill=black] (1.4,-1.41) circle (.66mm);       
+		\draw[fill=black] (1,-1.618) circle (.66mm);
+        \node at (.7,-1.11) {\large Bnd};   
+		\end{scope}
+	}
+}    
+  % Gate Graphs  
+ \setcounter{mycount}{1}   \foreach \ybottom/ \control /\unitary in {.19/1/1,2.19/0/1,.19/1/HT,2.19/1/1}
+{   
+\begin{scope}[xshift = \value{mycount}*2.618 cm + .31cm]     
+\begin{scope}[xshift=2cm,xscale=-1]     
+\draw[rounded corners = .75mm,thick,fill=white] (0cm,\ybottom cm) -- (2cm, \ybottom cm)-- (2cm,\ybottom cm + 1.118cm) -- (1.2cm, \ybottom cm + 1.118cm) -- (1.2cm, 4.5cm)-- (2cm, 4.5cm) -- (2cm, 5.62 cm) -- (0cm, 5.62cm) -- (0cm, 4.5cm) -- (.6cm, 4.5cm)            -- (.6cm, \ybottom cm + 1.118cm) -- (0cm, \ybottom cm + 1.118cm) -- cycle;
+          % Inner Circuit/Unitary Matrix   
+ \draw (.15cm, 5.06cm) -- (1.85cm, 5.06cm);     
+\draw (.15cm, \ybottom cm + .56 cm) -- (1.85cm, \ybottom cm + .56 cm);     
+\draw (.9cm, 5.06cm) -- (.9cm,\ybottom cm + .56 cm);          
+\foreach \x in {0,2}
+{     
+	\foreach \y in {5.41,4.81,\ybottom + .81,\ybottom + .21}
+	{       
+		\draw[fill=black] (\x,\y) circle (.66mm);     
+	}
+}          
+\if\control1
+{       
+\draw[rounded corners=.75mm,fill=white] (1.12cm,4.75cm) rectangle (1.78cm, 5.37cm);       
+\node at (1.45,5.06) {\scriptsize $\unitary$};       
+\draw[fill=black] (.9, 5.06) circle (.66mm);       
+\begin{scope}[yshift = \ybottom cm]         
+\draw[fill=white] (.9,.56) circle (1.2mm);         
+\draw (.78,.56) -- (1.02,.56);         
+\draw (.9,.44) -- (.9,.68);       
+\end{scope}     
+}
+\else
+{       
+\draw[fill=black] (.9,\ybottom+.56) circle (.66mm);       
+\draw[fill=white] (.9,5.06) circle (1.2mm);       
+\draw (.78,5.06) -- (1.02,5.06);    
+\draw (.9,4.94) -- (.9,5.18);     
+}\fi     
+\end{scope}   
+\end{scope}   
+\addtocounter{mycount}{1}; 
+}
+\end{tikzpicture}

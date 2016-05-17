@@ -13,25 +13,24 @@
 
 \chapter{Scattering on graphs}
 
-Scattering has a long history of study in the physics literature.  Ranging from the classical study of colliding objects to the analysis of high energy collisions of protons, studying the interactions of particles can be very interesting.
+Graph scattering has been an illuminating example of the uses of quantum algorithms.  The original motivation for quantum walks (the quantum generalization to classical random walks), these scattering ideas make use of scattering problems in the continuum to give intuition on problems related to quantum mechanics.
+
+\todo{Give a much better introduction to this idea of graph scattering, with references}
 
 
-\section{Motivation}
+\section{Free particles in the continuum}
 
-% I'm being rather cavalier with these definitions, I should go back over them and make sure that I'm making correct statements.
-
-Let us first take motivation from one of the most simple quantum systems: a free particle in one dimension.  Without any potential or interactions, we have that the time independent Schr\"{o}dinger equation reads
+Let us first take a look at one of the most simple quantum systems seen in any quantum mechanics text (e.g., \cite{GriQM} or \cite{SakMQM}): a free particle in one dimension.  Without any potential or interactions, we have that the time independent Schr\"{o}dinger equation reads
 \begin{equation}
   \frac{\partial^2}{\partial x^2} \psi(x) = -\frac{2m}{\hbar^2}E \psi(x) = -k^2 \psi(x),
 \end{equation}
 which requires the (unnormalizable) solutions,
 \begin{equation}
-  \psi(x) = \exp(- i k x) 
+  \psi(x) = A \exp(- i k x) + B \exp(i k x) \label{eq:simple_motivating_momentum_states}
 \end{equation}
-for real $k$.  These \textit{momentum states} correspond to particles travelling with momentum $k$ along the real line, and form a basis for the possible states of the system.
+for real $k$ and for arbitrary constant $A$ and $B$.  These \textit{momentum states} correspond to particles travelling with momentum $k$ along the real line, and form a basis for the entire Hilbert space.
 
-
-If we now also include some finite-range potential, or a potential $V$ that is non-zero only for $|x| < d$ for some range $d$, then outside this range the eigenstates remain unchanged.  The only difference is that we will deal with a superposition of states for each energy instead of the pure momentum states.  In particular, the scattering eigenbasis for this system will become
+While these momentum states are useful for understanding the propagation of particles in the quantum setting, if we want to understand more complicated behavior we need to change the potential energy of the system.  In particular, we will now include some finite-range potential $V$ that is non-zero only for $|x| < d$ for some constant $d$, so that outside this range the eigenstates remain unchanged.  The only difference is that we will deal with a superposition of states for each energy instead of the pure momentum states, forcing some relation between the $A$ and $B$ of equation \eq{simple_motivating_momentum_states}.  Namely, the eigenstates of this system become
 \begin{equation}
   \psi(x) = \begin{cases}
     \exp(-i k x) + R(k) \exp(i k x) & x \leq -d\\
@@ -39,22 +38,30 @@ If we now also include some finite-range potential, or a potential $V$ that is n
     \phi(x,k) & |x| \leq d
     \end{cases}
 \end{equation}
-for some functions $R(k)$, $T(k)$, and $\phi(x,k)$.  
+for some functions $R(k)$, $T(k)$, and $\phi(x,k)$ that depends on the interaction $V$.  As intuition, these states can be seen as a particle with momentum $k$ coming in from the left, hitting the potential, and then scattering (which motivates the $T$ and $R$ labels).  
+
+In addition to these scattering states, it is also possible for bound states to exist.  These are normalizable states that have most (or all) of their amplitude near the non-zero potential, so that they do not affect scattering states that originate far from the interaction.  They simply exist as additional states in the Hilbert space.
 
 
-In addition to these scattering states, it is possible for bound states to exist.  These states are only nonzero for $|x| <d$, as the potential allows for the particles to simply sit at a particular location. One of the canonical examples is a finite well in one dimension, in which depending on the depth of the well, any number of bound states can exist.
+\todo{possibly include a $\delta$-function potential scattering problem in the thesis}
 
 
-\subsection{Infinite path}
+\subsection{Free particles on an infinite path}
 
-With this motivation in mind, let us now look at the discretized system corresponding to a graph.  In particular, instead of a continuum of positions states in one dimension, we restrict the position states to integer values, with transport only between neighboring integers.  Explicitly, the position basis for this Hilbert space can be labeled by $n\in \NN$.  In this basis, the discretized second derivative takes the form
+With the simple free-particle example in mind, let us now examine the discretized system.  Namely, instead of allowing arbitrary real positions, let us restrict attention to some regular 1-D lattice, such as the natural numbers.  Further, much as there is a natural linear ordering on the positions in the continuum, and in order for a particle to move between $a$ and $b$ it must travel over all positions between $a$ and $b$, in the discretized system we only allow particles to move between adjacent integers.  Explicitly, the position basis for this discretized Hilbert space will be labeled by $n\in \NN$, with transport only allowed between integers that differ by one.
+
+If we then want to understand how this discretized system works, it will be useful to discretize the entire Schr\"{o}dinger equation.  Along those lines, remember that the second derivative of a function $f$ at $x$ can be written as
+\begin{align}
+  \frac{d^2}{dx^2} f(x) = \lim_{h\rightarrow 0} \frac{f(x+h) - 2 f(x) - f(x-h)}{h^2}.
+\end{align}
+Since we were originally working in the continuum, we could let $h$ go to zero without any problems.  In our discretize world, however, there exists some smallest difference in $x$, namely 1.  As such, we have that in our discretized space, the operator corresponding to the second position derivative can be written as
 \begin{equation}
+  \Delta^2 = \sum_{x=-\infty}^\infty \ket{x} \big(\bra{x-1} - 2 \bra{x} + \bra{x+1}\big) = \sum_{x=-\infty}^\infty \big(\ketbra{x}{x-1} + \ketbra{x}{x+1}\big) - 2 \II.
 \label{eq:discrete_second_derivative}
-  \Delta^2 = \sum_{x=-\infty}^\infty (\ket{x + 1} - 2\ket{x} + \ket{x-1}) \bra{x} = \sum_{x=-\infty}^\infty \big(\ketbra{x+1}{x} + \ketbra{x-1}{x}\big) - 2 \II.
 \end{equation}
 If we then rescale the energy levels, we have that the identity term in the right hand side of \eq{discrete_second_derivative} can be removed, so that $\Delta^2$ on this discretized one-dimensional system is proportional to the adjacency matrix of an infinite path.  
 
-With this representation of the second derivative operator, we can then see that the time-independent Schr\"{o}dinger equation then becomes
+With this representation of the second derivative operator, we can see that when discretized, the time-independent Schr\"{o}dinger equation for a free particle becomes
 \begin{equation}
   \Delta^2 \ket{\psi} = \Big(\sum_{x=-\infty}^\infty \big(\ketbra{x+1}{x} + \ketbra{x-1}{x}\big) - 2 \II\Big) \ket{\psi} = E'_{\psi} \ket{\psi}.
 \end{equation}
@@ -62,19 +69,19 @@ If we rescale the energy term, and then break the vector equation into its compo
 \begin{equation}
   \braket{x+1}{\psi} + \braket{x-1}{\psi} = E_\psi \braket{x}{\psi}
 \end{equation}
-for all $x\in \ZZ$.  If we then make the ansatz that $\braket{x}{\psi} = e^{i k x}$ for some $k$, we find that
+for all $x\in \ZZ$.  Taking motivation from the continuous case,  we then make the ansatz that $\braket{x}{\psi} = e^{i k x}$ for some $k$, and find
 \begin{align}
   \braket{x+1}{\psi} + \braket{x-1}{\psi} = e^{i k } e^{i k x} + e^{-ik} e^{ikx} &= E_\psi e^{ik x} = E_\psi \braket{x}{\psi} &\Rightarrow \\ E_\psi &= e^{ik} + e^{-i k} = 2 \cos(k).
 \end{align}
 If we then use the fact that $E_\psi$ must be real, and that the amplitudes should not diverge to infinity as $x\rightarrow \pm \infty$, we find that the only possible values of $k$ are between $[-\pi,\pi)$.    Hence, in analogy with the continuous case, the eigenbasis of the Hamiltonian corresponds to momentum states, but where the possible momenta only range over $[-\pi,\pi)$.  We represent this momentum state with momenta $k$ as $\ket{\tilde{k}}$.
 
-  We can then talk about the ``speed'' of these states, which is given by
+Additionally, we can discuss the ``speed'' of these eigenstates, which is given by the derivative of the energy with respect to momentum.  We con then see that 
 \begin{equation}
-  s = \Big| \frac{d E_k}{d k} \Big| = 2 \sin (|k|).
+  s = \Big| \frac{d E_k}{d k} \Big| = 2 \sin (|k|),
 \end{equation}
-Note that in the case of small $k$, we recover the linear relationship between speed and momentum.  In this way, as the distance between the vertices grows smaller, we recover the continuum case.  
+which is to be compared with $s \propto |k|$ for in the continuum case.  While the discretization does change the relationship between momentum, energy, and speed, if we restrict ourselves to small $k$ (so that the discretization is not noticeable), we recover the linear relationship.  In this way, as the distance between vertices grows smaller, we recover the continuum case.  
 
-One slight problem with this, however, is that these momentum states are not normalizable, and thus technically are not states in the Hilbert space.  Additionally, there are an uncountable number of states, while the position basis contains only a countable number of basis states.  It turns out that these basis elements are $\delta$-function orthogonal, in that
+One slight problem with this discussion is that these momentum states are not normalizable, and thus technically are not states in the Hilbert space.  This problem is identical to that of the continuum, and thus we shall not worry about these states of the extended Hilbert space.  However, one problem that is unique to our discretized system is that  there are an uncountable number of momentum states, while the position basis contains only a countable number of basis states.  It turns out that the resolution to this conundrum is that the two bases have different orthogonality conditions: the position basis elements are Kronecker delta orthogonal, while the momentum basis elements are Dirac $\delta$-function orthogonal.  Namely,
 \begin{equation}
   \braket{\tilde{k}}{\tilde{p}} = \sum_{x=-\infty}^\infty e^{- i k x} e^{i k p} = \sum_{x=-\infty}^\infty e^{i (p-k) x} = 2\pi \delta(p-k),
 \end{equation}
@@ -84,26 +91,44 @@ so that we can decompose the identity on this space as
 \end{equation}
 
 
-\section{Scattering off of a graph}
+\section{Graph scattering}
 
-Now that we understand the eigenstates of a discretized, one-dimensional, free particle, we should attempt to understand what happens when we include a finite potential.  One method to do this is to add a potential function, with explicit potential energies at various vertices of the infinite path.   However, if we wish to examine scattering only on unweighted graphs, we need to be a little more clever.  As such, we will connect graphs in such a way that far from our changes the graph will look identical to that of an infinite path.  In particular, we will eventually connect semi-infinite (i.e., infinite in only one direction) paths to a finite graph.
+Essentially, at this point we have recovered many of the results of the continuous free particle, but with a discretized position space.  The main idea behind the discretization was the change in the second derivative operator, and noting that it became proportional to the adjacency matrix of a simple graph.  As such, we have that the Hamiltonian of the entire system is proportional to the adjacency matrix.  If we now want to add some finite potential to the system, in an attempt to discretize the scattering formalism, we could add a potential function, with explicit potential energies at various vertices of the infinite path.  However, if we wish to examine scattering only on unweighted graphs, we need to be a little more clever.  
 
-With this construction, the eigenvalue equation must still be satisfied along the semi-infinite paths, and thus the form of the eigenstates along the paths must still be of the form $e^{i k x}$ for some $k$ and $x$.  However, we can no longer assume that $k$ is real, as the fact that the attached semi-infinite paths are only infinite in one direction allow for an exponentially decaying amplitudes along the paths.  Additionally, we can have nontrivial correlations between the amplitudes among the different paths.
+To solve this problem, we will connect graphs in such a way that far from our connections the graphs will look identical to that of an infinite path, but near our changes the graph can differ drastically from an infinite path.  In particular, we will use an arbitrary (finite) graph as a base, and connect semi-infinite (infinite in one direction) paths to this base graph.
 
-Note that much of this discussion can be found in \cite{CG12}.
+With this construction, the eigenvalue equation must still be satisfied along the semi-infinite paths, and thus the form of the eigenstates along the paths must still be of the form $e^{i k x}$ for some $k$ and $x$.  However, we can no longer assume that $k$ is real, as the fact that the attached semi-infinite paths are only infinite in one direction allow for an exponentially decaying amplitudes along the paths.  Additionally, we can have nontrivial correlations between the amplitudes among the different paths, similar to the correlated reflection and transmission coefficients in the continuous case.
+
+Note that the topic of graph scattering is widely used in the literature.  Most of this section is not original work, and should be taken as background material.  In particular, these results are taken from \cite{FGG08, Chi09, CS11, CG12}
+
+\todo{Find more accurate citations}
 
 \subsection{Infinite path and a Graph}
 
-In the most simple example, let us attached a graph $\widetilde{G}$ to an infinite path.  In particular, we assume that $\widetilde{G}$ is attached to a single vertex of the infinite path, and that the graph is attached by adding an edge from each vertex in $S\subset V(\widetilde{G})$ to one specific vertex of the infinite path, which we label $0$.  Calling this new graph $G$, the adjacency matrix of $G$ is then
+In the most simple example, let us attached a graph $\widetilde{G}$ to an infinite path.  In particular, we assume that $\widetilde{G}$ is attached to a single vertex of the infinite path, and that the graph is attached by adding an edge from each vertex in $S\subset V(\widetilde{G})$ to one specific vertex of the infinite path, which we label $0$, as seen in \fig{path_and_graph}.  Calling this new graph $G$, the adjacency matrix of $G$ can be seen to be
 \begin{equation}
   A(G) = A(\widetilde{G}) + \sum_{v\in S \subset V(\widetilde{G})} \ketbra{v}{0} + \ketbra{0}{v} + \sum_{x=-\infty}^\infty \ketbra{x}{x+1} + \ketbra{x+1}{x}.
 \end{equation}
 
-If we then want to inspect the eigenvectors of this Hamiltonian, we find that the eigenvalue equation on the infinite path is identical to that of an infinite path without the graph attached.  Hence, we can see that any eigenstate of the Hamiltonian must take the form $A_ke^{i k x} + B_{-k}e^{-i k x}$ for some $k$ along the infinite paths.  
+If we then want to inspect the eigenvectors of this Hamiltonian, we find that the eigenvalue equation on the infinite path is identical to that of an infinite path without the graph attached.  Hence, we can see that any eigenstate of the Hamiltonian must take the form $Ae^{i k x} + Be^{-i k x}$ for some $k$ along the infinite paths.  
 
-With this assumption, we can see that there are three distinct cases for the form of the eigenstates.  In particular, the eigenstate could have no amplitude along the infinite paths, being confined to the finite graph $\widehat{G}$.  It could also be a normalizable state not confined to the finite graph $\widehat{G}$, in that the amplitude along the infinite paths decays exponentially.  Finally, the eigenstate could be an unnormalizable state, in which case we will call the state a scattering state.
 
-Let us assume that the state is a scattering state.  Note that the eigenvalue of the state must be between $[-2,2]$, and that the form of the eigenstate along the paths must be scalar multiples of $e^{ikx}$ and $e^{-ikx}$.  Explicitly, the state must be of the form
+%%%%%%%%
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{GS_path_and_graph}
+  \input{../tikz/GS_path_and_graph.tex}
+  \caption{A simple example for graph scattering.  A graph $\widetilde{G}$ is attached to an infinite path.}
+  \label{fig:path_and_graph}
+\end{figure}
+
+With this assumption, we can see that there are three distinct cases for the form of the eigenstates.  In particular, the eigenstate could have no amplitude along the infinite paths, being confined to the finite graph $\widehat{G}$.  It could also be a normalizable state not confined to the finite graph $\widehat{G}$, in that the amplitude along the infinite paths decays exponentially.  Finally, the eigenstate could be an unnormalizable state, in which case we will call it a scattering state.
+
+In the first case, where the state is confined to the graph $\widetilde{G}$, we 
+
+
+
+Let us finally assume that the state is a scattering state.  Note that the eigenvalue of the state must be between $[-2,2]$, and that the form of the eigenstate along the paths must be scalar multiples of $e^{ikx}$ and $e^{-ikx}$.  Explicitly, the state must be of the form
 \begin{align}
   \braket{x}{\psi} = \begin{cases} A_k e^{i k x} + B_k e^{i k x} & x \leq 0\\
    C_k e^{i k x} + D_k e^{i k x} & x\geq 0\end{cases}
@@ -119,14 +144,16 @@ where the additional term arises from the fact that the vertices in $S$ are conn
 since the eigenvalue equation must be satisfied at $0$.
 
 
-While all of this seems rather complicated, we can focus on the case where $A_k = 1$ and $D_k=0$ and the case where $A_k = 0$ and $D_k=1$ individually, so that along one of the semi-infinite paths (corresponding to $x>0$ or $x<0$), the amplitude is given by $e^{ikx}$ or $e^{-ikx}$.  These two states correspond to the eigenstates of the infinite path with the amplitudes given by $e^{-ikx}$ and $e^{ikx}$, with changes representing how adding the graph $\widetilde{G}$ affect the eigenstates.  
-
-With this assumption, let us first look at the case where $A_k = 1$ and $D_k = 0$.  We then have that the eigenstates take the form
+We will focus on the case where $A_k = 1$ and $D_k=0$ and the case where $A_k = 0$ and $D_k=1$ individually, as they can each be thought of as a particle with momentum $k$ traveling toward the attached graph $\widetilde{G}$ along the infinite path, and then scattering.  Explicitly, if we first look at the case where $A_k = 1$ and $D_k = 0$,  we can see that
 \begin{align}
   \braket{x}{\psi} = \begin{cases} e^{-ikx} + B_k e^{i kx} & x\leq 0\\
   C_k e^{-ikx} & x \geq 0\end{cases}
 \end{align}
 so that $1+ B_k  =C_k$.  Note that this is reminiscent of a scattering state, with reflection amplitude $B_k$ and transmission amplitude $C_k$, so that we take this intuition.  
+
+\todo{make this coherent}
+
+
 
 
 %%%%%%%%%%%%%%%
@@ -561,62 +588,16 @@ While the above gives a nice abstract explanation for the construction of R/T ga
 
 As a first example, suppose $G_0$ is a finite path of length $l_1+l_2-2$ connected to $a$ at the $l_1$th vertex, as shown in \fig{RT_path}.  We determine the reflection and transmission sets as a function of $l_1$ and $l_2$.
 
-%\begin{figure}
-%\centering
-%\begin{tikzpicture}[
-%  thin,
-%  vertex/.style={circle,draw=black,fill=black,inner sep=1.25pt,
-%    minimum size =0mm},
-%  attach/.style={circle,draw=black,fill=white,inner sep=1.25pt,
-%    minimum size =0mm},
-%  dots/.style={circle,fill=black,inner sep=.5pt,
-%    minimum size= 0pt}]
-%    
-%    \draw (-1,-1) -- (1,-1);
-%    \draw (0,0) -- (0,-1);
-%    
-%    \node[attach,label=270:{$(1,1)$}] at (-1,-1) {};
-%    \node[attach,label=270:{$(1,2)$}] at (1,-1) {};
-%    \node[vertex,label={[label distance=.25*\baselineskip]270:{$ a $}},] at (0,-1) {};
-%    \node[vertex] at (0,0) {};
-%    
-%    % left branch
-%    \draw (0,0) -- (135:1.5);
-%    \draw[densely dotted] (135:1.5) -- (135: 2.25);
-%    
-%    \draw[densely dotted] (135:2.75) -- (135:3.5);
-%    \draw (135:3.5) -- (135:5);
-%    
-%    \foreach \r in {1,5,4}{
-%      \node[vertex] at (135:\r) {};
-%    }
-%    
-%
-%    \foreach \n /\p in {1/5,2/4,{l_1-1}/1}{
-%      \node at (135:\p) [label={225:$\n$}] {};
-%    }
-%    
-%    
-%    % right branch
-%    \draw (0,0) -- (45:1.5);
-%    \draw[densely dotted] (45:1.5) -- (45: 2.25);
-%    
-%    \draw[densely dotted] (45:3.75) -- (45:4.5);
-%    \draw (45:4.5) -- (45:6);
-%        
-%    \foreach \r in {1,6,5}{
-%      \node[vertex] at (45:\r) {};
-%    }    
-%    
-%    
-%    \foreach \n /\p in {{l_1}/0,{l_1+1}/1,{l_1+l_2-2}/5,{l_1+l_2-1}/6}{
-%      \node at (45:\p)[label=315:{$\n$}]{};
-%    }    
-%
-%\end{tikzpicture}
-%\caption{An R/T gadget built from a path of length $l_1+l_2-2$. }
-%\label{fig:RT_path}
-%\end{figure}
+
+%%%%%%%%%
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{GS_RT_path}
+  \input{../tikz/GS_RT_path.tex}
+  \caption{An R/T gadget built from a path of length $l_1+l_2-2$. }
+  \label{fig:RT_path}
+\end{figure}
+
 
 Using \lem{reflect_reqs}, we see that perfect reflection occurs at momentum $k\in (-\pi,0)$ if and only if the path has an eigenvector with eigenvalue $2\cos(k)$ with non-zero amplitude on vertex $l_1$.  Recall that the path of length $L$ (where the length of a path is its number of edges) has eigenvectors $|\psi_j\rangle$ for $j\in [L+1]$ given by
 \begin{equation}
@@ -644,50 +625,16 @@ with eigenvalue $2 \cos(2 \pi m/r)$, where $m\in [r]$. For each momentum $k=-2 \
   \mathcal{R}_{\mathrm{cycle}} = \left\{ -\frac{\pi j}{r} \colon \text{$j$ is even and $j\in [r-1]$}\right\}.
 \]
 
-%\begin{figure}
-%\centering
-%\begin{tikzpicture}[
-%  thin,
-%  vertex/.style={circle,draw=black,fill=black,inner sep=1.25pt,
-%    minimum size =0mm},
-%  attach/.style={circle,draw=black,fill=white,inner sep=1.25pt,
-%    minimum size =0mm},
-%  dots/.style={circle,fill=black,inner sep=.5pt,
-%    minimum size= 0pt}]
-%    \draw (-1,-2) -- (1,-2);
-%    \draw (0,-2) -- (0,-1);
-%    
-%    \node[attach] at (-1,-2) {};
-%    \node at (-1,-2.35) {$(1,1)$};
-%    \node[attach] at (1,-2) {};
-%    \node at (1,-2.35) {$(1,2)$};
-%    \node[vertex] at (0,-2) {};
-%    \node at (0,-2.35) {$a$};
-%    
-%    \foreach \t in {150, 210, 270, 330, 30}{
-%      \node[vertex] at (\t: 1) {};
-%    }
-%    
-%    \foreach \t in {210, 270, 330, 30}{
-%      \draw (\t:1) -- (\t - 60:1);
-%    }
-%    
-%    \draw (150:1) -- (135:.897);
-%    \draw (30:1) -- (45:.897);
-%    
-%    \draw[densely dotted] (45:.897) -- (75:.897);
-%    \draw[densely dotted] (135:.897) -- (105:.897);
-%    
-%    \foreach \t / \n in {210 / 1, 150 / 2, 30 / {r-2}, -30 / {r-1}}{
-%      \node at (\t:1.5) {$\n$};
-%    }
-%    
-%    \node at (.26,-1.15) {$r$};
-%  
-%\end{tikzpicture}
-%\caption{An R/T gadget built from an $r$-cycle.}
-%\label{fig:RT_cycle}
-%\end{figure}
+
+%%%%%%%%%
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{GS_RT_cycle}
+  \input{../tikz/GS_RT_cycle.tex}
+  \caption{An R/T gadget built from an $r$-cycle.}
+  \label{fig:RT_cycle}
+\end{figure}
+
 
 To see which momenta perfectly transmit, we use \lem{transmit_reqs}. Consider the induced subgraph obtained by removing vertex $r$. This subgraph is a path of length $r-2$ and has eigenvalues $2\cos(\pi m/r)$ for $m \in [r-1]$ as discussed in the previous section. Using the expression \eq{vecs_line} for the eigenvectors, we see that the sum of the amplitudes on the two ends is nonzero for odd values of $m$.  Perfect transmission occurs for each of the corresponding momenta:  
 \[
@@ -979,6 +926,274 @@ This proof technique can also establish non-existence of momentum switches betwe
 
 \todo{If I have time, write this section}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Finite truncation}
+
+\section{Finite truncation}
+
+While the intuition all deals with infinite paths and wavepackets with some exact momenta, we will unfortunately have to deal with finite approximations to these ideals.  While the \lem{truncation_lemma} deals with the finite sized graphs, the restriction to finite sized wavepackets will unfortunately be slightly more complicated.
+
+Unfortunately, much of this complication arises from the simple fact that the time evolved wavepackets do not have a nice form, and thus our approximations to these wavepackets are somewhat cumbersome.  However, if we assume that the initial wavepacket was a a square window on the momenta of interest some distance from the finite sized graph, the time evolved state essentially has the same state moved forward in time.
+
+
+%%%%%%%%%%%%%%%%
+% Wavepacket scattering
+
+\begin{theorem} Let $\widehat{G}$ be an $(N+m)$-vertex graph.  Let $G$ be the graph obtained from $\widetilde{G}$ by attaching semi-infinite paths to the first $N$ of its vertices, and let $S$ be the corresponding $S$-matrix.  Let $H_G$ be the quantum walk Hamiltonian of equation \missingcite{correct equation}. Let $k\in (-\pi,0)$, $M,L\in \NN$, $j\in [N]$, and 
+\begin{equation}
+  \ket{\psi^j(0)} = \frac{1}{\sqrt{L}} \sum_{x=M+1}^{M4L} e^{-i k x} \ket{x,j}.
+\end{equation}
+Let $c_0$ be a constant independent of $L$.  Then, for all $0 \leq t \leq c_0 L$,
+\begin{equation}
+   \Big\|e^{-i H_G t}\ket{\psi^j(0)} - \ket{\alpha^j(t)}\Big\| = \OO(L^{-1/4})
+\end{equation}
+where
+\begin{equation}
+  \ket{\alpha^j(t)} = \frac{1}{\sqrt{L}} e^{-2 i t \cos k} \sum_{x=1}^\infty \sum_{q=1}^N (\delta_{qj} e^{-ikx} R(x- \lfloor 2t \sin k\rfloor ) + S_{qj}(k) e^{ikx} R(-x - \lfloor 2t \sin k\rfloor ) ) \ket{x,q}
+\end{equation}
+with
+\begin{equation}
+  R(l) = \begin{cases} 1 & \text{ if } l- M \in [L]\\
+    0 & \text{ otherwise.}
+    \end{cases}
+\end{equation}
+\label{thm:SP_wavepacket}
+\end{theorem}
+n this section we prove \thm{singlepart}. The proof is based on (and follows closely) the calculation from the appendix of reference \cite{FGG08}.
+
+Recall from \eq{single_particle_states} that the scattering eigenstates of $H_{G}^{(1)}$ have the
+form
+\[
+\langle x,q|\text{sc}_{j}(k)\rangle=e^{-ikx}\delta_{qj}+e^{ikx}S_{qj}(k)\]
+ for each $k\in(-\pi,0)$. 
+
+Before delving into the proof, we first establish that the state $|\alpha^{j}(t)\rangle$ is approximately normalized. This state is not normalized at all times $t$. However, $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\OO(L^{-1})$, as we now show:
+\begin{align*}
+\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle & =\frac{1}{L} \sum_{x=1}^{\infty}\left|e^{-ikx}R(x-\left\lfloor 2t\sin k\right\rfloor)+S_{jj}(k)e^{ikx}R(-x-\left\lfloor 2t\sin k\right\rfloor)\right|^{2} \\
+ &\quad   +\frac{1}{L}\sum_{q\neq j}\sum_{x=1}^{\infty}|S_{qj}(k)|^{2} R(-x-\left\lfloor 2t\sin k\right\rfloor) \\
+ & = \frac{1}{L}\sum_{x=1}^{\infty}\left[R(x-\left\lfloor 2t\sin k\right\rfloor )+R(-x-\left\lfloor 2t\sin k\right\rfloor)\right] \\
+ &  \quad +\frac{1}{L}\sum_{x=1}^{\infty}\left(e^{-2ikx}S_{jj}^{\ast}(k)+e^{2ikx}S_{jj}(k)\right)R(x-\left\lfloor 2t\sin k\right\rfloor)R(-x-\left\lfloor 2t\sin k\right\rfloor) \\
+ & = 1\! +\! \frac{1}{L}\sum_{x=1}^{\infty}
+ 	\left(e^{-2ikx}S_{jj}^{\ast}(k)\! +\! e^{2ikx}S_{jj}(k)\right)
+   R(x\! -\! \left\lfloor 2t\sin k\right\rfloor)
+   R(-x\! -\!\left\lfloor 2t\sin k\right\rfloor)
+   \! +\!\OO(L^{-1})
+\end{align*}
+where we have used unitarity of $S$ in the second step.
+When it is nonzero, the second term can be written as
+\[
+\frac{1}{L}\sum_{x=1}^{b}\left(e^{-2ikx}S_{jj}^{\ast}(k)+e^{2ikx}S_{jj}(k)\right)
+\]
+where $b$ is the maximum positive integer such that $\{-b,b\}\subset\{M+1+\left\lfloor 2t\sin k\right\rfloor,\ldots,M+L+\left\lfloor 2t\sin k\right\rfloor \}$. Performing
+the sums, we get
+\begin{align*}
+\left|\frac{1}{L}\sum_{x=1}^{b}\left(e^{-2ikx}S_{jj}^{\ast}(k)+e^{2ikx}S_{jj}(k)\right)\right| 
+&= \frac{1}{L} \left|S_{jj}^{\ast}(k)e^{-2ik} \frac{e^{-2ikb}-1}{e^{-2ik}-1} 
++
+S_{jj}(k)e^{2ik} \frac{e^{2ikb}-1}{e^{2ik}-1} \right|\\
+ & \leq \frac{2}{L|{\sin k}|} .
+\end{align*}
+
+Thus we have $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\OO(L^{-1})$.
+
+\begin{proof}[Proof of {\thm{singlepart}}]
+Define
+\[
+|\psi^{j}(t)\rangle=e^{-iH_{G}^{(1)}t}|\psi^{j}(0)\rangle
+\]
+and write
+\[
+|\psi^{j}(t)\rangle=|w^{j}(t)\rangle+|v^{j}(t)\rangle
+\]
+where
+\[
+|w^{j}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}\sum_{q=1}^{N}|\text{sc}_{q}(k+\phi)\rangle\langle\text{sc}_{q}(k+\phi)|\psi^{j}(0)\rangle
+\]
+and $\langle w^{j}(t)|v^{j}(t)\rangle=0$. We take $\epsilon=\frac{\left|\sin k\right|}{2\sqrt{L}}$.
+Now \[
+\langle\text{sc}_{q}(k+\phi)|\psi^{j}(0)\rangle=\frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}\left(e^{i\phi x}\delta_{qj}+e^{-i\left(2k+\phi\right)x}S_{qj}^{\ast}(k+\phi)\right),\]
+ so \[
+|w^{j}(t)\rangle=|w_{A}^{j}(t)\rangle+\sum_{q=1}^{N}|w_{B}^{q,j}(t)\rangle\]
+ where \begin{align*}
+|w_{A}^{j}(t)\rangle & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}f(\phi)|\text{sc}_{j}(k+\phi)\rangle\\
+|w_{B}^{q,j}(t)\rangle & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}g_{qj}(\phi)|\text{sc}_{q}(k+\phi)\rangle
+\end{align*}
+with
+\begin{align*}
+f(\phi) & = \frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}e^{i\phi x}\\
+g_{qj}(\phi) & = \frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}e^{-i\left(2k+\phi\right)x}S_{qj}^{\ast}(k+\phi).\end{align*}
+We will see that $\ket{\psi^j(t)} \approx \ket{w^j(t)} \approx \ket{w^j_A(t)} \approx \ket{\alpha^j(t)}$.
+
+Now
+\begin{align*}
+\langle w_{A}^{j}(t)|w_{A}^{j}(t)\rangle & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}
+ = \frac{1}{L} \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}
+ \end{align*}
+but
+\[
+\frac{1}{L} \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}=1
+\]
+and
+\begin{align}
+\frac{1}{L}\left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)} & = \frac{2}{L} \int_{\epsilon}^{\pi}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\nonumber \\
+ & \leq \frac{2}{L}\int_{\epsilon}^{\pi}\frac{d\phi}{2\pi}\frac{\pi^{2}}{\phi^{2}}\nonumber \\
+ & \leq \frac{\pi}{L\epsilon}.\label{eq:fbound}
+\end{align}
+Therefore
+\[
+1\geq\langle w_{A}^{j}(t)|w_{A}^{j}(t)\rangle\geq1-\frac{\pi}{L\epsilon}.
+\]
+Similarly,
+\[
+\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\left|S_{qj}(k+\phi)\right|^{2}}{L}\frac{\sin^{2}(\frac{1}{2}L(2k+\phi))}{\sin^{2}(\frac{1}{2}(2k+\phi))},\]
+and, using the unitarity of $S$,
+\begin{align*}
+\sum_{q=1}^{N}\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle & = \frac{1}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L(2k+\phi))}{\sin^{2}(\frac{1}{2}(2k+\phi))}\\
+ & \leq \frac{1}{L} \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{1}{\sin^{2}(\frac{1}{2}(2k+\phi))}.
+\end{align*}
+Now $|{\sin(k+{\phi}/{2}) - \sin k}| \leq {|\phi|}/{2}$ (by the mean value theorem). So
+\begin{align*}
+\sin^{2}\left(k+\frac{\phi}{2}\right) & \geq \left(\left|\sin k\right|-\left|\frac{\phi}{2}\right|\right)^{2}.
+\end{align*}
+Since $\epsilon=\frac{\left|\sin k\right|}{2\sqrt{L}}<\left|\sin k\right|$
+we then have \begin{align*}
+\sum_{q=1}^{N}\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle & \leq \frac{1}{L} \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{4}{\sin^{2}k}\\
+ & = \frac{4\epsilon}{\pi L\sin^{2}k}.\end{align*}
+ Hence \begin{align*}
+\langle w^{j}(t)|w^{j}(t)\rangle & \geq \langle w_{A}^{j}(t)|w_{A}^{j}(t)\rangle-2\left|\sum_{q=1}^{N}\langle w_{A}^{j}(t)|w_{B}^{qj}(t)\rangle\right|\\
+ & \geq 1-\frac{\pi}{L\epsilon}-2\left\Vert \sum_{q=1}^{n}|w_{B}^{qj}(t)\rangle\right\Vert \\
+ & \geq 1-\frac{\pi}{L\epsilon}-2\sum_{q=1}^{n}\left\Vert |w_{B}^{qj}(t)\rangle\right\Vert \\
+ & \geq 1-\frac{\pi}{L\epsilon}-4\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}},\end{align*}
+so
+\[
+\langle v^{j}(t)|v^{j}(t)\rangle\leq\frac{\pi}{L\epsilon}+4\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}}
+\]
+since $\langle v^{j}(t)|v^{j}(t)\rangle+\langle w^{j}(t)|w^{j}(t)\rangle=1$.
+Thus
+\begin{align*}
+\left\Vert |\psi^{j}(t)\rangle-|w_{A}^{j}(t)\rangle\right\Vert  & = \left\Vert |v^{j}(t)\rangle+\sum_{q=1}^{N}|w_{B}^{qj}(t)\rangle\right\Vert \\
+ & \leq \left(\frac{\pi}{L\epsilon}+4\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}}\right)^{\frac{1}{2}}+2\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}}.
+\end{align*}
+With our choice $\epsilon=\frac{\left|\sin k\right|}{2\sqrt{L}}$,
+we have $\norm{|\psi^{j}(t)\rangle-|w_{A}^{j}(t)\rangle} =\O(L^{-{1}/
+{4}})$.
+
+We now show that
+\begin{equation}
+\left\Vert |w_{A}^{j}(t)\rangle-|\alpha^{j}(t)\rangle\right\Vert =\O(L^{-{1}/{8}}).\label{eq:alpha_w_bound}\end{equation}
+Letting \[
+P=\sum_{q=1}^{N}\sum_{x=1}^{\infty}|x,q\rangle\langle x,q|\]
+be the projector onto the semi-infinite paths, to show equation \eq{alpha_w_bound}
+it is sufficient to show that
+\begin{equation}
+\left\Vert P|w_{A}^{j}(t)\rangle-|\alpha^{j}(t)\rangle\right\Vert = \O(L^{-{1}/{4}})
+\label{eq:bound_inside_lines}
+\end{equation}
+since this implies that
+\begin{align*}
+\left\Vert P|w_{A}^{j}(t)\rangle\right\Vert  & = \left\Vert |\alpha^{j}(t)\rangle\right\Vert + \O(L^{-{1}/{4}})\\
+ & = 1+\O(L^{-{1}/{4}})
+\end{align*}
+and hence
+\begin{align}
+\left\Vert \left(1-P\right)|w_{A}^{j}(t)\rangle\right\Vert ^{2} & = \left\Vert |w_{A}^{j}(t)\rangle\right\Vert ^{2}-\left\Vert P|w_{A}^{j}(t)\rangle\right\Vert ^{2}\nonumber \\
+ & \leq 1-\left(1+\O(L^{-{1}/{4}})\right)\nonumber \\
+ & = \O(L^{-{1}/{4}}).\label{eq:bound_outside_lines}
+\end{align}
+From the above formula we now see that inequality \eq{bound_inside_lines}
+implies \eq{alpha_w_bound}.
+
+Noting that
+\[
+\frac{1}{\sqrt{L}}R(l)=\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi l}f(\phi),
+\]
+we write
+\begin{align}
+\langle x,q|\alpha^{j}(t)\rangle & = e^{-2it\cos k}\left(\delta_{qj}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi\left(x-\left\lfloor 2t\sin k\right\rfloor \right)}f(\phi)\right.\nonumber\\
+&\qquad\qquad\qquad  \left. +S_{qj}(k)e^{ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi\left(-x-\left\lfloor 2t\sin k\right\rfloor \right)}f(\phi)\right).\label{eq:alpha_mat_elements}
+\end{align}
+On the other hand,
+\begin{equation}
+\langle x,q|w_{A}^{j}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}f(\phi)\left(e^{-i\left(k+\phi\right)x}\delta_{qj}+e^{i\left(k+\phi\right)x}S_{qj}(k+\phi)\right).\label{eq:w_a_mat_elements}
+\end{equation}
+Using equations \eq{alpha_mat_elements} and \eq{w_a_mat_elements}
+we can write\[
+P|w_{A}^{j}(t)\rangle=|\alpha^{j}(t)\rangle+\sum_{i=1}^{7}|c_{i}^{j}(t)\rangle\]
+ where $P|c_{i}^{j}(t)\rangle=|c_{i}^{j}(t)\rangle$ and \begin{align*}
+\langle x,q|c_{1}^{j}(t)\rangle & = \delta_{qj}e^{-2it\cos k}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\\
+\langle x,q|c_{2}^{j}(t)\rangle & = S_{qj}(k)e^{-2it\cos k}e^{ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\\
+\langle x,q|c_{3}^{j}(t)\rangle & = -\delta_{qj}e^{-2it\cos k}e^{-ikx}\left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)e^{2it\phi\sin k}\\
+\langle x,q|c_{4}^{j}(t)\rangle & = -S_{qj}(k)e^{-2it\cos k}e^{ikx}\left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}e^{i\phi x}f(\phi)e^{2it\phi\sin k}\\
+\langle x,q|c_{5}^{j}(t)\rangle & = \delta_{qj}e^{-ikx}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{-2it\cos\left(k+\phi\right)}-e^{-2it\cos k+2it\phi\sin k}\right)\\
+\langle x,q|c_{6}^{j}(t)\rangle & = S_{qj}(k)e^{ikx}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{i\phi x}f(\phi)\left(e^{-2it\cos\left(k+\phi\right)}-e^{-2it\cos k+2it\phi\sin k}\right)\\
+\langle x,q|c_{7}^{j}(t)\rangle & = e^{ikx}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{i\phi x}e^{-2it\cos\left(k+\phi\right)}f(\phi)\left(S_{qj}(k+\phi)-S_{qj}(k)\right).
+\end{align*}
+We now bound the norm of each of these states:
+\begin{align*}
+\langle c_{1}^{j}(t)|c_{1}^{j}(t)\rangle & = \sum_{q=1}^{N}\sum_{x=1}^{\infty}\left|\delta_{qj}e^{-2it\cos k}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\right|^{2}\\
+ & \leq \sum_{q=1}^{N}\sum_{x=-\infty}^{\infty}\left|\delta_{qj}e^{-2it\cos k}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\right|^{2}\\
+ & = \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left|e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right|^{2}\\
+ & \leq \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left(2t\phi\sin k-\left\lfloor 2t\sin k\right\rfloor \phi\right)^{2}\\
+ & \leq \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\phi^{2}
+\end{align*}
+where we have used the facts that $|{e^{is}-1}|^{2} \leq s^{2}$
+for $s\in\mathbb{R}$ and $\left|2t\sin k -\left\lfloor 2t\sin k\right\rfloor \right|<1$. In the above we performed the sum over $x$ using the identity
+\[
+\sum_{x=-\infty}^{\infty} e^{i(\phi-\tilde{\phi})x}=2\pi\delta(\phi-\tilde{\phi}) \text{ for } \phi,\tilde{\phi}\in (-\pi,\pi).
+\]
+We use this fact repeatedly in the following calculations.
+Continuing, we get
+\begin{align*}
+\langle c_{1}^{j}(t)|c_{1}^{j}(t)\rangle & \leq \frac{1}{L} \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\phi^{2}\\
+ & \le \frac{1}{L} \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\frac{1}{\sin^{2}(\frac{1}{2}\phi)}\phi^{2}\\
+ & \leq \frac{\pi^{2}}{L}
+\end{align*}
+using the fact that $\sin^{2}({\phi}/{2})\geq{\phi^{2}}/{\pi^{2}}$
+for $\phi\in[-\pi,\pi]$. Similarly we bound $\langle c_{2}^{j}(t)|c_{2}^{j}(t)\rangle\leq{\pi^{2}}/{L}$. 
+
+Using equation \eq{fbound} we get 
+\begin{align*}
+\langle c_{3}^{j}(t)|c_{3}^{j}(t)\rangle & \leq \left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\\
+ & \leq \frac{\pi}{L\epsilon}\end{align*}
+and similarly for $\langle c_{4}^{j}(t)|c_{4}^{j}(t)\rangle$.
+Next, we have
+\begin{align*}
+\langle c_{5}^{j}(t)|c_{5}^{j}(t)\rangle & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left|e^{-2it\cos\left(k+\phi\right)}-e^{-2it\cos k+2it\phi\sin k}\right|^{2}\\
+ & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left(2t\cos\left(k+\phi\right)-2t\cos k+2t\phi\sin k\right)^{2}\\
+ & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\left(2t\cos k\left(\cos\phi-1\right)+2t\sin k\left(\phi-\sin\phi\right)\right)^{2}\\
+ & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}4t^{2}\phi^{4}\\
+ & = \frac{4t^{2}}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\phi^{4}\\
+ & \leq \frac{4t^{2}}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\pi^{2}\phi^{2}\\
+ & = \frac{4\pi}{3L}t^{2}\epsilon^{3}\end{align*}
+ and we have the same bound for $|c_{6}^{j}(t)\rangle$. Finally, 
+\begin{align*}
+\langle c_{7}^{j}(t)|c_{7}^{j}(t)\rangle & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\sum_{q=1}^{N}\left|S_{qj}(k+\phi)-S_{qj}(k)\right|^{2}.\end{align*}
+Now, for each $q\in\{1,\ldots,N\}$,
+\[
+\left|S_{qj}(k+\phi)-S_{qj}(k)\right| \leq \Gamma |\phi|
+\]
+where the Lipschitz constant
+\[
+\Gamma = \max_{q,j\in\{1,\ldots,N\}} \max_{k' \in [-\pi,\pi]}\left|\frac{d}{dk'}S_{qj}(k')\right|
+\]
+is well defined since each matrix element $S_{qj}(k')$ is a
+bounded rational function of $e^{ik'}$, as can be seen from equation \eq{smatrixgamma}. Hence
+\begin{align*}
+\langle c_{7}^{j}(t)|c_{7}^{j}(t)\rangle & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}N\Gamma^{2}\phi^{2}\\
+ & = \frac{N\Gamma^{2}}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\phi^{2}\\
+ & \leq \frac{N\Gamma^{2}}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\pi^{2}\\
+ & = N\Gamma^{2}\frac{\pi\epsilon}{L}.
+\end{align*}
+Now using the bounds on the norms of each of these states we get
+\begin{align*}
+\left\Vert P|w_{A}^{j}(t)\rangle-|\alpha^{j}(t)\rangle\right\Vert  & \leq 2\frac{\pi}{\sqrt{L}}+2\sqrt{\frac{\pi}{L\epsilon}}+2\sqrt{\frac{4\pi}{3L}t^{2}\epsilon^{3}}+\sqrt{N\Gamma^{2}\frac{\pi\epsilon}{L}}\\
+ & = \O(L^{-{1}/{4}})
+\end{align*}
+using the choice $\epsilon=\frac{|{\sin p}|}{2\sqrt{L}}$ and the fact that $t = \O(L)$. 
+\end{proof}
+
+Note that this analysis assumes that $N = \O(1)$, which is the case in our applications of \thm{singlepart}.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -991,5 +1206,7 @@ Find more gates.
 Determine necessary conditions for momentum switches to occur.
 
 Basically just do more research.
+
+\biblio{}
 
 \end{document}

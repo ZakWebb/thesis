@@ -1,0 +1,39 @@
+\begin{tikzpicture}[
+  thin,
+  vertex/.style={circle,draw=black,fill=black,inner sep=1.25pt,
+    minimum size =0mm},
+  attach/.style={circle,draw=black,fill=white,inner sep=1.25pt,
+    minimum size =0mm},
+  dots/.style={circle,fill=black,inner sep=.5pt,
+    minimum size= 0pt}]
+    \draw (-1,-2) -- (1,-2);
+    \draw (0,-2) -- (0,-1);
+    
+    \node[attach] at (-1,-2) {};
+    \node at (-1,-2.35) {$(1,1)$};
+    \node[attach] at (1,-2) {};
+    \node at (1,-2.35) {$(1,2)$};
+    \node[vertex] at (0,-2) {};
+    \node at (0,-2.35) {$a$};
+    
+    \foreach \t in {150, 210, 270, 330, 30}{
+      \node[vertex] at (\t: 1) {};
+    }
+    
+    \foreach \t in {210, 270, 330, 30}{
+      \draw (\t:1) -- (\t - 60:1);
+    }
+    
+    \draw (150:1) -- (135:.897);
+    \draw (30:1) -- (45:.897);
+    
+    \draw[densely dotted] (45:.897) -- (75:.897);
+    \draw[densely dotted] (135:.897) -- (105:.897);
+    
+    \foreach \t / \n in {210 / 1, 150 / 2, 30 / {r-2}, -30 / {r-1}}{
+      \node at (\t:1.5) {$\n$};
+    }
+    
+    \node at (.26,-1.15) {$r$};
+  
+\end{tikzpicture}

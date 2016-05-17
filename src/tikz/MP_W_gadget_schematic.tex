@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+
+  \draw[rounded corners=2mm,thick] (0,-.46) rectangle (1.5cm,.46cm); 
+    \node at (.75,0) {\LARGE $W$};
+  \foreach \x/\y  in {0,1.5}
+{  
+\foreach \y in {-.2,.2}
+{    
+\draw[fill=black] (\x,\y) circle (.45mm);  
+}
+}      
+\node at (.2,.2) {$\alpha$};  
+\node at (.2,-.15) {$\gamma$}; 
+ \node at (1.3,.2) {$\beta$}; 
+ \node at (1.3,-.15) {$\delta$}; 
+
+  
+ \end{tikzpicture}

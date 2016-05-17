@@ -14,92 +14,131 @@
 \chapter{Mathematical Preliminaries}
 \label{chap:mathematical_preliminaries}
 
+
+Several topics in this thesis require a background that not all researcher will have experience in.  Especially as this thesis is multi-disciplinary, I would like to include at least some basic introduction to various physical and computer science topics.  Additionally, several lemmas used in this manuscript might be of independent interest, as their applicability is not restricted to the various models studied in this thesis. 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mathematical notation}
 \label{sec:mathematical_notation}
 
-\todo{fill this in}
+Perhaps the most simple point that I would like to raise before the thesis begins in ernest is the notation that I will use throughout the paper.  Much of the paper uses notation not necessarily standard in every area of physics or computer science, and I want to make sure that no confusion occurs.  I will assume that various notations that are common do not need to be described, such at $\HHH$ describing a Hilbert space, or that $\II$ describes a the identity operator on a particular Hilbert space.
 
-$[k] = \{1,\cdots, k\}$.
+The first such notation will be for the shorthand definition of sets of particular size.  Namely,
+\begin{equation}
+[k] := \{0,1,\cdots, k-1\}.
+\end{equation}
+This is a set of size $k$, with the elements ordered and labeled by the integers from $0$ to $k-1$.  We will often think of these as elements from $\ZZ_{k}$, with addition and multiplication defined over the integers modulo $k$.
 
-$M^{(w)} = \II^{\otimes w-1} \otimes M \otimes \II^{N- w}$
+Often this paper will want to investigate systems with many particles, and we will want an operator to only act nontrivially on one particle.  In particular, if we have a Hilbert space $\HHH_{\text{total}} = \HHH_{\text{single}}^{\otimes N}$ that consists of $N$ copies of some single Hilbert space, and if we have an operator $M$ that acts on $\HHH_{\text{single}}$, we can define an operator $M^{(w)}$ that acts nontrivially only on the $w$-th copy of $\HHH_{\text{single}}$, namely
+\begin{equation}
+  M^{(w)} = \II^{\otimes w-1} \otimes M \otimes \II^{N- w}.
+\end{equation}
+In this manner, only the $w$-th copy of $\HHH_{\text{single}}$ is effected.
 
-$A(G)$ is the adjacency matrix of $G$.  $V(G)$ are the vertices of $G$, and $E(G)$ is the edge set of $G$.
+As we will also be working with graphs, we will want to note that the letter $G$ usually denotes a particular graph.  Further, $A(G)$ describes the adjacency matrix of the graph $G$.  $V(G)$ then describes the vertex set of $G$, and $E(G)$ describes the edge set of $G$.  Note that this thesis will always deal with undirected graphs, with at most a single edge between vertices.  As such, the adjacency matrix $A(G)$ will be a symmetric 0-1 matrix.  We will at times want to work with a simple graph, in which self-loops do not occur, but unless otherwise specified a graph $G$ might contain self-loops.
 
-$\mu(A)$ is the smallest non-zero eigenvalue of the positive semi-definite matrix $A$
 
-$A\big|_\mathcal{S}$ is the restriction of $A$ to the subspace $\mathcal{S}$.
+Much of the work in this thesis, especially when describing the ground energy of particular Hamiltonian, deals only with positive semi-definite operators.  As such, if $A$ is a positive semi-definite matrix, then $\gamma(A)$ is the smallest non-zero eigenvalue.   Note that if $A$ has a 0-eigenvalue, then this corresponds to the energy gap between the ground state and the first excited state, but if $A$ does not have a 0-eigenvalue then this is simply the smallest eigenvalue of $A$.
+
+Finally, let us assume that $A$ acts on a Hilbert space $\HHH$, and that $\mathcal{S}$ is a subspace of $\HHH$.  We will then write the restriction of $A$ to the subspace $\mathcal{S}$ as $A\big|_\mathcal{S}$. 
+
+Big O notation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Quantum information}
 \label{sec:quantum_information}
 
-
-I should at least state a couple of things.
-
-Hadamard gate,
-
-Circuit
-
-universality,
-
-etc.
-
+As this thesis is about quantum information, I will assume a familiarity with the basics 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Indistinguishable particles}
 \label{sec:indistinguishable_particles}
 
-I have a lot of things about indistinguishable particles.  I should really only talk about it in one place.  I think this would be a great place.
+A foundational aspect of this thesis is understanding how defining the small scale interactions between multiple particles effects the large scale behavior of the system.  As we want to define the large scale systems in terms of these small systems, the Hamiltonians that we will be interested in will have symmetries when we permute the different particles.
 
+More concretely, when we restrict our Hamiltonians to the case with $n$ particles, each particle will have the same (finite) Hilbert space to work with, and the Hamiltonian will be symmetric under a relabelling of the particles.  Explicitly, we will have that each particle will have a Hilbert space $\mathcal{H}_{\text{ind}} = \CC^{d}$ for some dimension $d$, so that the total Hilbert space of $n$ particles is $\mathcal{H}_{\text{tot}}  = \mathcal{H}_{\text{ind}}^{\otimes n} = \CC^{dn}$, and the Hamiltonian is an operator on $\mathcal{H}_{\text{tot}}$ that commutes with the operators that swap the individual particle Hilbert spaces.
 
+\todo{Make this more coherent}
+
+The reason that we do this is the simple fact that particles are almost always indistinguishable.  As such, any initial state for these multiparticle Hamiltonians will have the same symmetry as the underlying particles.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Complexity Theory}
-\label{sec:completity_theory}
+\label{sec:complexity_theory}
 
-
-While this thesis is for the physics department, many of the results require some basic quantum complexity theory.  In particular, the computer science idea for classification of computational problems in terms of the requisite resources gives a particularly nice interpretation of why certain physical systems don't equilbriate, and give a simple explanation on why certain systems do not have a known closed form solution.
+While this thesis is for the physics department, many of the results require some basic quantum complexity theory.  In particular, the computer science idea for classification of computational problems in terms of the requisite resources gives a particularly nice interpretation of why certain physical systems don't equilibrate, and give a simple explanation on why certain systems do not have a known closed form solution.
 
 This is a simple introduction, with a focus designed to make the rest of this thesis comprehensible to those without a background in complexity theory.  For a more formal introduction to Complexity Theory, I would recommend \cite{SipserToC}, with a more in depth review found in \cite{ABCC}.  For a focus on complexity as found in quantum information, I would recommend \cite{Wat09}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Languages and promise problems}
 
-The main foundation of computational complexity is in the classification of languages based on the requisite number of resources to determine whether some string is in a language.  Unfortunately, this requires the definition of many of these terms.  
+The main foundation of computational complexity is in the classification of languages based on the requisited resources to determine whether some string is in a language.  Unfortunately, this requires the definition of many of these terms.  
 
 In particular, what exactly is a string?  Any person who has taken a basic programming class knows that a string is simply a word, but the mathematical definition is slightly more complicated.  In particular, we first need to define an alphabet, and then define a string over a particular alphabet.  
 \begin{definition}[Alphabet] An alphabet is a finite collection of symbols.
 \end{definition}
-Usually, an arbitrary alphabet is denoted by $\Gamma$, while the binary alphabet is denoted by $\Sigma = \{0,1\}$.  Usually, the particular alphabet has no impact on a particular complexity result, as any finite alphabet can be represented via the binary alphabet with overhead that is logarithmic in the size of the alphabet (basically, just use a binary encoding of the new alphabet).  
+Usually, an arbitrary alphabet is denoted by $\Gamma$, while the binary alphabet is denoted by $\Sigma = \{0,1\}$.  The chosen alphabet has no impact on a particular complexity result, as any finite alphabet can be represented via the binary alphabet with overhead that is logarithmic in the size of the original alphabet (essentially, just use a binary encoding of the new alphabet).  
 
 With this definition of an alphabet, a string is simply a finite sequence of elements from the alphabet.  In particular, we define $\Gamma^n$ to be all length $n$ sequences of elements from $\Gamma$, and then define
 \begin{equation}
   \Gamma^* = \bigcup_{n=0}^\infty \Gamma^n.
 \end{equation}
-With this $\Gamma^*$ is the set of all strings over $\Gamma$.
+With this, $\Gamma^*$ is the set of all strings over $\Gamma$.
 
-With this, computational complexity then deals with understanding subsets of these strings.  In particular, let $\Pi_{\text{yes}}$ be a subset of $\Gamma^*$.  The language problem related to $\Pi_{\text{yes}}$ is then to understand what resources are necessary to determine whether a given $x\in \Gamma^*$ is also contained in $\Pi_{\text{yes}}$.  This can be trivial, such as for the case of $\Pi_{\text{yes}} = \Gamma^*$, or it can be impossible, such as in the case of the famous Halting Problem.
-
-\todo{Find halting problem stuff}
+Computational complexity then deals with understanding subsets of these strings.  In particular, let $\Pi_{\text{yes}}$ be a subset of $\Gamma^*$.  The language problem related to $\Pi_{\text{yes}}$ is to determine whether a given string $x\in \Gamma^*$ is contained within $\Pi_{\text{yes}}$ or not.  This can be trivial, such as for the case of $\Pi_{\text{yes}} = \Gamma^*$, or it can be impossible, such as in the case of the famous Halting Problem. 
 
 Related to these language problems are promise problems, in which there are two subsets of $\Gamma^*$, namely $\Pi_{\text{yes}}$ and $\Pi_{\text{no}}$, such that $\Pi_{\text{yes}} \cap \Pi_{\text{no}} = \emptyset$.  We are then \emph{promised} that the $x\in \Gamma^*$ that we need to sort is contained either $\Pi_{\text{yes}} \cup \Pi_{\text{no}}$.  This generally opens up some more interesting problems, as without this restriction certain complexity classes do not make sense.
+
+\todo{revise and revisit}
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Turing machines}
 
-Up to this point, we have only discussed various classifications of strings, and stated that we will want to understand the various resources required to sort a given string into one of two different strings, but we have not explained how these resources are defined.  There are various ways to do this, depending on the various computational model one is interested in, but at the highest level, we really only need to define a Turing machine.
 
-These are a mathematical construction, that allow for the explicit definition of algorithms.  In particular, they consist of a ``finite-state machine'' and an infinite tape.  The finite-state machine is essentially just a small number of internal states, and the infinite state represents the ability to write down and then read an unbounded amount of information.  The intuitive idea behind this construction is that the finite-state machine encodes some finite algorithm (which does not depend on the input to the algorithm), while the infinite tape holds the input to the problem, along with a workspace so that the Turing machine can keep track of various pieces of information.
 
-More concretely, 
+Up to this point, we have only discussed classifications of strings, and stated that we will want to understand the various resources required to sort a given string into one of two different sets, but we have not explained how these resources are defined.  There are various ways to do this, depending on the various computational model one is interested in, but to give the most intuition we will need to define a Turing Machine.  These machines are a mathematical construction that allow for the explicit definition of algorithms.  
 
-\todo{Get turing Machine stuff}
+At their most basic level, a Turing machine is simply a finite program along with a (countably) infinite tape that allows the machine to store information.  The input to the algorithm is initially written on the tape, and the machine starts in some initial configuration.  The machine can only access it's internal memory along with a single character at a time from the infinite tape, and the program progresses by changing the internal state of the machine, changing one character on the tape, and moving along the tape.  While extremely limited, these machines have so far captured our ideas of computation.
+
+Formally, a Turing-machine is $M$ is described by a tuple $(\Gamma,Q,\delta)$, where $\Gamma$ is a finite set of symbol's that can be written on the infinite tape, $Q$ is a set of possible internal states that $M$ can store as internal memory, and $\delta$ is a function $Q\times \Gamma \rightarrow Q \times \Gamma\times \{L,S,R\}$ describing the required action of the machine $M$.  Included in $Q$ are two special ``halting'' states generally labeled \texttt{accept} and \texttt{reject}, such that the machine stops operating if it ever enters these two states, and the machine either accepts or rejects the current string.  Note that we always assume that the alphabet contains a special character \textvisiblespace that is not used for the input but denotes empty space along the infinite tape after the input string.
+
+During an actual computation, a Turing Machine always starts with its internal state in a specified position, with the string used for input on the initial segment of the infinite tape and the special character \textvisiblespace on every character after the input.  Additionally, the pointer of the machine is located at the beginning of the tape, so that the machine is able to start reading the input (if needed).  At each time step the machine then applies the transition function, updating its internal state, the character located at the current position of the tape, along with the current position of the tape until the machine reaches one of its halting states.
+
+Note that there are several variations on these Turing Machines, such as those that have multiple infinite tapes instead of just one, and one that can move to an arbitrary position along the tape.  These variations do not change the overall computational power of the model, just make it slightly more efficient.  This definition is perhaps the most simple, and will suffice for now.
+
+\todo{get a picture of a TM here}
+
+One slight modification that will be useful for us is machines that compute a particular function.  In particular, for a given function $f:\Gamma^*\rightarrow \Gamma^*$, we say that a Turing Machine $M$ computes the function $f$ if for all inputs $x$, the machine eventually halts and after it halts the tape will have $f(x)$ on the output tape (and nothing else).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Reductions}
+\subsubsection{Resources}
 
-Note that up to this point, we have not noticed any relations between different languages.  
+With an explicit definition of Turing Machines, we also want to have some way to quantify the amount of resources used by a computation.  Since each machine is expected to work on strings of arbitrary length, we somehow need to quantify the resources in terms of the input to a given string.    So far, the important quantity in these resource problems has been the length of an input string $x$.  Basically, the number of characters has been the interesting aspect to measure, since any machine will at least need to read the string.
+
+With this $n$ as the yardstick for any of our measurements, we then need to measure the length of the actual computation.  In general, there are two ways to measure this length: the number of transitions that the computation used before it halted (as a measure of time), or else the number of elements of the tape that the machine visited during its computation (as a measure of space).  It is important to realize that the exact value of these resources depend on the definitions used for the machine, such as the alphabet size or the number of internal states.  As such, we will generally not be interested in the exact value for a given input, but will be more interested in the asymptotic scaling of the resources.
+
+These requisite resources will generally be something of the form $\OO(f(n))$ for some easily computable function $f$ such as a polynomial or an exponential in $n$.  These various scalings will give us a nice method of classifying the difficulty of computational problems.  In general, we will say that a specific Turing Machine $M$ runs in time $f(n)$ if for all inputs it halts in time $t(x)$ and $t(x) \in \OO(f(n))$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Uniform circuit families}
+
+While Turing Machines are sufficient for classical computation, when we want to describe some quantum complexity classes it will be useful to instead discuss quantum circuits.  However, an important aspect of Turing Machines is that they are defined independently of the size of the input, while circuits need to have unique definitions for all different input sizes.
+
+One might be tempted to simply define a computation via circuits by whether or not there exists a circuit of a given length, but this ends up giving an unreasonable amount of power to the computational model.  In particular, the algorithm can hide computation in the definition of the circuit, as opposed to the actual running of the circuit itself.  
+
+To get around this, we will need to compute the circuit for the computation given the length.  Namely, we will have a Turing Machine take as input the string length in unary, and the machine will output a description of the circuit.  I won't go into the details here, but the 
+
+\begin{definition}[Uniform family of circuits] A collection $\{C_x: x\in S\subseteq \Sigma^*\}$ of circuits is a (polynomial-time) \emph{uniform family of circuits} if there exists a deterministic Turing Machine $M$ such that 
+\begin{itemize}
+  \item M runs in polynomial time.
+  \item For all $x\in S$, M outputs a description of $C_x$.
+\end{itemize}
+\end{definition}
+
+Note that this definition makes no reference to the type of circuit, although we will generally assume that the circuit comes from some specific gate set.
+
+\todo{completely update this}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Useful complexity classes}
@@ -113,21 +152,39 @@ Once we have an understanding of what defines a relation, and how these are rela
 
 
 \begin{definition}[\PP]
-  A promise problem ...
+  A promise problem $\AAA= (\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \PP if there exists a polynomial-time Turing Machine $M$ such that $M(x)$ accepts $x$ if and only if $x\in \AAA_{\text{yes}}$.
 \end{definition}
 
+Note that the Turing Machine $M$ is required to halt on all inputs, and thus this is exactly what we mean by a polynomial-computation.  Some simple examples of languages in \P are 
+
+\todo{find \PP languages}
+
 \begin{definition}[\NP]
-  A promise problem ...
+  A promise problem $\AAA=(\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \NP if there exists a polynomial $q$ and a polynomial-time Turing Machine $M$ such that
+  \begin{itemize}
+    \item if $x\in \AAA_{\text{yes}}$, then there exists a string $y\in \Sigma^{q(|x|)}$ such that $M(x,y)$ accepts.
+    \item if $x\in \AAA_{\text{no}}$, then for all strings $y\in \Sigma^{(q(|x|)}$, $M(x,y)$ rejects.
+  \end{itemize}
 \end{definition}
+Essentially, a language is in \NP if a given string can be proven to be in the language.  This includes useful problems such as whether a given graph has a 3-coloring, whether an integer $p$ has at least $k$ prime factors, and all problems in \P.
+
 
 %%%
 \subsubsection{Bounded-Error Quantum Polynomial Time}
 
-Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consists of those problems that can be solved by a quantum computer efficiently.
+With these classical problems now defined, we will want to understand what happens when we include quantum mechanics.  There is a way to define a quantum Turing machine, in an analog to the classical case, but the current state of the art has instead gone toward using quantum circuits instead.  
+
+Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consists of those problems that can be solved by a quantum computer efficiently.  However, we need to somehow encode the circuit 
 
 
-\begin{definition}[\BQP] A promise problem $\Pi = (\Pi_{\text{yes}},\Pi_{\text{no}})$ if there exist polynomials 
+\begin{definition}[\BQP] A promise problem $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}})$ if there exist a uniform family of quantum circuits $Q = \{Q_n: n\in \NN\}$ such that 
+  \begin{itemize}
+    \item If $x\in \AAA_{\text{yes}}$, then $Q_{|x|}(\ket{x}) \geq \frac{2}{3}$.
+    \item If $x\in \AAA_{\text{no}}$, then $Q_{|x|}(\ket{x}) \leq \frac{1}{3}$.
+  \end{itemize}
 \end{definition}
+
+Note that these t
 
 %%%
 \subsubsection{Quantum Merlin-Arthur}
@@ -135,9 +192,22 @@ Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consis
 In addition to having an understanding of when a quantum computer can solve a particular problem, we will also want an understanding of those problems that most likely cannot be 
 
 
-\begin{definition}[\QMA]  A promise problem $\Pi = (\Pi_{\text{yes}},\Pi_{\text{no}})$ if there ..
-
+\begin{definition}[\QMA]  A promise problem $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}})$ if there exists a uniform family of quantum circuits $Q=\{Q_n:n\in \NN\}$ such that
+\begin{itemize}
+  \item If $x\in \AAA_{\text{yes}}$, then there exists a state $\ket{\psi}\in \CC^{p(|x|)}$ such that $Q_{|x|}(\ket{x},\ket{\psi}) \geq \frac{2}{3}$.
+  \item If $x\in \AAA_{\text{no}}$, then for all states $\ket{\psi}\in \CC^{p(|x|)}$, $Q_{|x|}(\ket{x},\ket{\psi}) \leq \frac{1}{3}$.
+\end{itemize}
 \end{definition}
+
+Intuitively, this is like the class \NP in that the circuit only accepts if there exists a proof that the input is in the language.  This proof might be extremely difficult to construct, but it still exists.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Reductions and Complete Problems}
+
+While we are interested in these complexity classes, it is often difficult to work with the exact definitions used.  As an example, in the definition of \NP, to show something for all of the class we would somehow need to encode the entire computation of the Turing machine in our proof.  One way to get around this is via reductions.
+
+Essentially a reduction is a polynomial-time computable function from one computational problem to another.  Because this reduction is easy to compute, if we can solve the second problem, then we can also solve the first problem.  More concretely, let $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}}$ and $\BBB=(\BBB_{\text{yes}},\BBB_{\text{no}})$ be two promise problems.  We say that there 
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Various Mathematical Lemmas}
@@ -333,4 +403,7 @@ As the right hand side increased monotonically with both $w$ and $y$, and as $w 
 as required.
 \end{proof}
 
+
+%%%%%%%%%%%%%%%%%
+\biblio{}
 \end{document}

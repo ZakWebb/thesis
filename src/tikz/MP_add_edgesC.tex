@@ -1,0 +1,46 @@
+\begin{tikzpicture}[baseline=(X.base),scale=0.8]
+\node at (0,0) (X){};
+\draw[thick,looseness=.66] (0cm,1.2cm) to [out=180,in=-45] (-0.8cm,1.7cm);
+\node at (-0.8cm,2cm){to $e_{00}(q,s)$};
+\draw[thick,looseness=.66] (0cm,0.3cm) to [out=180,in=45] (-0.8cm,-0.2cm);
+\node at (-0.8cm,-0.5cm){to $e_{10}(q,s)$};
+
+\draw[thick,looseness=.66] (2.43cm,1.2cm) to [out=0,in=225] (3.23cm,1.7cm);
+\node at (3.23cm,2cm){to $e_{01}(q,s)$};
+\draw[thick,looseness=.66] (2.43cm,0.3cm) to [out=0,in=135] (3.23cm,-0.2cm);
+\node at (3.23cm,-0.5cm){to $e_{11}(q,s)$};
+\draw[thick] (-1,0.95)--(0,0.95);
+\draw[thick] (-1,0.55)--(0,0.55);
+\draw[thick] (2.43,0.95)--(3.43,0.95);
+\draw[thick] (2.43,0.55)--(3.43,0.55);
+\node at (0,-0.7){};
+\begin{scope}
+\clip (-1.4,-0.1) rectangle (3.83,2.1);
+     
+\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+{     \foreach \y in {1.2,.95,.55,.3}
+{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+    }} 
+\node at (1.22cm, .75cm) {\large{$1$}};   
+ \node at (1.22cm, 1.85cm){\large{$d(q,s)$}};
+\begin{scope}[xshift=3.43cm]
+\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+{     \foreach \y in {1.2,.95,.55,.3}
+{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+    }} 
+\node at (1.22cm, .75cm) {\large{$1$}};   
+ \node at (1.22cm, 1.85cm){\large{$d(q,\widehat{q})$}};
+\end{scope}
+\begin{scope}[xshift=-3.43cm]
+\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+{     \foreach \y in {1.2,.95,.55,.3}
+{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
+    }} 
+\node at (1.22cm, .75cm) {\large{$1$}};   
+\node at (1.22cm, 1.85cm){\large{$d(q,s)$}};
+\end{scope}
+\end{scope}
+\end{tikzpicture}

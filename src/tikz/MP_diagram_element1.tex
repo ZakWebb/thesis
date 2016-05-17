@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+  \draw[rounded corners=2mm,thick] (0,0) rectangle (3.24 cm, 2cm);
+  % Drawing the nodes  
+\foreach \y in {.33,.66,1.33,1.66}
+{   
+\foreach \x/\color in {0/black,3.24/gray}
+{     
+\draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);   
+}
+}    
+ % Labels  
+\foreach \z in {0,1}
+{     
+\node[right] at (0,1.66-\z) {\footnotesize $(\z,1)$};   
+ \node[right] at (0,1.33-\z) {\footnotesize $(\z,3)$};    
+% Output nodes change for each type   
+ \node[left] at (3.24,1.66-\z) {\footnotesize $(\z,5)$};  
+  \node[left] at (3.24,1.33-\z) {\footnotesize $(\z,7)$};   }    
+ % Type of Graph  
+\node at (1.62,1) {\huge $1$};  
+\end{tikzpicture}  
