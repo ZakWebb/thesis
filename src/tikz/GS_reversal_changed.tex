@@ -1,0 +1,61 @@
+\begin{tikzpicture}[
+  yscale = 0.8,
+  label distance=-5.5pt,
+  thin,
+  vertex/.style={circle,draw=black,fill=black,inner sep=1.25pt,
+    minimum size =0mm},
+  attach/.style={circle,draw=black,fill=white,inner sep=1.25pt,
+    minimum size =0mm},
+  dots/.style={circle,fill=black,inner sep=.5pt,
+    minimum size= 0pt}]
+
+% Path and Labels    
+  \draw (-1,-2.41) -- (1,-2.41);
+  
+  \foreach \x /\n in {-1/ 1, 1/2}{
+    \node at (\x,-2.41) [attach] {};
+    \node at (\x,-2.75) {$(1,\n)$};
+  }
+    
+  \node (a) at (0,-2.41) [vertex] {};
+  \node at (0,-2.75) {$a$};
+  
+  \foreach \x /\n in {-1/ 1, 1/2}{
+    \node at (\x,-2.41) [attach] {};
+    \node at (\x,-2.75) {$(1,\n)$};
+  }
+  
+  \node (v) at (0,2.41) [vertex] {};
+  \node at (0,2) {$u$};
+  
+% Graphs (both)
+
+\foreach \j/\of in {1/0,2/4.82}{
+\begin{scope}[yshift=\of cm]
+  \foreach \i / \n /\t in {25 / r/ 15, 155 / 1/ 165, 225/ 2 / 120, 315 / {r-1}/60}{
+    \node at (\i : .9) [rectangle,fill=white] {$w_\n^{(\j)}$};
+    \node at (\i : 1.41) [vertex] {};
+  }
+  \node at (0,0.5) [rectangle,fill=white] {$g_0^{(\j)}$};
+  
+  \draw[thick] (240:1.41) arc (240:-60:1.41);
+  \draw[densely dotted] (240:1.41)  arc (240:255:1.41);
+  \draw[densely dotted] (285:1.41)  arc (285:300:1.41);
+
+% Attaching Edges
+  \foreach \i /\t in {25/15, 155/165}{
+    \draw (\i:1.41) to[out=\i,in=\t] (0,-2.41);
+  }
+  
+  \foreach \i \in in {225,315}{
+    \draw (\i:1.41) to (0,-2.41);
+  }
+  
+\end{scope}
+}
+
+  \draw (25:1.41) to [out = 115,in=-55] (v);
+  \draw (155:1.41) to [out=65,in=-125] (v);
+  \draw[looseness=1.5] (225:1.41) to[out=180,in=210] (v);
+  \draw[looseness=1.5] (315:1.41) to[out=0,in=-30] (v);
+\end{tikzpicture}

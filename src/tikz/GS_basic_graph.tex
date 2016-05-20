@@ -1,0 +1,49 @@
+\begin{tikzpicture}[
+  label distance=-5.5pt,
+  thin,
+  vertex/.style={circle,draw=black,fill=black,inner sep=1.25pt,
+    minimum size =0mm},
+  attach/.style={circle,draw=black,fill=white,inner sep=1.25pt,
+    minimum size =0mm},
+  dots/.style={circle,fill=black,inner sep=.5pt,
+    minimum size= 0pt},
+  every text node part/.style={font=\footnotesize}]
+
+  \node at (.15, .63) [rectangle,fill=white] {$(1,1)$};
+  \node at (.48, .17) [rectangle,fill=white,inner sep=0pt] {$(1,2)$};
+  \node at (.22,-.5) [rectangle,fill=white] {$(1,N)$};
+
+  \draw[thick] (15:1) arc (15:335:1);
+  \draw[densely dotted] (15:1)  arc (15:5:1);
+  \draw[densely dotted] (-15:1)  arc (-15:-25:1);
+
+  \node at (-.42,.12) [rectangle] {\normalsize${\hat{G}}$};
+
+  \foreach \x  in {50, 25,-35}{
+    \draw (\x:1cm) -- (\x:3.15cm);
+    \draw (\x:2.9cm) -- (\x:3.4cm) [densely dotted];
+  }
+  
+  \node at (50:1)[attach]{};
+  \node at (50:1.66)[vertex,label=150:{$(2,1)$}]{};
+  \node at (50:2.33)[vertex,label=150:{$(3,1)$}]{};
+  \node at (50:3)[vertex,label=150:{$(4,1)$}]{};
+
+  \node at (25:1)[attach]{};
+  \node at (25:1.66)[vertex]{};
+  \node at (25:2.33)[vertex]{};
+  \node at (25:3)[vertex]{};
+  
+  \node at (12:1.65) {$(2,2)$};
+  \node at (15:2.5) {$(3,2)$};
+  \node at (17.5:3.35) {$(4,2)$};
+
+  \node at (-35:1)[attach]{};
+  \node at (-35:1.66)[vertex,label=60:{$(2,N)$}]{};
+  \node at (-35:2.33)[vertex,label=60:{$(3,N)$}]{};
+  \node at (-35:3)[vertex,label=60:{$(4,N)$}]{};
+
+  \node at (-2.5:2.9)[dots] {};
+  \node at (2.5:2.9)[dots] {};
+  \node at (-7.5:2.9)[dots] {};
+\end{tikzpicture}

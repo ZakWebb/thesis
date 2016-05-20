@@ -1,0 +1,53 @@
+\begin{tikzpicture}
+  [ scale=1,
+    thin,
+    attach/.style={circle,fill=white,draw=black,
+      inner sep=1.25pt,minimum size=0pt},
+    vert/.style={circle,draw=black,fill=black,
+      inner sep=1.25pt,minimum size=0pt}]
+  
+    \node (0inhad) at (0,2) [attach]{};
+    \node (1inhad) at (0,0) [attach]{};
+    \node (0outhad) at (3,2) [attach]{};
+    \node (1outhad) at (3,0) [attach]{};
+    
+    \node (1had) at (1,0) [vert]{};
+    \node (2had) at (2,0) [vert]{};
+    \node (3had) at (1.5,.5) [vert]{};
+    \node (4had) at (1,1) [vert]{};
+    \node (5had) at (1.5,1) [vert] {};
+    \node (6had) at (2,1) [vert] {};
+    \node (7had) at (1.5,1.5) [vert]{};
+    \node (8had) at (1,2) [vert]{};
+    \node (9had) at (2,2) [vert]{};
+
+    \draw (8had) -- (1had);
+    \draw (9had) -- (2had);
+    \draw (4had) -- (9had);
+    \draw (1had) -- (6had);
+    \draw (4had) -- (6had);
+    \draw (3had) -- (4had);
+    \draw (7had) -- (6had);
+    \draw (1inhad) -- (2had);
+    \draw (8had) -- (9had);
+    \draw (8had) -- (5had)[line width=3pt,white];
+    \draw (5had) -- (2had)[line width=3pt,white];
+    \draw (8had) -- (2had);
+    
+    \draw (9had) to[out=0,in=180] (1outhad) [looseness=.3];
+    \draw (0inhad) to[out=0,in=180] (7had)[line width = 3pt,white];
+    \draw (0inhad) to[out=0,in=180] (7had);
+
+    \draw (3had) --(1.75,.5) to[out=0,in=180] (0outhad)[line width =3pt,white];
+    \draw (3had) --(1.75,.5) to[out=0,in=180] (0outhad);
+
+    \node at (0inhad) [attach]{};
+    \node at (1outhad) [attach]{};
+    \node at (0outhad) [attach]{};
+
+
+  \node at (1inhad.west) [left] {$1_{\text{in}}$};
+  \node at (0inhad.west) [left] {$0_{\text{in}}$};
+  \node at (0outhad.east) [right] {$0_{\text{out}}$};
+  \node at (1outhad.east) [right] {$1_{\text{out}}$};
+\end{tikzpicture}

@@ -91,6 +91,7 @@ so that we can decompose the identity on this space as
 \end{equation}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Graph scattering}
 
 Essentially, at this point we have recovered many of the results of the continuous free particle, but with a discretized position space.  The main idea behind the discretization was the change in the second derivative operator, and noting that it became proportional to the adjacency matrix of a simple graph.  As such, we have that the Hamiltonian of the entire system is proportional to the adjacency matrix.  If we now want to add some finite potential to the system, in an attempt to discretize the scattering formalism, we could add a potential function, with explicit potential energies at various vertices of the infinite path.  However, if we wish to examine scattering only on unweighted graphs, we need to be a little more clever.  
@@ -103,9 +104,10 @@ Note that the topic of graph scattering is widely used in the literature.  Most 
 
 \todo{Find more accurate citations}
 
-\subsection{Infinite path and a Graph}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Infinite path and a Graph}\label{sec:infinite_path_and_graph}
 
-In the most simple example, let us attached a graph $\widetilde{G}$ to an infinite path.  In particular, we assume that $\widetilde{G}$ is attached to a single vertex of the infinite path, and that the graph is attached by adding an edge from each vertex in $S\subset V(\widetilde{G})$ to one specific vertex of the infinite path, which we label $0$, as seen in \fig{path_and_graph}.  Calling this new graph $G$, the adjacency matrix of $G$ can be seen to be
+In the most simple example, let us attached a graph $\widetilde{G}$ to an infinite path.  In particular, we assume that $\widetilde{G}$ is attached to a single vertex of the infinite path, and that the graph is attached by adding an edge from each vertex in $S\subset V(\widetilde{G})$ to one specific vertex of the infinite path, which we label $0$, as seen in \fig{path_and_graph}.  Calling this new graph $G$, the adjacency matrix of $G$, and thus the Hamiltonian for this scattering problem, can be seen to be
 \begin{equation}
   A(G) = A(\widetilde{G}) + \sum_{v\in S \subset V(\widetilde{G})} \ketbra{v}{0} + \ketbra{0}{v} + \sum_{x=-\infty}^\infty \ketbra{x}{x+1} + \ketbra{x+1}{x}.
 \end{equation}
@@ -124,56 +126,78 @@ If we then want to inspect the eigenvectors of this Hamiltonian, we find that th
 
 With this assumption, we can see that there are three distinct cases for the form of the eigenstates.  In particular, the eigenstate could have no amplitude along the infinite paths, being confined to the finite graph $\widehat{G}$.  It could also be a normalizable state not confined to the finite graph $\widehat{G}$, in that the amplitude along the infinite paths decays exponentially.  Finally, the eigenstate could be an unnormalizable state, in which case we will call it a scattering state.
 
-In the first case, where the state is confined to the graph $\widetilde{G}$, we 
-
-
-
-Let us finally assume that the state is a scattering state.  Note that the eigenvalue of the state must be between $[-2,2]$, and that the form of the eigenstate along the paths must be scalar multiples of $e^{ikx}$ and $e^{-ikx}$.  Explicitly, the state must be of the form
+In the first case, where the state is confined to the graph $\widetilde{G}$, we have the major restriction that the state $\ket{\psi}$ satisfies 
 \begin{align}
-  \braket{x}{\psi} = \begin{cases} A_k e^{i k x} + B_k e^{i k x} & x \leq 0\\
-   C_k e^{i k x} + D_k e^{i k x} & x\geq 0\end{cases}
+  \braket{x}{\psi} = 0
 \end{align}
-where we note that the amplitude can change at $x=0$ since we have attached the graph $\widetilde{G}$.  However, we do have that $A_k + B_k=C_k +D_k$, since the amplitude at $0$ is single valued.  Additionally, we have that the eigenvalue of this state is given by $2\cos(k)$.  Note that we have not yet determined the form of the eigenstate inside the graph $\widetilde{G}$, but if we define $\ket{\phi}$ to be the restriction of $\ket{\psi}$ to the finite graph $\widetilde{G}$, then $\ket{\phi}$ must satisfy the equation
+for all $x\in \NN$.  Additionally, if $\ket{\phi}$ is the restriction of $\ket{\phi}$ to the finite graph $\widetilde{G}$, we have that 
+\begin{align}
+  A(\widetilde{G}) \ket{\phi} = E \ket{\phi}
+\end{align}
+so that $\ket{\phi}$ is an eigenstate of the graph $\widetilde{G}$, that also satisfies
+\begin{align}
+  \sum_{v\in S} \braket{v}{\phi} = 0.
+\end{align}
+These restrictions together show that these completely bound states have an extremely restricted form as eigenstates of $A(\widetilde{G})$, but the infinite path does not really affect them.  In particular, their energies are not restricted by anything other than the graph itself, but we are guaranteed to have at most $|V(\widetilde{G})|$ of these confined bound states.
+
+In the second case, we could have that the eigenstate is normalizable, but is not confined to the graph $\widetilde{G}$.  In this case, we have that the amplitudes along the infinite paths must go to zero, but they must still be a sum of exponentials.  As such, we have that $\ket{\psi}$ must be of the form
+\begin{align}
+  \braket{x}{\psi} = A z^x
+\end{align} 
+for some $z\in (-1,1)\setminus \{0\}$ for all $x\in \NN$, so that the energy must be $z+ z^{-1}$ (the case for $z= 0$ forces $A = 0$, and we are in the first case).  Additionally, we can see that if $\ket{\phi}$ is the restriction of $\ket{\psi}$ to those vertices inside the graph $A(\widetilde{G})$, they must satisfy
+\begin{align}
+  A(\widetilde{G}) + A \sum_{v\in S} \ket{v}\braket{v}{\phi} = 2 \cos (k) \ket{\phi},
+\end{align}
+a modified version of the eigenvalue equation for the graph $A(\widetilde{G})$.
+
+Let us finally assume that the state is a scattering state.  Note that the eigenvalue of the state must be in the range $[-2,2]$, and that the form of the eigenstate along the paths must be scalar multiples of $e^{ikx}$ and $e^{-ikx}$, for some $k\in [-\pi, \pi]$.  Explicitly, the state must be of the form
+\begin{align}
+  \braket{x}{\psi} = \begin{cases} Ae^{i k x} + B e^{i k x} & x \leq 0\\
+   C e^{i k x} + D e^{i k x} & x\geq 0\end{cases}
+\end{align}
+where we note that the amplitude can change at $x=0$, since we have attached the graph $\widetilde{G}$.  However, we do have that $A + B=C +D$, since the amplitude at $0$ is single valued, and that the eigenvalue of this state is given by $2\cos(k)$.  Note that we have not yet determined the form of the eigenstate inside the graph $\widetilde{G}$, but if we define $\ket{\phi}$ to be the restriction of $\ket{\psi}$ to the finite graph $\widetilde{G}$, then $\ket{\phi}$ must satisfy the equation
 \begin{equation}
-  A(G) \ket{\phi} + (A_k + B_k)\sum_{v\in S} \ket{v}\braket{v}{\phi} = 2\cos(k) \ket{\phi},
+  A(G) \ket{\phi} + (A+ B)\sum_{v\in S} \ket{v}\braket{v}{\phi} = 2\cos(k) \ket{\phi},
 \end{equation}
 where the additional term arises from the fact that the vertices in $S$ are connected to the vertex $0$.  Finally, we have that
 \begin{equation}
-  2 \cos(k)\braket{0}{\psi} = Ae^{-ik} + B_k e^{ik} + C_k e^{i k} + D_k e^{-ik} + \sum_{v\in S} \braket{v}{\phi},
+  2 \cos(k)\braket{0}{\psi} = Ae^{-ik} + B e^{ik} + C e^{i k} + D e^{-ik} + \sum_{v\in S} \braket{v}{\phi},
 \end{equation}
 since the eigenvalue equation must be satisfied at $0$.
 
-
-We will focus on the case where $A_k = 1$ and $D_k=0$ and the case where $A_k = 0$ and $D_k=1$ individually, as they can each be thought of as a particle with momentum $k$ traveling toward the attached graph $\widetilde{G}$ along the infinite path, and then scattering.  Explicitly, if we first look at the case where $A_k = 1$ and $D_k = 0$,  we can see that
+In the first two cases, we have that the state is highly localized to the area surrounding the graph $\widetilde{G}$, and thus they do not have a large effect on wavefunctions that originate far from the graph.  However, the aptly named scattering states can be used to determine the time evolution of these wave functions.  In particular, if we look at the case where $A = 1$ and $D = 0$,  we can see that
 \begin{align}
-  \braket{x}{\psi} = \begin{cases} e^{-ikx} + B_k e^{i kx} & x\leq 0\\
-  C_k e^{-ikx} & x \geq 0\end{cases}
+  \braket{x}{\psi} = \begin{cases} e^{-ikx} + B e^{i kx} & x\leq 0\\
+  C e^{-ikx} & x \geq 0\end{cases}
 \end{align}
-so that $1+ B_k  =C_k$.  Note that this is reminiscent of a scattering state, with reflection amplitude $B_k$ and transmission amplitude $C_k$, so that we take this intuition.  
-
-\todo{make this coherent}
-
-
-
-
+so that $1+ B  =C$.  Note that this is reminiscent of a scattering state, with reflection amplitude $B$ and transmission amplitude $C$.  We can then take as intuition that these scattering states represent a wavepacket with momentum exactly $k$ traveling towards the graph $G$, and then scattering with these amplitudes.  We will use this intuition for our definitions of scattering on more general graphs. 
+ 
 %%%%%%%%%%%%%%%
-\subsection{General graphs}
+\subsection{General graphs}\label{sec:general_graphs}
 
-
-More generally, let $\widehat{G}$ be any finite graph, with $n+m$ vertices and an adjacency matrix given by the block matrix
+Let us now turn our attention to scattering on more general graphs.  In particular, let $\widehat{G}$ be any finite graph, with $N+m$ vertices and an adjacency matrix given by the block matrix
 \begin{equation}
   A(\widehat{G}) = \begin{pmatrix}A & B^\dag\\ B & D\end{pmatrix},
 \end{equation}
-where $A$ is an $N\times N$ matrix, $B$ is an $m\times N$ matrix, and $D$ is an $m\times m$ matrix.  When examining graph scattering, we will be interested in the graph $G$ given by the graph-join of $\widehat{G}$ and $N$ semi-infinite paths, with an additional edge between each of the first $N$ vertices of $\widehat{G}$ and the first vertex of one semi-infinite path.  
+where $A$ is an $N\times N$ matrix, $B$ is an $m\times N$ matrix, and $D$ is an $m\times m$ matrix.  When examining graph scattering, we will be interested in the graph $G$ given by the graph-join of $\widehat{G}$ and $N$ semi-infinite paths, with an additional edge between each of the first $N$ vertices of $\widehat{G}$ and the first vertex of one semi-infinite path.  A schematic example can be seen in \fig{basic_graph}.
 
-We shall label label the first $N$ vertices of the graph $\widehat{G}$ as $(1,i)$, where $i\in[N]$, as these correspond to the first vertex in each semi-infinite path, and we will call these the \textit{terminal vertices}.  We refer to the other $m$ vertices of $\widehat{G}$ as the \textit{internal vertices} of $\widehat{G}$, and label them as $w\in[m]$, and we refer to the vertices on the $N$ semi-infinite paths as $(x,i)$, where $i\in[N]$ labels which infinite path the vertex is located on (corresponding to which vertex $(1,i)$ the path is attatched to), while $x\in \NN$ and $x\geq 2$ labels the distance along the semi-infinite path the vertex is located.  With this labeling of the vertices of $G$, the adjacency matrix of $G$ is then given by
+We shall label call the first $N$ vertices of the graph \emph{terminal vertices}, as they connect the semi-infinite paths to the finite graph $\widehat{G}$, and we shall label them as $(1,i)$, where $i\in[N]$.  Analogously, we will refer to the vertices on the $N$ semi-infinite paths as $(x,i)$ for $x\in \NN^+$ and $i\in[N]$, with the $i$ label referring to the particular semi-infinite path on which the vertex is labeled, while the label $x$ denotes the location along the path.  We also refer to the remaining $m$ vertices of $\widehat{G}$ as the \textit{internal vertices} of $\widehat{G}$, and label them as $w\in[m]$.  With this labeling of the vertices of $G$, the adjacency matrix of $G$ is then given by
 \begin{equation}
   A(G) = A(\widehat{G}) + \sum_{j=1}^N \sum_{x=1}^\infty \big(\ketbra{x,j}{x+1,j} + \ketbra{x+1,j}{x,j}\big).
 \end{equation}
 
-At this point, we want to examine the possible eigenstates of the matrix $A(G)$.  It turns out that there are 3 different kinds of eigenstates, corresponding to the different qualitative properties of the eigenstate along the semi-infinite paths.
+At this point, we want to examine the possible eigenstates of the matrix $A(G)$.  It turns out that there are 3 different kinds of eigenstates, corresponding to the different qualitative properties of the eigenstate along the semi-infinite paths, exactly as in the case studied in \sec{infinite_path_and_graph}.
 
-While we will mostly be interested in the third such type, it is important to understand the other kinds of eigenstates.
+While we will mostly be interested in the third such type, corresponding to scattering off of the graph, the other two kinds remain important for a decomposition of the identity.  In particular, we will be guaranteed that these three kinds of eigenstates will form an orthogonal basis for the Hilbert space, and thus we will be able to use this decomposition to guarantee particular behavior of time evolved states.
+
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{GS_basic_graph}
+  \input{../tikz/GS_basic_graph.tex}
+  \caption{An infinite graph $G$ obtained from a finite graph $\widehat{G}$ by attaching $n$ semi-infinite paths. The open circles are \emph{terminals}, vertices of $\widehat{G}$ to which semi-infinite paths are attached. The internal vertices of $\widehat{G}$ are not shown.}
+  \label{fig:basic_graph}
+\end{figure}
+
 
 %%%%
 \subsubsection{Confined bound states}
@@ -187,53 +211,72 @@ As we originally assumed that there are only $m$ internal vertices of $\widehat{
 %%%%
 \subsubsection{Unconfined bound states}
 
-The next possible type of eigenstates are those that are not confined to the finite graph $\widehat{G}$ but are still normalizable.  Since these states still have amplitude along the semi-infinite paths, we know that they must be of the form $Ae^(i k x)$, for some $A$ and $k$.  However, when $k$ is not real (corresponding to a decaying amplitude along the paths), we have that
+The next possible type of eigenstates are those that are not confined to the finite graph $\widehat{G}$ but are still normalizable.  Since these states still have amplitude along the semi-infinite paths, we know that they must be of the form $Ae^{i k x}$, for some $A$ and $k$.  However, when $k$ is not real (corresponding to a decaying amplitude along the paths), we have that
 \begin{equation}
   2 \cos(k) = 2\cos(k_r + i k_i) = 2 \cos(k_r) \cosh(k_i) - i \sin(k_r) \sinh(k_i).
 \end{equation}
 Hence, if we assume that the state is normalizable, then $k_i \neq 0$, and as the adjacency matrix is Hermitian, we must have that the eigenvalue is real, forcing $k_r = \pi n$ for some $n\in \NN$.  Note that this then implies that $e^{i k} = z$, for some $z\in(-1,1)\setminus\{0\}$ (where $0$ corresponds to the confined bound states).
 
-\todo{Finish this section, and determine whether this is  finite or infinite.}
+As the eigenvalue equation for these states are guaranteed to be satisfied along the paths, we need to construct the form of the eigenstates inside the graph $\widehat{G}$.  We can then see that the eigenvalue equation for these vertices is given by
+\begin{align}
+\bigg[
+  \begin{pmatrix} 
+    A & B^\dag\\
+    B & D
+  \end{pmatrix}
+  + \begin{pmatrix} 
+    z \\
+    0
+  \end{pmatrix}
+  \bigg] \begin{pmatrix}
+    \vec{\alpha}\\
+    \vec{\beta}
+  \end{pmatrix} = \Big(z + \frac{1}{z}\Big) \begin{pmatrix} 
+    \vec{\alpha}\\
+    \vec{\beta}
+  \end{pmatrix}
+\end{align}
+where $\vec{\alpha} \in \CC^N$ and $\vec{\beta}\in \CC^m$.  Note that the amplitudes for a vertex $(x,i)$ is given by $\vec{\alpha}_i z^{x-1}$.  Note that we are implicitly assuming that $\vec{\alpha} \neq \vec{0}$, for in that case we are working with a confined bound state.  
 
-%%%%
-\subsubsection{Half-bound states}
+While there is no immediate reason to guess that the total number of bound states is finite, it has been shown that this number is indeed finite (see \cite{CG12} for a more thorough explanation, using Levinson's theorem for graphs).
 
-The half-bound states are the limit of the states as $\kappa \rightarrow 0$.  In particular, they are those states where the amplitude along the infinite paths take the form $(\pm 1)^x$.  These states aren't quite bound, in that they are not normalizable, but they are also not quite scattering states, as they correspond to non-moving scattering states.  They won't play much of a role in this paper, but I did want to mention them.
+\todo{I know that they are finite from the Levinson's theorem, but is there any other reason to guarantee that they are finite?}
+
 
 %%%%
 \subsubsection{Scattering states}
 
-We finally reach the point of scattering states, or those states we can use for computational tasks.  We first assume that we are orthogonal to all bound states, and in particular that we are othogonal to all confined bound states.  This allows us to uniquely construct the scattering states (without this assumption, if there existed a confined bound state at the appropriate energy, then we could simply add any multiple of the confined bound state to get a different scattering state).
+We finally reach the point of scattering states, or those unnormalizable eigenstates of the Hamiltonian.  We first assume that these states are orthogonal to all bound states, and in particular that we are orthogonal to all confined bound states, as this allows us to uniquely construct the scattering states (without this assumption, if there existed a confined bound state at the appropriate energy, then we could simply add any multiple of the confined bound state to get a different scattering state).
 
 Taking some intuition from the classical case, we will construct a set of states that correspond to sending a particle in towards the graph $\widehat{G}$ along one of the semi-infinite paths and understanding how it scatters off of the graph.  Namely, for each $i\in[N]$ we will assume that there exists a state with amplitude along the $i$-th path of the form $e^{i k x} + S_{i,i}(k)e^{-i k x}$ for $k\in (-\pi, 0)$, and that the rest of the paths have amplitudes given by $S_{i,q}(k)e^{ikx}$.  More concretely, we assume that the form of the states is given on the infinite paths by
 \begin{equation}
-  \braket{x,q}{\scat_{j}(k)} = \delta_{j,q} e^{-i k x} + S_{qj} e^{i k x}.
+  \braket{x,q}{\scat_{j}(k)} = \delta_{j,q} e^{-i k x} + S_{qj} e^{i k x}.\label{eq:scattering_amplitude_paths}
 \end{equation}
 We then need to see whether such an eigenstate exists.  In this case, note that $S_{qj}$ corresponds to the transmitted amplitude along the $q$-th path if the particle was incident along the $j$-th path.
 
-If we continue to make the assumption that these states exist, we can also write the amplitudes of the $m$ interval vertices as a column vector, as $\vec{\psi}_i(k)$, in which $\vec{\psi}_{i(k)}$ is the projection of $\ket{\scat_j(k)}$ onto the internal vertices of $\widehat{G}$.  We can then collect these vectors into an $N\times m$ matrix, namely
+If we continue to make the assumption that these states exist, we can also write the amplitudes of the $m$ interval vertices as a column vector, as $\vec{\psi}_i(k)$, in which $\vec{\psi}_{i}(k)$ is the projection of $\ket{\scat_j(k)}$ onto the internal vertices of $\widehat{G}$.  We can then collect these vectors into an $m\times N$ matrix, namely
 \begin{equation}
   \Psi(k) := \begin{pmatrix} \vec{\psi}_1(k) & \vec{\psi}_2(k) & \cdots & \vec{\psi}_N(k)\end{pmatrix}
 \end{equation}
-\todo{check if this is correct $N\times m$ or $m\times N$}
 
-Noting that the amplitudes for $\vec{\scat_j(k)}$ on the terminal vertices is given by $ e^{-i k} \ket{1,j} + S_{j}(k)e^{ik}$ (thinking of $S_{j}(k)$ as a vector), we can then collect all of the eigenvalue equations for the vertices in $\widehat{G}$ (both internal and termal) as
+Noting that the amplitudes for $\ket{\scat_j(k)}$ on the terminal vertices is given by $ e^{-i k}\delta_{j,q} + S_{qj}(k)e^{ik}$, we can then collect all of the eigenvalue equations for the vertices in $\widehat{G}$ (both internal and termal) as
 \begin{equation}
   \begin{pmatrix} A & B^\dag \\
     B & D\end{pmatrix} \begin{pmatrix}  e^{-i k} \II + S(k) e^{i k}\\ \Psi(k)\end{pmatrix} 
     + \begin{pmatrix} e^{-2 i k} \II + e^{2 i k} S(k)\\ 0\end{pmatrix} = 
-    2 \cos(k) \begin{pmatrix}  e^{-i k} \II + S(k) e^{i k}\\ \Psi(k)\end{pmatrix}.
+    2 \cos(k) \begin{pmatrix}  e^{-i k} \II + S(k) e^{i k}\\ \Psi(k)\end{pmatrix},
 \end{equation}
+where we have constructed the scattering matrix $S(k)$ using the scattering amplitudes $S_{qj}(k)$.
 
 By examining the lower half of this matrix equation, we can see that
 \begin{equation}
   \Psi(z) = \frac{1}{2 \cos(k) \II - D} \big( e^{-ik} B + e^{i k} B S(z)\big),
 \end{equation}
-which gives the amplitudes of the internal vertices in terms of the scattering matrix.
+which gives the amplitudes of the internal vertices in terms of the scattering matrix.  Note that we have assumed that the matrix $D$ does not have an eigenvalue equal to $2\cos(k)$, but this assumption will not be critical, as the eventual matrix $\ket{\Psi}(z)$ will be defined by analytic continuation.
 
-If we then examine the upper half of the matrix equation, we find that
+Let us now examine the upper half of the matrix equation, to find
 \begin{align}
-  A\big(e^{-ik} \II+ e^{i k} S(k)\big) + B^\dag \Psi(k) + \big(e^{-2 ik}\II + e^{2 i k} S(z)\big) &= 2 \cos(k) \big(e^{-ik} \II + e^{i k} S(k)\big)&\Rightarrow\\
+  A\big(e^{-ik} \II+ e^{i k} S(k)\big) + B^\dag \Psi(k) + \big(e^{-2 ik}\II + e^{2 i k} S(z)\big) &= 2 \cos(k) \big(e^{-ik} \II + e^{i k} S(k)\big)\\
   -\Bigg(\II - e^{ik}\Big(A + B^\dag \frac{1}{2 \cos(k) - D} B\Big)\Bigg)S(k) &= \II - e^{-ik}\Big(A + B^\dag \frac{1}{2 \cos(k) - D} B\Big).
 \end{align}
 Hence, if we define
@@ -242,26 +285,33 @@ Hence, if we define
 \end{equation}
 we find that
 \begin{equation}
-  S(k) = - Q(k)^{-1} Q(-k).
+  S(k) = - Q(k)^{-1} Q(-k),
 \end{equation}
+if we assume that the matrix $Q(k)$ can be inverted.  Note that for all ${k\in (-\pi,0)}$, this might only be impossible for $k$ in which $D$ has a $2\cos(k)$ eigenvalue, in which case we have already run into a problem with the definition of $\Psi(k)$.
 
-Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist for all $k$ in which the matrix operations defining $S(k)$ are well defined.  In particular, we take the inverse of $2\cos(k)\II - D$, and the inverse of $Q(k)$.  These only possibly have problems when 
+Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist for all $k\in (-\pi,0)$ for which $D$ does not have a $2\cos(k)$ eigenvalue.  We will see in \sec{def_of_gamma_matrix} that this restriction is an artifact of our construction of $S(k)$, and thus the scattering states will be well defined for all $k\in (-\pi,0)$.
+
 
 %%%%
-\subsubsection{Easier calculation of $S$-matrix}
-\todo{come up with a better name of this cycle}
+\subsubsection{Half-bound states}
+
+As a limiting case for both the scattering states and the unconfined bound states, we have those states with $k = 0$ or $k= \pi$ (or equivalently with $z = \pm 1$).  In either case, the two momenta correspond to particles that don't move, but the states themselves are not normalizable.  They won't play much of a role in this paper, but I did want to mention them.
 
 
-While the above is useful for most values of $k\in(-pi,0)$, unfortunately there are specific values of $k$ (such as those for which $D$ has eigenvalue $2\cos(k)$) in which the above analysis doesn't hold do to the singularity of some particular matrices.  If we want to show that these scattering states exist for all $k\in (-\pi,0)$, we need to somehow show that these singularities are just a problem of the analysis and are not intrinsic barriers to existence.
+%%%%
+\subsubsection{Scattering states for all $k$}\label{sec:def_of_gamma_matrix}
 
-Along these lines, let us extend our analysis to complex $z$, instead of only focusing on the real line.  As such, let us define the matrix
+While the above construction is a useful definition of the scattering states for most ${k\in(-\pi,0)}$, unfortunately there are specific values of $k$ (namely those for which $D$ has eigenvalue $2\cos(k)$) in which the above analysis doesn't hold, due to the singularity of particular matrices.  If we want to show that these scattering states exist for all $k\in (-\pi,0)$, we need to somehow show that these singularities are just a problem of the analysis and are not intrinsic barriers to existence.  Note that this construction closely follows that of \cite{CG12}.
+
+Along these lines, let us extend our analysis to complex $z$, instead of only focusing on amplitudes of the form $e^{ik}$.  We will define the matrix
 \begin{equation}
   \gamma(z) := \begin{pmatrix}  z A - \II & z B^\dag\\
     z B & zD - (1+z^2) \II\end{pmatrix}.
     \label{eq:gamma_def}
 \end{equation}
+This matrix is closely related to the eigenvalue equation for vertices of the graph $\widehat{G}$, but with $e^{ik}$ replaced with $z$.  
 
-Note that 
+With this definition, it will be useful to note the following matrix equalities.  In particular, assuming that $z$ is a complex number such that the following matrices are not singular, we have:
 \begin{align}
   \begin{pmatrix} \II & zB^\dag\\
     0 & z D - (1+ z^2) \II \end{pmatrix}
@@ -277,7 +327,7 @@ Additionally, if we note that the inverse of a block diagonal matrix can be writ
   Z & W\end{pmatrix}^{-1} = \begin{pmatrix} \big(X - Y W^{-1} Z\big)^{-1} & - X^{-1} Y \big(W - Z X^{-1} Y\big)^{-1}\\
     - W^{-1} Z \big(X - Y W^{-1} Z\big)^{-1} & \big(W - Z X^{-1} Y\big)^{-1}\end{pmatrix},
 \end{equation}
-then we can see that
+we can then invert this equation for $\gamma(z)$ as 
 \begin{align}\gamma(z)^{-1} &= \begin{pmatrix} - Q(z) & 0\\
       \frac{z}{zD - (1+ z^2)\II}B & \II\end{pmatrix}^{-1} \begin{pmatrix} \II & zB^\dag\\
     0 & z D - (1+ z^2) \II \end{pmatrix}^{-1}\\
@@ -290,7 +340,7 @@ then we can see that
       0 & \frac{1}{zD - (1+z^2)\II}
     \end{pmatrix}.
 \end{align}
-We can then use this to see that
+Combining these two matrix equations, we can then find that
 \begin{align}
   \gamma (z)^{-1} \gamma(z^{-1}) &= \begin{pmatrix}
       - Q(z)^{-1} & 0\\
@@ -299,7 +349,8 @@ We can then use this to see that
     \begin{pmatrix}
       \II & - B^{\dag} \frac{z}{zD - (1+z^2)\II}\\
       0 & \frac{1}{zD - (1+z^2)\II}
-    \end{pmatrix}
+    \end{pmatrix}\nonumber\\
+  &\qquad \qquad \times
     \begin{pmatrix} \II & z^{-1}B^\dag\\
     0 & z^{-1} D - (1+ z^{-2}) \II \end{pmatrix}
     \begin{pmatrix} - Q\big(z^{-1}\big) & 0\\
@@ -326,21 +377,60 @@ We can then use this to see that
   &= -\begin{pmatrix}
       S(z) & 0\\
      z^{-1} \Psi(s) & -z^{-2}\II
-    \end{pmatrix}\label{eq:gamma_gives_S}
+    \end{pmatrix},\label{eq:gamma_gives_S}
 \end{align}
+where we have extended the definition of $S$ and $\Psi$ to all complex $z$ instead of just $e^{ik}$
 
-As such, we can write we have a nice representation of the scattering matrix and the interior amplitudes in terms of the matrix $\gamma$.  If we then note that
+With these matrix equations, we have a representation of the scattering matrix and the interior amplitudes in terms of the matrix $\gamma$.  If we then note that
 \begin{equation}
   \gamma(z)^{-1} = \frac{1}{\det \gamma(z)} \adj \gamma (z)
 \end{equation}
-where $\adj \gamma (z)$ is the adjugate matrix of $\gamma(z)$, then by \eq{gamma_gives_S} we can then see that the entries of $S(z)$ are rational functions of $z$. 
+where $\adj \gamma (z)$ is the adjugate matrix of $\gamma(z)$, then by \eq{gamma_gives_S} we can then see that the entries of $\gamma(z)$, and thus the entries of $S(z)$ and $\Psi(z)$, are rational functions of $z$. 
 
-\todo{this still doesn't explain why we can define the S-matrix this way when things aren't invertable explanation}
+With this fact, to show that the problems defining the states $\ket{\scat_j(k)}$ are a result of our analysis rather than intrinsic difficulties, we need only show that there are no poles in the matrix elements for $S(z)$ or $\Psi(z)$ for $z$ on the unit circle.  We actually have that for all such $z$, there is an upper bound on the norm of the scattering amplitudes, which might depend on the graph $\widehat{G}$.
+\begin{lemma}
+Given $\widehat{G}$, there exists a constant $\lambda\in\mathbb{R}$ such that $|\langle v|sc_{j}(k)\rangle|<\lambda$ for all $k\in[-\pi,\pi)$, $j\in\{1,\ldots,N\}$, and $v\in\widehat{G}$.
+\end{lemma}\label{lem:scattering_state_amplitude_bound}
+
+\begin{proof}
+Note that 
+\begin{equation}
+\gamma\left(\frac{1}{z}\right)=\frac{1}{z^{2}}\gamma(z)+\left(\frac{1}{z^{2}}-1\right)\widehat{P}\end{equation}
+where 
+\begin{equation}
+\widehat{P}=\begin{pmatrix}
+1 & 0\\
+0 & 0\end{pmatrix}
+\end{equation}
+projects onto the $N$ vertices of $\widehat{G}$ attached to semi-infinite paths. Hence 
+\begin{equation}
+-\gamma(z)^{-1}\gamma\left(\frac{1}{z}\right)=-\frac{1}{z^{2}}+\left(1-\frac{1}{z^{2}}\right)\gamma(z)^{-1}\widehat{P}.
+\end{equation}
+
+Let $\{|\psi_{c}\rangle \colon c\in\{1,\ldots,n_{c}\}\}$ be eigenstates of $\widehat{H}$ satisfying $\widehat{P}|\psi_c\rangle=0$, and let this set be an orthonormal basis for the span of all such states. Then
+ \begin{equation}
+\left(1-\frac{1}{z^{2}}\right)\gamma(z)^{-1}\widehat{P}=\left(1-\frac{1}{z^{2}}\right)\left(1-\sum_{j=1}^{n_{c}}|\psi_{c}\rangle\langle\psi_{c}|\right)\gamma(z)^{-1}\left(1-\sum_{j=1}^{n_{c}}|\psi_{c}\rangle\langle\psi_{c}|\right)\widehat{P}\end{equation}
+ since each $|\psi_c\rangle$ is an eigenvector of $\gamma(z)$ and
+$\widehat{P}|\psi_{c}\rangle=0$. Reference \cite{CG12} shows (in Part 2 of the proof of Theorem 1) that
+\begin{equation}
+\det\left(\frac{1}{1-z^{2}}\right)M(z)\neq0\text{ for }|z|=1,
+\end{equation}
+where $M(z)$ is the $(N+m-n_{c})\times(N+m-n_{c})$ matrix of $\gamma(z)$ in the subspace of states orthogonal to the span of $\{|\psi_{c}\rangle \colon c\in\{1,\ldots,n_{c}\}\}$. Therefore 
+\begin{align*}
+\frac{1}{z}\langle v|\mathrm{sc}_{j}(k)\rangle & =  -\langle v|\gamma(z)^{-1}\gamma\left(\frac{1}{z}\right)|j\rangle\\
+ & = \langle v|\left(1-\frac{1}{z^{2}}\right)\left(1-\sum_{j=1}^{n_{c}}|\psi_{c}\rangle\langle\psi_{c}|\right)\gamma(z)^{-1}\left(1-\sum_{j=1}^{n_{c}}|\psi_{c}\rangle\langle\psi_{c}|\right)|j\rangle
+\end{align*}
+has no poles on the unit circle, and the result follows.
+
+\end{proof}
+
+As such, we have that the scattering states are well defined for all $k\in (-\pi,0)$.  
+
 
 %%%%%%%%%%%%%%%
 \subsection{Scattering matrix properties}
 
-While the use of the $\gamma$ matrix gives an explicit construction of the form of the eigenstates on the internal vertices, it is also useful to note that the scattering matrix at a particular momentum $k$ can be expressed as
+While the use of the $\gamma$ matrix gives an explicit construction of the form of the eigenstates on the internal vertices, the alternate definition in terms o the $Q$ matrix can be used to easily show several properties of the scattering matrix.  In particular, remember that
 \begin{equation}
   S(k) = - Q(z)^{-1} Q(z^{-1}),
 \end{equation}
@@ -377,16 +467,25 @@ Putting this together, we have that $S(k)$ is a symmetric, unitary matrix for al
 %%%%%%%%%%%%%%%%%
 \subsection{Orthonormality of the scattering states}
 
-\todo{go over this section more}
+We now have some basic ideas behind the scattering behavior.  In particular, we have that the scattering states exist for all $k$, and that the scattering matrices are symmetric and unitary.  However, one of the most important behaviors we need is that the scattering states are orthonormal, and that they form a basis for the Hilbert space corresponding to the graph. 
 
-We now establish the delta-function normalization of the scattering states. Let 
-\begin{align*}
-\Pi_{1} & = \sum_{x=1}^{\infty}\sum_{q=1}^{N}|x,q\rangle\langle x,q|\\
-\Pi_{2} & = \mathbb{I}-\sum_{x=2}^{\infty}\sum_{q=1}^{N}|x,q\rangle\langle x,q|\\
-\Pi_{3} & = \sum_{q=1}^{N}|1,q\rangle\langle1,q|.\end{align*}
-We show that, for $k\in(-\pi,0)$, $p\in(-\pi,0)$, and $i,j\in\{1,\ldots,N\}$,
-\begin{equation}
-\langle\mathrm{sc}_{i}(p)|\mathrm{sc}_{j}(k)\rangle=\langle\mathrm{sc}_{i}(p)|\Pi_{1}+\Pi_{2}-\Pi_{3}|\mathrm{sc}_{j}(k)\rangle=2\pi\delta_{ij}\delta(k-p).\label{eq:delta}\end{equation}
+We will first show that two scattering states are orthonormal.
+
+\begin{lemma}
+  Let 	$k,p\in (-\pi,0)$, and let $i,j\in [N]$.  We then have that
+  \begin{align}
+    \braket{\scat_i(p)}{\scat_{j}(k)} = \frac{1}{2\pi} \delta_{i,j} \delta(p-k),
+    \label{eq:delta}
+  \end{align}
+  where the two sides are equal as functionals against integration.
+\label{lem:orthonormality_of_scattering_states}
+\end{lemma}
+\begin{proof}
+Let 
+\begin{align}
+\Pi_{1} & = \sum_{x=1}^{\infty}\sum_{q=1}^{N}|x,q\rangle\langle x,q|%\\
+&\Pi_{2} & = \mathbb{I}-\sum_{x=2}^{\infty}\sum_{q=1}^{N}|x,q\rangle\langle x,q|%\\
+&\Pi_{3} & = \sum_{q=1}^{N}|1,q\rangle\langle1,q|.\end{align}
 First write 
 \begin{align*}
 \langle\mathrm{sc}_{i}(p)|\Pi_{1}|\mathrm{sc}_{j}(k)\rangle & = \sum_{x=1}^{\infty}\sum_{q=1}^{N}(\delta_{iq}e^{ipx}+S_{qi}^{\ast}(p)e^{-ipx})(\delta_{jq}e^{-ikx}+S_{qj}(k)e^{ikx})\\
@@ -409,8 +508,8 @@ These identities hold when both sides are integrated against a smooth function o
 &\quad+S_{ij}(k)\left(-\frac{1}{2}+\frac{i}{2}\cot\left(\frac{p+k}{2}\right)\right)\label{eq:pi1}
 \end{align}
 where we used unitarity of the $S$-matrix to simplify the first term.
-Now turning to $\Pi_{2}$ we have \[
-\langle\mathrm{sc}_{i}(p)|H\Pi_{2}|\mathrm{sc}_{j}(k)\rangle=2\cos(p)\langle\mathrm{sc}_{i}(p)|\Pi_{2}|\mathrm{sc}_{j}(k)\rangle\]
+Now turning to $\Pi_{2}$ we have \begin{equation}
+\langle\mathrm{sc}_{i}(p)|H\Pi_{2}|\mathrm{sc}_{j}(k)\rangle=2\cos(p)\langle\mathrm{sc}_{i}(p)|\Pi_{2}|\mathrm{sc}_{j}(k)\rangle\end{equation}
  and 
 \begin{align*}
 \langle\mathrm{sc}_{i}(p)|H\Pi_{2}|\mathrm{sc}_{j}(k)\rangle & = \langle\mathrm{sc}_{i}(p)|\bigg(2\cos(k)\Pi_{2}|\mathrm{sc}_{j}(k)\rangle+\sum_{q=1}^{N}(e^{-ik}\delta_{qj}+S_{qj}(k)e^{ik})|2,q\rangle\\
@@ -423,9 +522,9 @@ Now turning to $\Pi_{2}$ we have \[
 & \quad +\sum_{q=1}^{N}S_{qi}^{\ast}(p)S_{qj}(k)(e^{-2ip+ik}-e^{2ik-ip}).
 \end{align*}
  Noting that
-\[
+\begin{equation}
 \langle\mathrm{sc}_{i}(p)|\Pi_{3}|\mathrm{sc}_{j}(k)\rangle=\sum_{q=1}^{N}(\delta_{iq}e^{ip}+S_{qi}^{\ast}(p)e^{-ip})(\delta_{jq}e^{-ik}+S_{qj}(k)e^{ik}),
-\]
+\end{equation}
 we have 
 \begin{align}
 \langle\mathrm{sc}_{i}(p)|\Pi_{2}-\Pi_{3}|\mathrm{sc}_{j}(k)\rangle & = \delta_{ij}\left(\frac{e^{2ip-ik}-e^{-2ik+ip}}{2\cos(p)-2\cos(k)}-e^{ip-ik}\right)\nonumber\\
@@ -439,108 +538,143 @@ we have
 \end{align}
  Adding equation \eq{pi1} to equation \eq{pi2_pi3} gives
 equation \eq{delta}.
+\end{proof}
 
-\todo{These form an orthonormal basis if you also include the bound states, but this is Theorem 1 from Andrew and David's Levison's Theorem II paper.  I'm not sure if I should include it.}
+With the fact that the scattering states are orthogonal, it will also be useful to see that they form an orthonormal basis for the Hilbert space.  In particular, Childs and Gosset showed in \cite{CG12} that this holds.  Assuming that the confined bound states were spanned by the orthonormal states $\{\ket{\psi_c} : c\in [n_c]\}$ and that the orthogonal bound states are spanned by the orthonormal basis $\{\ket{\phi_b} : b \in [n_b]\}$, they showed the following theorem:
+
+\begin{theorem}[Theorem 1 of \cite{CG12}] Let $v$ and $w$ be any two vertices of the graph $G$.  Then
+\begin{align}
+  \bra{v} \bigg[ \int_{-\pi}^0 \frac{dk}{2\pi} \ketbra{\scat_j(k)}{\scat_j(k)} + \sum_{b= 1}^{n_b} \ketbra{\phi_b}{\phi_b}  + \sum_{c=1}^{n_c} \ketbra{\psi_c}{\psi_c} \bigg] \ket{w} = \delta_{v,w}.
+\end{align}
+
+\end{theorem}
+
+\todo{Should I include a proof of this theorem?  It's not mine, but I will use.}
+
+Most of our results will be in regards to the scattering states, but having this decomposition of the identity will allow us to show better bounds.  In particular, we will be able to guarantee that certain states have almost no support on states other than scattering states.
 
 \section{Applications of graph scattering}
 
+While graph scattering is a relatively new area of study, it has found several applications.  As the behavior of a scattered particle is heavily dependent on both the momentum and the graph used for scattering, we can use the scattering behavior as a probe of properties about the graph, as well as a kind of probe for the momentum of the incoming particle.  In particular, if we know the momentum of a wavepacket, we can determine the scattering amplitudes to gain information about the graph, such as whether it has eigenstates at particular momentum.  If we know a graphs scattering behavior, we can then use the scattering to check whether a wavepacket has a desired momentum, and then do something to the particular wavepacket.
+
 \subsection{NAND Trees}
 
-The motivating idea for understanding graph scattering was an explicit algorithm that computes the value of a NAND tree with $N$ leaves in $\OO(\sqrt{N})$ time.  In particular, a NAND tree is a complete binary tree of depth $\log N$, where each leaf has a particular binary value.  Each node of the tree is then assigned a binary value by evaluating the NAND of its children, and the value of the entire tree is the value of the root node.  Classically, any randomized algorithm requires $\OO(N^{0.753})$ queries to the roots in order to evaluate the value of the tree, and thus this gives an example of a quantum speedup.
+The original motivating idea for understanding graph scattering was an oracular separation between quantum and classical computation, for a problem involving NAND trees.  In particular, Edward Fahri, Jeffrey Goldstone, and Sam Gutmann gave a scattering algorithm \cite{FGG08} for this problem that was provably faster than any classical algorithm.
 
-The reason that we are interested in this is that the original algorithm uses graph scattering as the actual algorithm.  In particular, a binary tree is attached to an infinite path at the root, and then additional vertices are attached to the leaves depending on whether the binary value is 0 or 1.  It turns out that at energy 0 (i.e., momentum $-\pi/2$), such a tree has perfect transmission from one path to the other if the tree evaluates to 1, and perfect reflection if the tree evaluates to 0.  Hence, if a wave packet with momentum centered around $-\pi/2$ is scattered off of such a graph, then if we determine the location of the particle after it has scattered we evaluate the tree. 
+A NAND tree is a function on $N$ variables, where $N$ is a power of two, such that the value of the leaves are given by the input to the function, while each parent node's value is given by the NAND of its children's values.  The NAND tree problem is then to evaluate the root.  
 
-In this case, the requisite size of the wavepacket turns out to be $\OO(\sqrt{N})$, and thus this amount of time is required in order for the scattering to occur.  This is closely related to the number of queries to the values of the input variables in order to compute the value of the tree, and thus this is a quantum algorithm that has a provable speedup over classical computing.
+Now for any oracular problem, we are given black-box access to the input, and want to minimize the total number of queries to the input.  In particular, the actual runtime of an algorithm generally is not measured, and instead we simply count the number of bits of the input the algorithm accesses.  While this might not always give a realistic gauge for the time a particular problem takes to solve, it does allow for information theoretic bounds on the number of queries.  In particular, oracular problems often allow us to guarantee that any algorithm will require a certain number of queries in order to solve the problem.
+
+If we perform an analysis on the NAND tree problem, any deterministic algorithm will require $N$ queries in order to evaluate the root, as in the worst case we will need to examine every bit of the input.  However, if we instead work with probabilistic computation, there is a randomized algorithm \cite{SW86} that can solve this problem in $\OO(N^\alpha)$ time, where $\alpha = \log_2(1 + \sqrt{33}) - 2 \approx 0.753$.  Additionally, any randomized algorithm will require this many queries \cite{San95}.  Fahri, Goldstone, and Gutmann were able to construct a quantum algorithm that solves the NAND tree using only $\OO(\sqrt{N})$ queries, which is provably better than in the classical case.
+
+The reason that we are interested in this is that the original algorithm uses graph scattering explicitly.  In particular, a binary tree is attached to an infinite path at the root, and then additional vertices are attached to the leaves depending on whether the binary value is 0 or 1.  It turns out that at energy 0 (i.e., momentum $-\pi/2$), such a tree has perfect transmission from one path to the other if the tree evaluates to 1, and perfect reflection if the tree evaluates to 0.  Hence, if a wave packet with momentum centered around $-\pi/2$ is scattered off of such a graph, by determining the location of the particle after it has scattered we evaluate the tree. 
+
+In this case, the requisite size of the wavepacket turns out to be $\OO(\sqrt{N})$, and thus this amount of time is required in order for the scattering to occur.  The total evolution time is closely related to the number of queries that the algorithm uses during the computation, and thus this is a quantum algorithm that has a provable advantage over classical computing.
 
 \subsection{Momentum dependent actions}
 
-While the NAND trees gives a good example of how the process works, in that the scattering evaluates a binary function, we can use similar ideas in order to have nontrivial scattering behavior.  In particular, the NAND tree algorithm utilizes the fact that some graph either completely reflects or transmits at one particular momenta in order to evaluate the function, but we can also create graphs that have different behaviors at different momenta, or that perfectly transmits to some subset of the attached paths (i.e., generalizations to multiple semi-infinite paths).
+While the NAND tree algorithm gives a good example of how graph scattering can work as an algorithmic tool, in that the scattering evaluates a binary function, the scattering behavior was relatively simple: a particle transmits or reflects.  However, we can use similar ideas in order to have nontrivial scattering behavior, by creating graphs that have different behaviors at different momenta, or that perfectly transmits to some subset of the attached paths (i.e., a generalization of perfect transmission to multiple semi-infinite paths).
+
+\todo{Should I include schematic pictures of these gadgets?  I'm not sure if that would improve readability}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{R/T gadets}
+\subsubsection{R/T gadgets}
 
-The easiest thing we could hope for are exactly similar to the NAND trees experiment, in that if there are only two attached semi-infite paths, then at some fixed momenta it either completely transmits, or it completely reflects.  However, in contrast to the NAND tree, we will only work with a single graph, and use it to filter out some momenta.
+The easiest thing we could hope for is the same behavior as in the NAND tree algorithm, with two attached paths and at some fixed momenta the wavepacket either completely transmits, or it completely reflects.  However, we will utilize a single graph with several different momenta.
 
-Basically, the idea behind R/T gadgets is to perfectly transmit at some momenta, while perfectly reflecting at other momenta.  This will then allow us to filter out certain unwanted wavepackets, and allow us to only deal with the momenta of interest.  Further, these simple gadgets can be used as a simple building block in the construction of other graphs, allowing us to have more complicated graphs.
+In particular, these reflection/transmission (R/T) gadgets will have two sets of momenta.   One set will have perfect transmission, while the other will have perfect reflection.  While these gadgets have relatively simple scattering behavior, they can be used to filter particular momenta, or as building blocks in more complicated gadgets.  Additionally, the simple behavior will allow us to show that certain scattering behaviors are not possible.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Momentum Switches}
 
-In addition to a simple graph that only reflects or transmits certain momenta, we can generalize the idea to a kind of routing behavior.  In particular, we can attempt to construct a graph with three attached semi-infinite paths, in which when a wavepacket is incident on one particular path, it either perfectly transmits to the second path, or it perfectly transmits to the third path, depending on the incident momenta.  In this way, we construct something like a momentum dependent railroad switch, sending different wavepackets to different locations.
+We can generalize the idea of R/T gadgets to multiple semi-infinite paths, so that the gadget has a kind of routing behavior.  In particular, we can attempt to construct graphs with three attached semi-infinite paths, in which when a wavepacket is incident along one particular path, it either perfectly transmits to the second path, or it perfectly transmits to the third path, depending on the incident momenta.  In this way, we construct something like a momentum dependent railroad switch, sending different wavepackets to different locations.
 
-In the grand scheme of things, this is extremely useful, as it allows for more general momentum dependent actions.
+These momentum switches are extremely useful, as they will allow us to construct much more interesting momentum dependent behavior.  By using two of these gadgets in series (with the paths 2 and 3 connected to each other), we can then place a single obstacle along only one of the paths.  Since only those momenta that travel along that particular path are incident on the additional obstacle, we can use this to do something like applying a momentum dependent phase.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Encoded unitary}
 
-Finally, we can also encode unitary actions using these graphs, in that by necessity these scattering matrices must be unitary.  In particular, let us examine what happens to a graph with four attached semi-infinite paths, when at some chosen momentum a wavepacket from either of the first two paths gets perfectly transmits to the last two paths.  In this case, the S-matrix becomes a block matrix, with the two $2\times 2$ blocks in the diagonal both zero matrices.  As such, the off diagonal matrices must also be unitary, and if we think of the two input paths as an encoded qubit (with a wavepacket along one path corresponding to an encoded $\ket{0}$ state and a wavepacket along the other path correpsonding to an encoded $\ket{1}$ state) then this scattering procedure performs some encoded unitary transformation on the qubit.
+While the above two gadgets can be thought to have one input but two output paths, we can generalize this idea to having multiple input paths.  In particular, if we have two input and two output paths, we can encode a logical qubit in a dual-rail encoding (i.e., one path corresponds to a state $\ket{0}$, while the other corresponds to a state $\ket{1}$).  If we can ensure that wavepackets incident along the input paths always transmit to the output paths, we can think of this as applying a unitary gate to the encoded qubit.
+
+In particular, by constructing a gadget whose $S$-matrix at a particular momentum is block diagonal, with two zero blocks along the diagonal, we have that a wavepacket at that momenta always transmits from the input to the output vertices.  Additionally, as the $S$-matrix is itself unitary, we have that the $2\times2$ block matrix that corresponds to the transmitted amplitudes is also unitary, and thus we have applied a unitary operation to the encoded qubit.  
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Constructing graphs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Construction of graphs with particular scattering behavior}
+\section{Constructing graphs with particular scattering behavior}
 
-While we have shown that the scattering behavior of some given graph is easy to compute, finding a graph with a given scattering behavior is much more difficult.  We don't even know whether such an operation is decidable, and thus constructing an efficient algorithm for finding a graph with a given scattering behavior seems unlikely.  However, there are specific behaviors at particular momenta in which constructions are known, and some small sized graphs that have been found via exhaustive searches.
+While we have shown that the scattering behavior of some given graph is easy to compute, finding graphs with a given behavior is much more difficult.  We don't even know whether such an operation is decidable, and thus finding an algorithm to construct a graph with a given $S$-matrix seems unlikely.  However, there are specific behaviors at particular momenta in which constructions are known, and exhaustive searches of small sized graphs have yielded graphs with nice scattering properties.  
 
+In particular, Andrew Childs found several gadgets in his paper proving the universality of quantum walks \cite{Chi09}.  After this result, Blumer, Underwood and Feder \cite{BUF11} performed an exhaustive search over all graphs with at most 9 vertices, finding those graphs that implement an encoded unitary at several momenta of interest.  Childs, Gosset, and Webb then constructed several gadgets in \cite{MPQW}.  This section is mainly based on \cite{MomSwitches}, a paper by Chlids, Gosset, Nagaj, Raha, and Webb, as it gives explicit constructions for gadgets with particular behavior.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{R/T gadgets}
+ 
+Perhaps the most simple behavior, and the one that will for which we will have the easiest time finding a solution, are two-terminal gadgets that either perfectly reflect at some particular momenta, or perfectly transmit.  These R/T gadgets can be thought of as a proof-of-principle for constructing gadgets, but they also have uses of their own.
 
-\todo{Go over this section, and revise}
+This problem is still rather complicated when we work with arbirtary graphs with two terminal vertices, things become much simpler if we work with a graph attached to an infinite path via a single vertex.  In this case, we can determine exactly when the gadget will lead to perfect reflection, and when it will lead to perfect transmission.
 
-Perhaps the most simple behavior will be two-terminal gadgets that either perfectly reflect at some particular momenta, or perfectly transmit.  While this is still a rather complicated problem when the terminals can be any vertices of the graph, things become tractable when we want to only attach a graph to a single vertex of an infinite path.  In this case, everything works out as expected.
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{GS_reversal_orig}
+  \input{../tikz/GS_reversal_orig.tex}
+  \caption{A type 1 R/T gadget.  Vertices of $G_0$ that are not part of the periphery $P = \{p_1,\ldots,p_n\}$ are not shown.}
+  \label{fig:reversal_orig}
+\end{figure}
 
-We refer to the graph shown in \fig{reversal_orig} as $\hat{G}$, and we write $G$ for the full graph obtained by attaching two semi-infinite paths to terminals $(1,1)$ and $(1,2)$.  As shown in the Figure, the graph $\hat{G}$ for a type 1 gadget is determined by a finite graph $G_0$ and a subset $P = \{p_1,\ldots,p_n\} \subseteq V(G_0)$ of its vertices, called the \emph{periphery}.  Each vertex in the periphery is connected to a vertex denoted $a$, and $a$ is also connected to two terminals $(1,1)$ and $(1,2)$. A type 1 R/T gadget with $n=1$ has only one edge between $G_0$ and $a$; in this special case we also call it a \emph{type 2 R/T gadget} (see \fig{reversalRT}).
+Along these lines, we will investigate the scattering behavior of graphs where $\widehat{G}$ is of the form found in \fig{reversal_orig}.  While we still have that $\widehat{G}$ is of the form described in \sec{general_graphs}, the graph $G$ with the semi-infinite paths is that of a infinite path, with the graph $G_0$ attached to the vertex $a$.  As such, the graph that will be of more interest is the graph $G_0$ consisting of those vertices other than those along the infinite path.   We will label those vertices $p_i\in V(G_0)$ connected to the vertex $a$ as \emph{periphery} vertices, and we will label the set of periphery vertices as $P$.  In the special case that $|P| = 1$, or that a single vertex of $G_0$ is connected to $a$, we will call the gadget a type 2 R/T gadget (see \fig{RT_path} for an example of a type 2 R/T gadget).
 
-Looking at the eigenvalue equation for the scattering state $\ket{\sc_{1} (k)}$ at vertices $(1,1)$ and $(1,2)$, we see that the amplitude at vertex $a$ satisfies
-\[
-  \langle{a}\ket{\sc_{1} (k)} = 1 + R(k) = T(k).
-\] 
-Thus perfect reflection at momentum $k$ occurs if and only if $R(k)=-1$ and $\langle{a}\ket{\sc_{1} (k)}=0$, while perfect transmission occurs if and only if $T(k)=1$ and $\langle{a}\ket{\sc_{1} (k)}=1$. Using this fact, we now derive conditions on the graph $G_0$ that determine when perfect transmission and reflection occur.
+For a given R/T gadget $\widehat{G}$, those momenta for which perfect reflection occurs shall be collected in the \emph{reflection set} which shall be denoted $\mathcal{R}$.  Similarly, those momenta for which perfect transmission occurs shall be collected in the \emph{transmission set} which shall be label $\mathcal{T}$. Note that these two sets have empty intersection, and that there isn't any nice relationship between them.
 
-For type 1 gadgets, we give a necessary and sufficient condition for perfect reflection: $G_0$ should have an eigenvector for which the sum of amplitudes on the periphery is nonzero.
+Let us now examine the scattering eigenstates for the graph $\widehat{G}$.  For any scattering state $\ket{\scat_{1} (k)}$, by examining the eigenvalue equation at vertices $(1,1)$ and $(1,2)$ we see that the amplitude at vertex $a$ satisfies
+\begin{equation}
+  \langle{a}\ket{\scat_{1} (k)} = 1 + R(k) = T(k).
+\end{equation}
+Thus perfect reflection at momentum $k$ occurs if and only if $R(k)=-1$ and $\langle{a}\ket{\scat_{1} (k)}=0$, while perfect transmission occurs if and only if $T(k)=1$ and $\langle{a}\ket{\scat_{1} (k)}=1$. Using this fact, we now derive conditions on the graph $G_0$ that determine when perfect transmission and reflection occur.
 
-\begin{lemma}\label{lem:reflect_reqs}
-Let $\hat{G}$ be a type 1 R/T gadget. A momentum $k\in (-\pi,0)$ is in the reflection set $\mathcal{R}$ if and only if $G_0$ has an eigenvector $\ket{\chi_k}$ with eigenvalue $2\cos(k)$ satisfying
+For any type 1 R/T gadget, we have necessary and sufficient conditions for momentum $k$ to be in the reflection set: $G_0$ should have an eigenvector for which the sum of amplitudes on the periphery is nonzero.
+\begin{lemma}
+Let $\widehat{G}$ be a type 1 R/T gadget. A momentum $k\in (-\pi,0)$ is in the reflection set $\mathcal{R}$ if and only if $G_0$ has an eigenvector $\ket{\chi_k}$ with eigenvalue $2\cos(k)$ satisfying
 \begin{equation}
   \sum_{i=1}^{n} \braket{p_i}{\chi_k} \neq 0. \label{eq:sum_condition}
 \end{equation}
+\label{lem:reflect_reqs}
 \end{lemma}
 
 \begin{proof}
-First suppose that $\hat{G}$ has perfect reflection at momentum $k$, i.e., $R(k)=-1$ and $\langle{a}\ket{\sc_{1} (k)}=0$. Since $\langle{(1,1)}\ket{\sc_1(k)} = e^{-ik} - e^{ik}\neq 0$ and $\langle{(1,2)}\ket{\sc_1(k)}=0$, to satisfy the eigenvalue equation at vertex $a$, we have
-\[
-  \sum_{j=1}^{n} \langle{p_j}\ket{\sc_1(k)} = e^{ik} - e^{-ik} \neq 0.
-\]
-Further, since $G_0$ only connects to vertex $a$ and the amplitude at this vertex is zero, the restriction of $\ket{\sc_1(k)}$ to $G_0$ must be an eigenvector of $G_0$ with eigenvalue $2\cos(k)$. Hence the condition is necessary for perfect reflection. 
+Let us first suppose that $\widehat{G}$ has perfect reflection at momentum $k$, i.e., $R(k)=-1$ and $\langle{a}\ket{\scat_{1} (k)}=0$. As $\langle{(1,1)}\ket{\scat_1(k)} = e^{-ik} - e^{ik}\neq 0$ and $\langle{(1,2)}\ket{\scat_1(k)}=0$, to satisfy the eigenvalue equation at vertex $a$, we have
+\begin{equation}
+  \sum_{j=1}^{n} \langle{p_j}\ket{\scat_1(k)} = e^{ik} - e^{-ik} \neq 0.
+\end{equation}
+Further, since $G_0$ only connects to vertex $a$ and the amplitude at this vertex is zero, the restriction of $\ket{\scat_1(k)}$ to $G_0$ must be an eigenvector of $G_0$ with eigenvalue $2\cos(k)$. Hence the condition is necessary for perfect reflection. 
  
 Next suppose that $G_0$ has an eigenvector $\ket{\chi_k}$ with eigenvalue $2\cos(k)$ satisfying \eq{sum_condition}, with the sum equal to some nonzero constant $c$. Define a scattering state $\ket{\psi_k}$ on the Hilbert space of the full graph $G$ with amplitudes
-\[
+\begin{equation}
   \braket{v}{\psi_k} = \frac{e^{ik} - e^{-ik}}{c} \braket{v}{\chi_k}
-\]
+\end{equation}
 for all $v \in V(G_0)$, $\braket{a}{\psi_k}=0$, and 
-\[
+\begin{equation}
  \braket{(x,j)}{\psi_k}=\begin{cases} e^{-ikx}-e^{ikx} & j=1\\
 0 & j=2
 \end{cases}
-\]
+\end{equation}
 for all $x \in \posint$.
 
-We claim that $\ket{\psi_k}$ is an eigenvector of $G$ with eigenvalue $2 \cos(k)$.  The state clearly satisfies the eigenvalue equation on the semi-infinite paths since it is a linear combination of states with momentum $\pm k$.  At vertices of $G_0$, the state is proportional to an eigenvector of $G_0$, and since the state as no amplitude at $a$, the eigenvalue equation is also satisfied at these vertices.  It remains to see that the eigenvalue equation is satisfied at $a$, but this follows immediately by a simple calculation.
+We claim that $\ket{\psi_k}$ is an eigenvector of $G$ with eigenvalue $2 \cos(k)$.  The state clearly satisfies the eigenvalue equation on the semi-infinite paths since it is a linear combination of states with momentum $\pm k$.  At vertices of $G_0$, the state is proportional to an eigenvector of $G_0$, and since the state has no amplitude at $a$, the eigenvalue equation is also satisfied at these vertices.  It remains to see that the eigenvalue equation is satisfied at $a$, but this follows immediately by a simple calculation.
 
 Since $\ket{\psi_k}$ has the form of a scattering state with perfect reflection, we see that $R(k)=-1$ and $T(k)=0$ as claimed.
 \end{proof}
 
-The following Lemma gives a sufficient condition for perfect transmission (which is also necessary for type 2 gadgets).  Let $g_0$ denote the induced subgraph on $V(G_0)\setminus P$ where $P = \{p_i\colon i\in [n]\}$ is the periphery.
+In a similar manner, the following lemma gives a sufficient condition for a momentum $k$ to be in the transmission set (which is also necessary for type 2 gadgets).  Let $g_0$ denote the induced subgraph on $V(G_0)\setminus P$ where $P = \{p_i\colon i\in [n]\}$ is the periphery.
 
 \begin{lemma}\label{lem:transmit_reqs}
-Let $\hat{G}$ be a type 1 R/T gadget and let $k\in (-\pi,0)$. Suppose $\ket{\xi_k}$ is an eigenvector of $g_0$ with eigenvalue $2\cos{k}$ and with the additional property that, for all $i \in [n]$,
+Let $\widehat{G}$ be a type 1 R/T gadget and let $k\in (-\pi,0)$. Suppose $\ket{\xi_k}$ is an eigenvector of $g_0$ with eigenvalue $2\cos{k}$ and with the additional property that, for all $i \in [n]$,
 \begin{equation}
 \label{eq:trans_cond}
   \sum_{\substack{v \in V(g_0): \\ (v,p_i)\in E(G_0)}} \braket{v}{\xi_k} = c \neq 0 
@@ -558,35 +692,38 @@ If $g_0$ has a suitable eigenvector $\ket{\xi_k}$ satisfying \eq{trans_cond}, de
 \label{eq:psik_c}
 \end{equation}
 in the graph $G_0$, and 
-\[
+\begin{equation}
  \langle{(x,j)} \ket{\psi_k}=\begin{cases} e^{-ikx} & j=1\\
  e^{ikx} & j=2
 \end{cases}
-\]
+\end{equation}
 for $x \in \posint$.  As in the proof of \lem{reflect_reqs}, the state $\ket{\psi_k}$ is clearly satisfies the eigenvalue equation (with eigenvalue $2\cos(k)$) at vertices on the semi-infinite paths and vertices of $g_0$.  The factor of $-\frac{1}{c}$ in \eq{psik_c} is chosen so that the eigenvalue condition is satisfied at vertices in $P$.  It is easy to see that the eigenvalue condition is also satisfied at $a$.
 
 Since $\ket{\psi_k}$ is a scattering eigenvector of $G$ with eigenvalue $2\cos(k)$ and perfect transmission, we have $T(k)=1$.
 
-Now suppose $\hat{G}$ is a type 2 R/T gadget (as shown in \fig{reversalRT}), with $P = \{p\}$.  Perfect transmission along with the eigenvalue equation at vertex $a$ implies
-\[
-\braket{p}{\sc_1(k)} = 0,
-\]
-so the restriction of $\ket{\sc_1(k)}$ to $g_0$ must be an eigenvector (since $p$ is the only vertex connected to $g_0$).  The eigenvalue equation at $p$ gives
-\[
-  \braket{a}{\sc_1(k)} 
-  + \sum_{w \colon (w,p)\in E(G_0)} \braket{w}{\sc_1(k)} = 0 
+Now suppose $\widehat{G}$ is a type 2 R/T gadget, with $P = \{p\}$.  Perfect transmission along with the eigenvalue equation at vertex $a$ implies
+\begin{equation}
+\braket{p}{\scat_1(k)} = 0,
+\end{equation}
+so the restriction of $\ket{\scat_1(k)}$ to $g_0$ must be an eigenvector (since $p$ is the only vertex connected to $g_0$).  The eigenvalue equation at $p$ gives
+\begin{equation}
+  \braket{a}{\scat_1(k)} 
+  + \sum_{w \colon (w,p)\in E(G_0)} \braket{w}{\scat_1(k)} = 0 
   \quad\implies\quad
-  \sum_{w \colon (w,p)\in E(G_0)} \braket{w}{\sc_1(k)} = -1.
-\]
-Hence the restriction of $\ket{\sc_1(k)}$ to $V(g_0)$ is an eigenvector of the induced subgraph, with the additional property that the sum of the amplitudes at vertices connected to $p$ is nonzero.
+  \sum_{w \colon (w,p)\in E(G_0)} \braket{w}{\scat_1(k)} = -1.
+\end{equation}
+Hence the restriction of $\ket{\scat_1(k)}$ to $V(g_0)$ is an eigenvector of the induced subgraph, with the additional property that the sum of the amplitudes at vertices connected to $p$ is nonzero.
 \end{proof}
 
+With these two lemmas, if we can guarantee the form of the eigenstates for the graph $G_0$, we can guarantee certain momenta to be in either the reflection or the transmission set.
+
+
 %%%%%%%%%%
-\subsubsection{Explicit constructions}
+\subsubsection{Explicit constructions}\label{sec:rt_ex}
 
-While the above gives a nice abstract explanation for the construction of R/T gadgets, it doesn't provide us with a concrete example without the graphs that satisfy the assumptions of the lemmas.  As such, let us look at two simple graphs.
+While the two lemmas do give a nice abstract explanation for the construction of R/T gadgets, it doesn't provide us with a concrete example. As such, let us look at two simple graphs and examine when they satisfy the conditions of the lemmas.
 
-As a first example, suppose $G_0$ is a finite path of length $l_1+l_2-2$ connected to $a$ at the $l_1$th vertex, as shown in \fig{RT_path}.  We determine the reflection and transmission sets as a function of $l_1$ and $l_2$.
+As a first example, suppose $G_0$ is a finite path of length $l_1+l_2-2$ connected to $a$ at the $l_1$th vertex, as shown in \fig{RT_path}.  As this is a type 2 R/T gadget, we can then determine the reflection and transmission sets as a function of $l_1$ and $l_2$.
 
 
 %%%%%%%%%
@@ -604,26 +741,26 @@ Using \lem{reflect_reqs}, we see that perfect reflection occurs at momentum $k\i
   \langle x | \psi_j \rangle = \sin\left(\frac{ \pi j x}{L+2}\right)\label{eq:vecs_line}
 \end{equation}
 with eigenvalues $\lambda_j = 2 \cos(\pi j/(L+2))$.  Hence
-\[
+\begin{equation}
   \mathcal{R}_{\mathrm{path}} = \left\{ -\frac{\pi j}{l_1 + l_2} \colon j\in [l_1 + l_2 - 1] \text{ and } \frac{jl_1}{l_1+l_2} \not\in \ZZ\right\}.
-\]
+\end{equation}
 
-To characterize the momenta at which perfect transmission occurs, consider the induced subgraph obtained by removing the $l_1$th vertex from the path of length $l_1+l_2-2$ (a path of length $l_1-2$ and a path of length $l_2-2$). We can choose bases for the eigenspaces of this induced subgraph so that each eigenvector has all of its support on one of the two paths, and has nonzero amplitude on one of the vertices $l_1-1$ or $l_1+1$. Thus \lem{transmit_reqs} implies that $\hat{G}$ perfectly transmits for all momenta in the set
-\[
+To characterize the momenta at which perfect transmission occurs, consider the induced subgraph obtained by removing the $l_1$th vertex from the path of length $l_1+l_2-2$ (a path of length $l_1-2$ and a path of length $l_2-2$). We can choose bases for the eigenspaces of this induced subgraph so that each eigenvector has all of its support on one of the two paths, and has nonzero amplitude on only one of the vertices $l_1-1$ or $l_1+1$. Thus \lem{transmit_reqs} implies that $\widehat{G}$ perfectly transmits for all momenta in the set
+\begin{equation}
   \mathcal{T}_{\mathrm{path}} = \left\{- \frac{\pi j}{l_1} \colon j\in [l_1-1]\right\} \cup \left\{-\frac{\pi j}{l_2 } \colon j \in [l_2-1]\right\}.
-\]
+\end{equation}
 
-For example, setting $l_1 = l_2 = 2$, we get $\mathcal{T}_{\mathrm{path}} = \{-\frac{\pi}{2}\}$ and $\mathcal{R}_{\mathrm{path}} = \{-\frac{\pi}{4}, -\frac{3\pi}{4}\}$.
+As an explicit example, if we set $l_1 = l_2 = 2$, we get $\mathcal{T}_{\mathrm{path}} = \{-\frac{\pi}{2}\}$ and $\mathcal{R}_{\mathrm{path}} = \{-\frac{\pi}{4}, -\frac{3\pi}{4}\}$.
 
 
 Now let us suppose $G_0$ is a cycle of length $r$. Labeling the vertices by $x \in [r]$, where $x=r$ is the vertex attached to the path (as shown in \fig{RT_cycle}), the eigenvectors of the $r$-cycle are
-\[
+\begin{equation}
   \langle x | \phi_m\rangle = e^{{2 \pi i x m}/{r}}
-\]
+\end{equation}
 with eigenvalue $2 \cos(2 \pi m/r)$, where $m\in [r]$. For each momentum $k=-2 \pi m/r \in (-\pi,0)$, there is an eigenvector with nonzero amplitude on the vertex $r$ (i.e., $\langle r | \phi_m\rangle\neq 0$), so \lem{reflect_reqs} implies that perfect reflection occurs at each momentum in the set
-\[
+\begin{equation}
   \mathcal{R}_{\mathrm{cycle}} = \left\{ -\frac{\pi j}{r} \colon \text{$j$ is even and $j\in [r-1]$}\right\}.
-\]
+\end{equation}
 
 
 %%%%%%%%%
@@ -637,45 +774,102 @@ with eigenvalue $2 \cos(2 \pi m/r)$, where $m\in [r]$. For each momentum $k=-2 \
 
 
 To see which momenta perfectly transmit, we use \lem{transmit_reqs}. Consider the induced subgraph obtained by removing vertex $r$. This subgraph is a path of length $r-2$ and has eigenvalues $2\cos(\pi m/r)$ for $m \in [r-1]$ as discussed in the previous section. Using the expression \eq{vecs_line} for the eigenvectors, we see that the sum of the amplitudes on the two ends is nonzero for odd values of $m$.  Perfect transmission occurs for each of the corresponding momenta:  
-\[
+\begin{equation}
   \mathcal{T}_{\mathrm{cycle}} = \left\{ -\frac{\pi j}{r} \colon \text{$j$ is odd and $j\in [r-1]$}\right\}.
-\]
+\end{equation}
 
 For example, the $4$-cycle (i.e., square) has $\mathcal{T}_{\mathrm{cycle}} = \{-\frac{\pi}{4},-\frac{3\pi}{4}\}$ and $\mathcal{R}_{\mathrm{cycle}} = \{-\frac{\pi}{2}\}$.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Reversing reflection and transmission sets}\label{sec:reversal}
+
+With these explicit examples of R/T gadgets, it will be useful to know how to interchange the reflection and transmission set.  Namely, if we have one gadget that transmits all momenta in $\mathcal{T}$ and reflects all momenta in $\mathcal{R}$, it will be useful to also have a gadget that reflects all momenta in $\mathcal{T}$ and transmits all momenta in $\mathcal{R}$.  Basically, we will be able to use these two gadgets together to construct gadgets with more interesting scattering behavior.
+
+In particular, let $\widehat{G}$ be a type 2 R/T gadget, as seen in \fig{reversalRT}, and assume that it has a reflection set $\mathcal{R}$ and a transmission set $\mathcal{T}$.  We will construct a type 1 R/T gadget $\widehat{G}^{\leftrightarrow}$ with reflection set $\mathcal{R'} \supset \mathcal{T}$ and transmission set $\mathcal{T}' \supset \mathcal{R}$.  The graph $\widehat{G}^{\leftrightarrow}$ is depicted pictorially in \fig{reversal_changed}.
+
+Explicitly, the R/T gadget $\widehat{G}^\leftrightarrow$ is obtained by taking two copies of the subgraph $g_0$ from the type 2 R/T gadget in \fig{reversalRT}, connecting both to a single additional vertex $u$, and connecting one copy of $g_0$ to the infinite path at $a$.  More concretely, for each vertex $w_j\in V(g_0)$, the graph $\widehat{G}^{\leftrightarrow}$ has two vertices $w_j^{(1)}$ and $w_j^{(2)}$, and the graph $\widehat{G}^\leftrightarrow$ inherits the edge set of $g_0$.  Additionally, for each $w_j\in V(g_0)$ connected to the periphery vertex $p$, we have that $w_j^{(i)}$ is connected to $u$, and $w_j^{(1)}$ is connected to $a$.
+
+%%%%%%%%%%
+\begin{figure}
+  \centering
+  \subfloat[][]{ 
+    \tikzsetnextfilename{GS_reversalRT}
+    \input{../tikz/GS_reversalRT.tex}
+    \label{fig:reversalRT}
+  }
+  \qquad
+  \subfloat[][]{
+    \tikzsetnextfilename{GS_reversal_changed}
+    \input{../tikz/GS_reversal_changed.tex}
+    \label{fig:reversal_changed}
+   }
+   \caption{\subfig{reversalRT}  A type 2 R/T gadget, (i.e., a type 1 gadget with $|P| = 1$).  \subfig{reversal_changed}  The R/T gadget $\widehat{G}^\leftrightarrow$ reversing the reflection and transmission sets of \subfig{reversalRT}.}
+   \label{fig:reversal}
+\end{figure}
+
+With this definition, we now prove that the graph $\widehat{G}^\leftrightarrow$ reverses the reflection and transmission sets of $\widehat{G}$.
+
+\begin{lemma}\label{lem:reversal_graph}
+Let $\widehat{G}$ be a type 2 R/T gadget with transmission set $\mathcal{T}$ and reflection set $\mathcal{R}$.  The type 1 R/T gadget $\widehat{G}^{\leftrightarrow}$ defined above has transmission set $\mathcal{T}' \supseteq \mathcal{R}$ and reflection set $\mathcal{R}' \supseteq \mathcal{T}$.
+\end{lemma}
+\begin{proof}
+First consider a momentum $k\in \mathcal{T}$. Using the condition derived in \lem{transmit_reqs}, we see that $g_0$ has an eigenvector $\ket{\xi_k}$ with eigenvalue $2\cos(k)$ where the sum of the amplitudes on vertices $w_1,\ldots,w_r$ is nonzero.  Now consider the induced subgraph $G_{0}^{\leftrightarrow}$ of \fig{reversal_changed} obtained by removing vertices $(1,1)$, $(1,2)$, and $a$. This subgraph has an eigenvector $|\chi^{\leftrightarrow}_k\rangle$ with eigenvalue $2\cos(k)$ given by
+\begin{equation}
+  \langle v^{(i)} \ket{\chi^{\leftrightarrow}_k}= (-1)^i \langle v\ket{\xi_k} \quad \text{ and } \quad \langle{u}\ket{\chi^{\leftrightarrow}_k} = 0
+\end{equation}
+for all vertices $v\in V(g_0)$ and for $i \in \{1,2\}$.  The fact that $\ket{\chi_k^{\leftrightarrow}}$ is an eigenvector follows from the fact that $\ket{\xi_k}$ is an eigenvector of $g_0$.  Additionally, we have that
+\begin{equation}
+  \sum_{j=1}^{r} \langle{w^{(1)}_j} \ket{\chi^{\leftrightarrow}_k} = - \sum_{j=1}^{r} \langle{w_j} \ket{\xi_k} \neq 0.
+\end{equation}
+Using \lem{reflect_reqs}, we see that perfect reflection occurs at momentum $k$, and thus $\mathcal{T} \subseteq \mathcal{R}'$.
+
+Next suppose $k\in \mathcal{R}$. \lem{reflect_reqs} states that $G_0$ has an eigenvector $|\chi_k\rangle$ with eigenvalue $2\cos(k)$ such that $\langle p \ket{\chi_k} \neq 0$.  Now consider the induced subgraph $g_0^{\leftrightarrow}$ of \fig{reversal_changed} obtained by removing vertices $(1,1)$, $(1,2)$, $a$, and $w^{(1)}_1,\ldots,w^{(1)}_{r}$. This graph has an eigenvector $\ket{\xi^{\leftrightarrow}_k}$ with eigenvalue $2\cos(k)$ defined by
+\begin{equation}
+  \langle v \ket{\xi^{\leftrightarrow}_k} = \begin{cases} \langle{v}\ket{\chi_k}& \text{for }v\in V(g_0^{(2)}) \\
+    \langle{p}\ket{\chi_k} & v = u\\
+0 &\text{otherwise.} \end{cases}
+\end{equation}
+To see that this is an eigenvector, observe that $g_0^{\leftrightarrow}$ is a disconnected graph and $\ket{\chi_k}$ is an eigenvector of one of its components.  Using this and \lem{transmit_reqs} (since $u$ is the only vertex adjacent to the periphery of $\hat{G}^{\leftrightarrow}$ with non-zero amplitude), we see that $k\in \mathcal{T}'$, so $\mathcal{R} \subseteq \mathcal{T}'$.
+\end{proof}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Momentum switches}
 
-\todo{Go over this section, and revise/make it fit}
+To construct a momentum switch between a given pair of momenta, it will be worthwhile to first construct two R/T gadgets between the momenta, with the two gadgets having swapped reflection and transmission sets.  We can then construct something like a railroad switch, by placing the two gadgets immediately after a 3-claw.  With this design, the incident wavepacket will only see one of the two outgoing paths, and the resulting $S$-matrix will be exactly what we want.
 
-To construct momentum switches between pairs of momentum, it will be worthwhile to first construct two R/T gadgets between the two momenta, with the two gadgets having swapped reflection and transmission sets.  We will then construct something like a railroad switch, by placing the two gadgets immediately after a 3-claw; this construction will then be that the wavepacket will only see one of the two outgoing paths, and function exactly how we want it to.
+In particular, we can construct a momentum switch between the reflection and transmission sets $\mathcal{R}$ and $\mathcal{T}$ of a type 2 R/T gadget.  We attach the gadget and its reversal (defined in \sec{reversal}) to the leaves of a claw, as shown in \fig{gen_mom_con}.  Specifically, given a type 2 R/T gadget $\widehat{G}$, the corresponding momentum switch $\widehat{G}^{\prec}$ consists of a copy of $G_0$, a copy of $G_{0}^{\leftrightarrow}$, and a claw, with the three leaves of the claw acting as the terminal vertices.  Vertex $p$ of $G_0$ is connected to leaf $2$ of the claw, and vertices $w_1^{(1)},\ldots,w_r^{(1)}$ of $G_{0}^{\leftrightarrow}$ are each connected to leaf $3$ of the claw.
 
+Intuitively, the momentum switch acts the same as a railroad switch.  For momenta in the transmission set, the gadget perfectly transmits while its reversal perfectly reflects, so the claw is effectively a path connecting terminals 1 and 2.  For momenta in the reflection set, the roles of transmission and reflection are reversed, so the claw is effectively a path connecting terminals 1 and 3.
 
-We now construct a momentum switch between the reflection and transmission sets $\mathcal{R}$ and $\mathcal{T}$ of a type 2 R/T gadget.  We attach the gadget and its reversal (defined in \sec{reversal}) to the leaves of a claw, as shown in \fig{gen_mom_con}.  Specifically, given a type 2 R/T gadget $\hat{G}$, the corresponding momentum switch $\hat{G}^{\prec}$ consists of a copy of $G_0$, a copy of $G_{0}^{\leftrightarrow}$, and a claw.  The three leaves of the claw are the terminals.  Vertex $p$ of $G_0$ is connected to leaf $2$ of the claw, and vertices $w_1^{(1)},\ldots,w_r^{(1)}$ of $G_{0}^{\leftrightarrow}$ are each connected to leaf $3$ of the claw.
+%%%%%%%%%%%%%%%%
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{GS_gen_mom_con}
+  \input{../tikz/GS_gen_mom_con.tex}
+  \caption{A momentum switch $\hat G^\prec$ built from a type 2 R/T gadget and its reversal.}
+  \label{fig:gen_mom_con}
+\end{figure}
 
-The high-level idea of the switch construction is as follows.  For momenta in the transmission set, the gadget perfectly transmits while its reversal perfectly reflects, so the claw is effectively a path connecting terminals 1 and 2.  For momenta in the reflection set, the roles of transmission and reflection are reversed, so the claw is effectively a path connecting terminals 1 and 3.
-
+We can now prove that this gadget acts as a momentum switch, by constructing the desired scattering eigenstates.
 
 \begin{lemma}\label{lem:mom_switch_construction}
-Let $\hat{G}$ be a type 2 R/T gadget with reflection set $\mathcal{R}$ and transmission set $\mathcal{T}$.  The gadget $\hat{G}^{\prec}$ described above is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
+Let $\widehat{G}$ be a type 2 R/T gadget with reflection set $\mathcal{R}$ and transmission set $\mathcal{T}$.  The gadget $\hat{G}^{\prec}$ described above is a momentum switch between the sets $\mathcal{R}$ and $\mathcal{T}$.
 \end{lemma}
-
-
 \begin{proof}
 
 We construct a scattering eigenstate for each momentum $k\in \mathcal{T}$ with perfect transmission from path 1 to path 2, and similarly construct a scattering eigenstate for each momentum $k^{\prime}\in \mathcal{R}$ with perfect transmission from 1 to 3.  These eigenstates show that $S_{2,1}(k) = 1$ and $S_{3,1}(k^\prime) = 1$. Since the S-matrix is symmetric and unitary, this gives the complete form of the S-matrix for all momenta in $\mathcal{R}\cup\mathcal{T}$.  In particular, this shows that $\hat{G}^{\prec}$ is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
 
 We first construct the scattering states for momenta $k\in \mathcal{T}$.  \lem{transmit_reqs} shows that the graph $g_0$ has a $2\cos(k)$-eigenvector $\ket{\xi_k}$ satisfying equation \eq{trans_cond} with some nonzero constant $c$. We define a state $\ket{\mu_k}$ on $G^{\prec}$ and we show that it is a scattering eigenstate with perfect transmission between paths $1$ and $2$.   The amplitudes of $\ket{\mu_k}$ on the semi-infinite paths and the claw are
-\[
+\begin{equation}
   \langle (x,1)|\mu_k\rangle=e^{-ikx} \qquad 
   \langle 0|\mu_k\rangle=1 \qquad 
   \langle (x,2)|\mu_k\rangle=e^{ikx} \qquad
   \langle (x,3)|\mu_k\rangle=0.
-\]
+\end{equation}
 The rest of the graph consists of the three copies of the subgraph $g_0$ and the vertices $p$ and $u_{\leftrightarrow}$. The corresponding amplitudes are
-\[
+\begin{equation}
   \braket{v}{\mu_k} =
   \begin{cases}
 	  -\frac{1}{c}\braket{v}{\xi_k} & v\in V(g^{(1)}_0) \\
@@ -683,19 +877,19 @@ The rest of the graph consists of the three copies of the subgraph $g_0$ and the
 	  -\frac{e^{ik}}{c} \braket{v}{\xi_k} & v \in V(g^{(3)}_0) \\
   	0 & v=p \text{ or } v=u_{\leftrightarrow}.
   \end{cases}
-\]
+\end{equation}
 
-We claim that $\ket{\mu_k}$ is an eigenstate of the Hamiltonian with eigenvalue $2\cos(k)$.  As in previous proofs, the state clearly satisfies the eigenvalue condition on the semi-infinite paths and at the vertices of $G_0$ and $G_0^\leftrightarrow$, and the factors of $\frac{1}{c}$ in the above equation are chosen so that it also satisfies the eigenvalue condition at vertices $p$ and $u_\leftrightarrow$. Since $\ket{\mu_k}$ is a scattering state with perfect transmission from path 1 to path 2, we see that $S_{2,1}(k) = 1$.
+We claim that $\ket{\mu_k}$ is an eigenstate of the Hamiltonian with eigenvalue $2\cos(k)$.  As in previous proofs, the state clearly satisfies the eigenvalue condition on the semi-infinite paths and at the vertices of $G_0$ and $G_0^\leftrightarrow$, and the factors of $\frac{1}{c}$ in the above equation are chosen so that the state also satisfies the eigenvalue condition at vertices $p$ and $u_\leftrightarrow$. Since $\ket{\mu_k}$ is a scattering state with perfect transmission from path 1 to path 2, we see that $S_{2,1}(k) = 1$.
 
-Finally, we construct an eigenstate $\ket{\nu_{k^\prime}}$ with perfect transmission from path 1 to path 3 for each momentum $k^\prime \in \mathcal{R}$.  This state has the form
-\[
+We now construct an eigenstate $\ket{\nu_{k^\prime}}$ with perfect transmission from path 1 to path 3 for each momentum $k^\prime \in \mathcal{R}$.  This state has the form
+\begin{equation}
   \langle (x,1)|\nu_{k^\prime}\rangle=e^{-i k^\prime x} \qquad 
   \langle 0|\nu_{k^\prime}\rangle=1 \qquad 
   \langle (x,2)|\nu_{k^\prime}\rangle=0 \qquad
   \langle (x,3)|\nu_{k^\prime}\rangle=e^{i k^\prime x}
-\]
+\end{equation}
 on the semi-infinite paths and the claw.  \lem{reflect_reqs} shows that $G_0$ has a $2\cos(k^\prime)$-eigenstate $\ket{\chi_{k^\prime}}$ with $\braket{p}{\chi_{k'}} \ne 0$, which determines the form of $\ket{\nu_{k^\prime}}$ on the remaining vertices:
-\[
+\begin{equation}
   \braket{v}{\nu_{k^\prime}} =
   \begin{cases}
 	  -\frac{1}{\braket{p}{\chi_{k'}}} \braket{v}{\chi_{k^\prime}} & v \in V(G_0) \\
@@ -703,36 +897,95 @@ on the semi-infinite paths and the claw.  \lem{reflect_reqs} shows that $G_0$ ha
 	  -e^{ik'} & v=u^\leftrightarrow \\
     0 & \text{otherwise}.
   \end{cases} 
-\]
+\end{equation}
 As before, it is easy to check that this a momentum-$k^\prime$ scattering state with perfect transmission from path 1 to path 3, so $S_{3,1}(k^\prime)=1$.
 
 Thus the gadget from \fig{gen_mom_con} is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
 \end{proof}
 
-\subsubsection{Explicit examples}
+%%%%%%
+\subsubsection{Explicit example}
 
+Using this construction for momentum switches, we can obtain a momentum switch from any of the examples discussed in \sec{rt_ex}.  Explicitly, using the R/T gadget built from the 3-cycle, we get a momentum switch between $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$, as shown in \fig{mom_switch_ex}.  More generally, using an $r$-cycle, we obtain a switch between momenta of the form $-\frac{\pi j}{r}$ with odd or even values of $j$.  As another example, using a path of length $4$ connected at the center vertex, we obtain a switch between $-\frac{\pi}{4}$ and $-\frac{\pi}{2}$.
 
-
-\todo{work this section}
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{GS_mom_switch_ex}
+  \input{../tikz/GS_mom_switch_ex.tex}
+  \caption{A momentum switch between $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$.}
+  \label{fig:mom_switch_ex}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Encoded unitaries}
 
-While there is no efficient method to find graphs that apply some fixed encoded unitary, it is possible to search over all small graphs that have some particular implementation.
+While there is no known efficient method to find graphs that fixed scattering behavior, it is possible to search over all small graphs in order to find gadgets with some particular scattering behavior.  This was the manner in which the gadgets for most known scattering results were found, such as in Childs' original universality proof for graph scattering \cite{Chi09} and Childs, Gosset, and Webb's universality result \cite{MPQW}.  Additionally, Blumer, Underwood, and Feder have a paper \cite{BUF11} in which they searched over all graphs with up to 9 vertices for scattering behavior at particular momentum.
 
-\missingcite{Find this small graphs thing}
+Essentially, the main idea behind this method is a brute force search.  Since we can easily compute the scattering matrix for a particular graph at a particular momentum, if we want to find a graph that has some prescribed scattering behavior, we simply assume that such a graph exists and search for it over all graphs, starting with those having a small number of vertices.  While this exhaustive search is not guaranteed to find such a graph, a surprising number of systems can be found with this structure.  In particular, if we restrict ourselves to momenta that are simple multiples of $\pi$, such as $-\frac{\pi}{2}$ or $-\frac{\pi}{4}$, then most simple scattering behaviors can be found.  
 
-Essentially, the main idea behind this method is that since we can easily compute the scattering matrix for a particular graph at a particular momentum, if we want to find a graph that has some prescribed scattering behavior at a prescribed momenta we simply assume that such a graph exists with a particular number of internal vertices, and then search over all graphs of that size.  While this exhaustive search is not guaranteed to find such a graph, a surprising number of systems can be found with this structure.  
+Of particular interest to us will be gadgets with four terminal vertices, such that the scattering matrix at some particular momenta takes the form
+\begin{equation}
+  S(k) = \begin{pmatrix} 0 & U^T\\
+    U & 0\end{pmatrix}. \label{eq:encoded_scat}
+\end{equation}
+Namely, if we use a dual-rail encoding for a qubit, and think of one pair of semi-infinite paths as the input rails and the other pair as the output rails, then after scattering this gadget will have applied the unitary $U$ to the encoded qubit.
 
-In particular, if we restrict ourselves to simple momenta, in which the energy $2\cos(k)$ is in some simple extension of the rationals, then most simple scattering behaviors can be found.  
+Later in the thesis, we will be interested in finding a universal gate set for both $-\frac{\pi}{4}$ and $-\frac{\pi}{2}$.  As such, we can take as examples those graphs that will be of interest to us later.   
 
-Graphs that end up being of particular use are those that allow for encoded unitary transformations.  As such, we want to find graphs in which the attached paths can be partitioned into two sets, corresponding to input paths and output paths.  We then want the scattering matrices at some particular momenta to be block matrices, with the diagonal blocks being zero matrices.
 
-While this puts a large restriction on the graphs, many such graphs have been found.  In particular \missingcite{small graphs scattering stuff} has run an exhaustive search for such matrices up to size \todo{find size}.  Some graphs that will be of particular interest to us are those that serve as a universal set of gates at two particular momenta.  In particular, we will find uses for graphs that at momenta $-\frac{\pi}{4}$ implement a phase gate and implement a basis changing gate, and graphs that at momenta $-\frac{\pi}{2}$ implement a Hadamard gate. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+  \centering
+  \subfloat[][]{ 
+    \tikzsetnextfilename{GS_pi_4_phase}
+    \input{../tikz/GS_pi_4_phase}
+    \label{fig:pi_4_phase}
+  }
+  \qquad
+  \subfloat[][]{
+    \tikzsetnextfilename{GS_pi_4_basis_change}
+    \input{../tikz/GS_pi_4_basis_change.tex}
+    \label{fig:pi_4_basis_change}
+   }
+   \caption{Encoded one-qubit gates at $k = -\frac{\pi}{4}$.  \subfig{pi_4_phase}  A phase gate.  \subfig{pi_4_basis_change}  Basis-changing gate.}
+   \label{fig:reversal}
+\end{figure}
 
-These graphs are as follows:
-\todo{show these graphs}
+%%%%%%%%%%%%%%%%%
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{GS_pi_2_had}
+  \input{../tikz/GS_pi_2_had}
+  \label{fig:pi_2_had}
+  \caption{Graph implementing a Hadamard gate at $k = -\frac{\pi}{2}$.}
+\end{figure}
+
+
+In particular, we have that the graph in \fig{pi_4_phase} has a scattering matrix of the form of equation \eq{encoded_scat} at momentum $k= -\frac{\pi}{4}$, with 
+\begin{equation}
+  U = \begin{pmatrix}
+    e^{- i \frac{\pi}{4}} & 0\\
+    0 & 1 
+  \end{pmatrix},
+\end{equation}
+while the gadget in \fig{pi_4_basis_change} also has a scattering matrix of the form \eq{encoded_scat} at momentum $k=-\frac{\pi}{4}$, where
+\begin{equation}
+  U = -\frac{i}{\sqrt{2}}\begin{pmatrix}
+    1 & -i\\
+    -i & 1 
+  \end{pmatrix}.
+\end{equation}
+
+Similarly, we have that at $k = -\frac{\pi}{2}$, the graph of \fig{pi_2_had} has a scattering matrix of the form \eq{encoded_scat}, with
+\begin{equation}
+  U = -\frac{e^{i \frac{\pi}{4}}}{\sqrt{2}}\begin{pmatrix}
+    1 & 1\\
+    1 & -1 
+  \end{pmatrix}.
+\end{equation}
+
+With these examples, we then have a universal gate set for single-qubit unitaries at $-\frac{\pi}{4}$, which will be sufficient for our eventual purposes.  
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -740,41 +993,42 @@ These graphs are as follows:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Various facts about scattering}
 
-While we have the previous constructions that yield graphs with particular behavior, we will also want to understand some simple relations between graphs and their respective scattering matrices.  In particular, understanding what properties are necessary in order to have a given scattering matrix, and understanding the relation between various the scattering matrices of various momenta.
+While the previous constructions yield graphs with particular behavior which will be useful when attempting to construct scattering algorithms, we will also want to understand some simple relations between graphs and their respective scattering matrices.  In particular, understanding what properties are necessary in order to have a given scattering matrix, and understanding the relation between various the scattering matrices of various momenta will be useful in constructing additional scattering graphs.
 
 \subsection{Degree-3 graphs are sufficient}
 
-One of the most simple assumptions that could be made is that certain scattering behaviors require high degree graphs.  In particular, the idea that having many connections might allow for some additional correlations between the outputs on larger graphs.  
+One of the most simple assumptions that could be made is that certain scattering behaviors require high degree graphs.  In particular, having many connections might allow for additional correlations between outputs on larger graphs.  
 
-If we restrict our attention to only a finite number of rational momenta, however, this does not turn out to be the case.  We can show that any graph can be replaced by a degree three graph with an identical scattering behavior at some fixed momenta.  In particular, we show that a single vertex can be replaced by a finite path while still satisfying the eigenvalue equation at some fixed momenta, which determine the length of the path.
+If we restrict our attention to a finite number of rational momenta, however, this does not turn out to be the case.  We can show that any graph can be replaced by a degree-three graph with a identical scattering behavior at some fixed momenta.  In particular, we will show that a single vertex can be replaced by a finite path while still satisfying the eigenvalue equation at the fixed momenta, where the length of the path is dependent on the fixed momenta.
 
-As a degree two graphs are the graph joins of cycles and paths, degree three graphs are the smallest graphs to have nontrivial scattering behaviors.  This lemma shows that, in a certain sense, they are also all that are required.
-
+As degree two graphs are the graph joins of cycles and paths, degree three graphs are the smallest graphs to have nontrivial scattering behaviors.  This lemma shows that, in a certain sense, they are also all that are required.
 
 \begin{lemma} Let $\widehat{G}$ be a finite graph, and let $M$ be a finite set of rational multiples of $\pi$.  If $v\in V(G)$ is a degree $d$ vertex, there exists a graph $H$ that extends $G$ with the vertex $v$ being replaced by a degree-$(\lceil \frac{d}{2}\rceil +1)$ subgraph such that the scattering matrices at the momenta $k\in M$ are preserved.
 \label{lem:degree_reduction}
 \end{lemma}
 \begin{proof}
-  The main idea behind this proof is to partition the vertices adjacent to $v$ into two sets, and then replace $v$ by a finite path, with the two sets connected to opposites ends of the finite path.  By choosing the length of the path correctly, we can show that the amplitudes at either end of the path can be taken as the same amplitude of $v$ at each momenta in $M$, so that the eigenvalue equation remains satisfied with the same amplitudes on every vertex other than $v$, keeping the scattering matrices the same.  
+  The main idea behind this proof is to partition the vertices adjacent to $v$ into two sets, and then replace $v$ by a finite path, with the two sets connected to opposites ends of the finite path.  By choosing the length of the path correctly, we can show that the amplitudes at either end of the path are the same as the amplitude on $v$ at each momenta in $M$, and thus the eigenvalue equation remains satisfied without changing the scattering behavior.  
   
-  In particular, let $v$ be the degree $d$ vertex in $G$, and let $S = \{w\in V(G) : w\sim v\}$.  Additionally, let us arbitrarily partition $S$ into two sets, $S_1$ and $S_2$, such that $\big||S_1|-|S_2|\big| \leq 1$.
+  In particular, let $v$ be the degree $d$ vertex in $G$, and let $S = \{w\in V(G) : w\sim v\}$ be the set of vertices adjacent to $v$.  Additionally, let us arbitrarily partition $S$ into two sets, $S_1$ and $S_2$, such that $\big||S_1|-|S_2|\big| \leq 1$.
   
-  As each $k\in M$ is a finite set of rational multiples of $\pi$, there exists some $m'\in \NN$ such that for each $k\in M$, $mk = 2\pi j$ for some $j\in \NN$.  Let us then examine the graph $H$ where $v$ is replaced by a path of length $m+1$ and $S_1$ is attached to one end of the path while $S_2$ is attached to the other end.  Explicitly:
+  As each $k\in M$ is a rational multiple of $\pi$, there exists some $m\in \NN^+$ such that $\frac{mk}{2\pi} \in \NN$ for all $k\in M$.  Let us then examine the graph $H$ where $v$ is replaced by a path of length $m$, and where $S_1$ is attached to one end of the path while $S_2$ is attached to the other end.  Explicitly:
   \begin{align}
-    V(H) &= V(G)\setminus \{v\} \cup \{(v,j): j\in [m+1]\}\\
+    V(H) &= \big(V(G)\setminus \{v\}\big) \cup \{(v,j): j\in [m+1]\}\\
     E(H) &= \big\{ e\in E(G) : v\notin e\big\} \cup \big\{ \{(v,j),(v,j+1)\} : j\in [m]\big\} \cup \nonumber\\
     &\qquad \big\{ \{s, (v,0)\} : s\in S_1\big\} \cup \big\{ \{s,(v,m)\} : s\in S_2\big\}.
   \end{align}
   
-  Now, for any $k\in M$, let $\ket{\phi}$ be an eigenstate of $A(G)$ with eigenvalue $2\cos(k)$.  We will show that there exists an eigenstate $\ket{\psi}$ of $A(H)$ with energy $2\cos(k)$ such that for any $w\in V(G)\setminus \{v\}$, $\braket{w}{\phi} = \braket{w}{\psi}$.  Concretely, for any vertex other than $v$, let us define $\ket{\psi}$ in this manner, and note that $\ket{\psi}$ satisfies the eigenvalue equation with energy $2\cos(k)$ for all vertices other than those in $S$ or those replacing $v$ by assumption.  Additionally, let 
+  Now, for any $k\in M$, let $\ket{\phi}$ be an eigenstate of $A(G)$ with eigenvalue $2\cos(k)$.  We will show that there exists an eigenstate $\ket{\psi}$ of $A(H)$ with energy $2\cos(k)$ such that for any $w\in V(G)\setminus \{v\}$, $\braket{w}{\phi} = \braket{w}{\psi}$.  
+  
+  Concretely, for any vertex other than $v$, let us define $\ket{\psi}$ in this manner, and note that by assumption, $\ket{\psi}$ satisfies the eigenvalue equation with energy $2\cos(k)$ for all vertices other than those in $S$ or those replacing $v$.  Additionally, let 
   \begin{equation}
-    \alpha = \sum_{w\in S_1} \braket{w}{\phi} \qquad \beta = \braket{v}{\phi} \qquad \gamma = \sum_{w\in S_2} \braket{w}{\phi}.
+    \alpha = \sum_{w\in S_1} \braket{w}{\phi}, \qquad \beta = \braket{v}{\phi}, \qquad \text{ and } \qquad \gamma = \sum_{w\in S_2} \braket{w}{\phi}.
   \end{equation}
   We will then defined the amplitude along the path replacing the vertex $v$ as
   \begin{equation}
     \braket{(v,j)}{\psi} = \beta \cos(k j) + \frac{\gamma - \beta\cos(k)}{\sin(k)} \sin( k j).
   \end{equation}
-  Note that $\braket{(v,0)}{\psi} = \braket{(v,m)}{\psi} = \beta = \braket{v}{\phi}$, and thus the eigenvalue equation is satisfied at all vertices in $S$ with energy $2\cos(k)$.  As the eigenstates along a path with energy $2\cos(k)$ are scalar multiples of $\sin(k x)$ and $\cos(k j)$, we can also see that the eigenvalue equation is necessarily satisfied for all $(v,j)$ with $j\neq 0$ and $j\neq m$.
+  Note that $\braket{(v,0)}{\psi} = \braket{(v,m)}{\psi} = \beta = \braket{v}{\phi}$, and thus the eigenvalue equation is satisfied at all vertices in $S$.  As the eigenstates along a path with energy $2\cos(k)$ are scalar multiples of $\sin(k x)$ and $\cos(k j)$, we can also see that the eigenvalue equation is necessarily satisfied for all $(v,j)$ with $j\neq 0$ and $j\neq m$.
   
   If we then examine the eigenvalue equation at $(v,0)$, we can see that
   \begin{align}
@@ -782,7 +1036,7 @@ As a degree two graphs are the graph joins of cycles and paths, degree three gra
       &= \alpha + \gamma \\
       &= 2 \cos(k) \beta = 2 \cos(k) \braket{(v,0)}{\psi}
   \end{align}
-  where the third equality follows from the fact that $\ket{\phi}$ satisfies the eigenvalue equation at $v$ with eigenvalue $2\cos(k)$. 
+  where the third equality follows from the fact that $\ket{\phi}$ satisfies the eigenvalue equation at $v$ with eigenvalue $2\cos(k)$, and thus we have that the eigenvalue equation for $H$ is satisfied at $(v,0)$. 
   
   Let us finally examine the eigenvalue equation at $(v,m)$, noting that
   \begin{align}
@@ -792,10 +1046,10 @@ As a degree two graphs are the graph joins of cycles and paths, degree three gra
   \end{align}
   where the second equality follows from some trigonometric identities. We can then see that $\ket{\psi}$ satisfies the eigenvalue equation at $(v,m)$ with energy $2\cos(k)$.
   
-  Putting this together, we have that $\ket{\psi}$ is an eigenvector of $A(H)$ with energy $2\cos(k)$ such that $\ket{\psi}$ and $\ket{\phi}$ are identical on those vertices contained in both $G$ and $H$.  As this result holds for any energy $2\cos(k)$ eigenvector of $A(G)$, and as the two graphs are identical along the semi-inifinite paths, we have that the scattering matrices for these two graphs are identical, and thus the scattering matrices are preserved under this degree reduction procedure.
+  Putting this together, we have that $\ket{\psi}$ is an eigenvector of $A(H)$ with energy $2\cos(k)$ such that $\ket{\psi}$ and $\ket{\phi}$ are identical on those vertices contained in both $G$ and $H$.  As this result holds for any energy $2\cos(k)$ eigenvector of $A(G)$, and as the two graphs are identical along the semi-inifinite paths, we have that the scattering states for these two graphs are identical, and thus the scattering matrices are preserved under this degree reduction procedure.
 \end{proof}
 
-By repeated use of this lemma, we can then see that if we are only interested in the scattering behavior of a graph at particular momenta, then we need only examine degree three graphs.
+By repeated use of this lemma, we can then reduce any graph used as a scattering gadget down to a degree-3 graph without changing the scattering matrix at some fixed momentum.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -810,14 +1064,14 @@ In addition, it might be useful to see when particular scattering behavior is po
 \label{sec:vecs_over_field}
 
 Recall the general setup shown in \fig{basic_scattering}: $N$ semi-infinite paths are attached to a finite graph $\hat G$. Consider an eigenvector $\ket{\tau_k}$ of the adjacency matrix of $G$ with eigenvalue $2\cos(k)$ for $k\in (-\pi,0)$. In general this eigenspace is spanned by incoming scattering states with momentum $k$ and confined bound states \cite{CG12} (which have zero amplitude on the semi-infinite paths). We can thus write the amplitudes of $\ket{\tau_k}$ on the semi-infinite paths as
-\[
+\begin{equation}
   \braket{(x,j)}{\tau_k} 
   = \kappa_j \cos(k (x-1)) + \sigma_j \sin(k (x-1))
-\]
+\end{equation}
 for $x \in \posint$, $j \in [N]$, and $\kappa_j,\sigma_j \in \CC$, and the amplitudes on the internal vertices as
-\[
+\begin{equation}
   \braket{w}{\tau_k} = \iota_w
-\]
+\end{equation}
 for $\iota_w \in \CC$, where $w$ indexes the internal vertices. We write the adjacency matrix of $\hat{G}$ as a block matrix as in \eq{blockadj}.  Since the state $\ket{\tau_k}$ satisfies the eigenvalue equation on the semi-infinite paths, it remains to satisfy the conditions specified by the block matrix equation
 \begin{equation*}
   \begin{pmatrix} A & B^\dag\\ B & D\end{pmatrix}
@@ -828,11 +1082,11 @@ for $\iota_w \in \CC$, where $w$ indexes the internal vertices. We write the adj
 \end{equation*}
 
 Hence, the nullspace of the matrix
-\[
+\begin{equation}
   M= \begin{pmatrix} A -\cos(k) \II & \sin(k) \II & B^\dag\\
     0 & 0 & 0\\
     B & 0 & D-2\cos(k)\II\end{pmatrix}
-\]
+\end{equation}
 is in one-to-one correspondence with the $2\cos(k)$-eigenspace of the infinite matrix (here the first block corresponds to $\kappa$, the second to $\sigma$, and the third to $\iota$). Further, $M$ only has entries in $\QQ(\cos(k),\sin(k))$, so its nullspace has a basis with amplitudes in $\QQ(\cos(k),\sin(k))$, as can be seen using Gaussian elimination.
 
 We are interested in the specific cases $2\cos(k)=\pm\sqrt{2}$ corresponding to $k = -\frac{\pi}{4}$ or $k = -\frac{3\pi}{4}$.  In these cases $\QQ(\cos(k),\sin(k)) = \QQ(\sqrt{2})$, and we may choose a basis for the nullspace of $M$ with amplitudes from $\QQ(\sqrt{2})$. Furthermore, $\cos(kx), \sin(kx) \in \QQ(\sqrt{2})$ for all $x\in \posint$, so with such a choice of basis, each amplitude of $\ket{\tau_k}$ is also an element of $\QQ(\sqrt{2})$.
@@ -858,28 +1112,28 @@ If a two-terminal gadget has a momentum-$k$ scattering state $\ket{\phi}$ with z
 \begin{proof}
 Without loss of generality, we may assume that $\ket{\phi}$ is orthogonal to all confined bound states.
 If $\ket{\phi}$ has zero amplitude along path $2$, then there exist some $\mu,\nu \in \CC$ such that
-\[
+\begin{equation}
   \braket{(x,2)}{\phi}
-  = \mu \braket{(x,2)}{\sc_2 (k)} + \nu \braket{(x,2)}{\sc_1(k)}
+  = \mu \braket{(x,2)}{\scat_2 (k)} + \nu \braket{(x,2)}{\scat_1(k)}
   = \mu e^{-ikx} + \mu R e^{ikx} + \nu T e^{ikx}
   = 0
-\] 
+\end{equation} 
 for all $x\in \ZZ^{+}$.  Since this holds for all $x$, we have $\mu = \mu R + \nu T = 0$.  Since $\mu$ and $\nu$ cannot both be zero, we have $T=0$.
 \end{proof}
 
 For an R/T gadget, the scattering states (at some fixed momentum) that are orthogonal to the confined bound states span a two-dimensional space. As shown in \sec{vecs_over_field}, we can expand each scattering eigenstate at momentum $k=-\frac{\pi}{4}$ in a basis with entries in $\QQ(\sqrt{2})$, where each basis vector takes the form \eq{form_of_tau}. This gives
 \begin{equation*}
-  \ket{\sc_{1}(-\tfrac{\pi}{4})} 
+  \ket{\scat_{1}(-\tfrac{\pi}{4})} 
   = (H + \sqrt{2}\II) (\alpha \ket{a} + \beta \ket{b}) \label{eq:rat_expansion}
 \end{equation*}
 where $\alpha,\beta \in \CC$, $\alpha\neq 0$, and $\ket{a}$ and $\ket{b}$ are rational 2-eigenvectors of $H^2$.
 
 If $T(-\frac{\pi}{4}) = 0$, then for all $x \geq 0$, 
-\[
-  \langle x,2\ket{\sc_1(-\tfrac{\pi}{4})} 
+\begin{equation}
+  \langle x,2\ket{\scat_1(-\tfrac{\pi}{4})} 
   = 0 
   = \langle{x,2} |(H + \sqrt{2}\II) (\alpha \ket{a} + \beta \ket{b}).
-\]
+\end{equation}
 Dividing through by $\alpha$ and rearranging, we get that for all $x\geq 0$,
 \begin{equation*}
 \frac{\beta}{\alpha} (\langle{x,2}| H\ket{b}+\sqrt{2} \langle{x,2}\ket{b})
@@ -889,34 +1143,34 @@ Dividing through by $\alpha$ and rearranging, we get that for all $x\geq 0$,
 If the left-hand side is not zero, then $\beta/\alpha \in \QQ(\sqrt{2})$ since $H$, $\ket{a}$, and $\ket{b}$ are rational.  If the left-hand side is zero, then $(H+ \sqrt{2}\II)\ket{a}$ is an eigenstate at energy $2\cos(k)$ with no amplitude along path 2, so $\beta = 0$ (using \fct{zero_ampl}), and again $\beta/\alpha \in \QQ(\sqrt{2})$.
 
 Now write $\beta/\alpha=r+s\sqrt{2}$ with $r,s\in\QQ$, and consider the rational 2-eigenvector of $H^2$
-\[
+\begin{equation}
   \ket{c} := \ket{a} + (r+sH) \ket{b}.
-\]
+\end{equation}
 Note that
-\[
+\begin{equation}
   \alpha (H + \sqrt{2} \II) \ket{c} 
 = \alpha(H+ \sqrt{2} \II) \ket{a} + \alpha (rH+r\sqrt{2}+ sH^2+sH\sqrt{2}) \ket{b}.
-\]
+\end{equation}
 Since $\ket{b}$ is a 2-eigenvector of $H^2$ and $\beta/\alpha=r+s\sqrt{2}$, this simplifies to
 \begin{equation}
   \alpha (H + \sqrt{2}\II) \ket{c} 
   = \alpha (H + \sqrt{2}\II) \ket{a} + \beta(H + \sqrt{2}\II) \ket{b} 
-  = \ket{\sc_1(-\tfrac{\pi}{4})}, \label{eq:sc1_c}
+  = \ket{\scat_1(-\tfrac{\pi}{4})}, \label{eq:sc1_c}
 \end{equation}
-so $\ket{\sc_1(-\tfrac{\pi}{4})}$ can be written as $\alpha(H+\sqrt{2}\II)$ times a rational 2-eigenvector of $H^2$.
+so $\ket{\scat_1(-\tfrac{\pi}{4})}$ can be written as $\alpha(H+\sqrt{2}\II)$ times a rational 2-eigenvector of $H^2$.
 
-Since $\langle{x,2}\ket{\sc_1(-\tfrac{\pi}{4})} = 0$ for all $x\geq 1$ (and $\alpha\neq 0$), we have
-\[
+Since $\langle{x,2}\ket{\scat_1(-\tfrac{\pi}{4})} = 0$ for all $x\geq 1$ (and $\alpha\neq 0$), we have
+\begin{equation}
   \langle{x,2}| (H+\sqrt{2}\II) \ket{c} 
   = \langle{x,2}| H \ket{c} + \sqrt{2} \langle{x,2}\ket{c} 
   = 0.
-\]
-As $H$ is a rational matrix and $\ket{c}$ is a rational vector, the rational and irrational components must both be zero, implying $\langle{x,2}\ket{c}  =\langle{x,2}|H\ket{c} = 0$ for all $x\geq 1$. Furthermore, since $ \ket{\sc_1(-\tfrac{\pi}{4})}$ is a scattering state with zero amplitude on path $2$, it must have some nonzero amplitude on path 1 and thus there is some $x_0\in \mathbb{Z}^+$ for which $\langle{x_0,1}\ket{c}\neq 0$ or $\langle{x_0,1}|H\ket{c} \neq 0$.
+\end{equation}
+As $H$ is a rational matrix and $\ket{c}$ is a rational vector, the rational and irrational components must both be zero, implying $\langle{x,2}\ket{c}  =\langle{x,2}|H\ket{c} = 0$ for all $x\geq 1$. Furthermore, since $ \ket{\scat_1(-\tfrac{\pi}{4})}$ is a scattering state with zero amplitude on path $2$, it must have some nonzero amplitude on path 1 and thus there is some $x_0\in \mathbb{Z}^+$ for which $\langle{x_0,1}\ket{c}\neq 0$ or $\langle{x_0,1}|H\ket{c} \neq 0$.
 
 Now consider the state obtained by replacing $\sqrt{2}$ with $-\sqrt{2}$:
-\[
+\begin{equation}
   \ket{\overline{\sc}_1(-\tfrac{\pi}{4})} := \alpha (H-\sqrt{2}\II) \ket{c}.
-\]
+\end{equation}
 This is a $-\sqrt{2}$-eigenvector of $H$, which can be confirmed using the fact that $\ket{c}$ is a $2$-eigenvector of $H^2$. As $\langle{x,2} | H \ket{c} = \langle x,2 \ket{c} = 0$ for all $x\geq 1$, $\langle x,2 \ket{\overline{\sc}_1(-\tfrac{\pi}{4})} = 0$ for all $x\geq 1$. Furthermore the amplitude at vertex $(x_0,1)$ is nonzero, i.e.,  $\langle x_0,1 \ket{\overline{\sc}_1(-\tfrac{\pi}{4})} \neq 0$, and hence $\ket{\overline{\sc}_1(-\tfrac{\pi}{4})}$ has a component orthogonal to the space of confined bound states (which have zero amplitude on both semi-infinite paths).  Hence, there exists a scattering state with eigenvalue $-\sqrt{2}$ with no amplitude on path 2. By \fct{zero_ampl}, the gadget perfectly reflects at momentum $-\frac{3\pi}{4}$.  It follows that no perfect R/T gadget (and hence no perfect momentum switch) exists between these momenta.
 
 This proof technique can also establish non-existence of momentum switches between other pairs of momenta $k$ and $p$.  For example, a slight modification of the above proof shows that no momentum switch exists between $k = -\frac{\pi}{6}$ and $p = -\frac{5\pi}{6}$. 
@@ -963,8 +1217,8 @@ n this section we prove \thm{singlepart}. The proof is based on (and follows clo
 
 Recall from \eq{single_particle_states} that the scattering eigenstates of $H_{G}^{(1)}$ have the
 form
-\[
-\langle x,q|\text{sc}_{j}(k)\rangle=e^{-ikx}\delta_{qj}+e^{ikx}S_{qj}(k)\]
+\begin{equation}
+\langle x,q|\text{sc}_{j}(k)\rangle=e^{-ikx}\delta_{qj}+e^{ikx}S_{qj}(k)\end{equation}
  for each $k\in(-\pi,0)$. 
 
 Before delving into the proof, we first establish that the state $|\alpha^{j}(t)\rangle$ is approximately normalized. This state is not normalized at all times $t$. However, $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\OO(L^{-1})$, as we now show:
@@ -981,9 +1235,9 @@ Before delving into the proof, we first establish that the state $|\alpha^{j}(t)
 \end{align*}
 where we have used unitarity of $S$ in the second step.
 When it is nonzero, the second term can be written as
-\[
+\begin{equation}
 \frac{1}{L}\sum_{x=1}^{b}\left(e^{-2ikx}S_{jj}^{\ast}(k)+e^{2ikx}S_{jj}(k)\right)
-\]
+\end{equation}
 where $b$ is the maximum positive integer such that $\{-b,b\}\subset\{M+1+\left\lfloor 2t\sin k\right\rfloor,\ldots,M+L+\left\lfloor 2t\sin k\right\rfloor \}$. Performing
 the sums, we get
 \begin{align*}
@@ -998,22 +1252,22 @@ Thus we have $\langle\alpha^{j}(t)|\alpha^{j}(t)\rangle=1+\OO(L^{-1})$.
 
 \begin{proof}[Proof of {\thm{singlepart}}]
 Define
-\[
+\begin{equation}
 |\psi^{j}(t)\rangle=e^{-iH_{G}^{(1)}t}|\psi^{j}(0)\rangle
-\]
+\end{equation}
 and write
-\[
+\begin{equation}
 |\psi^{j}(t)\rangle=|w^{j}(t)\rangle+|v^{j}(t)\rangle
-\]
+\end{equation}
 where
-\[
+\begin{equation}
 |w^{j}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}\sum_{q=1}^{N}|\text{sc}_{q}(k+\phi)\rangle\langle\text{sc}_{q}(k+\phi)|\psi^{j}(0)\rangle
-\]
+\end{equation}
 and $\langle w^{j}(t)|v^{j}(t)\rangle=0$. We take $\epsilon=\frac{\left|\sin k\right|}{2\sqrt{L}}$.
-Now \[
-\langle\text{sc}_{q}(k+\phi)|\psi^{j}(0)\rangle=\frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}\left(e^{i\phi x}\delta_{qj}+e^{-i\left(2k+\phi\right)x}S_{qj}^{\ast}(k+\phi)\right),\]
- so \[
-|w^{j}(t)\rangle=|w_{A}^{j}(t)\rangle+\sum_{q=1}^{N}|w_{B}^{q,j}(t)\rangle\]
+Now \begin{equation}
+\langle\text{sc}_{q}(k+\phi)|\psi^{j}(0)\rangle=\frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}\left(e^{i\phi x}\delta_{qj}+e^{-i\left(2k+\phi\right)x}S_{qj}^{\ast}(k+\phi)\right),\end{equation}
+ so \begin{equation}
+|w^{j}(t)\rangle=|w_{A}^{j}(t)\rangle+\sum_{q=1}^{N}|w_{B}^{q,j}(t)\rangle\end{equation}
  where \begin{align*}
 |w_{A}^{j}(t)\rangle & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}f(\phi)|\text{sc}_{j}(k+\phi)\rangle\\
 |w_{B}^{q,j}(t)\rangle & = \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}g_{qj}(\phi)|\text{sc}_{q}(k+\phi)\rangle
@@ -1030,9 +1284,9 @@ Now
  = \frac{1}{L} \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}
  \end{align*}
 but
-\[
+\begin{equation}
 \frac{1}{L} \int_{-\pi}^{\pi}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}=1
-\]
+\end{equation}
 and
 \begin{align}
 \frac{1}{L}\left(\int_{\epsilon}^{\pi}+\int_{-\pi}^{-\epsilon}\right)\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)} & = \frac{2}{L} \int_{\epsilon}^{\pi}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L\phi)}{\sin^{2}(\frac{1}{2}\phi)}\nonumber \\
@@ -1040,12 +1294,12 @@ and
  & \leq \frac{\pi}{L\epsilon}.\label{eq:fbound}
 \end{align}
 Therefore
-\[
+\begin{equation}
 1\geq\langle w_{A}^{j}(t)|w_{A}^{j}(t)\rangle\geq1-\frac{\pi}{L\epsilon}.
-\]
+\end{equation}
 Similarly,
-\[
-\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\left|S_{qj}(k+\phi)\right|^{2}}{L}\frac{\sin^{2}(\frac{1}{2}L(2k+\phi))}{\sin^{2}(\frac{1}{2}(2k+\phi))},\]
+\begin{equation}
+\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\left|S_{qj}(k+\phi)\right|^{2}}{L}\frac{\sin^{2}(\frac{1}{2}L(2k+\phi))}{\sin^{2}(\frac{1}{2}(2k+\phi))},\end{equation}
 and, using the unitarity of $S$,
 \begin{align*}
 \sum_{q=1}^{N}\langle w_{B}^{qj}(t)|w_{B}^{qj}(t)\rangle & = \frac{1}{L}\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\frac{\sin^{2}(\frac{1}{2}L(2k+\phi))}{\sin^{2}(\frac{1}{2}(2k+\phi))}\\
@@ -1065,9 +1319,9 @@ we then have \begin{align*}
  & \geq 1-\frac{\pi}{L\epsilon}-2\sum_{q=1}^{n}\left\Vert |w_{B}^{qj}(t)\rangle\right\Vert \\
  & \geq 1-\frac{\pi}{L\epsilon}-4\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}},\end{align*}
 so
-\[
+\begin{equation}
 \langle v^{j}(t)|v^{j}(t)\rangle\leq\frac{\pi}{L\epsilon}+4\sqrt{\frac{\epsilon N}{\pi L\sin^{2}k}}
-\]
+\end{equation}
 since $\langle v^{j}(t)|v^{j}(t)\rangle+\langle w^{j}(t)|w^{j}(t)\rangle=1$.
 Thus
 \begin{align*}
@@ -1081,8 +1335,8 @@ we have $\norm{|\psi^{j}(t)\rangle-|w_{A}^{j}(t)\rangle} =\O(L^{-{1}/
 We now show that
 \begin{equation}
 \left\Vert |w_{A}^{j}(t)\rangle-|\alpha^{j}(t)\rangle\right\Vert =\O(L^{-{1}/{8}}).\label{eq:alpha_w_bound}\end{equation}
-Letting \[
-P=\sum_{q=1}^{N}\sum_{x=1}^{\infty}|x,q\rangle\langle x,q|\]
+Letting \begin{equation}
+P=\sum_{q=1}^{N}\sum_{x=1}^{\infty}|x,q\rangle\langle x,q|\end{equation}
 be the projector onto the semi-infinite paths, to show equation \eq{alpha_w_bound}
 it is sufficient to show that
 \begin{equation}
@@ -1104,9 +1358,9 @@ From the above formula we now see that inequality \eq{bound_inside_lines}
 implies \eq{alpha_w_bound}.
 
 Noting that
-\[
+\begin{equation}
 \frac{1}{\sqrt{L}}R(l)=\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi l}f(\phi),
-\]
+\end{equation}
 we write
 \begin{align}
 \langle x,q|\alpha^{j}(t)\rangle & = e^{-2it\cos k}\left(\delta_{qj}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi\left(x-\left\lfloor 2t\sin k\right\rfloor \right)}f(\phi)\right.\nonumber\\
@@ -1117,8 +1371,8 @@ On the other hand,
 \langle x,q|w_{A}^{j}(t)\rangle=\int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}e^{-2it\cos\left(k+\phi\right)}f(\phi)\left(e^{-i\left(k+\phi\right)x}\delta_{qj}+e^{i\left(k+\phi\right)x}S_{qj}(k+\phi)\right).\label{eq:w_a_mat_elements}
 \end{equation}
 Using equations \eq{alpha_mat_elements} and \eq{w_a_mat_elements}
-we can write\[
-P|w_{A}^{j}(t)\rangle=|\alpha^{j}(t)\rangle+\sum_{i=1}^{7}|c_{i}^{j}(t)\rangle\]
+we can write\begin{equation}
+P|w_{A}^{j}(t)\rangle=|\alpha^{j}(t)\rangle+\sum_{i=1}^{7}|c_{i}^{j}(t)\rangle\end{equation}
  where $P|c_{i}^{j}(t)\rangle=|c_{i}^{j}(t)\rangle$ and \begin{align*}
 \langle x,q|c_{1}^{j}(t)\rangle & = \delta_{qj}e^{-2it\cos k}e^{-ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{-i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\\
 \langle x,q|c_{2}^{j}(t)\rangle & = S_{qj}(k)e^{-2it\cos k}e^{ikx}\int_{-\pi}^{\pi}\frac{d\phi}{2\pi}e^{i\phi x}f(\phi)\left(e^{2it\phi\sin k}-e^{i\phi\left\lfloor 2t\sin k\right\rfloor }\right)\\
@@ -1138,9 +1392,9 @@ We now bound the norm of each of these states:
 \end{align*}
 where we have used the facts that $|{e^{is}-1}|^{2} \leq s^{2}$
 for $s\in\mathbb{R}$ and $\left|2t\sin k -\left\lfloor 2t\sin k\right\rfloor \right|<1$. In the above we performed the sum over $x$ using the identity
-\[
+\begin{equation}
 \sum_{x=-\infty}^{\infty} e^{i(\phi-\tilde{\phi})x}=2\pi\delta(\phi-\tilde{\phi}) \text{ for } \phi,\tilde{\phi}\in (-\pi,\pi).
-\]
+\end{equation}
 We use this fact repeatedly in the following calculations.
 Continuing, we get
 \begin{align*}
@@ -1169,13 +1423,13 @@ Next, we have
 \begin{align*}
 \langle c_{7}^{j}(t)|c_{7}^{j}(t)\rangle & \leq \int_{-\epsilon}^{\epsilon}\frac{d\phi}{2\pi}\left|f(\phi)\right|^{2}\sum_{q=1}^{N}\left|S_{qj}(k+\phi)-S_{qj}(k)\right|^{2}.\end{align*}
 Now, for each $q\in\{1,\ldots,N\}$,
-\[
+\begin{equation}
 \left|S_{qj}(k+\phi)-S_{qj}(k)\right| \leq \Gamma |\phi|
-\]
+\end{equation}
 where the Lipschitz constant
-\[
+\begin{equation}
 \Gamma = \max_{q,j\in\{1,\ldots,N\}} \max_{k' \in [-\pi,\pi]}\left|\frac{d}{dk'}S_{qj}(k')\right|
-\]
+\end{equation}
 is well defined since each matrix element $S_{qj}(k')$ is a
 bounded rational function of $e^{ik'}$, as can be seen from equation \eq{smatrixgamma}. Hence
 \begin{align*}
