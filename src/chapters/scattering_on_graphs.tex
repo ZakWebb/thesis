@@ -957,8 +957,8 @@ Later in the thesis, we will be interested in finding a universal gate set for b
   \centering
   \tikzsetnextfilename{GS_pi_2_had}
   \input{../tikz/GS_pi_2_had}
-  \label{fig:pi_2_had}
-  \caption{Graph implementing a Hadamard gate at $k = -\frac{\pi}{2}$.}
+  \caption{Graph implementing a Hadamard gate at $k = -\frac{\pi}{2}$.
+    \label{fig:pi_2_had}}
 \end{figure}
 
 
@@ -1054,11 +1054,15 @@ By repeated use of this lemma, we can then reduce any graph used as a scattering
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Not all momenta can be split}
+\subsection{Some scattering impossible}
 
-In addition, it might be useful to see when particular scattering behavior is possible or not.  As such ,we will show that no momentum switch can exist between the pairs of momenta $-\frac{\pi}{4}$ and $-\frac{3\pi}{4}$.  The proof will actually show that no R/T gadget exists between these two momenta, but as any momentum switch can be turned into an R/T gadget, this will be sufficient.
+So far, all of our constructions have generally assumed that the scattering behavior that we want to find is possible.  Hence, if we simply search over a large enough set of vertices, we will eventually find a graph that implements our desired scattering behavior.
 
-\todo{Go over this section, and revise}
+However, it turns out that in some cases this is not a valid assumption.  In particular, we cannot construct an R/T gadget between all pairs of momenta.  The main idea is that for specific pairs of momenta, there exists a basis for the scattering states in which all amplitudes are taken from a field extension of the rationals.  If the two momenta are related by an inversion over this field, then perfect reflection at one momenta implies perfect reflection at the second.  
+
+As an illuminating example, we will use those states with momenta $k= -\frac{\pi}{4}$ and $p = - \frac{3\pi}{4}$.  For the two momenta, the corresponding energy is $2 \sqrt{2}$ or $-2\sqrt{2}$. 
+
+
 
 \subsubsection{Basis vectors with entries in $\QQ(\sqrt{2})$}
 \label{sec:vecs_over_field}

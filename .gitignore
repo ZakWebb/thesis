@@ -6,6 +6,7 @@
 *.fls
 *.out
 *.toc
+*.auxlock
 
 ## Intermediate documents:
 *.dvi
@@ -36,3 +37,10 @@
 
 ## externalized tikz files
 */plots*
+*.md5
+*.dpth
+
+## I have no idea
+*.top
+*.tui
+*.mp
