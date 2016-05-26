@@ -1,0 +1,189 @@
+\begin{tikzpicture}[   scale=0.7,   
+	dots/.style={circle,draw=black,fill=black,inner sep=0pt,minimum size=.5 mm}, 
+	splitter/.style={circle,draw=black,fill=white,inner sep=0pt,minimum size=4mm},   
+	attach/.style={circle,draw=black,fill=white,inner sep=0pt,minimum size=1mm}]
+	
+\begin{scope}[yshift= 6 cm]
+  \node at (-.75,4) {(a)};
+
+  \draw (0,0) to (10,0);   
+  \draw (0,3) to (10,3);
+  \foreach \x in {0,.2,.4,...,10}{
+  \node at (\x, 0) [dots] {};
+  \node at (\x, 3) [dots] {};
+  }
+  \foreach \y in {0,.2,.4,...,3}
+  \node at (5,\y) [dots] {};
+  
+  \node (splitter42) at (5,0) [splitter] {};   
+  \node (splitter41) at (5,3) [splitter] {};   
+  \draw (splitter41.south) to (splitter42.north);      
+  \draw (splitter41.west) to[out=0,in=90] (splitter41.south);   
+  \draw[line width=1.2pt] (splitter41.south) to[out=90,in=180]           
+  (splitter41.east);   
+  \draw[line width=.4pt,white] (splitter41.south) to[out=90,in=180] (splitter41.east);
+  \draw[line width=1.2pt] (splitter42.west) to[out=0,in=-90]           (splitter42.north);   
+  \draw[line width=.4pt,white] (splitter42.west) to[out=0,in=-90]           (splitter42.north);   
+  \draw (splitter42.north) to[out=-90,in=180] (splitter42.east);
+  \node at (splitter41.east) [attach]{};
+  \node at (splitter41.west) [attach]{};
+  \node at (splitter41.south) [attach]{};
+  \node at (splitter42.east) [attach]{};
+  \node at (splitter42.west) [attach]{};
+  \node at (splitter42.north) [attach]{};
+  
+  \node at (0,0) [attach]{};
+  \node at (0,3) [attach]{};
+  \node at (10,0) [attach]{};
+  \node at (10,3) [attach]{};  
+
+  \draw (1.05,3.15) to (1.25,3.15) to (1.25,3.6) to node[above]          
+    {${\pi}/{4}\rightarrow$} (3.25,3.6) to (3.25,3.15) to (3.45,3.15);
+  \draw (1.05,0.15) to (1.25,0.15) to (1.25,0.6) to node[above]          
+    {${\pi}/{2}\rightarrow$} (3.25,0.6) to (3.25,0.15) to (3.45,0.15);
+  \draw[|-|] (0,2.5) to node[below] {$M(-\frac{\pi}{4})$} (1.25,2.5);   
+  \draw[|-|] (1.25,2.5) to node[below]{$L$}   (3.25,2.5);   
+  \draw[|-|] (3.25,2.5) to node[below]{$d_1$} (4.75,2.5);
+  \draw[|-|] (0,-.5) to node[below] {$M(-\frac{\pi}{2})$} (1.25,-.5);   
+  \draw[|-|] (1.25,-.5) to node[below]{$L$}   (3.25,-.5);   
+  \draw[|-|] (3.25,-.5) to node[below]{$d_2$} (4.75,-.5);
+\end{scope}
+  
+%----------------------------------------------------------------------------------------%
+
+\begin{scope}[xshift= 11.5cm, yshift=6cm]
+  \node at (-.75,4) {(b)};
+
+  \draw (0,0) to (10,0);   
+  \draw (0,3) to (10,3);
+  \foreach \x in {0,.2,.4,...,10}{
+  \node at (\x, 0) [dots] {};
+  \node at (\x, 3) [dots] {};
+  }
+  \foreach \y in {0,.2,.4,...,3}
+  \node at (5,\y) [dots] {};
+  
+  \node (splitter42) at (5,0) [splitter] {};   
+  \node (splitter41) at (5,3) [splitter] {};   
+  \draw (splitter41.south) to (splitter42.north);      
+  \draw (splitter41.west) to[out=0,in=90] (splitter41.south);   
+  \draw[line width=1.2pt] (splitter41.south) to[out=90,in=180]           
+  (splitter41.east);   
+  \draw[line width=.4pt,white] (splitter41.south) to[out=90,in=180] (splitter41.east);
+  \draw[line width=1.2pt] (splitter42.west) to[out=0,in=-90]           (splitter42.north);   
+  \draw[line width=.4pt,white] (splitter42.west) to[out=0,in=-90]           (splitter42.north);   
+  \draw (splitter42.north) to[out=-90,in=180] (splitter42.east);
+  \node at (splitter41.east) [attach]{};
+  \node at (splitter41.west) [attach]{};
+  \node at (splitter41.south) [attach]{};
+  \node at (splitter42.east) [attach]{};
+  \node at (splitter42.west) [attach]{};
+  \node at (splitter42.north) [attach]{};
+  
+  \node at (0,0) [attach]{};
+  \node at (0,3) [attach]{};
+  \node at (10,0) [attach]{};
+  \node at (10,3) [attach]{};
+  \begin{scope}[yshift = -10 cm]
+    \draw (5.1,11.7) to (5.1,11.8) to (5.5,11.8) to node[right]          
+      {$\frac{\pi}{4}\downarrow$} (5.5,12.4) to (5.1,12.4) to (5.1,12.5);
+    \draw (4.9,11.3) to (4.9,11.2) to (4.5,11.2) to node[left]            
+      {$\frac{\pi}{2}\uparrow$} (4.5,10.6) to (4.9,10.6) to (4.9,10.5);
+    \draw[|-|] (7.95,12.85) to node[right] {$\approx 0.56L$} (7.95,12.4);   
+    \draw[|-|] (7.35,12.4)  to node[right] {$L$}   (7.35,11.8);   
+    \draw[|-|] (7.95,11.8)  to node[right] {$\approx 1.27L$} (7.95,11.2);   
+    \draw[|-|] (7.35,11.2)  to node[right] {$L$}   (7.35,10.6);   
+    \draw[|-|] (7.95,10.6)  to node[right] {$\approx 0.17L$} (7.95,10.15);
+   \end{scope}  
+\end{scope} 
+  
+%----------------------------------------------------------------------------------------%
+
+  \node at (-.75,4) {(c)};
+
+  \draw (0,0) to (10,0);   
+  \draw (0,3) to (10,3);
+  \foreach \x in {0,.2,.4,...,10}{
+  \node at (\x, 0) [dots] {};
+  \node at (\x, 3) [dots] {};
+  }
+  \foreach \y in {0,.2,.4,...,3}
+  \node at (5,\y) [dots] {};
+  
+  \node (splitter42) at (5,0) [splitter] {};   
+  \node (splitter41) at (5,3) [splitter] {};   
+  \draw (splitter41.south) to (splitter42.north);      
+  \draw (splitter41.west) to[out=0,in=90] (splitter41.south);   
+  \draw[line width=1.2pt] (splitter41.south) to[out=90,in=180]           
+  (splitter41.east);   
+  \draw[line width=.4pt,white] (splitter41.south) to[out=90,in=180] (splitter41.east);
+  \draw[line width=1.2pt] (splitter42.west) to[out=0,in=-90]           (splitter42.north);   
+  \draw[line width=.4pt,white] (splitter42.west) to[out=0,in=-90]           (splitter42.north);   
+  \draw (splitter42.north) to[out=-90,in=180] (splitter42.east);
+  \node at (splitter41.east) [attach]{};
+  \node at (splitter41.west) [attach]{};
+  \node at (splitter41.south) [attach]{};
+  \node at (splitter42.east) [attach]{};
+  \node at (splitter42.west) [attach]{};
+  \node at (splitter42.north) [attach]{};
+ 
+  \node at (0,0) [attach]{};
+  \node at (0,3) [attach]{};
+  \node at (10,0) [attach]{};
+  \node at (10,3) [attach]{};
+  \begin{scope}[yshift = - 5cm]
+  \draw (5.1,6.3) to (5.1,6.20) to (5.5,6.20) to node[right]            {$\frac{\pi}{4}\downarrow$} (5.5,5.6) to (5.1,5.6) to (5.1,5.5);
+  \draw (4.9,6.7) to (4.9,6.8) to (4.5,6.8) to node[left]            {$\frac{\pi}{2}\uparrow$} (4.5,7.4) to (4.9,7.4) to (4.9,7.5);
+  \draw[|-|] (7.95,7.85) to node[right] {$\approx 0.83L$} (7.95,7.4);   
+  \draw[|-|] (7.35,7.4)  to node[right] {$L$}   (7.35,6.8);   
+  \draw[|-|] (7.95,6.8)  to node[right] {$\approx 0.14L$} (7.95,6.2);   
+  \draw[|-|] (7.35,6.2)  to node[right] {$L$}   (7.35,5.6);   
+  \draw[|-|] (7.95,5.6)  to node[right] {$\approx 1.03L$} (7.95,5.15);
+  \end{scope}
+  
+%----------------------------------------------------------------------------------------%
+\begin{scope}[xshift=11.5cm]
+  \node at (-.75,4) {(d)};
+
+  \draw (0,0) to (10,0);   
+  \draw (0,3) to (10,3);
+  \foreach \x in {0,.2,.4,...,10}{
+  \node at (\x, 0) [dots] {};
+  \node at (\x, 3) [dots] {};
+  }
+  \foreach \y in {0,.2,.4,...,3}
+  \node at (5,\y) [dots] {};
+  
+  \node (splitter42) at (5,0) [splitter] {};   
+  \node (splitter41) at (5,3) [splitter] {};   
+  \draw (splitter41.south) to (splitter42.north);      
+  \draw (splitter41.west) to[out=0,in=90] (splitter41.south);   
+  \draw[line width=1.2pt] (splitter41.south) to[out=90,in=180]           
+  (splitter41.east);   
+  \draw[line width=.4pt,white] (splitter41.south) to[out=90,in=180] (splitter41.east);
+  \draw[line width=1.2pt] (splitter42.west) to[out=0,in=-90]           (splitter42.north);   
+  \draw[line width=.4pt,white] (splitter42.west) to[out=0,in=-90]           (splitter42.north);   
+  \draw (splitter42.north) to[out=-90,in=180] (splitter42.east);
+  \node at (splitter41.east) [attach]{};
+  \node at (splitter41.west) [attach]{};
+  \node at (splitter41.south) [attach]{};
+  \node at (splitter42.east) [attach]{};
+  \node at (splitter42.west) [attach]{};
+  \node at (splitter42.north) [attach]{};
+ 
+  \node at (0,0) [attach]{};
+  \node at (0,3) [attach]{};
+  \node at (10,0) [attach]{};
+  \node at (10,3) [attach]{};
+  \draw (6.55,3.15) to (6.75,3.15) to (6.75,3.6) to node[above]            {${\pi}/{2}\rightarrow$} (8.75,3.6) to (8.75,3.15) to (8.95,3.15);
+  \draw (6.55,.15) to (6.75,.15) to (6.75,.6) to node[above]            {${\pi}/{4}\rightarrow$} (8.75,.6)to (8.75,.15) to (8.95,.15);
+  \begin{scope}[yshift=-.25cm]
+  \draw[|-|] (5.25,2.75) to node[below] {$d_2$} (6.75,2.75);   
+  \draw[|-|] (6.75,2.75) to node[below]{$L$}   (8.75,2.75);   
+  \draw[|-|] (8.75,2.75) to node[below]{$M(-\frac{\pi}{2})$} (10,2.75);
+  \draw[|-|] (5.25,-.25) to node[below] {$d_1$} (6.75,-.25);   
+  \draw[|-|] (6.75,-.25) to node[below]{$L$}   (8.75,-.25);   
+  \draw[|-|] (8.75,-.25) to node[below]{$M(-\frac{\pi}{4})$} (10,-.25);
+  \end{scope}
+\end{scope}
+\end{tikzpicture}

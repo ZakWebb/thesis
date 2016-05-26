@@ -219,7 +219,7 @@ In addition to these various complexity results, it will also be useful to have 
 Perhaps the first such lemma we called the truncation lemma.  The idea behind this lemma is to approximate the evolution of a state under some particular Hamiltonian with another, where the differences between the two Hamiltonians only occur far from the support of the given state.  One would expect that since the state must evolve ``far'' in order to reach the differs between the two Hamiltonians, the evolution between the two will be close.  This lemma makes this intuition precise.
 
 \begin{lemma}[Truncation Lemma]
-\label{lem:trunc}
+\label{lem:truncation}
 Let $H$ be a Hamiltonian acting on a Hilbertspace $\mathcal{H}$ and let $\ket{\Phi}\in\mathcal{H}$ be a normalized state. Let
 $\mathcal{K}$ be a subspace of $\mathcal{H}$, let $P$ be the projector onto $\mathcal{K}$,
 and let $\tilde{H}=PHP$ be the Hamiltonian within this subspace. Suppose
@@ -347,6 +347,7 @@ Then,
 \begin{equation}
   \gamma(H_A + H_B) \geq \frac{c d}{d + \norm{H_B}} .
 \end{equation}
+\label{lem:NPL}
 \end{lemma}
 \begin{proof}
 Let $|\psi\rangle$ be a normalized state satisfying 

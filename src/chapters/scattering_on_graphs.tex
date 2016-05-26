@@ -12,6 +12,7 @@
 \begin{document}
 
 \chapter{Scattering on graphs}
+\label{chap:scattering_on_graphs}
 
 \todo{write a better introduction, including more citations}
 
@@ -844,7 +845,7 @@ To see that this is an eigenvector, observe that $g_0^{\leftrightarrow}$ is a di
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Momentum switches}
+\subsection{Momentum switches}\label{sec:mom_switch}
 
 To construct a momentum switch between a given pair of momenta, it will be worthwhile to first construct two R/T gadgets between the momenta, with the two gadgets having swapped reflection and transmission sets.  We can then construct something like a railroad switch, by placing the two gadgets immediately after a 3-claw.  With this design, the incident wavepacket will only see one of the two outgoing paths, and the resulting $S$-matrix will be exactly what we want.
 
@@ -1217,7 +1218,7 @@ As particular cases, we can take $k = -\frac{\pi}{4}$, where $d = 2$.  In this c
 \todo{If I have time, write this section.  The basic idea is similar to proof removing self-loops from the graph for the BH model.  In particular, in order to turn a degree 3 graph into a 3-regular graph, we use three copies of the original graph.  For each degree-2 vertex $u$ in the original graph, we add another vertex $u_0$ to the overall graph, and add edges from all three $u_i$ for $i\in[3]$ to $u_0$.  For each degree-1 vertex, we do this twice.  Note that for each eigenstate of the original graph, there are two with nearly the same amplitudes.  We can then use these for our scattering eigenstates}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Finite truncation}
+\section{Wavepacket scattering}
 
 Up until this point, we have taken as intuition that the scattering states correspond to an incoming wavepacket at some momentum, and then scatterings with a corresponding $S$-matrix.  However, this is somewhat weird, in that the scattering states are eigenstates of the Hamiltonian, and thus do not change over time, while scattering states explicitly move.  
 
@@ -1361,7 +1362,7 @@ In particular, let us examine the inner product between a scattering state $\ket
 \begin{align}
   &\braket{\scat_j(k+\phi)}{\alpha_j(t)}\nonumber\\
   &\qquad= \begin{cases} 
-      \gamma e^{-2 i t \cos k} \sum_{x=\mu(t)-L}^{\mu(t)+L} \Big(e^{i \phi x} + S_{qj}^*(k+\phi) e^{-i(2k + \phi)x}\Big) e^{ -\frac{(x-\mu(t))^2}{2\sigma^2}}
+      \gamma e^{-2 i t \cos k} \sum_{x=\mu(t)-L}^{\mu(t)+L} \Big(e^{i \phi x} + S_{jj}^*(k+\phi) e^{-i(2k + \phi)x}\Big) e^{ -\frac{(x-\mu(t))^2}{2\sigma^2}}
         & t < \frac{\mu - L}{2|\sin(k)|}\\
       \gamma e^{-2 i t \cos k} \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{q=1}^N \Big(\delta_{qj} e^{i (2k+\phi) x}\\
       \qquad \qquad \qquad \qquad\qquad  + S_{qj}^*(k+\phi) S_{qj}(k) e^{-i\phi x}\Big) e^{ -\frac{(x+\mu(t))^2}{2\sigma^2}}& t > \frac{\mu + L}{2|\sin(k)|}

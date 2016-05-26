@@ -180,7 +180,7 @@
 \newcommand{\missingcite}[1]{\textcolor{red}{[\textbf{CITE:}~\textit{#1}]} }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Theorem Settup
+% Theorem Setup
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
@@ -197,7 +197,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Standardized names
 
-\newcommand{\med}{\mathrm{m}}
+\newcommand{\med}{\text{med}}
 \newcommand{\Tgate}{\mathrm{T}}
 \newcommand{\CP}{\mathrm{CP}}
 \newcommand{\CD}{\mathrm{C}\theta}
@@ -215,4 +215,19 @@
 \newcommand{\dmin}{d_{\text{min}}}
 \newcommand{\dmax}{d_{\text{max}}}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Referencing across subfiles
+
+\usepackage{zref-xr}
+
+\zexternaldocument{../chapters/introduction.tex}
+\zexternaldocument{../chapters/mathematical_preliminaries.tex}
+\zexternaldocument{../chapters/scattering_on_graphs.tex}
+\zexternaldocument{../chapters/SP_universality.tex}
+\zexternaldocument{../chapters/MP_universality.tex}
+\zexternaldocument{../chapters/SP_ground.tex}
+\zexternaldocument{../chapters/MP_ground.tex}
+\zexternaldocument{../chapters/Spin_ground.tex}
+\zexternaldocument{../chapters/conclusions.tex}
 
