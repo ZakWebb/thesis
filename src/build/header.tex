@@ -20,6 +20,8 @@
 \usepackage[lofdepth,lotdepth,labelformat=simple]{subfig}
 \usepackage{enumitem}
 \usepackage{nicefrac}
+\usepackage{thmtools}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Print/Online Version
@@ -88,9 +90,12 @@
 \newcommand{\ex}[1]{\hyperref[ex:#1]{\mbox{Example~\ref*{ex:#1}}}}
 \newcommand{\fct}[1]{\hyperref[fct:#1]{\mbox{Fact~\ref*{fct:#1}}}}
 \newcommand{\fig}[1]{\hyperref[fig:#1]{\mbox{Figure~\ref*{fig:#1}}}}
+\newcommand{\cor}[1]{\hyperref[cor:#1]{\mbox{Corollary~\ref*{cor:#1}}}}
 \newcommand{\figs}[1]{\hyperref[fig:#1]{\mbox{Figures~\ref*{fig:#1}}}}
 \newcommand{\propo}[1]{\hyperref[prop:#1]{\mbox{Proposition~\ref*{fig:#1}}}}
 \newcommand{\subfig}[1]{\mbox{\protect\subref{fig:#1}}}
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -167,11 +172,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Complexity Class Macros
   
-\newcommand{\class}[1]{\textsc{#1}}
+\newcommand{\class}[1]{\textbf{\textsc{#1}}}
 \newcommand{\PP}{\class{P}}
 \newcommand{\NP}{\class{NP}}
 \newcommand{\BQP}{\class{BQP}}
 \newcommand{\QMA}{\class{QMA}}
+
+\newcommand{\QCircVer}{\textsc{Quantum Circuit Verification}}
+\newcommand{\QWE}{\textsc{Quantum Walk Evolution}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Complexity Class Macros
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Todo Command
@@ -192,6 +204,7 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{fact}{Fact}
 \newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
 \newtheorem{type}{Type}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -209,6 +222,7 @@
 \DeclareMathOperator{\diam}{diam}
 \DeclareMathOperator{\new}{new}
 \DeclareMathOperator{\tr}{Tr}
+\DeclareMathOperator{\pr}{Pr}
 
 \newcommand{\Had}{\mathrm{H}}
 

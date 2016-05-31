@@ -210,6 +210,38 @@ Essentially a reduction is a polynomial-time computable function from one comput
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Hamiltonian simulation}\label{sec:hamiltonian_simulation}
+
+\todo{Give a high level overview of the simulation algorithm?}
+
+With the definitions of the various complexity classes, and in particular defining complete problems for these classes, we will find that we often need to reduce one problem to another, in order to show that a given problem is contained within a complexity class.  Of particular interest to us will be the simulation of Hamiltonian dynamics, as all of the problems in this thesis are defined in terms of Hamiltonians.
+
+In particular, we will need to show how to simulate the evolution of a sparse, row-computable Hamiltonian on a given state $\ket{\phi}$.  The state $\ket{\phi}$ might be a en efficiently computable state, or it might be a provided to us in a \QMA-style procedure, but we are really only interested in understanding the dynamics.
+
+The problem of simulating Hamiltonian dynamics has been featured rather heavily in the literature, as it was the original motivation that Feynman gave for quantum computers \cite{Fey82,Fey85}.  In particular, Lloyd showed how to simulate sums of local operators \cite{Llo96}, and this idea was generalized by Aharanov and Ta-Shma to (efficiently computable) sparse Hamiltonians \cite{AT03}.  Since then, various schemes have improved the requirements on time \cite{BACS07,WBHS11,BC12}, as well as the dependence on the precision \cite{BCCKS14,BCCKS15} and various other avenues of research \cite{Chi09, PQSV11}, have managed to greatly improve our ability to simulate quantum dynamics.  
+
+While Hamiltonians that are a sum of local operations are relatively easy to understand, $d$-sparse Hamiltonians are relatively more complex.  The reason that much of the literature has focused on local Hamiltonians is that they are easy to specify, as we need only write down each of the local Hamiltonians.  In particular, they are succinct representations for Hamiltonians on an exponential-sized Hilbert space, such that each non-zero term of the Hamiltonian corresponding to a specific basis vector can be determined efficiently.  Additionally, these local-Hamiltonians are further restricted to only have non-zero transition amplitudes for states that satisfy some locality conditions, but for the purposes of simulation the succinctness property is what we care about.
+
+Namely, the fact that a local Hamiltonian is succinctly representable is all that is used in the algorithms for simulating Hamiltonian dynamics.  As such, if we can generalize these properties, we can generalize the Hamiltonians that we can simulate.  A row-computable, $d$-spare matrix is such a generalization, in which each row of a given Hamiltonian has at most $d$ non-zero entries, and there exists some efficiently computable function $f_{i}(x)$ that outputs the value (and position) of the $i$th nonzero entry of the $x$th row.  Note that $k$-local Hamiltonians are $d$-sparse (for some $d$ depending on the local dimension and connectivity), and easily row-computable; this is the natural generalization.
+
+The basic idea behind most simulation algorithms is to color each non-zero matrix element of the Hamiltonian $H$ so that the matrix corresponding to each color satisfies some technical property, show how to simulate each color individually for a short period of time, and then show how to combine the individual simulations into a simulation of the entire Hamiltonian.  The current state of the art \cite{BCK15} uses several techniques, including quantum walk algorithms, simulations of linear combinations of unitaries, and Bessel functions, but their main result is the following
+\begin{theorem}[Theorem 1 of \cite{BCK15}]\label{thm:hamiltonian_simulation}
+A $d$-sparse Hamiltonian $H$ acting on $n$ qubits can be simulated for time $t$ within error $\epsilon$ with
+\begin{align}
+  \OO\Big( \tau \frac{ \log (\tau/\epsilon)}{\log\log (\tau/\epsilon)}\Big)
+  \label{eq:hamiltonian_query_bound}
+\end{align}
+queries and 
+\begin{align}
+  \OO\Big( \tau \big[n + \log^{5/2} (\tau/\epsilon) \big] \frac{\log (\tau/\epsilon)}{\log\log(\tau/\epsilon)}\Big)
+  \label{eq:hamiltonian_2qubit_bound}
+\end{align}
+additional $2$-qubit gates, where $\tau := d \Vert H \Vert_{\max} t$.
+\end{theorem}
+Note that the theorem was proved in the black box model, where the function $f$ was provided via black box.  Assume that $f$ is superlinear in both $n$ and $\log^{5/2}(\tau/\epsilon)$, the time-complexity for simulating such a Hamiltonian is simply the product of the complexity of $f$ with \eq{hamiltonian_query_bound}.  Note that if $f$ is efficient to compute, this is an efficient simulation of the Hamiltonian dynamics.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Various Mathematical Lemmas}
 
 In addition to these various complexity results, it will also be useful to have a list of certain mathematical lemmas that will be used several times in the thesis.  These lemmas might also be of independent interest.
