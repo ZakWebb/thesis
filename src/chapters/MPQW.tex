@@ -1,0 +1,949 @@
+%======================================================================
+%   Zak Webb
+%   Ph.D. Thesis
+%   Department of Physics and Astronomy
+%   University of Waterloo
+% 
+%   Universality of multi-particle scattering
+%======================================================================
+
+
+\documentclass[../thesis-main/thesis-main]{subfiles}
+\begin{document}
+ 
+\chapter{Multi-particle quantum walk}
+\label{chap:MPQW}
+
+\todo{rewrite entire intro, find more MPQW stuff}
+
+So far, we have only focused on the case of a single walker moving on a graph.  These systems exhibit all the hallmarks of quantum systems, with superpositions of states, entanglement, and the like, but neccessity forces the corresponding graphs to be unphysical; as each vertex corresponds to a computational basis state, in order to get nontrivial computational power we are forced to work on graphs that are not practical to implement in the real world.
+
+From a computational point of view, this does not matter.  \chap{SP_universality} showed that quantum walk is universal for quantum computation, and thus we wouldn't expect it to be easier to implement than a universal quantum computer.  However, several experimental implementations of quantum walk have been carried out \cite{DSBEFFMZ05, KFC09, PLP08}, where the encoding has been done in a non-scalable manner.  
+
+Continuing in this manner, experimentalists have also examined what happens when multiple particles interact on the same graph.  Explicitly, they have analyzed what happens when two bosons walk on a graph \cite{BLMS09, PLM10,SSVMCRO12}, what happens when multiple bosons move along a long path, and various other simple experiments.
+
+\todo{find more recent MPQW stuff}
+
+While these experimental realizations of multi-particle quantum walk have flourished, the theoretical side has only seen some small development.  In particular, there have been attempts to use these MPQW as tools for analyzing graph properties, in the hope that they might be useful for the graph isomorphism problem, but many of these avenues have been proven impossible.  Additionally, there are some continuous space analysis on the eigenstates of some interaction Hamiltonians, but in most cases no closed form solution exists.
+
+In this chapter, we will define our model of multi-particle quantum walk, and analyze the dynamics of such a model on some simple systems.  While this will not improve drastically our previous knowledge this does give us a better understanding of simple interactions.
+
+
+\todo{a lot more citations}
+
+\section{Multi-particle quantum walk}
+
+We have already seen how a single particle moves on some given graph; the evolution proceeds with the Hamiltonian given by the adjacency matrix of the graph.  In order for our multi-particle framework to extend the single-particle case, we will want to ensure that each individual particle in our framework evolves as in the single-particle case.
+
+Namely, if we assume that $N$ particles each move independently on a given graph $G$, we will want the Hamiltonian of this larger system to be as though each particle sees its own copy of $G$.  To do this, we will have that the $N$ particle quantum walk with no interaction takes the form
+\begin{align}
+  H_{\text{mov}}^N = \sum_{w\in [N]} A(G)^{(w)}
+\end{align}
+where $B^{(w)}$ is the operator that acts on $N$ particles as $B$ on the $w$th particle and $\II$ on the rest.  With such a Hamiltonian, the evolution operator decomposes into a product of commuting terms, where each term acts as the single particle evolution for a different particle.  This is exactly what we would want for the $N$-particle case.
+
+However, the eigenstates of such a Hamiltonian easily decompose into product states, where each of the individual particles are in an eigenstate of $A(G)$.  Such a system is only as computationally powerful as that of a single-particle system, since the individual particles cannot interact.  For our purposes, we will thus want to force some interaction between the particles. We will also want to ensure that we capture the intuitive structure of particle interactions in the continuum, where the interaction only depends on the distance between particles.  This translation invariance can have several different abstractions to a general graph, but on a one dimensional lattice we would expect the interaction to only depend on the distance between the particles, as measured by the shortest path between vertices.
+
+We will take this requirement on the infinite path and use it for all vertices.  Further, we will assume some finite range of interaction, so that particles with large physical separation don't interact.   Namely, let us choose some $\dmax \in \NN$ to be the finite range of the interaction, and then choose $d+1$ symmetric polynomials in two variables, $U_{d}$ for $0\leq d \leq \dmax$.  Additionally, let $\hat{n}_v$ for $v\in V(G)$ be the operator that counts the number of particles at vertex $v$, explicitly given by 
+\begin{align}
+  \hat{n}_v = \sum_{w\in [N]} \ketbra{v}{v}^{(w)}.
+\end{align}
+With these values, and if $d(u,v)$ is the distance function on the graph $G$ given by the length of the shortest path between $u$ and $v$, we can define the interaction
+\begin{align}
+  H_{\text{int}} = \sum_{d=0}^{\dmax} \sum_{\substack{ u,v\in V(G)\\d(u,v) = d}}U_{d} (\hat{n}_u,\hat{n}_v).
+\end{align}
+Note that on the infinite path (and in fact on any lattice), this interaction has the form we require.
+
+With such a chosen interaction, (i.e., with $\dmax$ and the $U_d$ well defined), we can then define the $N$-particle quantum walk on $G$ with this interaction.  Namely, we let 
+\begin{align}
+  H_G^N = H_{\text{mov}}^N + H_{\text{int}}^N = \sum_{w\in [N]} A(G)^{(w)} + \sum_{d=0}^{\dmax}  \sum_{\substack{ u,v\in V(G)\\d(u,v) = d}}U_{d} (\hat{n}_u,\hat{n}_v). 
+  \label{eq:MPQW_H_defn}
+\end{align}
+Hamiltonians of this form will be the study of this thesis.
+
+\subsection{Examples}
+
+While a mathematician does not need motivation in order to study a particular model, this thesis is an attempt to understand the computational power of various well known interactions.  As such, we would like to ensure that the class of models that we study includes some well known interactions.
+
+
+As a particular example, if $\dmax = 0$, and 
+\begin{align}
+  U_0(x,y) = \frac{\gamma }{4}(x + y) (x + y -2) \label{eq:bh_int}
+\end{align}
+we have an onsite interaction with strength $\gamma$, for which, if we restrict our attention to symmetric states, is the Bose-Hubbard Hamiltonian with strength $\frac{\gamma}{2}$.  Similarly, if $\dmax = 1$, $U_0 (x,y) = 0$, and $U_1(x,y) = \gamma xy$, we have a nearest-neighbor interaction with strength $\gamma$.
+
+
+\section{Applications}
+
+??? There's got to be something.
+
+\section{Two-particle scattering on an infinite path}
+
+After choosing a given interaction, equation \eq{MPQW_H_defn} provides us with a well defined MPQW Hamiltonian for $N$-particles.  With this, we can explicitly evolve a given state, and hopefully use such systems for algorithmic advantages.  However, this requires an understanding of the eigenstates of a multi-particle interacting system, for which we have few examples of analytic solutions.  On the other hand, we \emph{can} analyze some highly symmetric systems, when we restrict ourselves to a small number of particles.  Our understanding of these small systems can then be leveraged to gain some information about MPQW with many particles on some given graphs.
+
+In particular, we already know from \chap{scattering_on_graphs} the basic properties of a single particle interacting on a long path.  One might expect that that next step would be to understand two particles interacting on a similar scattering graph, but unfortunately even this is a little to complicated for this thesis.  However, we can analyze two particles interacting on an infinite path.
+
+Namely, let us assume that the interaction Hamiltonian has been chosen, such that there is a $\dmax$ and a set of $d+1$ symmetric functions $U_d$.  We can then write the Hamiltonian \eq{MPQW_H_defn} in the basis $\ket{x,y}$, where $x,y\in \ZZ$ are the positions of the first and second particles, as
+\begin{align}
+  H^{2} = H^1 \otimes \II_y + \II_x \otimes H^1 + \sum_{x\in \ZZ} \sum_{d=0}^{\dmax} U_{d} (\hat{n}_x,\hat{n}_{x+d}) ,
+  \label{eq:two_part_H_xy}
+\end{align}
+where the single-particle Hamiltonian $H^1$ is simply the adjacency matrix for the infinite path, namely
+\begin{align}
+  H^{1} = \sum_{x\in\ZZ} \ket{x+1}\bra{x} + \ket{x}\bra{x+1}.
+\end{align}
+
+Without the interaction term, the eigenstates for this Hamiltonian would simply by two independent scattering eigenstates, with amplitudes of the form $e^{i k x + i py}$.  However, the interaction causes there to be correlations between the two particles.  These correlations will be similar to the single particle interactions scattering off of a graph with two attached semi-infinite paths.
+
+As we are interested in the dynamics of two particles initially prepared in spatially separated wave packets moving toward each other along the path with momenta $k_1\in(-\pi,0) $ and $k_2\in (0,\pi)$, we will need to understand these scattering eigenstates.  Moreover, as in the single-particle scattering case, the intuition gained from the dynamics will help us in understanding the two-particle scattering eigenstates.
+
+With our given Hamiltonian \eq{two_part_H_xy}, we will want to decompose the Hamiltonian in terms of its eigenstates.  In the current basis, however, while we do have a permutation invariance we aren't in the correct basis to make use of all of the symmetries of the underlying graph.  To make use of this symmetry, we will need to change to a different basis.
+
+In particular, let us look at the new basis $\ket{s:r}$, where $s = x+y$ and $r = x-y$, and where the allowed values of $(s,r)$ range over those values where $s$ and $r$ are either both even or both odd (i.e., $s+r$ must be even).  If we then expand \eq{two_part_H_xy} in this basis, we find 
+\begin{equation}
+  H^{(1)}\otimes H^{(1)} + \II\otimes \sum_{r\in \ZZ} \mathcal{V}(|r|) \, \ket{r}\bra{r},
+\label{eq:two_part_H_rs}
+\end{equation}
+where $V(0) = U_0(2,2)$ and $V(r) = U_r(1,1)$ for $r >0$.  
+
+Note that \eq{two_part_H_rs} looks to be much nicer to analyze than \eq{two_part_H_xy}, as we nearly have a separable decomposition of the Hamiltonian.  We do have a decomposition such that the eigenstates corresponding to $s$ don't rely on the current state of $r$, and we will see that once we chose a particular eigenstate for the $s$, the corresponding eigenvalue equation for $r$ will look exactly as a scaled single-particle scattering equation.
+
+\subsection{Eigenstates on the path}
+
+\todo{rewrite this section}
+
+Now that we have the decomposition of the Hamiltonian that nicely decouples the center of mass movement from the relative movement of two particles (i.e., the physical meaning of $r$ and $s$), we can make use of the decomposition of \eq{two_part_H_rs}.  
+
+Namely, let us make the ansatz that the eigenstates of \eq{two_part_H_rs} take the form
+\begin{align}
+  \braket{s;r}{\psi} = e^{ - i p_1 s/2} \braket{r}{\phi_{p_1}}
+\end{align}
+where $p_1 \in (-\pi,\pi)$.  With this assumption, we then have that the effective Hamiltonian for $\ket{\phi_{p_1}}$ takes the form
+\begin{equation}
+ 2\cos\left(\frac{p_1}{2}\right) H^{(1)}_r + \sum_{r\in \ZZ} \mathcal{V}(|r|) \, \ket{r}\bra{r}.\label{eq:vr_eqn}
+\end{equation}
+Note that this is simply a rescaled single-particle scattering problem, as in \chap{scattering_on_graphs}, except where the weights of the graph gadget need not be normalized, and with a slight relabeling of the semi-infinite paths.  As such, we can then see that for each eigenstate of \eq{vr_eqn}, there is a corresponding eigenstate of \eq{two_part_H_rs}.  In particular, we then have that for each $p_2\in (0,\pi)$ there is a scattering eigenstate of the form
+\begin{equation}
+\langle r|\psi (p_1;p_2)\rangle= \begin{cases}  e^{-i p_2 r} + R(p_1,p_2) e^{i p_2 r} &  \text{if } r \leq -\dmax\\
+  	f(p_1,p_2,r) &  \text{if } |r| < \dmax\\
+  	T(p_1,p_2) e^{- i p_2 r}  & \text{if } r \geq \dmax.\end{cases}
+\label{eq:psip1p2}
+\end{equation}
+for $p_2\in (0,\pi)$. Here the reflection and transmission coefficients $R$ and $T$ and the amplitudes of the scattering state for $|r|<\dmax$ (described by the function $f$) depend on both momenta as well as the interaction $\mathcal{V}$.  With $R$, $T$, and $f$ chosen appropriately, the state $|\mathrm{sc}(p_1;p_2)\rangle$ is an eigenstate of $H^{(2)}$ with eigenvalue $4\cos(p_1/2)\cos(p_2)$.
+
+Since $\mathcal{V}(|r|)$ is an even function of $r$, we can also define scattering states for $p_2\in (-\pi,0)$ by
+\begin{align}
+  \langle s;r|\mathrm{sc}(p_1;p_2)\rangle=\langle s;-r|\mathrm{sc}(p_1;-p_2)\rangle.
+\end{align}
+These other states are obtained by swapping $x$ and $y$, corresponding to interchanging the two particles.
+
+Additionally, if there are any bound states of \eq{vr_eqn}, then there will be corresponding traveling states where the two particles move together.  These are the well known dimer states, and while they are important to find a basis for the entire Hilbert space they will play a role similar to the bound states of single-particle scattering; only exponentially small amplitude of the states of interest will be on these states.
+
+
+
+\todo{if I want to give a better error bound, I'll need to talk about the dimer states}
+
+
+
+\todo{double check this}	
+The construction of the symmetric and anti-symmetric scattering states follows as one would expect. For $p_1\in (-\pi,\pi)$ and $p_2\in (0,\pi)$, we define
+\begin{align}
+  \ket{\mathrm{sc}(p_1;p_2)}_\pm = \frac{1}{\sqrt2}\big(\ket{\mathrm{sc}(p_1;p_2)} \pm \ket{\mathrm{sc}(p_1;-p_2)}\big).
+\end{align}
+If we note that the unitarity of $S$ and the fact that $V(|r|)$ being even in $r$ forces $R(p_1,p_2) = R(p_1,-p_2)$ and $T(p_1,p_2)  = T(p_1,-p_2)$ we can then see that the combinations
+\begin{align}
+  |T(p_1,p_2) \pm R(p_1,p_2)| = 1.  
+\end{align}
+With this, we can then see that the symmeterized scattering states can be expanded as
+\todo{this is wrong, not the correct placement for the $\pm$}
+\begin{align}
+    \braket{s;r}{\mathrm{sc}(p_1;p_2)}_\pm
+      &= \frac{1}{\sqrt{2}}e^{-i p_1 s/2} \begin{cases}  e^{i p_2 |r|} \pm e^{i\theta_{\pm}(p_1,p_2)} e^{-i p_2 |r|} &  \text{if } |r| \geq C\\
+  	f(p_1,p_2,r) \pm f(p_1,p_2,-r) & \text{if }  |r| < C\end{cases}
+\label{eq:symscatter}
+\end{align}
+where $\theta_{\pm}(p_1,p_2)$ is a real function defined through
+\begin{equation}
+e^{i\theta_{\pm}(p_1,p_2)}= T(p_1,p_2)\pm R(p_1,p_2). \label{eq:delta_pm}
+\end{equation}
+
+
+These eigenstates allow us to understand what happens when two particles with momenta $k_1\in(-\pi,0)$ and $k_2\in(0,\pi)$ move toward each other. Here $p_1=-k_1-k_2$ and $p_2=(k_2-k_1)/2$.  Similar to the scattering states of \chap{scattering_on_graphs}, we have that for $|r|\geq C$ the scattering state is a sum of two terms, one corresponding to the two particles moving toward each other and one corresponding to the two particles moving apart after scattering, but where the outgoing term has a  phase of $T\pm R$ relative to the incoming term (as depicted in \fig{wte}). This phase arises from the interaction between the two particles.
+
+
+
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{MPQW_wte}
+  \input{../tikz/MPQW_wte.tex}
+  \caption{Scattering of two particles on an infinite path.}
+  \label{fig:wte}
+\end{figure}
+
+
+\subsection{Examples}
+
+\todo{I don't like this section here.  Find a place to put it}
+
+For example, consider the Bose-Hubbard model, where $\mathcal{V}(|r|) = U\delta_{r,0}$. Here $C=0$ and $T=1+R$.  In this case the scattering state $|\mathrm{sc}(p_1;p_2)\rangle_+$ is
+\begin{align}
+\langle x,y|\mathrm{sc}(p_1;p_2)\rangle_+=\frac{1}{\sqrt{2}}e^{-ip_1 \left(\frac{x+y}{2}\right)}\left(e^{ip_2 |x-y|}+e^{i\theta_+(p_1,p_2)}e^{-ip_2 |x-y|}\right).
+\end{align}
+The first term describes the two particles moving toward each other and the second term describes them moving away from each other. To solve for the applied phase $e^{i\theta_+(p_1,p_2)}$ we look at the eigenvalue equation for $|\psi(p_1;p_2)\rangle$ at $r=0$. This gives
+\begin{align}
+  R(p_1,p_2) =- \frac{U}{U - 4i\cos({p_1}/{2})\sin(p_2)}.
+\end{align}
+So for the Bose-Hubbard model,
+\begin{align}
+  e^{i \theta_{+} (p_1,p_2)} = T(p_1,p_2) + R(p_1,p_2) = - \frac{ U + 4 i \cos({p_1}/{2}) \sin(p_2)}{U - 4 i \cos({p_1}/{2}) \sin(p_2)} =  \frac{2 \left(\sin(k_2) - \sin(k_1)\right) - i U}{2 \left(\sin(k_2) - \sin(k_1)\right) + i U}.
+\end{align}
+For example, if $U = 2+\sqrt{2}$ then two particles with momenta $k_1 =-{ \pi}/{2}$ and $k_2={\pi}/{4}$ acquire a phase of $e^{-i\pi/2}= -i$ after scattering.
+
+For a multi-particle quantum walk with nearest-neighbor interactions, $\mathcal{V}(|r|)=U\delta_{|r|,1}$ and $C=1$.  In this case the eigenvalue equations for $|\psi(p_1;p_2)\rangle$ at $r=-1$, $r=1$, and $r=0$ are
+\begin{align*}
+ 4 \cos\left(\frac{p_1}{2}\right)  \cos(p_2) ( e^{i p_2} + R(p_1,p_2) e^{-i p_2} ) &= U ( e^{i p_2} + R(p_1,p_2) e^{-i p_2}) \\
+& \quad + 2\cos\left(\frac{p_1}{2}\right) \left( e^{2i p_2} + R(p_1,p_2) e^{-2i p_2}+f(p_1,p_2,0)\right) \\
+ 4 \cos\left(\frac{p_1}{2}\right)  \cos(p_2) T(p_1,p_2) e^{-ip_2} & =UT(p_1,p_2)e^{-ip_2}\\
+& \quad +2\cos \left(\frac{p_1}{2}\right)\left(f(p_1,p_2,0)+T(p_1,p_2)e^{-2ip_2}\right)\\
+2 \cos(p_2) f(p_1,p_2,0) &=T(p_1,p_2)e^{-ip_2}+e^{ip_2}+R(p_1,p_2)e^{-ip_2},
+\end{align*}
+respectively.
+
+Solving these equations for $R$, $T$, and $f(p_1,p_2,0)$, we can construct the corresponding scattering states for bosons, fermions, or distinguishable particles (for more on the last case, see \sec{distinguishable}). Unlike the case of the Bose-Hubbard model, we may not have $1+R=T$. For example, when $U=-2-\sqrt{2}$, $p_1={\pi}/{4}$, and $p_2={3\pi}/{8}$, we get $R=0$ and $T=i$ (see \sec{distinguishable}).
+
+\subsection{Two-particle basis}
+
+\todo{Can I bootstrap Andrew and David's basis result to decompose the identity?}
+
+
+The states $\{|\mathrm{sc}(p_1;p_2)\rangle \colon p_1\in (-\pi,\pi),\,p_2\in(-\pi,0)\cup(0,\pi)\}$ are (delta-function) orthonormal:
+\begin{align*}
+\langle  \mathrm{sc}(p_1';p_2')|\mathrm{sc}(p_1;p_2)\rangle &= \langle \mathrm{sc}(p_1'; p_2')|\left(\sum_{\text{$r,s$ even}}|r\rangle\langle r| \otimes |s\rangle \langle s| \right)|\mathrm{sc}(p_1;p_2)\rangle\\
+&\quad + \langle \mathrm{sc}(p_1'; p_2')|\left(\sum_{\text{$r,s$ odd}}|r\rangle \langle r|\otimes  |s\rangle \langle s|\right)|\mathrm{sc}(p_1;p_2)\rangle\\
+&= \sum_{\text{$s$ even}} e^{-i(p_1-p_1') {s}/{2}}\sum_{\text{$r$ even}}\langle \psi(p_1';p_2')|r\rangle\langle r|\psi(p_1;p_2)\rangle \\
+& \quad + \sum_{\text{$s$ odd}} e^{-i(p_1-p_1') {s}/{2}}\sum_{\text{$r$ odd}}\langle  \psi(p_1';p_2')|r\rangle\langle r|\psi(p_1;p_2)\rangle\\
+&= 2\pi \delta(p_1-p_1') \sum_{r=-\infty}^{\infty}\langle \psi(p_1;p_2')|r\rangle\langle r|\psi(p_1;p_2)\rangle\\
+&= 4\pi^2 \delta(p_1-p_1')\delta(p_2-p_2')
+\end{align*}
+where in the last step we used the fact that $\langle\psi(p_1;p_2')|\psi(p_1;p_2)\rangle=2\pi\delta(p_2-p_2')$.
+
+%%%%%%%%%%%%%%%%%
+%  Wave-packet scattering
+
+\section{Wave-packet scattering}
+
+\todo{go over section, ensure correct, and make equations all fit}
+
+Now that we have a thorough understanding of the two-particle scattering eigenstates on an infinite path, we will want to understand the time-evolution of wavepackets on the infinite path.  In particular, if we initially have a product state corresponding to two Guassian wavepackets traveling towards each other, how does the time-evolved state look?
+
+Along those lines, let $k\in(-\pi,\pi)$, and let $\mu \in \NN$.  We will define a Gaussian wavepacket centered at $\mu$, with momentum $k$, standard deviation $\sigma$, and cutoff $L$ as the state
+\begin{align}
+  \ket{\chi_{\mu,k}} = \gamma \sum_{x=\mu-L}^{\mu+L} e^{i k x} e^{ -\frac{(x-\mu)^2}{2\sigma^2}} \ket{x},
+\end{align}
+where $\gamma^2$ is a normalization factor given by $\gamma^{-2} = h_L^{\sigma/\sqrt{2}}(0)$.  Note that this is nearly the same state as for single-particle scattering, but now we don't have to deal with the multiple semi-infinite paths and the graph $\widehat{G}$.
+
+This section is focused on proving the following lemma discussing wavepacket propagation:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}
+Let $H^{(2)}$ be a two-particle Hamiltonian of the form \eq{something} with interaction range at most $d$.  Let $\theta_{\pm}(p_1,p_2)$ be given by equation \eq{something_else}.  Let $k_1\in (-\pi,0)$ and let $k_2 \in (0,\pi)$, let $L,\mu, \nu \in \NN$ with $L>0$ and and let $\sigma > 0$.  Let us then define the states
+\begin{align}
+  \ket{\alpha(t)}_{\pm} = \frac{\gamma^2}{\sqrt{2}} e^{-2i t (\cos k_1 + \cos k_2)} \sum_{x = \mu(t)-L}^{\mu(t)+L} \sum_{y = \nu(t) -L}^{\nu(t)+L} e^{ -\frac{ (x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i k_1 x + i k_2 y} \alpha_{xy} \big( \ket{x,y} \pm \ket{y,x}\big),
+\end{align}
+where
+\begin{align}
+  \mu(t) = \mu - \lceil 2 t \sin k_1\rceil, \quad
+  \nu(t) = \nu - \lceil 2 t \sin k_2\rceil, \quad \text{and} \qquad
+  \alpha_{xy} = \begin{cases} 1  & y-x > r\\
+  e^{i\theta_\pm(k_1,k_2)} & x-y > r\\
+  0 & \text{otherwise}.
+  \end{cases}
+\end{align}
+Additionally, let us define the initial state
+\begin{align}
+  \ket{\psi(0)}_{\pm} = \ket{\alpha(0)}_{\pm}.
+\end{align}
+If $\sigma = \frac{ L}{2\sqrt{\log L}}$, and if $0 \leq t < c L$ for some constant $c$, then 
+\begin{align}
+  \norm{e^{ - i H^2 t} \ket{\psi(0)}_{\pm} - \ket{\alpha(t)}}_{\pm} \leq 4 \sqrt{\frac{c\log L}{L}}.
+\end{align}
+\label{thm:two_particle_wavepacket_bound}
+\end{theorem}
+
+Note that we will use many of the tools used in the proof of \thm{single_particle_wavepacket_bound}.
+
+\begin{proof}
+We will first want to show that our approximation to the time-evolved state is a nearly normalized state.  In particular, we have that
+\begin{align}
+  &{}_\pm\braket{\alpha(t)}{\alpha(t)}_\pm \nonumber\\
+  &\qquad = \gamma^2 \Bigg[\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{y=\nu(t)-L}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{\sigma^2} - \frac{(y-\nu(t))^2}{\sigma^2}} \nonumber\\
+  &\qquad \qquad \pm  \sum_{x,y=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}}e^{i (k_1-k_2) x}e^{i(k_2-k_1)y} \alpha_{xy}\alpha_{yx}^* \nonumber\\
+  &\qquad \qquad - \sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L}\sum_{y=\max\{x-d,\mu(t)-L,\nu(t)-L\}}^{\min\{x+d,\mu(t)+L,\nu(t)+L\}} e^{-\frac{(x-\mu(t))^2}{\sigma^2} - \frac{(y-\nu(t))^2}{\sigma^2}} \Bigg].\label{eq:approximation_ip}
+\end{align}
+While this is a rather complicated expression when $|\mu(t) - \nu(t)| \leq 2L$, for times outside this range only the first term is nonzero, and is in fact exactly $\gamma^{-2}$.  Hence, for times when the two wave packets do not overlap, our approximation $\ket{\alpha(t)}_{\pm}$ is exactly normalized.  If we can show that the latter two terms are small for all times $t$, we will then have that our approximation is almost normalized, as we need.
+
+Let us first inspect the second term in \eq{approximation_ip}, corresponding to the cross terms between the two wave packets.  We can expand the sum as
+\begin{align}
+  &\sum_{x,y=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}}e^{i (k_1-k_2) x}e^{i(k_2-k_1)y} \alpha_{xy}\alpha_{yx}^*\nonumber\\
+  &\qquad = e^{-i\theta_{\pm}} \sum_{\substack{x,y=\max\{\mu(t),\nu(t)\}-L\\y-x > d}}^{\min\{\mu(t),\nu(t)\}+L}  e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x}e^{i (k_2 - k_1) y}\nonumber\\
+  &\qquad\qquad + e^{i\theta_{\pm}} \sum_{\substack{x,y=\max\{\mu(t),\nu(t)\}-L\\x-y > d}}^{\min\{\mu(t),\nu(t)\}+L}  e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x}e^{i (k_2 - k_1) y},
+\end{align}
+and then inspect each of these two terms individually.  We can then see
+\begin{align}
+ &\sum_{\substack{x,y=\max\{\mu(t),\nu(t)\}-L\\y-x > d}}^{\min\{\mu(t),\nu(t)\}+L}  e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x}e^{i (k_2 - k_1) y}\nonumber\\
+ &\qquad = \sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x}\sum_{y = x+d+1}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}} e^{i (k_2 - k_1) y}\\
+ &\qquad = \sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x} e^{-\frac{(\mu(t)-\nu(t))^2}{4\sigma^2} }\sum_{y=x+d+1}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(y - \frac{\mu(t)+\nu(t)}{2})^2}{\sigma^2}} e^{i (k_2-k_1)y}.\label{eq:diagonal_term_overlap_single}
+\end{align}
+Now, this second sum is simply a finite Gaussian approximation related to the $h$ function from \chap{scattering_on_graphs}, with an offset from the center.  From this, we have
+\begin{align}
+  &\sum_{y=x+d+1}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(y - \frac{\mu(t)+\nu(t)}{2})^2}{\sigma^2}} e^{i (k_2-k_1)y}= e^{i (k_2-k_1) \frac{\mu(t)+\nu(t)}{2}}\sum_{y = x+d+1 - \frac{\mu(t)+\nu(t)}{2}}^{\min\{\mu(t),\nu(t)\}+L - \frac{\mu(t)+\nu(t)}{2}} e^{ -\frac{y^2}{\sigma^2}} e^{i (k_2-k_1)y}.
+\end{align}
+Assuming that $\mu(t)+\nu(t)$ is even, this is simply
+\begin{align}
+   &e^{i (k_1 - k_2) \frac{\mu(t) + \nu(t)}{2}}\sum_{y=x+d+1}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(y - \frac{\mu(t)+\nu(t)}{2})^2}{\sigma^2}} e^{i (k_2-k_1)y}\nonumber\\
+    &\qquad =\begin{cases} V_{1,\frac{\mu(t)+\nu(t)}{2} - x - d - 1}^{\frac{\sigma}{\sqrt{2}}}(k_1-k_2) + 1 + V_{1,L -\frac{ |\mu(t) - \nu(t)|}{2}}^{\frac{\sigma}{\sqrt{2}}}(k_2-k_1) & \mu(t) + \nu(t) > 2(x+d+1)\\
+     V_{x+d+1-\frac{\nu(t)+\mu(t)}{2},L-\frac{|\nu(t)-\mu(t)|}{2}}^{\frac{\sigma}{\sqrt{2}}}(k_2-k_1) & \text{otherwise.}  
+   \end{cases}\label{eq:overlap_y_sums}
+\end{align}
+For both cases, we have that this is bounded by some constant value in norm by \lem{tail_bounds} from \chap{scattering_on_graphs}.   If $\mu(t) + \nu(t)$ is odd, we can simply note that
+\begin{align}
+  \sum_{y=a}^b e^{-\frac{1}{\sigma^2}(y + \frac{1}{2})^2} e^{ i \phi y} &= e^{-i \frac{\phi}{2}} \sum_{y = a}^{b} e^{ - \frac{(2y + 1)^2}{4\sigma^2}} e^{ i \frac{\phi}{2} (2y + 1)}\\
+  & = e^{ - i\frac{\phi}{2}} \Bigg[\sum_{z = 2a + 1}^{2b+1} e^{-\frac{z^2}{4\sigma^2} }e^{i \frac{\phi}{2} z}  - \sum_{z = a}^b e^{-\frac{z^2}{\sigma^2}} e^{i \phi z}\Bigg],
+\end{align}
+where both of the sums can be bounded by constants in norm in a manner similar to \eq{overlap_y_sums}.  As such, we have that for all times $t$,
+\begin{align}
+  \Bigg|\sum_{y =x+d+1}^{\min\{\mu(t),\nu(t)\} + L} e^{-\frac{(y-\frac{\mu(t)+\nu(t)}{2})^2}{\sigma^2}} e^{i (k_2-k_1)y} \Bigg| < \kappa
+\end{align}
+for some constant $\kappa$ that might depend on $L$, $\sigma$, and $k_2-k_1$.  We can then use this to bound the norm of \eq{diagonal_term_overlap_single} as
+\begin{align}
+  &\Bigg|\sum_{\substack{x,y=\max\{\mu(t),\nu(t)\}-L\\y-x > d}}^{\min\{\mu(t),\nu(t)\}+L}  e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x}e^{i (k_2 - k_1) y}\Bigg|\nonumber\\
+  &\qquad \leq \kappa e^{- \frac{(\mu(t) - \nu(t))^2}{2\sigma^2}} \sum_{x=\max\{\mu(t),\nu(t) \}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{ - \frac{\big( x - \frac{\mu(t) + \nu(t)}{2}\big)^2}{\sigma^2}}\\
+  &\qquad \leq \kappa e^{-\frac{(\mu(t)-\nu(t))^2}{2\sigma^2}} h_{\infty}^{\sqrt{2}\sigma}(0)\\
+  &\qquad \leq 6\sqrt{\pi} \sigma \kappa e^{-\frac{(\mu(t)-\nu(t))^2}{2\sigma^2}},
+\end{align}
+where the second inequality arose since we didn't know whether $\mu(t)+\nu(t)$ was even or odd, and the third from our bounds on $h_{\infty}^\sigma(0)$.  A similar argument gives the same bound for the sum with $x-y > d$.
+
+For the third term in \eq{approximation_ip}, we again use a rather simple approximation.  Namely, we have
+\begin{align}
+  \sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L}\sum_{y=\max\{x-d,\mu(t)-L,\nu(t)-L\}}^{\min\{x+d,\mu(t)+L,\nu(t)+L\}} e^{-\frac{(x-\mu(t))^2}{\sigma^2} - \frac{(y-\nu(t))^2}{\sigma^2}} &< (2d+1) h_\infty^{\sigma/\sqrt{2}} (0)\\
+  & < (2d+1) 2\sqrt{\pi} \sigma ,
+\end{align}
+where we again used our bounds on $h_\infty^\sigma(0)$ from \lem{h_bounds} from \chap{scattering_on_graphs}.
+
+Putting these bounds together, we then have that
+\begin{align}
+  &\Big|{}_\pm\braket{\alpha(t)}{\alpha(t)}_{\pm} - 1 \Big| \nonumber\\
+  & \qquad\leq \gamma^2 \Bigg[ \Bigg|\sum_{x,y=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}}e^{i (k_1-k_2) x}e^{i(k_2-k_1)y} \alpha_{xy}\alpha_{yx}^*\Bigg| \nonumber\\
+  &\qquad \qquad + \Bigg|\sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L}\sum_{y=\max\{x-d,\mu(t)-L,\nu(t)-L\}}^{\min\{x+d,\mu(t)+L,\nu(t)+L\}} e^{-\frac{(x-\mu(t))^2}{\sigma^2} - \frac{(y-\nu(t))^2}{\sigma^2}} \Bigg|\Bigg]\\
+  &\qquad \leq  \gamma^2 \Bigg[2 \bigg(6 \sqrt{\pi} \sigma \kappa e^{-\frac{(\mu(t)-\nu(t))^2}{2\sigma^2}} \bigg) + 2(2d+1)\sqrt{\pi} \sigma \Bigg]\\
+  &\qquad \leq 2\sqrt{\pi} \sigma \gamma^2 \big(\kappa + 2d + 1 \big).
+\end{align}
+Since $\gamma^2\propto \sigma^{-2}$, we then have that our normalization is then off by something bounded by $\OO(\sigma^{-1})$, which will be sufficient for our purposes.
+
+
+With the above bounds on the normalization, we can now analyze our approximations to the time-evolved states. We find that 
+\begin{align}
+  &{}_{\pm}\braket{\scat(p_1;p_2)}{\alpha(t)}_\pm \nonumber\\
+  &\qquad= \frac{\gamma e^{-2it(\cos(k_1) + \cos(k_2))}}{\sqrt{2}} \sum_{x= \mu(t) -L}^{\mu(t) + L} \sum_{y=\nu(t) -L}^{\nu(t)+L} e^{i k_1 x} e^{i k_2 y} e^{-\frac{(x-\mu(t))^2}{2\sigma^2}} e^{-\frac{(y-\nu(t))^2}{2\sigma^2}} \beta_{x,y}\nonumber\\
+  &\qquad\qquad\times\Big({}_{\pm}\braket{\scat(p_1;p_2)}{x,y} \pm  {}_{\pm}\braket{\scat(p_1;p_2)}{y,x}\Big)\\
+  &\qquad = \gamma e^{-2it(\cos(k_1) + \cos(k_2))} \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y > x+r}}^{\nu(t)+L}  e^{i k_1 x} e^{i k_2 y} e^{-\frac{(x-\mu(t))^2}{2\sigma^2}} e^{-\frac{(y-\nu(t))^2}{2\sigma^2}} \nonumber\\
+  &\qquad\qquad\times e^{i \frac{p_1}{2} (x+y)}\Big(e^{i p_2 (x-y)} \pm e^{-i\theta_{\pm}(p_1;p_2)} e^{- i p_2 (x-y)}\Big)\nonumber\\
+  &\qquad \qquad+ \gamma e^{-2it(\cos(k_1) + \cos(k_2))} \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y < x-r}}^{\nu(t)+L}  e^{i k_1 x} e^{i k_2 y} e^{-\frac{(x-\mu(t))^2}{2\sigma^2}} e^{-\frac{(y-\nu(t))^2}{2\sigma^2}}e^{i\theta_{\pm}(k_1,k_2)} \nonumber\\
+  &\qquad\qquad\times e^{i \frac{p_1}{2} (x+y)}\Big(e^{-i\theta_\pm(p_1;p_2)} e^{i p_2 (x-y)} \pm  e^{- i p_2 (x-y)}\Big).
+\end{align}
+While this is a rather complicated expression, if we break the terms into smaller pieces, we find that
+\begin{align}
+  &{}_{\pm}\braket{\scat(p_1;p_2)}{\alpha(t)}_\pm \nonumber\\
+  &\qquad = \gamma e^{-2i t (\cos(k_1) + \cos (k_2))}\Bigg[\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y > x+r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i \big(\frac{k_1 + k_2}{2} +\frac{p_1}{2} \big)(x+y)}\nonumber\\
+  &\qquad\qquad \times\Big( e^{i \big(\frac{k_1 - k_2}{2} + p_2 \big) (x-y)} \pm e^{-i\theta_{\pm}(p_1;p_2)} e^{i \big(\frac{k_1-k_2}{2} - p_2 \big)(x-y)} \Big) \nonumber\\
+  &\qquad\qquad+\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y < x-r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i \big(\frac{k_1 + k_2}{2} +\frac{p_1}{2} \big)(x+y)}\nonumber\\
+  &\qquad\qquad \times\Big(e^{i\big(\theta_{\pm}(k_1,k_2) - \theta_\pm(p_1;p_2)\big)} e^{i \big(\frac{k_1 - k_2}{2} + p_2 \big) (x-y)} \pm  e^{i\theta_{\pm}(k_1,k_2) }e^{i (\frac{k_1-k_2}{2} - p_2 )(x-y)} \Big)\Bigg]\\
+  &\qquad = \gamma e^{-2it (\cos(k_1) + \cos(k_2))} \Bigg[ \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{y=\nu(t)-L}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y} \nonumber\\ 
+  &\qquad\qquad + \Big(e^{i(\theta_{\pm}(k_1,k_2) - \theta_{\pm}(p_1;p_2))} - 1\Big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y>x+r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y}\nonumber\\
+  &\qquad\qquad \pm \Big(e^{-i\theta_{\pm}(p_1;p_2)}\delta_{\mu(t)\leq\nu(t)} + e^{i  \theta_{\pm}(k_1,k_2)}\delta_{\mu(t) > \nu(t)}\Big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{y=\nu(t)-L}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
+  &\qquad\qquad \pm \delta_{\mu(t)\leq \nu(t)} \big( e^{i\theta_{\pm}(k_1,k_2)} - e^{-i\theta_{\pm}(p_1;p_2)}\big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y< x-r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
+  &\qquad\qquad \pm \delta_{\mu(t)> \nu(t)} \big( e^{-i\theta_{\pm}(p_1;p_2)} - e^{i\theta_{\pm}(k_1,k_2)}\big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y> x+r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
+  &\qquad\qquad -\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\|x-y|\leq r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}}\bigg( e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y} \nonumber\\
+  &\qquad\qquad \pm \Big(e^{-i\theta_{\pm}(p_1;p_2)}\delta_{\mu(t)\leq\nu(t)} + e^{i  \theta_{\pm}(k_1,k_2)}\delta_{\mu(t) > \nu(t)}\Big) e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\bigg)\Bigg].\label{eq:alpha_scat_ip}
+\end{align}
+While this expansion takes up much more room than before, it nicely organizes each of the terms in the inner product.  Depending on the value of $p_1$ and $p_2$, most of the norm in \eq{alpha_scat_ip} is on either the first or the third terms, with the rest small corrections.  In fact, the first of these terms is proportional to $h_{L}^\sigma (k_1+p_1/2 + p_2) h_L^\sigma(k_2+p_1/2- p_2)$, while the second is similar but with $p_2\mapsto -p_2$.
+
+With a decent understanding of these inner products, we can now define a Gaussian approximation to our assumed approximation of the time-evolved states.  In particular, since most of the norm is contained on terms proportional to a product of $h_L^\sigma(\theta)$, our approximated time-evolved states will be centered about those $p_1$ and $p_2$ such that the $\theta \approx 0$.  Explicitly, let us then define the states
+\begin{align}
+  \ket{w(t)} &= \eta e^{ - 2 i t (\cos k_1 + \cos k_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2}\big)} e^{i  \phi_2 (\mu(t) - \nu(t))} e^{ -\frac{ \sigma^2 \phi_1^2}{4}} e^{ -\sigma^2 \phi_2^2} \ket{\scat(p_1 + \phi_1; p_2 + \phi_2)}_{\pm}
+\end{align} 
+where
+\begin{align}
+p_1 &= - k_1 - k_2 & p_2 & = \frac{k_2 - k_1}{2} &
+  \eta^{-2} &= \int_{-\infty}^\infty \int_{-\infty}^\infty \frac{d\phi_1 d\phi_2}{4\pi^2} e^{ -\sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2 \big)} = \frac{1}{4\pi\sigma^2},
+\end{align}
+and $\delta$ is a constant that we will define later.  While the states $\ket{w(t)}$ are not exactly normalized, we have that
+\begin{align}
+   \braket{w(t)}{w(t)} &= \eta^2 \iint_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2}  e^{ -\sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2 \big)} &= 1  - \frac{\eta^2}{\pi^2} \int_\delta^{\infty} \int_{\delta}^\infty d\phi_1d\phi_2 e^{ - \sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2\big)}\label{eq:w_norm}\\
+   & \geq  1 - \frac{1}{\pi \delta^2 \sigma^2}e^{- \frac{5 \sigma^2 \delta^2}{2}},
+\end{align}
+and as the second term on the right hand side of \eq{w_norm} is non-negative, we have that $\braket{w(t)}{w(t)} \leq 1$.
+
+%%%%
+% 1 integrand
+
+We will now want to understand the relationship between the $\ket{\alpha(t)}$ and $\ket{w(t)}$, as we did in the proof of \thm{single_particle_wavepacket_bound}.  We then have
+\begin{align}
+&\braket{w(t)}{\alpha(t)}_{\pm} \nonumber\\
+&\qquad = \eta e^{2it(\cos k_1 + \cos k_2)}\int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{-i \phi_1 \frac{\mu(t) + \nu(t)}{2}} e^{i \phi_1(\nu(t) - \mu(t))} e^{-\frac{\sigma^2 \phi_1^2}{4} - \sigma^2 \phi_2^2}\nonumber\\
+&\qquad\qquad\qquad\qquad {}_\pm\braket{\scat(p_1+\phi_1;p_2+\phi_2)}{\alpha(t)}_\pm.\label{eq:w_alpha_ip}
+\end{align}
+It will then be worthwhile to expand ${}_\pm\braket{\scat(p_1+\phi_2;p_2+\phi_2)}{\alpha(t)}_\pm$ as in \eq{alpha_scat_ip}, and bound the norm for each term individually.   By contracting terms and by a slight relabelling of the dummy variable used for the sums, we then have the first term in the integrand for \eq{w_alpha_ip} is exactly
+\begin{align}
+  &\iint_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2}e^{-\frac{\sigma^2\phi_1^2}{2} - \sigma^2 \phi_2^2} h_L^\sigma\Big(\frac{\phi_1}{2} + \phi_2\Big)h_L^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\\
+  &\qquad = \iint_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2}e^{-\frac{\sigma^2\phi_1^2}{2} - \sigma^2 \phi_2^2} \bigg[h_\infty^\sigma\Big(\frac{\phi_1}{2} + \phi_2\Big)h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\nonumber\\
+  &\qquad\qquad + h_\infty^\sigma\Big(\frac{\phi_1}{2} + \phi_2\Big)\bigg[h_L^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\bigg]\nonumber\\
+  &\qquad\qquad + \bigg[h_L^\sigma\Big(\frac{\phi_1}{2} + \phi_2\Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} + \phi_2\Big)\bigg]h_L^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\bigg]\label{eq:w_alpha_important}.
+\end{align}
+Again, there are several integrals, but most of the amplitude is contained on the first.  For the first term, we can actually show that the integral is at least
+\begin{align}
+  &\int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} h_\infty^\sigma \Big(\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big( \frac{\phi_1}{2} + \phi_2\Big)\nonumber\\
+  & \qquad =  \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2} h_\infty^{1/(2\pi \sigma)} \Big[2 \pi i \sigma^2 \Big(\frac{\phi_1}{2} - \phi_2 \Big)\Big]h_\infty^{1/(2\pi \sigma)} \Big[2 \pi i \sigma^2 \Big(\frac{\phi_1}{2} +\phi_2 \Big)\Big]\\
+ & \qquad \geq \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2}\\
+ & \qquad = \frac{1}{2} \braket{w(t)}{w(t)}
+\end{align}
+where we used the fact that $h_\infty^\sigma(i \phi) \geq 1$ for real $\phi$.  Using the upper bounds on $h$ from \lem{h_bounds}, we also have that
+\begin{align}
+&\int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} h_\infty^\sigma \Big(\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big( \frac{\phi_1}{2} + \phi_2\Big)\nonumber\\
+& \qquad \leq \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2} \Bigg[1 + 2 \Big(1 + \frac{ 1}{\pi \sigma^2} \frac{1}{4 \pi -  | \phi_1 - 2\phi_2|} \Big)e^{-2\pi^2 \sigma^2 + \pi \sigma^2 (\phi_1 - 2 \phi_2)} \Bigg]\nonumber\\
+& \qquad \qquad \times   \Bigg[1 + 2 \Big(1 + \frac{ 1}{\pi \sigma^2} \frac{1}{4 \pi -  | \phi_1+ 2\phi_2|} \ \Big)e^{-2\pi^2 \sigma^2 +   \pi \sigma^2 (\phi_1 + 2 \phi_2)} \Bigg]\\
+& \qquad \leq \frac{1}{2} \Big[1 + 3 e^{ -  \pi^2 \sigma^2 \big(2 \pi - 3\delta\big)} \Big]^2  \braket{w(t)}{w(t)}
+\end{align}
+where we assumed that $2\pi > 3 \delta$, and that $\sigma \geq 1$. 
+
+For the second and third terms of \eq{w_alpha_important}, note that for any real $\varphi_1$, $\varphi_2$, and for any $L_1,L_2 > \sigma \geq 1$, we have that
+\begin{align}
+  &\Big| h_{L_1}^\sigma(\varphi_1) \big(h_{L_2}^\sigma(\varphi_2) - h_\infty^\sigma(\varphi_2) \big) \Big| \nonumber\\
+  &\qquad\leq \big| h_\infty^\sigma(0)\big| \frac{2\sigma^2}{L_2} e^{-\frac{L_2^2}{2\sigma^2}}\\
+   & \qquad \leq  \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }\Big [ 1 + 2 (1 + \sigma^2) e^{ -\frac{1}{2\sigma^2}}\Big]\\
+   & \qquad \leq \frac{6 \sigma^4}{L}  e^{ - \frac{L^2}{2\sigma^2}}.
+\end{align}
+If we then use this bound for both of the integrands, we have 
+\begin{align}
+  &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \Big[h_\infty^\sigma\Big(\frac{\phi_1}{2} + \phi_2\Big)\bigg[h_L^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\bigg]\nonumber\\
+  &\qquad + \bigg[h_L^\sigma\Big(\frac{\phi_1}{2} + \phi_2\Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} + \phi_2\Big)\bigg]h_L^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\bigg]\Bigg|\nonumber\\
+  &\qquad \qquad \leq  2\int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \frac{6 \sigma^4}{L}  e^{-\frac{L^2}{2\sigma^2}}\\
+  & \qquad\qquad < \frac{3\sigma^4}{\pi^2 L}  e^{ - \frac{ L^2}{2\sigma^2}}\int_{-\infty}^\infty \int_{-\infty}^\infty  d\phi_1 d\phi_2 e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}\\
+  & \qquad\qquad = \frac{ 6\sigma^2}{\pi L}  e^{ - \frac{L^2}{2\sigma^2}}.
+\end{align}
+From this, we then approximately know the norm of the first term in \eq{w_alpha_ip}.
+
+%%
+% Second integrand
+For the second term in \eq{w_alpha_ip}, we will show that it can be bounded in norm, using the fact that the angle $\theta_\pm$ is a bounded rational function of the momentum.  From this, we know that it is differentiable as a function of both $\phi_1$ and $\phi_2$ on some neighborhood $U$ of $(p_1,p_2)$.  Let us assume that $\delta$ is chosen so that $[-\delta,\delta]\times [-\delta,\delta] \subset U$, and now let
+\begin{align}
+  \Gamma = \max_{[-\delta,\delta]\times [-\delta,\delta]} \big|\nabla e^{i \theta_{\pm}(p_1 +\phi_1, p_2 +\phi_2)}\big|.
+\end{align}
+  We then have that
+\begin{align}
+  &\Bigg| \iint_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2} e^{-i \phi_1 \frac{\mu(t) + \nu(t)}{2}} e^{i \phi_1(\nu(t) - \mu(t))} e^{-\frac{\sigma^2 \phi_1^2}{4} - \sigma^2 \phi_2^2} \nonumber\\
+  & \qquad \times \Big(e^{i(\theta_{\pm}(k_1,k_2) - \theta_{\pm}(p_1;p_2))} - 1\Big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y>x+r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y} \Bigg|\nonumber\\
+  &\qquad \qquad < \iint_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2} \Gamma \sqrt{\phi_1^2 +\phi_2^2} e^{-\frac{\sigma^2 \phi_1^2}{4} - \sigma^2 \phi_2^2}h_L^\sigma (0) h_L^\sigma(0)\\
+  &\qquad \qquad < \frac{\Gamma\sigma^2}{2\pi} \iint_{-\infty}^\infty d\phi_1 d\phi_2 \sqrt{\phi_1^2 + \phi_2^2} e^{-\frac{\sigma^2}{4} (\phi_1^2 + \phi_2^2)}\\
+  &\qquad \qquad = \Gamma\sigma^2 \int_{0}^\infty r^2 e^{-\frac{\sigma^2}{4}r^2} dr\\
+  &\qquad \qquad = \frac{2\sqrt{\pi}\Gamma}{\sigma}
+\end{align}
+and we have a bound on the norm of the second term in \eq{w_alpha_ip}.
+
+%%
+% third integrand
+The third term in \eq{w_alpha_ip} is bound in a manner very similar to the first term. In particular, can rearrange the sums, so that the term is proportional to the product of two $h_L^\sigma(\theta)$, where the $\theta$ is bounded away from 0.  If we take the absolute value, so as to get rid of the extraneous phases, we find that
+\begin{align}
+&\Bigg| \int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} \Big(e^{-i\theta_{\pm}(p_1;p_2)}\delta_{\mu(t)\leq\nu(t)} + e^{i  \theta_{\pm}(k_1,k_2)}\delta_{\mu(t) > \nu(t)}\Big) \nonumber\\
+&\qquad e^{i (k_1-k_2  - 2\phi_2)\mu(t)}e^{i(k_2 -k_1 +2\phi_2)\nu(t)}h_L^\sigma \Big(k_1 -k_2 +\frac{\phi_1}{2} - \phi_2\Big) h_L^\sigma \Big(k_2 - k_1 + \frac{\phi_1}{2} + \phi_2\Big)\Bigg|\nonumber\\
+&\qquad \qquad \leq \iint_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2}\bigg| h_L^\sigma \Big(k_1 -k_2 +\frac{\phi_1}{2} - \phi_2\Big) h_L^\sigma \Big(k_2 - k_1 + \frac{\phi_1}{2} + \phi_2\Big)\bigg|.
+\end{align}
+If we then approximate the $h_L$ by $h_\sigma$, as we did for the first term, we can use the exact same bound for the difference, as there was no reliance on the arguments to the $h$ functions, other than that they were purely real.  As such, we need only bound the above integral for infinite $h$'s.
+\begin{align}
+&\iint_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2}\bigg| h_\infty^\sigma \Big(k_1 -k_2 +\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big(k_2 - k_1 + \frac{\phi_1}{2} + \phi_2\Big)\bigg|\nonumber\\
+&\qquad \leq \frac{\sigma^2}{2\pi} \iint_{-\delta}^\delta e^{-\sigma^2\big( \frac{\phi_1^2}{2}  + \phi_2^2 + \big( \phi_2 + k_1-k_2\big)^2\big)} \nonumber\\
+&\qquad\qquad\times h_{\infty}^{1/(2\pi\sigma)} \Big[2\pi i \sigma^2 \Big(k_2 - k_1 + \frac{\phi_1}{2} +\phi_2 \Big)\Big] h_\infty^{1/(2\pi\sigma)}\Big[ 2\pi i \sigma^2  \Big(k_1 - k_2+ \frac{\phi_1}{2}  -\phi_2 \Big) \Big]\\
+    & \qquad\leq  \frac{\sigma^2}{2\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \frac{\sigma^2 \phi_1^2}{2}}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)}\nonumber\\
+    &\qquad\qquad \times\big( 1 + 3 e^{ - 2 \pi \sigma^2 ( \pi - | 2 p_2 + \phi_2 - \frac{\phi_1}{2} | )}\big) \big( 1 + 3 e^{ - 2 \pi \sigma^2 ( \pi - | 2 p_2 + \phi_2 + \frac{\phi_1}{2} | )}\big) 
+\end{align}
+At this point, if $\pi > |k_1-k_2|$, we can choose $\delta$ so that $\pi > |k_1-k_2| + 2\delta$ and thus 
+\begin{align}
+ &\iint_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2}\bigg| h_\infty^\sigma \Big(k_1 -k_2 +\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big(k_2 - k_1 + \frac{\phi_1}{2} + \phi_2\Big)\bigg|\nonumber\\
+&\qquad \leq \frac{2\sigma^2}{\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)}\\
+    & \qquad \leq \frac{2 \sigma}{\sqrt{\pi}} \int_{-\delta}^\delta d\phi_2 e^{ - 2\sigma^2 ( p_2^2 + (p_2 + \phi_2)^2)}\\
+    &\qquad \leq 4\sqrt{2} e^{ -2 \sigma^2 p_2^2} = 4\sqrt{2} e^{-\frac{\sigma^2}{2} (k_2-k_1)^2}.
+\end{align}
+However, if $\pi \leq |k_1 -k_2|$, we can instead bound the functions approximating $h$ by their largest value, which is attained when $2\phi_2 \pm \phi_1 = 3 \delta$.  In particular, we have
+\begin{align}
+    &\iint_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2}\bigg| h_\infty^\sigma \Big(k_1 -k_2 +\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big(k_2 - k_1 + \frac{\phi_1}{2} + \phi_2\Big)\bigg|\nonumber\\
+&  \qquad \leq \frac{8\sigma^2}{\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)} e^{ 4 \pi \sigma^2 ( 2|p_2| + \frac{3\delta}{2} - \pi)} \\
+    & \qquad \leq \frac{8 \sigma}{\sqrt{\pi}} e^{4\pi \sigma^2 (2|p_2| + \frac{3}{2}\delta -\pi) - 2 \sigma^2 p_2^2 } \int_{-\delta}^\delta d\phi_2 e^{ -2\sigma^2( p_2 + 2 p_2 \phi_2 + \phi_2^2)}\\
+    &\qquad \leq \frac{16\delta}{\sqrt{\pi}}e^{-\sigma^2 ( 4\pi^2  - 8 \pi |p_2|  + 4 \sigma^2 p_2^2 - 6 \pi \delta + 2\delta^2 - 4 \delta |p_2| )}\\
+    & \qquad \leq \frac{16 \delta}{\sqrt{\pi}} e^{ -\sigma^2 (4 [\pi - |p_2|]^2 - (4|p_2| + 6\pi)\delta)}\\
+    &\qquad \leq \frac{ 16 \delta}{\sqrt{\pi}} e^{ - 3 \sigma^2 \delta}
+\end{align}
+where we assume that $\delta < \frac{ (\pi - |p_2|)^2}{4|p_2| + 6\pi}$ (and note that $|p_2| < \pi$ by assumption).  We can then put these two bounds together, if we assume that $\delta < \frac{|\pi - 2|p_2||}{2}$ for $2|p_2| < \pi$ or that $\delta <  \frac{ (\pi - |p_2|)^2}{4|p_2| + 6\pi}$ for $2|p_2| \geq \pi$, and thus 
+\begin{align}
+    &\iint_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2}\bigg| h_\infty^\sigma \Big(k_1 -k_2 +\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big(k_2 - k_1 + \frac{\phi_1}{2} + \phi_2\Big)\bigg|\nonumber\\
+& \qquad \leq \frac{16 }{\sqrt{\pi}} e^{ - 2 \sigma^2 \delta}.
+\end{align}
+
+%%%%%
+% 4th and fifth terms
+
+For the fourth term in \eq{w_alpha_ip}, we will use \lem{tail_bounds} from \chap{scattering_on_graphs}, as this is nearly the same system as used in that lemma.  In particular, we have that
+\begin{align}
+  &\Bigg|\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y< x-r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\Bigg|\nonumber\\
+  &\qquad \leq \Bigg|\sum_{x=\nu(t)-L+r+1}^{\mu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x} V_{x-r-1 - \nu(t),L}^\sigma\big(k_2 - k_1 + \frac{\phi_1}{2} + \phi_2 \big) \Bigg|\\
+  &\qquad \leq \chi h_{\infty}^\sigma (0) \leq \sqrt{8\pi} \chi \sigma .
+\end{align}
+As such, the corresponding integral can be bounded as
+\begin{align}
+  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} e^{-i (\frac{\phi_1}{2} + \phi_2)\mu(t)}e^{-i(\frac{\phi_1}{2} - \phi_2)\nu(t)} \delta_{\mu(t)\leq \nu(t)} \big( e^{i\theta_{\pm}(k_1,k_2)} - e^{-i\theta_{\pm}(p_1;p_2)}\big)\nonumber\\
+&\qquad\times \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y< x-r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\Bigg|\nonumber\\
+&\qquad \qquad \leq 2 \iint_{-\delta}^\delta \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} \sqrt{8\pi} \chi \sigma\\
+&\qquad\qquad \leq \sqrt{\frac{8}{\pi}} \frac{\chi }{\sigma}.
+\end{align}
+We can use a near exact method to bound the fifth term in \eq{w_alpha_ip}, except where we interchange the place of $x$ and $y$.
+
+%%%%%%%%
+% 6th term
+
+Finally, we can also bound the sixth term in \eq{w_alpha_ip} in a manner similar to the fourth term.  Basically, this term is a sum along the diagonal, and the second sum only includes a constant number of terms.  Hence, we will bound this by a constant, and have a result similar to the fourth.  Explicitly, we have that the sum can be bounded as
+\begin{align}
+  &\Bigg| \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\|x-y|\leq r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}}\bigg( e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y} \nonumber\\
+  &\qquad \pm \Big(e^{-i\theta_{\pm}(p_1;p_2)}\delta_{\mu(t)\leq\nu(t)} + e^{i  \theta_{\pm}(k_1,k_2)}\delta_{\mu(t) > \nu(t)}\Big) e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\bigg)\Bigg|\nonumber\\
+  &\qquad \qquad \leq \sum_{x=-L}^{L} e^{-\frac{x^2}{2\sigma^2}} \sum_{y=-r}^r 2 e^{-\frac{y^2}{2\sigma^2}}\\
+  &\qquad \qquad \leq 2(2r+1) h_{\infty}^\sigma(0) \leq 4(2r+1) \sqrt{2\pi} \sigma.
+\end{align}
+Hence, the integral can be bounded as
+\begin{align}
+  &\Bigg|\iint_{-\delta}^\delta \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} e^{-i (\frac{\phi_1}{2} + \phi_2)\mu(t)}e^{-i(\frac{\phi_1}{2} - \phi_2)\nu(t)}\nonumber\\
+  &\qquad \times \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\|x-y|\leq r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}}\bigg( e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y} \nonumber\\
+  &\qquad \pm \Big(e^{-i\theta_{\pm}(p_1;p_2)}\delta_{\mu(t)\leq\nu(t)} + e^{i  \theta_{\pm}(k_1,k_2)}\delta_{\mu(t) > \nu(t)}\Big) e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\bigg)\Bigg|\\
+  &\qquad \qquad \leq (2r+1)\sigma \sqrt{\frac{2}{\pi^3}} \iint_{-\delta}^\delta d\phi_1 d\phi_2 e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} \\
+  &\qquad \qquad \leq \frac{2(2r+1)}{\sigma} \sqrt{\frac{2}{\pi}}.
+\end{align}
+
+
+At this point, we can then bound the norm in distance between $\ket{w(t)}$ and $\ket{\alpha(t)}_{\pm}$.  Explicitly, we have
+\begin{align}
+   &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
+    &\qquad\leq {}_{\pm}\braket{\alpha(t)}{\alpha(t)}_{\pm} + \braket{w(t)}{w(t)} - \braket{w(t)}{\alpha(t)}_{\pm} - {}_\pm \braket{\alpha(t)}{w(t)}\\
+    &\qquad \leq 2 + 4 \sqrt{\pi} \sigma \gamma^2(\kappa + 2d + 1)  - 2\eta\gamma\Bigg[ \bigg(\frac{1}{2} - \frac{7}{2}e^{-\pi^2\sigma^2(2\pi - 3\delta)}\bigg) \Big(1 - \frac{1}{\pi\delta^2 \sigma^2} e^{-\frac{5\sigma^2\delta^2}{2}} \Big) \nonumber\\
+    &\qquad \qquad  - \frac{6\sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} -  \frac{2\sqrt{\pi} \Gamma}{\sigma} - \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta} - 2\sqrt{ \frac{8}{\pi}} \frac{\chi}{\sigma} + \frac{2(2d+ 1)}{\sigma} \sqrt{\frac{2}{\pi}}\Bigg] .
+\end{align}
+By consolidating terms, using our bounds on $\braket{w(t)}{w(t)}$, $\gamma$, and the definition of $\eta$, we then have the following bound: 
+\begin{align}
+  &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
+    &\qquad\leq 2 + \frac{\kappa + 2d + 1}{\sqrt{\pi}\sigma} \bigg(1 + 3 e^{- \pi^2 \sigma^2} + \frac{\sigma^2}{L} e^{-\frac{L^2}{\sigma^2}} \bigg) \nonumber\\
+    &\qquad \qquad - \frac{2 \sqrt{\pi} \sigma  }{\sqrt{\pi}\sigma} \bigg( 1 - \frac{1}{2} \bigg[3e^{-\pi^2\sigma^2} + \frac{\sigma^2}{L} e^{-\frac{L^2}{\sigma^2}} \bigg] \bigg) \Big(1 - 7 e^{-\pi^2\sigma^2(2\pi-3\delta)} \Big)\nonumber\\
+    &\qquad \qquad + \frac{2\sqrt{\pi}\sigma}{\sqrt{\pi}{\sigma}}\bigg( 1 + \frac{1}{2} \bigg[3e^{-\pi^2\sigma^2} + \frac{\sigma^2}{L} e^{-\frac{L^2}{\sigma^2}} \bigg] \bigg) \nonumber\\
+    &\qquad\qquad \qquad \times\Bigg[ \frac{6 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \bigg(2\sqrt{\pi} \Gamma + 2 \sqrt{\frac{8}{\pi}} \chi + 2(2d+1) \sqrt{\frac{2}{\pi}} \bigg) \frac{1}{\sigma} + \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Bigg]\\
+    &\qquad \leq \frac{2\kappa + 8\pi \Gamma + 16\sqrt{2} \chi + 24(2d+1)}{\sqrt{\pi}} \frac{1}{\sigma} + 21 e^{-2\sigma^2 \delta} + \frac{9 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}.
+\end{align}
+Note that in the last step we rounded some constants, and used the assumption that $\delta < \pi/2$.  
+We then have our bounds on the difference between the assumed time-evolved states and our Gaussian approximations.
+
+
+At this point, we will want to actually bound something to do with the time-evolved state.  In particular, if we remember that $\ket{\alpha(0)}_{\pm} = \ket{\psi(0)}_{\pm}$, and thus that $\ket{w(0)}$ is a good approximation to the initial state, if we can analyze the dynamics of $\ket{w(0)}$ we will also have a good approximation to the state $\ket{\psi(t)}_{\pm}$.  Along these lines, if we define the state
+\begin{align}
+  \ket{v(t)} &= e^{-i H^{(2)}t} \ket{w(0)} \\
+  &= \eta \iint_{-\delta}^\delta \ \frac{d\phi_1 d\phi_2}{4\pi^2} e^{i \phi_1 \big(\frac{\mu + \nu}{2}\big)} e^{i  \phi_2 (\nu - \mu)} e^{ -\frac{ \sigma^2 \phi_1^2}{4}} e^{ -\sigma^2 \phi_2^2}\nonumber\\
+  &\qquad\qquad \times e^{- 4 i t \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2)} \ket{\scat(p_1 + \phi_1; p_2 + \phi_2)}_{\pm}
+\end{align}
+we will have that this state does not change its overlap with $\ket{\psi(t)}$ over time since they both change by the same unitary.  If we can show that $\ket{v(t)}$ and $\ket{w(t)}$ are close in norm, we will have our bound on the time evolution of $\ket{\psi(t)}$.  As expected, one can see
+\begin{align}
+   &\braket{v(t)}{w(t)} \nonumber\\
+   &\qquad= \eta^2 \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2} - \frac{\mu +\nu}{2} \big)} e^{i  \phi_2 (\nu(t) - \mu(t) -\nu + \mu)} \nonumber\\
+   & \qquad\qquad \times e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2} e^{ 2 i t\big( 2 \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2) - \cos(k_1) - \cos(k_2)\big)} \\
+   & \qquad= \braket{w(t)}{w(t)} - \eta^2 \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2}  e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2}\nonumber\\
+   & \qquad\qquad \times \bigg[ 1 - e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2} - \frac{\mu +\nu}{2} \big)} e^{i  \phi_2 (\nu(t) - \mu(t) -\nu + \mu)}e^{ 2 i t\big( 2 \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2) - \cos(k_1) - \cos(k_2)\big)}\bigg] .
+\end{align}
+We can then bound the value of the integrand, using the fact that $|1 - e^{i\theta}| \leq |\theta|$:
+\begin{align}
+  &\bigg| 1 - e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2} - \frac{\mu +\nu}{2} \big)} e^{i  \phi_2 (\nu(t) - \mu(t) -\nu + \mu)}e^{ 2 i t\big( 2 \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2) - \cos(k_1) - \cos(k_2)\big)}\bigg|\nonumber\\
+  & \qquad \leq \bigg|-\frac{\phi_1}{2} \big[ \lceil 2 t \sin k_1\rceil + \lceil 2t \sin k_2\rceil \big] - \phi_2 \big[ \lceil 2 t \sin k_2\rceil - \lceil 2t \sin k_1\rceil\big]  \nonumber\\
+  &\qquad \qquad + 2 t \Big[ 2 \cos\Big( \frac{p_1 +\phi_1}{2}\Big) \cos(p_2 + \phi_2) - \cos(k_1) - \cos(k_2) \Big]\bigg|\\
+  & \qquad \leq |\phi_1| + 2 |\phi_2| + 2 t \bigg| 2\cos\Big( \frac{p_1 +\phi_1}{2}\Big) \cos(p_2 + \phi_2) - \cos(k_1) - \cos(k_2)  \nonumber\\
+  & \qquad \qquad - \frac{\phi_1}{2} \big[ \sin k_1 +   \sin k_2\big] - \phi_2 \big[  \sin k_2 -  \sin k_1\big]\bigg|\\
+  &  \qquad \leq |\phi_1| + 2 |\phi_2| + 2 t \bigg| \cos\Big(- k_2 + \frac{\phi_1}{2} + \phi_2 \Big)  + \cos\Big(- k_1 + \frac{\phi_1}{2} - \phi_2 \Big)- \cos(k_1) - \cos(k_2)  \nonumber\\
+  & \qquad \qquad - \Big(\frac{\phi_1}{2} + \phi_2 \Big)\sin k_2  -\Big(\frac{\phi_1}{2} -  \phi_2\Big) \sin k_1 \bigg|\\
+  & \qquad \leq |\phi_1| + 2 |\phi_2| + 2 t \bigg| \cos(k_2) \big[\cos\big( \frac{\phi_1}{2} + \phi_2 \big) - 1\big] - \sin(k_2) \big[\big( \frac{\phi_1}{2} + \phi_2 \big) - \sin\big( \frac{\phi_1}{2} + \phi_2 \big) \big]  \bigg|\nonumber\\
+  & \qquad \qquad + 2t \bigg| \cos(k_1) \Big[\cos\Big(\frac{\phi_1}{2} - \phi_2 \Big) - 1 \Big] - \sin(k_1) \Big[ \frac{\phi_1}{2} - \phi_2 - \sin\Big(  \frac{\phi_1}{2} - \phi_2\Big) \Big] \bigg|\\
+  & \qquad \leq |\phi_1| + 2 |\phi_2| + 2 t  \Big (\frac{\phi_1}{2} + \phi_2\Big)^2 + 2t \Big( \frac{\phi_1}{2} - \phi_2\Big)^2\\
+  & \qquad \leq |\phi_1| +\frac{t}{2} \phi_1^2 + 2 |\phi_2| + 4 t\phi_2^2.
+\end{align}
+We can then use this in the bound, so that
+\begin{align}
+  & \Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2}  e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2} \bigg[ 1 - e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2} - \frac{\mu +\nu}{2} \big)} e^{i  \phi_2 (\nu(t) - \mu(t) -\nu + \mu)}\nonumber\\
+  & \qquad \qquad \qquad \times e^{ 2 i t\big( 2 \cos\big(\frac{p_1+\phi_1}{2}\big)\cos(p_2+\phi_2) - \cos(k_1) - \cos(k_2)\big)}\bigg] \Bigg|\nonumber\\
+  & \qquad \leq  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2}  e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2} \Big[|\phi_1| + \frac{t}{2} \phi_1^2 + 2 |\phi_2| + 4 t \phi_2^2 \Big]\\
+  & \qquad \leq  \int_{0}^\infty \int_{0}^\infty \frac{d\phi_1 d\phi_2}{\pi^2}  e^{ -\frac{ \sigma^2 \phi_1^2}{2}} e^{ -2\sigma^2 \phi_2^2} \Big[\phi_1 + \frac{t}{2} \phi_1^2 + 2 \phi_2+ 4 t \phi_2^2 \Big]\\
+  &\qquad = \frac{3 t}{8\pi \sigma^4} + \frac{\sqrt{2\pi}}{2\pi^2 \sigma^3}.
+\end{align}
+
+With this, we can then bound the difference between $\ket{v(t)}$ and $\ket{w(t)}$.  In particular, we have
+\begin{align}
+  \norm{\ket{v(t)} - \ket{w(t)}}^2 &= \braket{v(t)}{v(t)} + \braket{w(t)}{w(t)} - \braket{v(t)}{w(t)} - \braket{w(t)}{v(t)}\\
+  & \leq  2 \braket{w(t)}{w(t)} - 2 \Big[ \braket{w(t)}{w(t)}  -\eta^2 \frac{3t}{8\pi \sigma^4} - \eta^2 \frac{\sqrt{2\pi}}{2 \pi^2 \sigma^3}\Big]\\
+  & = \frac{3t}{\sigma^2} + \frac{4 \sqrt{2}}{\sqrt{\pi} \sigma}.
+\end{align}
+
+
+We now have the requisite bounds in order to prove the statement of the theorem, namely bounding the norm of the difference between the time evolved initial state $\ket{\psi(t)}_{\pm}$ and our approximation $\ket{\alpha(t)}_{\pm}$.  In particular, if we once again note that $\ket{\alpha(0)}_\pm = \ket{\psi(0)}_{\pm}$, and remember that $\ket{v(t)} = e^{- i H^{(2)} t} \ket{w(0)}$, we have
+\begin{align}
+  &\norm{ \ket{\psi(t)}_{\pm} - \ket{\alpha(t)}_{\pm}} \nonumber\\
+  &\qquad\leq \norm{\ket{\alpha(0)_\pm} - \ket{w(0)}} + \norm{ \ket{\alpha(t)}_{\pm} - \ket{w(t)}} + \norm{\ket{v(t)} - \ket{w(t)}}\\
+   & \qquad\leq 2 \Bigg[\frac{2\kappa + 8\pi \Gamma + 16\sqrt{2} \chi + 24(2d+1)}{\sqrt{\pi}} \frac{1}{\sigma}    + 21 e^{-2\sigma^2 \delta} + \frac{9 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}\Bigg]^{1/2} + \Big(\frac{3t}{\sigma^2} + \frac{4\sqrt{2}}{\sqrt{\pi} \sigma}\Big)^{1/2}.
+\end{align}
+If we chose $\sigma = \frac{ L}{2 \sqrt{\log(L)}}$, we then have that for $L$ large enough and for $0 < t < c L$,
+\begin{align}
+  &\norm{ \ket{\psi(t)}_{\pm} - \ket{\alpha(t)}_{\pm}} \nonumber\\
+  &\qquad\leq 4 \bigg[\frac{\kappa + 4\pi \Gamma + 8\sqrt{2} \chi + 12(2d+1)}{\sqrt{\pi}+1} \bigg]^{1/2}\frac{(\log L)^{1/4}}{\sqrt{L}} + \sqrt{13 c} \sqrt{ \frac{ \log L}{L}}\\
+  & \qquad \leq 4\sqrt{\frac{c \log L}{L}}
+\end{align}
+Note that the constant in our bound only arises from the term corresponding to our approximate time evolution, as the other terms use a slightly smaller power of $\log L$.  
+\end{proof}
+
+%\begin{proof}
+%The main idea behind this proof will be to show that $\ket{\psi(0)}$ and $\ket{\alpha (t)}$ are both well approximated by a Gaussian distribution over eigenstates of $H^{(2)}$ with momenta near $k_1$ and $k_2$, and then show that time evolving the Gaussian approximation for $\ket{\psi(0)}$ is well approximated by the Gaussian approximation for $\ket{\alpha(t)}$.  
+%  
+%
+%For the first term, we have
+%\begin{align}
+%  &\int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} h_\infty^\sigma \Big(\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big( \frac{\phi_1}{2} + \phi_2\Big)\nonumber\\
+%  & \qquad =  \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2} h_\infty^{1/(2\pi \sigma)} \Big[2 \pi i \sigma^2 \Big(\frac{\phi_1}{2} - \phi_2 \Big)\Big]h_\infty^{1/(2\pi \sigma)} \Big[2 \pi i \sigma^2 \Big(\frac{\phi_1}{2} +\phi_2 \Big)\Big]\\
+% & \qquad \geq \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2}\\
+% & \qquad = \frac{1}{2} \braket{w(t)}{w(t)}
+%\end{align}
+%where we used the fact that $h_\infty^\sigma(i \phi) \geq 1$.  Using the upper bounds on $h$, we also have that
+%\begin{align}
+%&\int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} h_\infty^\sigma \Big(\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big( \frac{\phi_1}{2} + \phi_2\Big)\nonumber\\
+%& \qquad \leq \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2} \Bigg[1 + 2 \Big(1 + \frac{ 1}{\pi \sigma^2} \frac{1}{4 \pi -  | \phi_1 - 2\phi_2|} \Big)e^{-2\pi^2 \sigma^2 + \pi \sigma^2 (\phi_1 - 2 \phi_2)} \Bigg]\nonumber\\
+%& \qquad \qquad \times   \Bigg[1 + 2 \Big(1 + \frac{ 1}{\pi \sigma^2} \frac{1}{4 \pi -  | \phi_1+ 2\phi_2|} \ \Big)e^{-2\pi^2 \sigma^2 +   \pi \sigma^2 (\phi_1 + 2 \phi_2)} \Bigg]\\
+%& \qquad \leq \frac{1}{2} \Big[1 + 3 e^{ -  \pi^2 \sigma^2 \big(2 \pi - 3\delta\big)} \Big]^2  \braket{w(t)}{w(t)}
+%\end{align}
+%where we assumed that $2\pi > 3 \delta$, and that $\sigma \geq 1$. 
+%
+%For the second term, note that for any $\varphi_1$, $\varphi_2$, and for any $L > \sigma \geq 1$, we have that
+%\begin{align}
+%  &\big| \big(h_L^\sigma(\varphi_1) + h_{\infty}^\sigma(\varphi_1)\big)\big(h_L^\sigma(\varphi_2) - h_\infty^\sigma(\varphi_2) \big) \big| \nonumber\\
+%  &\qquad\leq \big| h_L^\sigma(\varphi_1) + h_{\infty}^\sigma(\varphi_1)\big| \frac{2\sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}\\
+%   & \qquad\leq \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }\Big [ 2 + \big|h_L^\sigma (\varphi_2) - h_\infty^\sigma(\varphi_2) \big| + 2 \big| 1 - h_\infty^\sigma(\varphi_2) \big| \Big]\\
+%   & \qquad \leq  \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }\Big [ 2 +   \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }  + 4 (1 + \sigma^2) e^{ -\frac{1}{2\sigma^2}}\Big]\\
+%   & \qquad \leq \frac{24 \sigma^4}{L}  e^{ - \frac{L^2}{2\sigma^2}}.
+%\end{align}
+%If we then use this bound for the integrand, we have 
+%\begin{align}
+%  &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\Bigg|\nonumber\\
+%  & \qquad \leq  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \frac{24 \sigma^4}{L}  e^{-\frac{L^2}{2\sigma^2}}\\
+%  & \qquad \leq \frac{6\sigma^4}{\pi^2 L}  e^{ - \frac{ L^2}{2\sigma^2}}\int_{-\infty}^\infty \int_{-\infty}^\infty  d\phi_1 d\phi_2 e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}\\
+%  & \qquad = \frac{ 12 \sigma^2}{\pi L}  e^{ - \frac{L^2}{2\sigma^2}}.
+%\end{align}
+%
+%For the third term, we can use the same argument, and we have
+%\begin{align}
+%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   \nonumber\\
+%   &\quad \times\Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + 2p_2+ \phi_2 \Big)\Big]\nonumber\\
+%   &\quad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2p_2- \phi_2\Big)\Big]\Bigg|\nonumber\\
+%   &\qquad \qquad \leq \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{ - \frac{L^2}{2\sigma^2}} \leq \frac{ 12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}}.
+%\end{align}
+%
+%For the fourth term, we instead need to use the fact that $h(\phi)$ rapidly decreases for large $\phi$.  In particular, if we assume that $\sigma^{-1} < 2\pi - |k_1| - |k_2|$, we have
+%\begin{align}
+%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
+%    &  \qquad \leq  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big)\\
+%    &\qquad = \frac{\sigma^2}{2\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)} \nonumber\\
+%    &\qquad \qquad \qquad \times h_{\infty}^{1/(2\pi\sigma)} \Big[2\pi i \sigma^2 \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)\Big] h_\infty^{1/(2\pi\sigma)}\Big[ 2\pi i \sigma^2  \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Big]\\
+%    & \leq  \frac{\sigma^2}{2\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)}\big( 1 + 3 e^{ - 2 \pi \sigma^2 ( \pi - | 2 p_2 + \phi_2 - \frac{\phi_1}{2} | )}\big) \big( 1 + 3 e^{ - 2 \pi \sigma^2 ( \pi - | 2 p_2 + \phi_2 + \frac{\phi_1}{2} | )}\big) 
+%\end{align}
+%At this point, if $\pi > |k_1| + |k_2|$, we can choose $\delta$ so that $\pi > |k_1| + |k_2| + 2\delta$ and thus 
+%\begin{align}
+%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
+%    &  \qquad \leq \frac{8\sigma^2}{\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)}\\
+%    & \qquad \leq \frac{8 \sigma}{\sqrt{\pi}} \int_{-\delta}^\delta d\phi_2 e^{ - 2\sigma^2 ( p_2^2 + (p_2 + \phi_2)^2)}\\
+%    &\qquad \leq 4\sqrt{2} e^{ -2 \sigma^2 p_2^2} = 4\sqrt{2} e^{-\frac{\sigma^2}{2} (k_2-k_1)^2}.
+%\end{align}
+%However, if $\pi \leq |k_1| + |k_2|$, we can instead bound the functions approximating $h$ by their largest value, which is attained when $2\phi_2 \pm \phi_1 = 3 \delta$.  In particular, we have
+%\begin{align}
+%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
+%    &  \qquad \leq \frac{8\sigma^2}{\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)} e^{ 4 \pi \sigma^2 ( 2|p_2| + \frac{3\delta}{2} - \pi)} \\
+%    & \qquad \leq \frac{8 \sigma}{\sqrt{\pi}} e^{4\pi \sigma^2 (2|p_2| + \frac{3}{2}\delta -\pi) - 2 \sigma^2 p_2^2 } \int_{-\delta}^\delta d\phi_2 e^{ -2\sigma^2( p_2 + 2 p_2 \phi_2 + \phi_2^2)}\\
+%    &\qquad \leq \frac{16\delta}{\sqrt{\pi}}e^{-\sigma^2 ( 4\pi^2  - 8 \pi |p_2|  + 4 \sigma^2 p_2^2 - 6 \pi \delta + 2\delta^2 - 4 \delta |p_2| )}\\
+%    & \qquad \leq \frac{16 \delta}{\sqrt{\pi}} e^{ -\sigma^2 (4 [\pi - |p_2|]^2 - (4|p_2| + 6\pi)\delta)}\\
+%    &\qquad \leq \frac{ 16 \delta}{\sqrt{\pi}} e^{ - 3 \sigma^2 \delta}
+%\end{align}
+%where we assume that $\delta < \frac{ (\pi - |p_2|)^2}{4|p_2| + 6\pi}$.  We can then put these two bounds together, if we assume that $\delta < p_2^2$ and that $\delta <  \frac{ (\pi - |p_2|)^2}{4|p_2| + 6\pi}$, so that 
+%\begin{align}
+%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
+%    & \qquad \leq \frac{16 }{\sqrt{\pi}} e^{ - 2 \sigma^2 \delta}.
+%\end{align}
+%
+%We can now combine these results, and thus show that $\ket{\alpha(t)}_{\pm}$ is well approximated by $\ket{w(t)}$ for $0\leq t < \frac{\nu(t) - \mu(t) - 2 L}{2 \sin k_2 - 2 \sin k_1}$.  In particular, we have
+%\begin{align}
+%   &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
+%    &\qquad\leq {}_{\pm}\braket{\alpha(t)}{\alpha(t)}_{\pm} + \braket{w(t)}{w(t)} - \braket{w(t)}{\alpha(t)}_{\pm} - {}_\pm \braket{\alpha(t)}{w(t)}\\
+%    &\qquad \leq 1 + \braket{w(t)}{w(t)} - 2 \eta\gamma^2 \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{12 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}} - \frac{12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big).
+%\end{align}
+%For large enough $\sigma$, $L$, and small enough $\delta$, we have that the term multiplying $\eta\gamma$ is negative, and thus we need to give a lower bound on $\eta\gamma^2$.  We know the value of $\eta$, and as a lower bound on $\gamma^2$ we have
+%\begin{align}
+%  \gamma^2 = \frac{1}{h_L^{\sigma/\sqrt{2}}(0)} \geq \frac{1}{\sqrt{\pi} \sigma (1 + 3 e^{-\pi^2\sigma^2})} \geq \frac{1}{\sqrt{\pi} \sigma} \big(1 - 3 e^{-\pi^2 \sigma^2}\big).
+%\end{align}
+%From this, and using our upper bounds on the norm of $\braket{w(t)}{w(t)}$, we have
+%\begin{align}
+% &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2 \nonumber\\
+% &\qquad \leq 1 + \braket{w(t)}{w(t)} - 4 \big(1 - 3 e^{-\pi^2 \sigma^2} \big) \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{24 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}}  -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big)\\
+% & \qquad \leq 1 - \braket{w(t)}{w(t)} (1 -6 e^{-\pi^2 \sigma^2}) + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+% & \qquad \leq 1 - \Big( 1 - \frac{1}{\pi \delta^2 \sigma^2} e^{-\frac{5 \sigma^2 \delta^2}{2}} \Big)(1 -6 e^{-\pi^2 \sigma^2}) + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+% & \qquad \leq \frac{1}{\pi \delta^2 \sigma^2} e^{-\frac{5 \sigma^2 \delta^2}{2}} + 6 e^{-\pi^2 \sigma^2} + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+% &\qquad \leq 44 e^{-2 \sigma^2 \delta} + \frac{32 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}.
+%\end{align}
+%
+%Let us now examine how close $\ket{w(t)}$ and $\ket{\alpha(t)}_\pm$ are for $t > \frac{\nu(t) - \mu(t) + 2L}{2\sin k_2 - 2 \sin k_1}$.  In particular, we have for these times that
+%\begin{align}
+%  &\braket{w(t)}{\alpha(t)}_\pm \nonumber\\
+%  &\qquad= \eta \gamma^2 e^{i \theta_{\pm}(p_1,p_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d \phi_2}{4\pi^2}  e^{-\frac{\sigma^2 \phi_1^2}{4}}  e^{- \sigma^2 \phi_2^2}\Big[e^{-i \theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} h_L^\sigma \big(\frac{\phi_1}{2} - \phi_2 \big) h_L^\sigma\Big( \frac{\phi_1}{2} + \phi_2 \Big) \nonumber\\
+%  & \qquad \quad\pm e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))} h_L^\sigma\Big(\frac{\phi_1}{2} - 2 p_2 - \phi_2\Big) h_L^\sigma\Big(\frac{\phi_1}{2}+ 2 p_2 + \phi_2\Big)\Big]\\
+%  & \qquad = \eta\gamma^2 e^{i \theta_{\pm}(p_1,p_2)}  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \Bigg[ e^{-i \theta_{\pm}(p_1,p_2) }h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \nonumber\\
+%  &\qquad\quad \Big(e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} - e^{- i \theta_{\pm}(p_1, p_2)}  \Big) h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \nonumber\\
+% &\qquad \quad  + e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\nonumber\\
+%   &\qquad \quad\pm  e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}  \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + 2p_2+ \phi_2 \Big)\Big] \nonumber\\
+%   &\qquad \quad \qquad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2p_2- \phi_2\Big)\Big]\nonumber\\
+%   &\qquad \quad\pm  e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg].
+%\end{align}
+%This is nearly an identical overlap as for the small $t$ case, except for the changing angle $\theta_\pm$.  As such, we can bound most of the terms as before.
+%
+%The first term in the bound is simply
+%\begin{align}
+%  &e^{i\theta_\pm(p_1,p_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{-i \theta_{\pm}(p_1,p_2) }h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \\
+%  &  \qquad = \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \\
+%  & \qquad \geq \frac{1}{2} \braket{w(t)}{w(t)}
+%\end{align}
+%as in the small $t$ case.
+%
+%The second term is slightly more complicated.  However, remember from equation ?????? \todo{find the correct equation} that $\theta_\pm(p_1+\phi_1,p_2+\phi_2)$ are bounded rational functions of $e^{i\phi_1}$ and $e^{i\phi_2}$.  As such, they are differentiable as functions of both $\phi_1$ and $\phi_2$ on some neighborhood $U$ of $(0,0)$.  Let us assume that $\delta$ is chosen so that $[-\delta,\delta]\times [-\delta,\delta] \subset U$, and now let
+%\begin{align}
+%  \Gamma = \max_{[-\delta,\delta]\times [-\delta,\delta]} \big|\nabla e^{i \theta_{\pm}(p_1 +\phi_1, p_2 +\phi_2)}\big|
+%\end{align}
+%From this, we then have that
+%\begin{align}
+%  &\Bigg|\int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \big(e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} - e^{- i \theta_{\pm}(p_1, p_2)}  \big) h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2)\Bigg|\nonumber\\
+%  & \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \big(\phi_1^2 + \phi_2^2 \big) \Gamma h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2)\\
+%  & \qquad = \frac{\Gamma\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2} e^{- \frac{\sigma^2 \phi_1^2}{2}}e^{-2\sigma^2 \phi_2^2}( \phi_1^2 + \phi_2^2) h_\infty^{1/(2\pi \sigma)} \Big(2 \pi i \sigma^2 \Big[\frac{\phi_1}{2} - \phi_2 \Big]\Big) h_\infty^{1/(2\pi \sigma)}  \Big(2 \pi i \sigma^2 \Big[\frac{\phi_1}{2} + \phi_2 \Big]\Big) \\
+%  & \qquad \leq \frac{\Gamma\sigma^2}{2\pi} (1 + 3 e^{- \pi^2 \sigma^2}) \int_{-\infty}^\infty \int_{-\infty}^\infty {d\phi_1 d\phi_2} e^{- \frac{\sigma^2 \phi_1^2}{2}}e^{-2\sigma^2 \phi_2^2}( \phi_1^2 + \phi_2^2)\\
+%  & \qquad \leq \frac{5\Gamma }{2\sigma^2}.
+%\end{align}
+%
+%The third term can be bounded exactly as the second term for small $t$.  In particular, we have bounds on the differences and sums of $h$, and thus 
+%\begin{align}
+%  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)}\nonumber\\
+%  &\qquad \times \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\Bigg|\nonumber\\
+%  &\qquad\qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{-\frac{L^2}{2\sigma^2}}\\
+%  &\qquad \qquad \leq \frac{12 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}}.
+%\end{align}
+%In a similar manner, we have that the fourth term can be bounded as the third for small $t$.
+%\begin{align}
+%  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}e^{- 2i (p_2 + \phi_2)(\mu(t) - \nu(t))} \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\Big] \nonumber\\
+%  &\qquad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2 p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2 p_2 - \phi_2\Big)\Big]\Bigg|\nonumber\\
+%  & \qquad \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{-\frac{L^2}{2\sigma^2}}\\
+%  &\qquad \qquad \leq \frac{12 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}}.
+%\end{align}
+%
+%Finally, we have that the final term can be bounded as
+%\begin{align}
+%  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{2i (p_2 + \phi_2)(\mu(t) - \nu(t))}h_\infty^\sigma \Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big)h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\Bigg| \nonumber\\
+%  & \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}h_\infty^\sigma \Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big)h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\\
+%  & \qquad \leq \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}
+%\end{align} 
+%where we used the bounds for small $t$.
+%
+%We can then use the bounds on all of the individual terms to show that $\ket{w(t)}$ and $\ket{\alpha(t)}$ are close.  In particular, we have 
+%\begin{align}   
+%  &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
+%    &\qquad\leq {}_{\pm}\braket{\alpha(t)}{\alpha(t)}_{\pm} + \braket{w(t)}{w(t)} - \braket{w(t)}{\alpha(t)}_{\pm} - {}_\pm \braket{\alpha(t)}{w(t)}\\
+%    &\qquad \leq 1 + \braket{w(t)}{w(t)} - 2 \eta\gamma^2 \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{5 \Gamma}{2\sigma^2}- \frac{12 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}} - \frac{12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big).
+%\end{align}
+%If we again use our bounds on $\gamma^2$ and on $\braket{w(t)}{w(t)}$, we find
+%\begin{align}
+%    &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
+%    & \qquad \leq 1 + \braket{w(t)}{w(t)} - 4 (1 - 3 e^{-\pi^2 \sigma^2})\Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{5 \Gamma}{2\sigma^2}- \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big)\\
+%    & \qquad \leq 1 - \braket{w(t)}{w(t)} ( 1 - 6 e^{-\pi^2 \sigma^2}) + \frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+%    & \qquad \leq 1 - \Big(1 - \frac{1}{\pi \delta^2 \sigma^2} e^{- \frac{5 \sigma^2 \delta^2}{2}} \Big)( 1 - 6 e^{-\pi^2 \sigma^2}) + \frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+%    & \qquad \leq \frac{1}{\pi \delta^2 \sigma^2}e^{- \frac{5 \sigma^2 \delta^2}{2}}  + 6 e^{-\pi^2 \sigma^2} +\frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
+%    & \qquad \leq 44e^{-2\sigma^2 \delta} + \frac{32\sigma^2}{L} e^{- \frac{L^2}{2\sigma^2}} + \frac{5 \Gamma}{2\sigma^2}.
+%\end{align}
+%
+%
+%
+%\end{proof}
+
+
+%%%%%%%%%%%%%%%%%
+%  Disconnected Graphs
+
+\section{Disconnected graphs}
+\todo{rewrite this section}
+While a general result about the eigenstates of an $N$-particle quantum walk on a given graph $G$ might be difficult, we can reason about some properties of the eigenstates and time-evolved states without needing to explicitly calculate the overall form of the eigenstates.  In particular, if a given graph on which the particles walk has some property, then we can state some basic ideas about the eigenstates.
+
+Perhaps the most obvious such property is in the very connectivity of the graph itself.  In particular, our MPQW Hamiltonian \eq{MPQW_H_defn} only allows particles to move between vertices that have a path between them; if two vertices are not connected in $G$, then the corresponding off-diagonal element of the time evolution unitary will always be zero.
+
+We can use this to decompose the unitary corresponding to time evolution into a direct sum of unitaries, each belonging to a different case of particle locations on a given component of the graph $G$.  Namely:
+\begin{lemma}
+  Let $G$ be a disconnected graph with $M$ components, and let us examine the $N$-particle MPQW on $G$.  If $\ket{\psi}$ is an $N$-particle state such that each particle $j$ only has support on the $G_{k_j}$th component of $G$, then 
+  \begin{align}
+    e^{-i H_G^N t} \ket{\phi} = \prod_{c=1}^M W_{c}^\dag \Big(e^{- i H_{G_c}^{n_c} t } \big)^{(1,2,\cdots,n_c)} W_{c} \ket{\phi}
+  \end{align}
+  where $n_c$ is the number of particles with support on $G_c$, and $W_c$ is a permutation operator that takes the particles with support on $G_c$ to the first $n_c$ particles.  In the special case where $n_c \leq 1$ for all $c$, this then reduces to
+  \begin{align}
+    e^{-i H_G^N t} \ket{\phi} = \prod_{j=1}^n \big( e^{-i A(G_{k_j}) t}\big)^{(j)} \ket{\phi}.
+  \end{align}
+\label{lem:disconnected_MPQW}
+\end{lemma}
+\begin{proof}
+\todo{rewrite and fix proof}
+  Let $\ket{\phi} = \ket{v_1,v_2,\cdots , v_N}$ be any $N$-particle basis state such that each $v_i$ is in a different component.  Note that for all times $t\in \RR$, $e^{-i A(G) t} \ket{v_i}$ only has support on the component to which $v_i$ belongs. 
+  
+  As the interaction term of the Hamiltonian $H_G^N$ is diagonal in the computational basis, we then have that for all times $t$, $e^{-i H_G^N t} \ket{\phi}$ only has support on states 
+  \begin{align}
+    \big\{ \ket{w_1,\cdots, w_N} : w_i \sim v_i \big\},
+  \end{align}
+  where two vertices are equivalent according to $\sim$ if they belong to the same component of $G$.  However, this means that for all times, each particle remains in separate components and thus is constantly in the nullspace of the interaction Hamiltonian.  As such, we then have that
+  \begin{align}
+    e^{-i H_G^N t} \ket{\phi} = e^{- i H_\text{mov}^N} \ket{\phi} = e^{-i \sum_{j=1}^N A(G)^{(j)} t} \ket{\phi} = \prod_{j=1}^N e^{-i A(G)^{(j)} t} \ket{\phi} = \prod_{j=1}^N \big(e^{- i A(G) t} \big)^{(j)} \ket{\phi}
+  \end{align}
+  and thus the lemma statement holds true for each computational basis state.
+  
+  If we then note that unitary evolution is linear, we then have that this result still holds true for all states $\ket{\psi}$.
+\end{proof}
+
+\section{Ground states and frustration-free states}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Frustration-free}
+
+
+While showing that this problem is contained in \QMA is relatively easy, in our proof of \QMA-hardness we will want to impose additional structure on the problem.  In particular, we will want the problem to have the extra promise that if the particular instance is a yes instance, then the interaction term will essentially add no energy to the ground state.  In particular, we will want the ground state of the system to be a ground state for each term in the Hamilonian individually, which is usually a statement that the Hamiltonian is frustration-free.
+
+The reason that this helps us is that it actually allows us to determine the actual ground energies of various Hamiltonians, and lets us convert the problem to one of adding positive semi-definite matrices.  This allows us to use our Nullspace Projection Lemma (\lem{NPL}), and give strong bounds on the resulting eigenvalue gaps.  Additionally, the guarantee that certain Hamilonians are frustration-free will allow us to give some additional results on various spin systems.
+
+
+
+\todo{does this work for both bosons and fermions?.  I think it will, but I'm not sure.  It might not be worth it to discuss fermions right now.}
+
+With all of this, let $G$ be a graph, and let us assume that the interaction is $\mathcal{U}$.  If we then restrict to the $N$-particle sector, we have that the Hamiltonian is given by
+\begin{align}
+  H_{\mathcal{U},G}^N &= \sum_{(i,j) \in E(G)} (a_i^\dag a_j + a_j^\dag a_i) + \sum_{i,j\in V(G)} \mathcal{U}_{d(i,j)}(n_i,n_j)\\
+    &= \sum_{w=1}^N A(G)^{(w)} + \sum_{i,j\in V(G)} \mathcal{U}_{d(i,j)} (\hat{n}_i,\hat{n}_j)\label{eq:MPQW_Hamiltonian}
+\end{align}
+where
+\begin{equation}
+  \hat{n}_i = \sum_{w=1}^N \ketbra{i}{i}^{(w)}.
+\end{equation}
+Additionally, we will again assume that 
+\begin{equation}
+  H_{G,\text{move}}^N = \sum_{w=1}^N A(G)^{(w)}
+  \label{eq:MPQW_Hamiltonian_move}
+\end{equation}
+is the movement term of the Hamiltonian, and that
+\begin{equation}
+  H_{\mathcal{U},G,\text{int}}^{N} =  \sum_{i,j\in V(G)} \mathcal{U}_{d(i,j)} (\hat{n}_i,\hat{n}_j)
+  \label{eq:MPQW_Hamiltonian_int}
+\end{equation}
+is the interaction term of the Hamiltonian.
+
+
+While $H_{\mathcal{U},G}^N$ acts on the entire $|V|^N$ dimensional system of distinguishable particles, we want to deal with indistinguishable particles (and in particular bosonic particles).  As such, we will want to look at the restriction of $H_{\mathcal{U},G}^N$ to the bosonic subspace:
+\begin{equation}
+  \overline{H}_{\mathcal{U},G}^N := H_{\mathcal{U},G}^N \big|_{\mathcal{Z}_N(G)}
+\end{equation}
+
+\todo{check boson/fermion}
+
+At this point, it will be extremely useful to add a term proportional to the identity in order to make a positive semidefinite operator. In particular, if we let $\mu(G)$ be the smallest eigenvalue of $A(G)$, we can consider 
+\begin{equation}
+  H_{\mathcal{U}}(G,N) = \overline{H}_{\mathcal{U},G}^n - N \mu(G)
+\end{equation}
+which is a positive-semidefinite matrix.  Additionally, as $\mu(G)$ can be efficiently computed using a classical polynomial-time algorithm, we have that the complexity of approximating the ground energy of $H_{\mathcal{U}}(G,N)$ is equivalent to the complexity of approximating the ground energy of $\overline{H}_{\mathcal{U},G}^N$.  
+
+We shall write
+\begin{equation}
+  0 \leq \lambda_N^1(G) \leq \lambda_N^2(G) \leq \cdots \leq \lambda_N^{D_N} (G)
+\end{equation}
+for the eigenvalues of $H_{\mathcal{U}}(G,N)$ and $\{\ket{\lambda_N^j(G)}\}$ for the associated eigenvectors.
+
+Note that when $\lambda_N^1(G) = 1$, the ground energy of the $N$-particle MPQW Hamiltonian $\overline{H}_{\mathcal{U},G}^N$ is equal to $N$ times the single-particle ground energy $\mu(G)$.  In this case, we say that the $N$-particle MPQW Hamiltonian is frustration free, as the ground state minimizes both the movement term and the interaction term.  We also define frustration freeness for $N$-particle states.
+\begin{definition}[Frustration-free state]  
+If $\ket{\psi}\in \mathcal{Z}_{N}(G)$ satisfies $H_{\mathcal{U}}(G,N) \ket{\psi} = 0$, then we say that $\ket{\psi}$ is an $N$-particle frustration-free state for $\mathcal{U}$ on $G$.
+\end{definition}
+
+%%%%%
+\subsubsection{Basic properties}
+
+We now give some basic properties of $H_{\mathcal{U}}(G,N)$.  In particular we will want to understand how the eigenvalues of the Hamiltonian change when we increase the number of particles, as well as understand such a system when looking at many disconnected copies of graphs.
+
+\begin{lemma}
+  For all $N>1$, $\lambda_{N+1}^1(G) \geq \lambda_{N}^1(G)$.
+\end{lemma}
+\begin{proof}
+\todo{Fix this for an arbitrary interaciton}
+Let $\widehat{n}_{i}^{N}$ be the number operator \eq{n_hat} defined in the $N$-particle space and let $\widehat{n}_{i}^{N+1}$ be the corresponding operator in the $\left(N+1\right)$-particle space. Note that
+\begin{equation}
+\widehat{n}_{i}^{N+1} = \widehat{n}_{i}^{N}\otimes\II+|i\rangle\langle i|^{(N+1)} \geq \widehat{n}_{i}^{N}\otimes\II.
+\end{equation}
+Using this and the fact that $A(G)\geq\mu(G)$, we get 
+\begin{equation}
+H_{G}^{N+1}-\left(N+1\right)\mu(G)\geq\left(H_{G}^{N}-N\mu(G)\right)\otimes\II.
+\end{equation}
+Hence 
+\begin{align}
+  \lambda_{N+1}^{1}(G) & =\min_{|\psi\rangle\in\mathcal{Z}_{N+1}(G)\colon \langle\psi|\psi\rangle=1}\langle\psi|H_{G}^{N+1}-\left(N+1\right)\mu(G)|\psi\rangle\\
+ & \geq\min_{|\psi\rangle\in\mathcal{Z}_{N}(G)\otimes\CC^{|V|}\colon \langle\psi|\psi\rangle=1}\langle\psi|\left(H_{G}^{N}-N\mu(G)\right)\otimes\II |\psi\rangle\\
+ & =\lambda_{N}^{1}(G)
+\end{align}
+(using the fact that $\mathcal{Z}_{N+1}(G)\subset\mathcal{Z}_{N}(G)\otimes\CC^{|V|}$). 
+\end{proof}
+We will encounter graphs $G$ with more than one component. In the cases of interest, the smallest eigenvalue of the adjacency matrix for each component is the same. The following Lemma shows that the eigenvalues of $H(G,N)$ on such a graph can be written as sums of eigenvalues for the components. In this Lemma (and throughout the paper), we let $[k] = \{1,2,\ldots,k\}$.
+
+\begin{lemma}
+\label{lem:BH_disconnected_graphs}
+Suppose $G=\bigcup_{i=1}^{k}G_{i}$ with $\mu(G_{1})=\mu(G_{2})=\cdots=\mu(G_{k})$. The eigenvalues of $H(G,N)$ are 
+\begin{equation}
+\sum_{i\in[k]\colon N_{i}\neq0}\lambda_{N_{i}}^{y_{i}}(G_{i})
+\end{equation}
+where $N_{1},\ldots,N_{k}\in\{0,1,2,\ldots\}$ with $\sum_{i}N_{i}=N$ and $y_{i}\in[D_{N_{i}}].$ The corresponding eigenvectors are (up to normalization) 
+\begin{equation}
+\Sym\Bigg(\prod_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg).
+\label{eq:eigvecs_disconnected}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Recall that the action of $H_{G}-N\mu(G)$ on the Hilbert space \eq{occupation_num_states} is the same as the action of $H(G,N)$ on the Hilbert space $\mathcal{Z}_{N}(G)$. States in these Hilbert spaces are identified via the mapping described in equation \eq{occup_num_symmetrized}. It is convenient to prove the Lemma by working with the second-quantized Hamiltonian $H_{G}$. We then translate our results into the first-quantized picture to obtain the stated claims.
+
+For a graph with $k$ components, equation \eq{Bose-Hubbard_Ham} gives 
+\begin{equation}
+H_{G}=\sum_{i=1}^{k}H_{G_{i}}\label{eq:H_G_disconnected}
+\end{equation}
+where $[H_{G_{i}},H_{G_{j}}]=0.$ Label each vertex of $G$ by $(a,b)$ where $b\in[k]$ and $a\in[|V_{b}|]$, where $V_{b}$ is the vertex set of the component $G_{b}$. An occupation number basis state \eq{occupation_num_states} can be written 
+\begin{equation}
+|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle.\label{eq:prod_basis_occ_num}
+\end{equation}
+The Hamiltonian $H_{G}-N\mu(G)$ conserves the number of particles $N_{b}$ in each component $b$. Within the sector corresponding to a given set $N_{1},\ldots,N_{k}$ with $\sum_{i \in [k]} N_i=N$, we have
+\begin{align}
+& \left(H_{G}-N\mu(G)\right)|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\\
+&\quad =\big(H_{G_1}-N_1\mu(G_1)|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle\big)|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\\
+&\qquad+|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle\big(H_{G_2}-N_2\mu(G_2)|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\big)\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle + \cdots\\
+&\qquad+|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots\big(H_{G_k}-N_k\mu(G_k)|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\big),
+\end{align}
+where we used the fact that $\mu(G_i)=\mu(G)$ for $i\in[k]$.  From this equation we see that the eigenstates of $H_{G}$ can be obtained as product states with $k$ factors in the basis \eq{prod_basis_occ_num}. In each such product state, the $i$th factor is an eigenstate of $H_{G_{i}}-N_{i}\mu(G_{i})=H_{G_{i}}-N_{i}\mu(G)$ in the $N_{i}$-particle sector, with eigenvalue $\lambda_{N_{i}}^{j_{i}}(G_{i})$. Rewriting this result in the ``first-quantized'' language, we obtain the Lemma. 
+\end{proof}
+
+
+
+\section{Conclusions and extensions}
+
+It might be informative to think about other models for a MPQW.  Namely, what happens if instead of the movement term of the Hamiltonian being a sum of terms that only act nontrivially on a single particle, it is a tensor product of the single-particle Hamiltonian.  While I don't expect this to drastically change the eventual scattering form, especially as in the two-particle case our change of variables does this for us, there might be some nontrivial interactions that occur independent of an actual interaction Hamiltonian.
+
+
+
+
+\biblio{}
+\end{document}

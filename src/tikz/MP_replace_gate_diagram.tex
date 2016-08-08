@@ -26,7 +26,33 @@
 }
 %\draw[thick,looseness = 200] (0,1.2) to [out = 180, in = 100] (-.01,1.2);
   % The two rectangles 
- \foreach \offset/\unitary/\label in {0/1/q_{\mathrm{in}},3.43/1/{d(q,1)},6.86/1/{d(q,2)},12/1/{d(q,R)},15.43/\tilde U/q_{\mathrm{out}}}
+
+%  15.43/\tilde U/q_{\mathrm{out}}
+\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+{     \foreach \y in {1.2,.95,.55,.3}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }} 
+  {     \foreach \y in {.95,.55}
+{       \draw[fill=gray,draw=gray] (2.43 cm, \y cm) circle (.66mm);
+  }} 
+  \node at (1.22cm, .75cm) {\large{$1$}};   
+ \node at (1.22cm, 2cm){\large{$q_{\text{in}}$}};   
+ 
+ 
+ \begin{scope}[xshift=15.43 cm]
+ \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+{     \foreach \y in  {.95,.55}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }} 
+  {     \foreach \y in{1.2,.95,.55,.3}
+{       \draw[fill=gray,draw=gray] (2.43 cm, \y cm) circle (.66mm);
+  }} 
+  \node at (1.22cm, .75cm) {\large{$\tilde{U}$}};   
+ \node at (1.22cm, 2cm){\large{$q_{\text{out}}$}};   
+ \end{scope}
+ 
+ % the inner d(q,s) 
+ \foreach \offset/\unitary/\label in {3.43/1/{d(q,1)},6.86/1/{d(q,2)},12/1/{d(q,R)}}
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  

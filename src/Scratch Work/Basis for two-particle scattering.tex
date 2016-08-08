@@ -1,0 +1,30 @@
+\documentclass[../thesis-main/thesis-main]{subfiles}
+\begin{document}
+
+This proof is very similar to that of \cite{CG12}, with very similar structure.  In fact, we could almost use their proof for this theorem, except for the fact that our basis states have slightly different labelings, and the fact that the Hamiltonian for our internal vertices is not $0-1$ valued, and the fact that they also depend on the value of $p_1$.  
+
+First of all, note that \eq{vr_eqn} has no confined bound states for any $p_1\in (-\pi,\pi)$: if we assume that $\braket{\dmax}{\psi^{p_1}} = 0$, then the eigenvalue equation at $r$ tells us that
+\begin{align}
+  \lambda \braket{\dmax}{\psi^{p_1}} &= 2\cos(p_1) \braket{\dmax+1}{\psi^{p_1}} + 2\cos(p_1)\braket{\dmax-1}{\psi^{p_1}} + V(\dmax) \braket{\dmax}{\psi^{p_1}}\\
+  0 &= \braket{\dmax -1}{\psi^{p_1}}.
+\end{align}
+Iterating this then gives us that $\ket{\psi^{p_1}} = 0$ if we assume that the state is confined.
+
+However, there might be several unconfined bound states.  Hence, for each $p_1\in (-\pi,\pi)$, let $\{\ket{\psi_b^{p_1}} : b\in [n_b^{p_1}]\}$ be an orthonormal basis for the confined bound states of \eq{vr_eqn}.  We then have that
+
+\begin{theorem}
+  Let $x,y,z,w \in \ZZ$.  Then,
+  \begin{align}
+    \bra{x,y} \Big( \int_{-\pi}^\pi \int_{-\pi}^{\pi} \frac{d p_1 d p_2}{4\pi^2} \ketbra{\scat(p_1;p_2)}{\scat(p_1;p_2)} + \int_{-\pi}^\pi \frac{d p_1}{2\pi} \sum_{b=1}^{n_b^{p_1}} \ketbra{\tilde{p_1}}{\tilde{p_1}} \otimes \ketbra{\phi_{b}^{p_1}}{\phi_b^{p_1}} \Big) \ket{z,w} &= \delta_{x,z} \delta_{y,w}.
+  \end{align}
+\end{theorem}
+
+\begin{proof}
+  I don't like this theorem statement, although I don't know how to improve it.  Anyway, we should probably try to prove the statement:
+  
+  \todo{write this theorem if I have the time}
+\end{proof}
+
+\biblio{}
+
+\end{document}

@@ -581,677 +581,67 @@ The reason that we are interested in this is that the original algorithm uses gr
 
 In this case, the requisite size of the wavepacket turns out to be $\OO(\sqrt{N})$, and thus this amount of time is required in order for the scattering to occur.  The total evolution time is closely related to the number of queries that the algorithm uses during the computation, and thus this is a quantum algorithm that has a provable advantage over classical computing.
 
-\subsection{Momentum dependent actions}
-
-While the NAND tree algorithm gives a good example of how graph scattering can work as an algorithmic tool, in that the scattering evaluates a binary function, the scattering behavior was relatively simple: a particle transmits or reflects.  However, we can use similar ideas in order to have nontrivial scattering behavior, by creating graphs that have different behaviors at different momenta, or that perfectly transmits to some subset of the attached paths (i.e., a generalization of perfect transmission to multiple semi-infinite paths).
-
-\todo{Should I include schematic pictures of these gadgets?  I'm not sure if that would improve readability}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{R/T gadgets}
-
-The easiest thing we could hope for is the same behavior as in the NAND tree algorithm, with two attached paths and at some fixed momenta the wavepacket either completely transmits, or it completely reflects.  However, we will utilize a single graph with several different momenta.
-
-In particular, these reflection/transmission (R/T) gadgets will have two sets of momenta.   One set will have perfect transmission, while the other will have perfect reflection.  While these gadgets have relatively simple scattering behavior, they can be used to filter particular momenta, or as building blocks in more complicated gadgets.  Additionally, the simple behavior will allow us to show that certain scattering behaviors are not possible.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{Momentum Switches}
-
-We can generalize the idea of R/T gadgets to multiple semi-infinite paths, so that the gadget has a kind of routing behavior.  In particular, we can attempt to construct graphs with three attached semi-infinite paths, in which when a wavepacket is incident along one particular path, it either perfectly transmits to the second path, or it perfectly transmits to the third path, depending on the incident momenta.  In this way, we construct something like a momentum dependent railroad switch, sending different wavepackets to different locations.
-
-These momentum switches are extremely useful, as they will allow us to construct much more interesting momentum dependent behavior.  By using two of these gadgets in series (with the paths 2 and 3 connected to each other), we can then place a single obstacle along only one of the paths.  Since only those momenta that travel along that particular path are incident on the additional obstacle, we can use this to do something like applying a momentum dependent phase.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Encoded unitary}
-
-While the above two gadgets can be thought to have one input but two output paths, we can generalize this idea to having multiple input paths.  In particular, if we have two input and two output paths, we can encode a logical qubit in a dual-rail encoding (i.e., one path corresponds to a state $\ket{0}$, while the other corresponds to a state $\ket{1}$).  If we can ensure that wavepackets incident along the input paths always transmit to the output paths, we can think of this as applying a unitary gate to the encoded qubit.
-
-In particular, by constructing a gadget whose $S$-matrix at a particular momentum is block diagonal, with two zero blocks along the diagonal, we have that a wavepacket at that momenta always transmits from the input to the output vertices.  Additionally, as the $S$-matrix is itself unitary, we have that the $2\times2$ block matrix that corresponds to the transmitted amplitudes is also unitary, and thus we have applied a unitary operation to the encoded qubit.  
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  Constructing graphs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Constructing graphs with particular scattering behavior}
-
-While we have shown that the scattering behavior of some given graph is easy to compute, finding graphs with a given behavior is much more difficult.  We don't even know whether such an operation is decidable, and thus finding an algorithm to construct a graph with a given $S$-matrix seems unlikely.  However, there are specific behaviors at particular momenta in which constructions are known, and exhaustive searches of small sized graphs have yielded graphs with nice scattering properties.  
-
-In particular, Andrew Childs found several gadgets in his paper proving the universality of quantum walks \cite{Chi09}.  After this result, Blumer, Underwood and Feder \cite{BUF11} performed an exhaustive search over all graphs with at most 9 vertices, finding those graphs that implement an encoded unitary at several momenta of interest.  Childs, Gosset, and Webb then constructed several gadgets in \cite{MPQW}.  This section is mainly based on \cite{MomSwitches}, a paper by Chlids, Gosset, Nagaj, Raha, and Webb, as it gives explicit constructions for gadgets with particular behavior.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{R/T gadgets}
- 
-Perhaps the most simple behavior, and the one that will for which we will have the easiest time finding a solution, are two-terminal gadgets that either perfectly reflect at some particular momenta, or perfectly transmit.  These R/T gadgets can be thought of as a proof-of-principle for constructing gadgets, but they also have uses of their own.
-
-This problem is still rather complicated when we work with arbirtary graphs with two terminal vertices, things become much simpler if we work with a graph attached to an infinite path via a single vertex.  In this case, we can determine exactly when the gadget will lead to perfect reflection, and when it will lead to perfect transmission.
-
-\begin{figure}
-  \centering
-  \tikzsetnextfilename{GS_reversal_orig}
-  \input{../tikz/GS_reversal_orig.tex}
-  \caption{A type 1 R/T gadget.  Vertices of $G_0$ that are not part of the periphery $P = \{p_1,\ldots,p_n\}$ are not shown.}
-  \label{fig:reversal_orig}
-\end{figure}
-
-Along these lines, we will investigate the scattering behavior of graphs where $\widehat{G}$ is of the form found in \fig{reversal_orig}.  While we still have that $\widehat{G}$ is of the form described in \sec{general_graphs}, the graph $G$ with the semi-infinite paths is that of a infinite path, with the graph $G_0$ attached to the vertex $a$.  As such, the graph that will be of more interest is the graph $G_0$ consisting of those vertices other than those along the infinite path.   We will label those vertices $p_i\in V(G_0)$ connected to the vertex $a$ as \emph{periphery} vertices, and we will label the set of periphery vertices as $P$.  In the special case that $|P| = 1$, or that a single vertex of $G_0$ is connected to $a$, we will call the gadget a type 2 R/T gadget (see \fig{RT_path} for an example of a type 2 R/T gadget).
-
-For a given R/T gadget $\widehat{G}$, those momenta for which perfect reflection occurs shall be collected in the \emph{reflection set} which shall be denoted $\mathcal{R}$.  Similarly, those momenta for which perfect transmission occurs shall be collected in the \emph{transmission set} which shall be label $\mathcal{T}$. Note that these two sets have empty intersection, and that there isn't any nice relationship between them.
-
-Let us now examine the scattering eigenstates for the graph $\widehat{G}$.  For any scattering state $\ket{\scat_{1} (k)}$, by examining the eigenvalue equation at vertices $(1,1)$ and $(1,2)$ we see that the amplitude at vertex $a$ satisfies
-\begin{equation}
-  \langle{a}\ket{\scat_{1} (k)} = 1 + R(k) = T(k).
-\end{equation}
-Thus perfect reflection at momentum $k$ occurs if and only if $R(k)=-1$ and $\langle{a}\ket{\scat_{1} (k)}=0$, while perfect transmission occurs if and only if $T(k)=1$ and $\langle{a}\ket{\scat_{1} (k)}=1$. Using this fact, we now derive conditions on the graph $G_0$ that determine when perfect transmission and reflection occur.
-
-For any type 1 R/T gadget, we have necessary and sufficient conditions for momentum $k$ to be in the reflection set: $G_0$ should have an eigenvector for which the sum of amplitudes on the periphery is nonzero.
-\begin{lemma}
-Let $\widehat{G}$ be a type 1 R/T gadget. A momentum $k\in (-\pi,0)$ is in the reflection set $\mathcal{R}$ if and only if $G_0$ has an eigenvector $\ket{\chi_k}$ with eigenvalue $2\cos(k)$ satisfying
-\begin{equation}
-  \sum_{i=1}^{n} \braket{p_i}{\chi_k} \neq 0. \label{eq:sum_condition}
-\end{equation}
-\label{lem:reflect_reqs}
-\end{lemma}
-
-\begin{proof}
-Let us first suppose that $\widehat{G}$ has perfect reflection at momentum $k$, i.e., $R(k)=-1$ and $\langle{a}\ket{\scat_{1} (k)}=0$. As $\langle{(1,1)}\ket{\scat_1(k)} = e^{-ik} - e^{ik}\neq 0$ and $\langle{(1,2)}\ket{\scat_1(k)}=0$, to satisfy the eigenvalue equation at vertex $a$, we have
-\begin{equation}
-  \sum_{j=1}^{n} \langle{p_j}\ket{\scat_1(k)} = e^{ik} - e^{-ik} \neq 0.
-\end{equation}
-Further, since $G_0$ only connects to vertex $a$ and the amplitude at this vertex is zero, the restriction of $\ket{\scat_1(k)}$ to $G_0$ must be an eigenvector of $G_0$ with eigenvalue $2\cos(k)$. Hence the condition is necessary for perfect reflection. 
- 
-Next suppose that $G_0$ has an eigenvector $\ket{\chi_k}$ with eigenvalue $2\cos(k)$ satisfying \eq{sum_condition}, with the sum equal to some nonzero constant $c$. Define a scattering state $\ket{\psi_k}$ on the Hilbert space of the full graph $G$ with amplitudes
-\begin{equation}
-  \braket{v}{\psi_k} = \frac{e^{ik} - e^{-ik}}{c} \braket{v}{\chi_k}
-\end{equation}
-for all $v \in V(G_0)$, $\braket{a}{\psi_k}=0$, and 
-\begin{equation}
- \braket{(x,j)}{\psi_k}=\begin{cases} e^{-ikx}-e^{ikx} & j=1\\
-0 & j=2
-\end{cases}
-\end{equation}
-for all $x \in \posint$.
-
-We claim that $\ket{\psi_k}$ is an eigenvector of $G$ with eigenvalue $2 \cos(k)$.  The state clearly satisfies the eigenvalue equation on the semi-infinite paths since it is a linear combination of states with momentum $\pm k$.  At vertices of $G_0$, the state is proportional to an eigenvector of $G_0$, and since the state has no amplitude at $a$, the eigenvalue equation is also satisfied at these vertices.  It remains to see that the eigenvalue equation is satisfied at $a$, but this follows immediately by a simple calculation.
-
-Since $\ket{\psi_k}$ has the form of a scattering state with perfect reflection, we see that $R(k)=-1$ and $T(k)=0$ as claimed.
-\end{proof}
-
-In a similar manner, the following lemma gives a sufficient condition for a momentum $k$ to be in the transmission set (which is also necessary for type 2 gadgets).  Let $g_0$ denote the induced subgraph on $V(G_0)\setminus P$ where $P = \{p_i\colon i\in [n]\}$ is the periphery.
-
-\begin{lemma}\label{lem:transmit_reqs}
-Let $\widehat{G}$ be a type 1 R/T gadget and let $k\in (-\pi,0)$. Suppose $\ket{\xi_k}$ is an eigenvector of $g_0$ with eigenvalue $2\cos{k}$ and with the additional property that, for all $i \in [n]$,
-\begin{equation}
-\label{eq:trans_cond}
-  \sum_{\substack{v \in V(g_0): \\ (v,p_i)\in E(G_0)}} \braket{v}{\xi_k} = c \neq 0 
-\end{equation}
-for some constant $c$ that does not depend on $i$. Then $k$ is in the transmission set $\mathcal{T}$. If $\hat{G}$ is a type 2 R/T gadget, then this condition is also necessary.
-\end{lemma}
-
-\begin{proof}
-If $g_0$ has a suitable eigenvector $\ket{\xi_k}$ satisfying \eq{trans_cond}, define a scattering state $\ket{\psi_k}$ on the full graph $G$, with amplitudes $\langle a\ket{\psi_k}=1$, 
-\begin{equation}
-  \braket{v}{\psi_k} 
-  = \begin{cases} -\frac{1}{c} \braket{v}{\xi_k} & v\in V(g_0)\\
-  	0 & v \in P
-\end{cases}
-\label{eq:psik_c}
-\end{equation}
-in the graph $G_0$, and 
-\begin{equation}
- \langle{(x,j)} \ket{\psi_k}=\begin{cases} e^{-ikx} & j=1\\
- e^{ikx} & j=2
-\end{cases}
-\end{equation}
-for $x \in \posint$.  As in the proof of \lem{reflect_reqs}, the state $\ket{\psi_k}$ is clearly satisfies the eigenvalue equation (with eigenvalue $2\cos(k)$) at vertices on the semi-infinite paths and vertices of $g_0$.  The factor of $-\frac{1}{c}$ in \eq{psik_c} is chosen so that the eigenvalue condition is satisfied at vertices in $P$.  It is easy to see that the eigenvalue condition is also satisfied at $a$.
-
-Since $\ket{\psi_k}$ is a scattering eigenvector of $G$ with eigenvalue $2\cos(k)$ and perfect transmission, we have $T(k)=1$.
-
-Now suppose $\widehat{G}$ is a type 2 R/T gadget, with $P = \{p\}$.  Perfect transmission along with the eigenvalue equation at vertex $a$ implies
-\begin{equation}
-\braket{p}{\scat_1(k)} = 0,
-\end{equation}
-so the restriction of $\ket{\scat_1(k)}$ to $g_0$ must be an eigenvector (since $p$ is the only vertex connected to $g_0$).  The eigenvalue equation at $p$ gives
-\begin{equation}
-  \braket{a}{\scat_1(k)} 
-  + \sum_{w \colon (w,p)\in E(G_0)} \braket{w}{\scat_1(k)} = 0 
-  \quad\implies\quad
-  \sum_{w \colon (w,p)\in E(G_0)} \braket{w}{\scat_1(k)} = -1.
-\end{equation}
-Hence the restriction of $\ket{\scat_1(k)}$ to $V(g_0)$ is an eigenvector of the induced subgraph, with the additional property that the sum of the amplitudes at vertices connected to $p$ is nonzero.
-\end{proof}
-
-With these two lemmas, if we can guarantee the form of the eigenstates for the graph $G_0$, we can guarantee certain momenta to be in either the reflection or the transmission set.
-
-
-%%%%%%%%%%
-\subsubsection{Explicit constructions}\label{sec:rt_ex}
-
-While the two lemmas do give a nice abstract explanation for the construction of R/T gadgets, it doesn't provide us with a concrete example. As such, let us look at two simple graphs and examine when they satisfy the conditions of the lemmas.
-
-As a first example, suppose $G_0$ is a finite path of length $l_1+l_2-2$ connected to $a$ at the $l_1$th vertex, as shown in \fig{RT_path}.  As this is a type 2 R/T gadget, we can then determine the reflection and transmission sets as a function of $l_1$ and $l_2$.
-
-
-%%%%%%%%%
-\begin{figure}
-  \centering
-  \tikzsetnextfilename{GS_RT_path}
-  \input{../tikz/GS_RT_path.tex}
-  \caption{An R/T gadget built from a path of length $l_1+l_2-2$. }
-  \label{fig:RT_path}
-\end{figure}
-
-
-Using \lem{reflect_reqs}, we see that perfect reflection occurs at momentum $k\in (-\pi,0)$ if and only if the path has an eigenvector with eigenvalue $2\cos(k)$ with non-zero amplitude on vertex $l_1$.  Recall that the path of length $L$ (where the length of a path is its number of edges) has eigenvectors $|\psi_j\rangle$ for $j\in [L+1]$ given by
-\begin{equation}
-  \langle x | \psi_j \rangle = \sin\left(\frac{ \pi j x}{L+2}\right)\label{eq:vecs_line}
-\end{equation}
-with eigenvalues $\lambda_j = 2 \cos(\pi j/(L+2))$.  Hence
-\begin{equation}
-  \mathcal{R}_{\mathrm{path}} = \left\{ -\frac{\pi j}{l_1 + l_2} \colon j\in [l_1 + l_2 - 1] \text{ and } \frac{jl_1}{l_1+l_2} \not\in \ZZ\right\}.
-\end{equation}
-
-To characterize the momenta at which perfect transmission occurs, consider the induced subgraph obtained by removing the $l_1$th vertex from the path of length $l_1+l_2-2$ (a path of length $l_1-2$ and a path of length $l_2-2$). We can choose bases for the eigenspaces of this induced subgraph so that each eigenvector has all of its support on one of the two paths, and has nonzero amplitude on only one of the vertices $l_1-1$ or $l_1+1$. Thus \lem{transmit_reqs} implies that $\widehat{G}$ perfectly transmits for all momenta in the set
-\begin{equation}
-  \mathcal{T}_{\mathrm{path}} = \left\{- \frac{\pi j}{l_1} \colon j\in [l_1-1]\right\} \cup \left\{-\frac{\pi j}{l_2 } \colon j \in [l_2-1]\right\}.
-\end{equation}
-
-As an explicit example, if we set $l_1 = l_2 = 2$, we get $\mathcal{T}_{\mathrm{path}} = \{-\frac{\pi}{2}\}$ and $\mathcal{R}_{\mathrm{path}} = \{-\frac{\pi}{4}, -\frac{3\pi}{4}\}$.
-
-
-Now let us suppose $G_0$ is a cycle of length $r$. Labeling the vertices by $x \in [r]$, where $x=r$ is the vertex attached to the path (as shown in \fig{RT_cycle}), the eigenvectors of the $r$-cycle are
-\begin{equation}
-  \langle x | \phi_m\rangle = e^{{2 \pi i x m}/{r}}
-\end{equation}
-with eigenvalue $2 \cos(2 \pi m/r)$, where $m\in [r]$. For each momentum $k=-2 \pi m/r \in (-\pi,0)$, there is an eigenvector with nonzero amplitude on the vertex $r$ (i.e., $\langle r | \phi_m\rangle\neq 0$), so \lem{reflect_reqs} implies that perfect reflection occurs at each momentum in the set
-\begin{equation}
-  \mathcal{R}_{\mathrm{cycle}} = \left\{ -\frac{\pi j}{r} \colon \text{$j$ is even and $j\in [r-1]$}\right\}.
-\end{equation}
-
-
-%%%%%%%%%
-\begin{figure}
-  \centering
-  \tikzsetnextfilename{GS_RT_cycle}
-  \input{../tikz/GS_RT_cycle.tex}
-  \caption{An R/T gadget built from an $r$-cycle.}
-  \label{fig:RT_cycle}
-\end{figure}
-
-
-To see which momenta perfectly transmit, we use \lem{transmit_reqs}. Consider the induced subgraph obtained by removing vertex $r$. This subgraph is a path of length $r-2$ and has eigenvalues $2\cos(\pi m/r)$ for $m \in [r-1]$ as discussed in the previous section. Using the expression \eq{vecs_line} for the eigenvectors, we see that the sum of the amplitudes on the two ends is nonzero for odd values of $m$.  Perfect transmission occurs for each of the corresponding momenta:  
-\begin{equation}
-  \mathcal{T}_{\mathrm{cycle}} = \left\{ -\frac{\pi j}{r} \colon \text{$j$ is odd and $j\in [r-1]$}\right\}.
-\end{equation}
-
-For example, the $4$-cycle (i.e., square) has $\mathcal{T}_{\mathrm{cycle}} = \{-\frac{\pi}{4},-\frac{3\pi}{4}\}$ and $\mathcal{R}_{\mathrm{cycle}} = \{-\frac{\pi}{2}\}$.  
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Reversing reflection and transmission sets}\label{sec:reversal}
-
-With these explicit examples of R/T gadgets, it will be useful to know how to interchange the reflection and transmission set.  Namely, if we have one gadget that transmits all momenta in $\mathcal{T}$ and reflects all momenta in $\mathcal{R}$, it will be useful to also have a gadget that reflects all momenta in $\mathcal{T}$ and transmits all momenta in $\mathcal{R}$.  Basically, we will be able to use these two gadgets together to construct gadgets with more interesting scattering behavior.
-
-In particular, let $\widehat{G}$ be a type 2 R/T gadget, as seen in \fig{reversalRT}, and assume that it has a reflection set $\mathcal{R}$ and a transmission set $\mathcal{T}$.  We will construct a type 1 R/T gadget $\widehat{G}^{\leftrightarrow}$ with reflection set $\mathcal{R'} \supset \mathcal{T}$ and transmission set $\mathcal{T}' \supset \mathcal{R}$.  The graph $\widehat{G}^{\leftrightarrow}$ is depicted pictorially in \fig{reversal_changed}.
-
-Explicitly, the R/T gadget $\widehat{G}^\leftrightarrow$ is obtained by taking two copies of the subgraph $g_0$ from the type 2 R/T gadget in \fig{reversalRT}, connecting both to a single additional vertex $u$, and connecting one copy of $g_0$ to the infinite path at $a$.  More concretely, for each vertex $w_j\in V(g_0)$, the graph $\widehat{G}^{\leftrightarrow}$ has two vertices $w_j^{(1)}$ and $w_j^{(2)}$, and the graph $\widehat{G}^\leftrightarrow$ inherits the edge set of $g_0$.  Additionally, for each $w_j\in V(g_0)$ connected to the periphery vertex $p$, we have that $w_j^{(i)}$ is connected to $u$, and $w_j^{(1)}$ is connected to $a$.
-
-%%%%%%%%%%
-\begin{figure}
-  \centering
-  \subfloat[][]{ 
-    \tikzsetnextfilename{GS_reversalRT}
-    \input{../tikz/GS_reversalRT.tex}
-    \label{fig:reversalRT}
-  }
-  \qquad
-  \subfloat[][]{
-    \tikzsetnextfilename{GS_reversal_changed}
-    \input{../tikz/GS_reversal_changed.tex}
-    \label{fig:reversal_changed}
-   }
-   \caption{\subfig{reversalRT}  A type 2 R/T gadget, (i.e., a type 1 gadget with $|P| = 1$).  \subfig{reversal_changed}  The R/T gadget $\widehat{G}^\leftrightarrow$ reversing the reflection and transmission sets of \subfig{reversalRT}.}
-   \label{fig:reversal}
-\end{figure}
-
-With this definition, we now prove that the graph $\widehat{G}^\leftrightarrow$ reverses the reflection and transmission sets of $\widehat{G}$.
-
-\begin{lemma}\label{lem:reversal_graph}
-Let $\widehat{G}$ be a type 2 R/T gadget with transmission set $\mathcal{T}$ and reflection set $\mathcal{R}$.  The type 1 R/T gadget $\widehat{G}^{\leftrightarrow}$ defined above has transmission set $\mathcal{T}' \supseteq \mathcal{R}$ and reflection set $\mathcal{R}' \supseteq \mathcal{T}$.
-\end{lemma}
-\begin{proof}
-First consider a momentum $k\in \mathcal{T}$. Using the condition derived in \lem{transmit_reqs}, we see that $g_0$ has an eigenvector $\ket{\xi_k}$ with eigenvalue $2\cos(k)$ where the sum of the amplitudes on vertices $w_1,\ldots,w_r$ is nonzero.  Now consider the induced subgraph $G_{0}^{\leftrightarrow}$ of \fig{reversal_changed} obtained by removing vertices $(1,1)$, $(1,2)$, and $a$. This subgraph has an eigenvector $|\chi^{\leftrightarrow}_k\rangle$ with eigenvalue $2\cos(k)$ given by
-\begin{equation}
-  \langle v^{(i)} \ket{\chi^{\leftrightarrow}_k}= (-1)^i \langle v\ket{\xi_k} \quad \text{ and } \quad \langle{u}\ket{\chi^{\leftrightarrow}_k} = 0
-\end{equation}
-for all vertices $v\in V(g_0)$ and for $i \in \{1,2\}$.  The fact that $\ket{\chi_k^{\leftrightarrow}}$ is an eigenvector follows from the fact that $\ket{\xi_k}$ is an eigenvector of $g_0$.  Additionally, we have that
-\begin{equation}
-  \sum_{j=1}^{r} \langle{w^{(1)}_j} \ket{\chi^{\leftrightarrow}_k} = - \sum_{j=1}^{r} \langle{w_j} \ket{\xi_k} \neq 0.
-\end{equation}
-Using \lem{reflect_reqs}, we see that perfect reflection occurs at momentum $k$, and thus $\mathcal{T} \subseteq \mathcal{R}'$.
-
-Next suppose $k\in \mathcal{R}$. \lem{reflect_reqs} states that $G_0$ has an eigenvector $|\chi_k\rangle$ with eigenvalue $2\cos(k)$ such that $\langle p \ket{\chi_k} \neq 0$.  Now consider the induced subgraph $g_0^{\leftrightarrow}$ of \fig{reversal_changed} obtained by removing vertices $(1,1)$, $(1,2)$, $a$, and $w^{(1)}_1,\ldots,w^{(1)}_{r}$. This graph has an eigenvector $\ket{\xi^{\leftrightarrow}_k}$ with eigenvalue $2\cos(k)$ defined by
-\begin{equation}
-  \langle v \ket{\xi^{\leftrightarrow}_k} = \begin{cases} \langle{v}\ket{\chi_k}& \text{for }v\in V(g_0^{(2)}) \\
-    \langle{p}\ket{\chi_k} & v = u\\
-0 &\text{otherwise.} \end{cases}
-\end{equation}
-To see that this is an eigenvector, observe that $g_0^{\leftrightarrow}$ is a disconnected graph and $\ket{\chi_k}$ is an eigenvector of one of its components.  Using this and \lem{transmit_reqs} (since $u$ is the only vertex adjacent to the periphery of $\hat{G}^{\leftrightarrow}$ with non-zero amplitude), we see that $k\in \mathcal{T}'$, so $\mathcal{R} \subseteq \mathcal{T}'$.
-\end{proof}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Momentum switches}\label{sec:mom_switch}
-
-To construct a momentum switch between a given pair of momenta, it will be worthwhile to first construct two R/T gadgets between the momenta, with the two gadgets having swapped reflection and transmission sets.  We can then construct something like a railroad switch, by placing the two gadgets immediately after a 3-claw.  With this design, the incident wavepacket will only see one of the two outgoing paths, and the resulting $S$-matrix will be exactly what we want.
-
-In particular, we can construct a momentum switch between the reflection and transmission sets $\mathcal{R}$ and $\mathcal{T}$ of a type 2 R/T gadget.  We attach the gadget and its reversal (defined in \sec{reversal}) to the leaves of a claw, as shown in \fig{gen_mom_con}.  Specifically, given a type 2 R/T gadget $\widehat{G}$, the corresponding momentum switch $\widehat{G}^{\prec}$ consists of a copy of $G_0$, a copy of $G_{0}^{\leftrightarrow}$, and a claw, with the three leaves of the claw acting as the terminal vertices.  Vertex $p$ of $G_0$ is connected to leaf $2$ of the claw, and vertices $w_1^{(1)},\ldots,w_r^{(1)}$ of $G_{0}^{\leftrightarrow}$ are each connected to leaf $3$ of the claw.
-
-Intuitively, the momentum switch acts the same as a railroad switch.  For momenta in the transmission set, the gadget perfectly transmits while its reversal perfectly reflects, so the claw is effectively a path connecting terminals 1 and 2.  For momenta in the reflection set, the roles of transmission and reflection are reversed, so the claw is effectively a path connecting terminals 1 and 3.
-
-%%%%%%%%%%%%%%%%
-\begin{figure}
-  \centering
-  \tikzsetnextfilename{GS_gen_mom_con}
-  \input{../tikz/GS_gen_mom_con.tex}
-  \caption{A momentum switch $\hat G^\prec$ built from a type 2 R/T gadget and its reversal.}
-  \label{fig:gen_mom_con}
-\end{figure}
-
-We can now prove that this gadget acts as a momentum switch, by constructing the desired scattering eigenstates.
-
-\begin{lemma}\label{lem:mom_switch_construction}
-Let $\widehat{G}$ be a type 2 R/T gadget with reflection set $\mathcal{R}$ and transmission set $\mathcal{T}$.  The gadget $\hat{G}^{\prec}$ described above is a momentum switch between the sets $\mathcal{R}$ and $\mathcal{T}$.
-\end{lemma}
-\begin{proof}
-
-We construct a scattering eigenstate for each momentum $k\in \mathcal{T}$ with perfect transmission from path 1 to path 2, and similarly construct a scattering eigenstate for each momentum $k^{\prime}\in \mathcal{R}$ with perfect transmission from 1 to 3.  These eigenstates show that $S_{2,1}(k) = 1$ and $S_{3,1}(k^\prime) = 1$. Since the S-matrix is symmetric and unitary, this gives the complete form of the S-matrix for all momenta in $\mathcal{R}\cup\mathcal{T}$.  In particular, this shows that $\hat{G}^{\prec}$ is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
-
-We first construct the scattering states for momenta $k\in \mathcal{T}$.  \lem{transmit_reqs} shows that the graph $g_0$ has a $2\cos(k)$-eigenvector $\ket{\xi_k}$ satisfying equation \eq{trans_cond} with some nonzero constant $c$. We define a state $\ket{\mu_k}$ on $G^{\prec}$ and we show that it is a scattering eigenstate with perfect transmission between paths $1$ and $2$.   The amplitudes of $\ket{\mu_k}$ on the semi-infinite paths and the claw are
-\begin{equation}
-  \langle (x,1)|\mu_k\rangle=e^{-ikx} \qquad 
-  \langle 0|\mu_k\rangle=1 \qquad 
-  \langle (x,2)|\mu_k\rangle=e^{ikx} \qquad
-  \langle (x,3)|\mu_k\rangle=0.
-\end{equation}
-The rest of the graph consists of the three copies of the subgraph $g_0$ and the vertices $p$ and $u_{\leftrightarrow}$. The corresponding amplitudes are
-\begin{equation}
-  \braket{v}{\mu_k} =
-  \begin{cases}
-	  -\frac{1}{c}\braket{v}{\xi_k} & v\in V(g^{(1)}_0) \\
-    \frac{1}{c}\braket{v}{\xi_k} & v \in V(g^{(2)}_0) \\
-	  -\frac{e^{ik}}{c} \braket{v}{\xi_k} & v \in V(g^{(3)}_0) \\
-  	0 & v=p \text{ or } v=u_{\leftrightarrow}.
-  \end{cases}
-\end{equation}
-
-We claim that $\ket{\mu_k}$ is an eigenstate of the Hamiltonian with eigenvalue $2\cos(k)$.  As in previous proofs, the state clearly satisfies the eigenvalue condition on the semi-infinite paths and at the vertices of $G_0$ and $G_0^\leftrightarrow$, and the factors of $\frac{1}{c}$ in the above equation are chosen so that the state also satisfies the eigenvalue condition at vertices $p$ and $u_\leftrightarrow$. Since $\ket{\mu_k}$ is a scattering state with perfect transmission from path 1 to path 2, we see that $S_{2,1}(k) = 1$.
-
-We now construct an eigenstate $\ket{\nu_{k^\prime}}$ with perfect transmission from path 1 to path 3 for each momentum $k^\prime \in \mathcal{R}$.  This state has the form
-\begin{equation}
-  \langle (x,1)|\nu_{k^\prime}\rangle=e^{-i k^\prime x} \qquad 
-  \langle 0|\nu_{k^\prime}\rangle=1 \qquad 
-  \langle (x,2)|\nu_{k^\prime}\rangle=0 \qquad
-  \langle (x,3)|\nu_{k^\prime}\rangle=e^{i k^\prime x}
-\end{equation}
-on the semi-infinite paths and the claw.  \lem{reflect_reqs} shows that $G_0$ has a $2\cos(k^\prime)$-eigenstate $\ket{\chi_{k^\prime}}$ with $\braket{p}{\chi_{k'}} \ne 0$, which determines the form of $\ket{\nu_{k^\prime}}$ on the remaining vertices:
-\begin{equation}
-  \braket{v}{\nu_{k^\prime}} =
-  \begin{cases}
-	  -\frac{1}{\braket{p}{\chi_{k'}}} \braket{v}{\chi_{k^\prime}} & v \in V(G_0) \\
-	  -\frac{e^{ik'}}{\braket{p}{\chi_{k'}}} \braket{v}{\chi_{k^\prime}} & v \in V(g_0^{(2)}) \\
-	  -e^{ik'} & v=u^\leftrightarrow \\
-    0 & \text{otherwise}.
-  \end{cases} 
-\end{equation}
-As before, it is easy to check that this a momentum-$k^\prime$ scattering state with perfect transmission from path 1 to path 3, so $S_{3,1}(k^\prime)=1$.
-
-Thus the gadget from \fig{gen_mom_con} is a momentum switch between $\mathcal{R}$ and $\mathcal{T}$.
-\end{proof}
-
-%%%%%%
-\subsubsection{Explicit example}
-
-Using this construction for momentum switches, we can obtain a momentum switch from any of the examples discussed in \sec{rt_ex}.  Explicitly, using the R/T gadget built from the 3-cycle, we get a momentum switch between $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$, as shown in \fig{mom_switch_ex}.  More generally, using an $r$-cycle, we obtain a switch between momenta of the form $-\frac{\pi j}{r}$ with odd or even values of $j$.  As another example, using a path of length $4$ connected at the center vertex, we obtain a switch between $-\frac{\pi}{4}$ and $-\frac{\pi}{2}$.
-
-\begin{figure}
-  \centering
-  \tikzsetnextfilename{GS_mom_switch_ex}
-  \input{../tikz/GS_mom_switch_ex.tex}
-  \caption{A momentum switch between $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$.}
-  \label{fig:mom_switch_ex}
-\end{figure}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Encoded unitaries}
-
-While there is no known efficient method to find graphs that fixed scattering behavior, it is possible to search over all small graphs in order to find gadgets with some particular scattering behavior.  This was the manner in which the gadgets for most known scattering results were found, such as in Childs' original universality proof for graph scattering \cite{Chi09} and Childs, Gosset, and Webb's universality result \cite{MPQW}.  Additionally, Blumer, Underwood, and Feder have a paper \cite{BUF11} in which they searched over all graphs with up to 9 vertices for scattering behavior at particular momentum.
-
-Essentially, the main idea behind this method is a brute force search.  Since we can easily compute the scattering matrix for a particular graph at a particular momentum, if we want to find a graph that has some prescribed scattering behavior, we simply assume that such a graph exists and search for it over all graphs, starting with those having a small number of vertices.  While this exhaustive search is not guaranteed to find such a graph, a surprising number of systems can be found with this structure.  In particular, if we restrict ourselves to momenta that are simple multiples of $\pi$, such as $-\frac{\pi}{2}$ or $-\frac{\pi}{4}$, then most simple scattering behaviors can be found.  
-
-Of particular interest to us will be gadgets with four terminal vertices, such that the scattering matrix at some particular momenta takes the form
-\begin{equation}
-  S(k) = \begin{pmatrix} 0 & U^T\\
-    U & 0\end{pmatrix}. \label{eq:encoded_scat}
-\end{equation}
-Namely, if we use a dual-rail encoding for a qubit, and think of one pair of semi-infinite paths as the input rails and the other pair as the output rails, then after scattering this gadget will have applied the unitary $U$ to the encoded qubit.
-
-Later in the thesis, we will be interested in finding a universal gate set for both $-\frac{\pi}{4}$ and $-\frac{\pi}{2}$.  As such, we can take as examples those graphs that will be of interest to us later.   
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}
-  \centering
-  \subfloat[][]{ 
-    \tikzsetnextfilename{GS_pi_4_phase}
-    \input{../tikz/GS_pi_4_phase}
-    \label{fig:pi_4_phase}
-  }
-  \qquad
-  \subfloat[][]{
-    \tikzsetnextfilename{GS_pi_4_basis_change}
-    \input{../tikz/GS_pi_4_basis_change.tex}
-    \label{fig:pi_4_basis_change}
-   }
-   \caption{Encoded one-qubit gates at $k = -\frac{\pi}{4}$.  \subfig{pi_4_phase}  A phase gate.  \subfig{pi_4_basis_change}  Basis-changing gate.}
-   \label{fig:reversal}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%
-\begin{figure}
-  \centering
-  \tikzsetnextfilename{GS_pi_2_had}
-  \input{../tikz/GS_pi_2_had}
-  \caption{Graph implementing a Hadamard gate at $k = -\frac{\pi}{2}$.
-    \label{fig:pi_2_had}}
-\end{figure}
-
-
-In particular, we have that the graph in \fig{pi_4_phase} has a scattering matrix of the form of equation \eq{encoded_scat} at momentum $k= -\frac{\pi}{4}$, with 
-\begin{equation}
-  U = \begin{pmatrix}
-    e^{- i \frac{\pi}{4}} & 0\\
-    0 & 1 
-  \end{pmatrix},
-\end{equation}
-while the gadget in \fig{pi_4_basis_change} also has a scattering matrix of the form \eq{encoded_scat} at momentum $k=-\frac{\pi}{4}$, where
-\begin{equation}
-  U = -\frac{i}{\sqrt{2}}\begin{pmatrix}
-    1 & -i\\
-    -i & 1 
-  \end{pmatrix}.
-\end{equation}
-
-Similarly, we have that at $k = -\frac{\pi}{2}$, the graph of \fig{pi_2_had} has a scattering matrix of the form \eq{encoded_scat}, with
-\begin{equation}
-  U = -\frac{e^{i \frac{\pi}{4}}}{\sqrt{2}}\begin{pmatrix}
-    1 & 1\\
-    1 & -1 
-  \end{pmatrix}.
-\end{equation}
-
-With these examples, we then have a universal gate set for single-qubit unitaries at $-\frac{\pi}{4}$, which will be sufficient for our eventual purposes.  
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Various facts about scattering}
-
-While the previous constructions yield graphs with particular behavior which will be useful when attempting to construct scattering algorithms, we will also want to understand some simple relations between graphs and their respective scattering matrices.  In particular, understanding what properties are necessary in order to have a given scattering matrix, and understanding the relation between various the scattering matrices of various momenta will be useful in constructing additional scattering graphs.
-
-\subsection{Degree-3 graphs are sufficient}
-
-One of the most simple assumptions that could be made is that certain scattering behaviors require high degree graphs.  In particular, having many connections might allow for additional correlations between outputs on larger graphs.  
-
-If we restrict our attention to a finite number of rational momenta, however, this does not turn out to be the case.  We can show that any graph can be replaced by a degree-three graph with a identical scattering behavior at some fixed momenta.  In particular, we will show that a single vertex can be replaced by a finite path while still satisfying the eigenvalue equation at the fixed momenta, where the length of the path is dependent on the fixed momenta.
-
-As degree two graphs are the graph joins of cycles and paths, degree three graphs are the smallest graphs to have nontrivial scattering behaviors.  This lemma shows that, in a certain sense, they are also all that are required.
-
-\begin{lemma} Let $\widehat{G}$ be a finite graph, and let $M$ be a finite set of rational multiples of $\pi$.  If $v\in V(G)$ is a degree $d$ vertex, there exists a graph $H$ that extends $G$ with the vertex $v$ being replaced by a degree-$(\lceil \frac{d}{2}\rceil +1)$ subgraph such that the scattering matrices at the momenta $k\in M$ are preserved.
-\label{lem:degree_reduction}
-\end{lemma}
-\begin{proof}
-  The main idea behind this proof is to partition the vertices adjacent to $v$ into two sets, and then replace $v$ by a finite path, with the two sets connected to opposites ends of the finite path.  By choosing the length of the path correctly, we can show that the amplitudes at either end of the path are the same as the amplitude on $v$ at each momenta in $M$, and thus the eigenvalue equation remains satisfied without changing the scattering behavior.  
-  
-  In particular, let $v$ be the degree $d$ vertex in $G$, and let $S = \{w\in V(G) : w\sim v\}$ be the set of vertices adjacent to $v$.  Additionally, let us arbitrarily partition $S$ into two sets, $S_1$ and $S_2$, such that $\big||S_1|-|S_2|\big| \leq 1$.
-  
-  As each $k\in M$ is a rational multiple of $\pi$, there exists some $m\in \NN^+$ such that $\frac{mk}{2\pi} \in \NN$ for all $k\in M$.  Let us then examine the graph $H$ where $v$ is replaced by a path of length $m$, and where $S_1$ is attached to one end of the path while $S_2$ is attached to the other end.  Explicitly:
-  \begin{align}
-    V(H) &= \big(V(G)\setminus \{v\}\big) \cup \{(v,j): j\in [m+1]\}\\
-    E(H) &= \big\{ e\in E(G) : v\notin e\big\} \cup \big\{ \{(v,j),(v,j+1)\} : j\in [m]\big\} \cup \nonumber\\
-    &\qquad \big\{ \{s, (v,0)\} : s\in S_1\big\} \cup \big\{ \{s,(v,m)\} : s\in S_2\big\}.
-  \end{align}
-  
-  Now, for any $k\in M$, let $\ket{\phi}$ be an eigenstate of $A(G)$ with eigenvalue $2\cos(k)$.  We will show that there exists an eigenstate $\ket{\psi}$ of $A(H)$ with energy $2\cos(k)$ such that for any $w\in V(G)\setminus \{v\}$, $\braket{w}{\phi} = \braket{w}{\psi}$.  
-  
-  Concretely, for any vertex other than $v$, let us define $\ket{\psi}$ in this manner, and note that by assumption, $\ket{\psi}$ satisfies the eigenvalue equation with energy $2\cos(k)$ for all vertices other than those in $S$ or those replacing $v$.  Additionally, let 
-  \begin{equation}
-    \alpha = \sum_{w\in S_1} \braket{w}{\phi}, \qquad \beta = \braket{v}{\phi}, \qquad \text{ and } \qquad \gamma = \sum_{w\in S_2} \braket{w}{\phi}.
-  \end{equation}
-  We will then defined the amplitude along the path replacing the vertex $v$ as
-  \begin{equation}
-    \braket{(v,j)}{\psi} = \beta \cos(k j) + \frac{\gamma - \beta\cos(k)}{\sin(k)} \sin( k j).
-  \end{equation}
-  Note that $\braket{(v,0)}{\psi} = \braket{(v,m)}{\psi} = \beta = \braket{v}{\phi}$, and thus the eigenvalue equation is satisfied at all vertices in $S$.  As the eigenstates along a path with energy $2\cos(k)$ are scalar multiples of $\sin(k x)$ and $\cos(k j)$, we can also see that the eigenvalue equation is necessarily satisfied for all $(v,j)$ with $j\neq 0$ and $j\neq m$.
-  
-  If we then examine the eigenvalue equation at $(v,0)$, we can see that
-  \begin{align}
-    \sum_{s\in S_1} \braket{s}{\psi} + \braket{(v,1)}{\psi} &= \alpha + \beta \cos(k) + \frac{\gamma - \beta \cos(k)}{\sin(k)} \sin (k) \\
-      &= \alpha + \gamma \\
-      &= 2 \cos(k) \beta = 2 \cos(k) \braket{(v,0)}{\psi}
-  \end{align}
-  where the third equality follows from the fact that $\ket{\phi}$ satisfies the eigenvalue equation at $v$ with eigenvalue $2\cos(k)$, and thus we have that the eigenvalue equation for $H$ is satisfied at $(v,0)$. 
-  
-  Let us finally examine the eigenvalue equation at $(v,m)$, noting that
-  \begin{align}
-    \sum_{s\in S_2} \braket{s}{\psi} + \braket{(v,m-1)}{\psi} &=\gamma + \beta \cos(k (m-1)) + \frac{\gamma - \beta \cos(k)}{\sin(k)} \sin (k(m-1)) \\
-      &= \gamma + \beta \cos(k)   -  \big(\gamma - \beta \cos(k)\big)\\
-      &= 2 \cos(k) \beta = 2 \cos(k) \braket{(v,0)}{\psi}
-  \end{align}
-  where the second equality follows from some trigonometric identities. We can then see that $\ket{\psi}$ satisfies the eigenvalue equation at $(v,m)$ with energy $2\cos(k)$.
-  
-  Putting this together, we have that $\ket{\psi}$ is an eigenvector of $A(H)$ with energy $2\cos(k)$ such that $\ket{\psi}$ and $\ket{\phi}$ are identical on those vertices contained in both $G$ and $H$.  As this result holds for any energy $2\cos(k)$ eigenvector of $A(G)$, and as the two graphs are identical along the semi-inifinite paths, we have that the scattering states for these two graphs are identical, and thus the scattering matrices are preserved under this degree reduction procedure.
-\end{proof}
-
-By repeated use of this lemma, we can then reduce any graph used as a scattering gadget down to a degree-3 graph without changing the scattering matrix at some fixed momentum.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Some behavior impossible}
-
-So far, all of our constructions have generally assumed that the scattering behavior that we want does exist.  Hence, if we simply search over large enough graphs, we will eventually find a graph that implements our desired scattering behavior.
-
-However, it turns out that in some cases this is not a valid assumption.  In particular, there exist pairs of momenta for which no R/T gadget can be constructed.  The main idea is that for specific momentum, there exists a basis for the scattering states in which all amplitudes are taken from a field extension of the rationals.  If two momenta are related by a Galois conjugation over this field, then perfect reflection at one momenta implies perfect reflection at the second.  
-
-As an illuminating example, we will use those states with momenta $k= -\frac{\pi}{4}$ and $p = - \frac{3\pi}{4}$.  For the two momenta, the corresponding energy is $2 \sqrt{2}$ or $-2\sqrt{2}$, and in this case the Galois conjugation is simply replacing $\sqrt{2}$ by $-\sqrt{2}$. 
-
-
-\subsubsection{Basis vectors with entries in $\QQ(\sin(k),\cos(k))$}
-\label{sec:vecs_over_field}
-
-Recall the general setup shown in \fig{basic_graph}: $N$ semi-infinite paths are attached to a finite graph $\widehat G$, resulting in an infinite graph $G$.  Additionally, we have that the adjacency matrix for $\widehat{G}$ can be written in block diagonal form
-\begin{align}
-  A(\widehat{G}) = \begin{pmatrix} 
-    A & B^\dag\\
-    B & D
-  \end{pmatrix},
-\end{align}
-where $A$ is an $N\times N$ matrix, $B$ is an $m\times N$ matrix, and $D$ is an $m\times m$ matrix.  We have that the $N$ semi-infinite paths are attached, in order, to the first $N$ vertices of $\widehat{G}$.
-
-Let us now consider an eigenvector $\ket{\tau_k}$ of the adjacency matrix of $G$ with eigenvalue $2\cos(k)$ for $k\in (-\pi,0)$.  We have from \thm{scat_basis} that this eigenspace is spanned by incoming scattering states with momentum $k$ and confined bound states (which have zero amplitude on the semi-infinite paths) . We can thus write the amplitudes of $\ket{\tau_k}$ on the semi-infinite paths as
-\begin{equation}
-  \braket{(x,j)}{\tau_k} 
-  = \kappa_j \cos(k (x-1)) + \sigma_j \sin(k (x-1))
-\end{equation}
-for $x \in \posint$, $j \in [N]$, and $\kappa_j,\sigma_j \in \CC$, and the amplitudes on the internal vertices as
-\begin{equation}
-  \braket{w}{\tau_k} = \iota_w
-\end{equation}
-for $\iota_w \in \CC$, where $w$ indexes the internal vertices.  Since the state $\ket{\tau_k}$ satisfies the eigenvalue equation on the semi-infinite paths, it remains to satisfy the conditions specified by the block matrix equation
-\begin{equation*}
-  \begin{pmatrix} A & B^\dag\\ B & D\end{pmatrix}
-	\begin{pmatrix} \kappa \\ \iota \end{pmatrix}
-	+ \cos(k) \begin{pmatrix} \kappa \\ 0 \end{pmatrix}
-	+ \sin(k) \begin{pmatrix} \sigma \\ 0 \end{pmatrix} 
-	= 2\cos(k) \begin{pmatrix} \kappa \\ \iota \end{pmatrix}.
-\end{equation*}
-
-Hence, the nullspace of the matrix
-\begin{equation}
-  M= \begin{pmatrix} A -\cos(k) \II & \sin(k) \II & B^\dag\\
-    0 & 0 & 0\\
-    B & 0 & D-2\cos(k)\II\end{pmatrix}
-\end{equation}
-is in one-to-one correspondence with the $2\cos(k)$-eigenspace of the infinite matrix (here the first block corresponds to $\kappa$, the second to $\sigma$, and the third to $\iota$). Further, $M$ only has entries in $\QQ(\cos(k),\sin(k))$, so its nullspace has a basis with amplitudes in $\QQ(\cos(k),\sin(k))$, as can be seen using Gaussian elimination.
-
-We can then use this, along with the form of the eigenstates along the semi-infinite paths, to see that all of the amplitudes can be written as elements over the rationals extended by $\sin(nk)$ and $\cos(nk)$ for all $n\in \NN^+$.  While this is not particularly useful in general, if $k$ is a rational multiple of $\pi$, this is a finite extension.  Further, there exist special cases in which this field extension is a quadratic extension, such that all of the amplitudes can be taken from $\QQ[\sqrt{d}]$ for some $d$.
-
-As a slight caveat noted above, the spectrum of $G$ may include confined bound states (\thm{scat_basis}) with eigenvalues at $2\cos(k)$.  However, any such state is also in the nullspace of the matrix $M$, while also satisfying the rational constraints that both $\kappa$ and $\sigma$ are zero.  As such, these states can always be written with amplitudes over the field $\QQ[\sin(k),\cos(k)]$.  Thus forcing the scattering eigenstates to be orthogonal to these confined bound states only involves constraints over the same field, and we still have that the scattering eigenstates can be written with all of their amplitudes over the field $\QQ$ extended by $\sin(nk)$ and $\cos(nk)$.
-
-As an explicit example, let us examine the case where $2\cos(k)=\pm\sqrt{2}$ corresponding to $k = -\frac{\pi}{4}$ or $k = -\frac{3\pi}{4}$.  In these cases $\QQ(\cos(k),\sin(k)) = \QQ(\sqrt{2})$, and we may choose a basis for the nullspace of $M$ with amplitudes from $\QQ(\sqrt{2})$. Furthermore, $\cos(kx), \sin(kx) \in \QQ(\sqrt{2})$ for all $x\in \posint$, so with such a choice of basis, each amplitude of $\ket{\tau_k}$ is also an element of $\QQ(\sqrt{2})$.
-
-We can then use the fact that $\QQ[\sqrt{2}]$ can be thought of as a two-dimensional vectorspace over $\QQ$ to see that any member of this extended rational basis can be written as 
-\begin{align}
-  \ket{\tau_k} = \ket{u_k} + \sqrt{2} \ket{w_k},
-\end{align}
-for rational vectors $\ket{u_k}$ and $\ket{w_k}$.  Further, as $H^2 \ket{\tau_k} = 2 \ket{\tau_k}$, we can see that  $H\ket{u_k}=\pm 2\ket{w_k}$ and $H\ket{w_k} = \pm \ket{u_k}$, so
-\begin{equation}
-  \ket{\tau_k}=(H \pm \sqrt{2} \II)\ket{w_k},\label{eq:form_of_tau}
-\end{equation}
-where the $\pm$ depends on whether we are working with $k = -\frac{\pi}{4}$ or $-\frac{3\pi}{4}$.
-
-While this expression does not easily generalize to most pairs of momenta, we do have a similar equation whenever the extended field is a quadratic extension, where $2$ replaced with $d$.
-
-
-%================================================================
-\subsubsection{Impossibility of R/T gadgets}
-
-With the above rational basis for scattering states, we will be able to transform an eigenstate at one energy into an eigenstate at another energy via a Galois conjugation.  However, the existence of particular eigenstates will not immediately give us the results that we want. 
-
-Along these lines, we will use the following basic fact about two-terminal gadgets several times: 
-\begin{fact}\label{fct:zero_ampl}
-If a two-terminal gadget has a momentum-$k$ scattering state $\ket{\phi}$ with zero amplitude along path $2$, then the gadget perfectly reflects at momentum $k$.
-\end{fact}
-\begin{proof}
-Without loss of generality, we may assume that $\ket{\phi}$ is orthogonal to all confined bound states.
-If $\ket{\phi}$ has zero amplitude along path $2$, then there exist some $\mu,\nu \in \CC$ such that
-\begin{equation}
-  \braket{(x,2)}{\phi}
-  = \mu \braket{(x,2)}{\scat_2 (k)} + \nu \braket{(x,2)}{\scat_1(k)}
-  = \mu e^{-ikx} + \mu R e^{ikx} + \nu T e^{ikx}
-  = 0
-\end{equation} 
-for all $x\in \ZZ^{+}$.  Since this holds for all $x$, we have $\mu = \mu R + \nu T = 0$.  Since $\mu$ and $\nu$ cannot both be zero, we have $T=0$.
-\end{proof}
-
-For an R/T gadget, the scattering states (at some fixed momentum) that are orthogonal to the confined bound states span a two-dimensional space. As shown in \sec{vecs_over_field}, we can expand each scattering eigenstate over an extension to the field $\QQ$.  Let us restrict our attention to the case where this extension is quadratic, with discriminant $d$.
-
-In particular, let us assume that the scattering state at $k$ has energy $\sqrt{d}$ (with $d$ nonsquare) and can be written in a basis with entries over $\QQ(\sqrt{d})$, where each basis vector takes the form \eq{form_of_tau}. This gives
-\begin{equation*}
-  \ket{\scat_{1}(k)} 
-  = (H + \sqrt{d}\II) (\alpha \ket{a} + \beta \ket{b}) \label{eq:rat_expansion}
-\end{equation*}
-where $\alpha,\beta \in \CC$, $\alpha\neq 0$, and $\ket{a}$ and $\ket{b}$ are rational $d$-eigenvectors of $H^2$.
-
-If $T(k) = 0$, then for all $x \geq 0$, 
-\begin{equation}
-  \langle x,2\ket{\scat_1(k)} 
-  = 0 
-  = \langle{x,2} |(H + \sqrt{d}\II) (\alpha \ket{a} + \beta \ket{b}).
-\end{equation}
-Dividing through by $\alpha$ and rearranging, we get that for all $x\geq 0$,
-\begin{equation*}
-\frac{\beta}{\alpha} (\langle{x,2}| H\ket{b}+\sqrt{d} \langle{x,2}\ket{b})
-  =-\langle{x,2}| H\ket{a}  -\sqrt{d} \langle{x,2}\ket{a}.
-\label{eq:cases_eqn}
-\end{equation*}
-If the left-hand side is not zero, then $\beta/\alpha \in \QQ(\sqrt{d})$ since $H$, $\ket{a}$, and $\ket{b}$ are rational.  If the left-hand side is zero, then $(H+ \sqrt{d}\II)\ket{a}$ is an eigenstate at energy $2\cos(k)$ with no amplitude along path 2, so $\beta = 0$ (using \fct{zero_ampl}), and again $\beta/\alpha \in \QQ(\sqrt{d})$.
-
-Now write $\beta/\alpha=r+s\sqrt{d}$ with $r,s\in\QQ$, and consider the rational $d$-eigenvector of $H^2$
-\begin{equation}
-  \ket{c} := \ket{a} + (r+sH) \ket{b}.
-\end{equation}
-Note that
-\begin{equation}
-  \alpha (H + \sqrt{d} \II) \ket{c} 
-= \alpha(H+ \sqrt{d} \II) \ket{a} + \alpha (rH+r\sqrt{d}+ sH^2+sH\sqrt{d}) \ket{b}.
-\end{equation}
-Since $\ket{b}$ is a $d$-eigenvector of $H^2$ and $\beta/\alpha=r+s\sqrt{d}$, this simplifies to
-\begin{equation}
-  \alpha (H + \sqrt{d}\II) \ket{c} 
-  = \alpha (H + \sqrt{d}\II) \ket{a} + \beta(H + \sqrt{d}\II) \ket{b} 
-  = \ket{\scat_1(k)}, \label{eq:sc1_c}
-\end{equation}
-so $\ket{\scat_1(k)}$ can be written as $\alpha(H+\sqrt{d}\II)$ times a rational $d$-eigenvector of $H^2$.
-
-Since $\langle{x,2}\ket{\scat_1(k)} = 0$ for all $x\geq 1$ (and $\alpha\neq 0$), we have
-\begin{equation}
-  \langle{x,2}| (H+\sqrt{d}\II) \ket{c} 
-  = \langle{x,2}| H \ket{c} + \sqrt{d} \langle{x,2}\ket{c} 
-  = 0.
-\end{equation}
-As $H$ is a rational matrix and $\ket{c}$ is a rational vector, the rational and irrational components must both be zero, implying $\langle{x,2}\ket{c}  =\langle{x,2}|H\ket{c} = 0$ for all $x\geq 1$. Furthermore, since $ \ket{\scat_1(k)}$ is a scattering state with zero amplitude on path $2$, it must have some nonzero amplitude on path 1 and thus there is some $x_0\in \mathbb{Z}^+$ for which $\langle{x_0,1}\ket{c}\neq 0$ or $\langle{x_0,1}|H\ket{c} \neq 0$.
-
-Now consider the state obtained by replacing $\sqrt{d}$ with $-\sqrt{d}$, or in other words after performing a Galois conjugation:
-\begin{equation}
-  \ket{\overline{\scat}_1(k)} := \alpha (H-\sqrt{d}\II) \ket{c}.
-\end{equation}
-This is a $-\sqrt{d}$-eigenvector of $H$, which can be confirmed using the fact that $\ket{c}$ is a $d$-eigenvector of $H^2$. As $\langle{x,2} | H \ket{c} = \langle x,2 \ket{c} = 0$ for all $x\geq 1$, $\langle x,2 \ket{\overline{\scat}_1(k)} = 0$ for all $x\geq 1$. Furthermore the amplitude at vertex $(x_0,1)$ is nonzero, i.e.,  $\langle x_0,1 \ket{\overline{\scat}_1(k)} \neq 0$, and hence $\ket{\overline{\scat}_1(k)}$ has a component orthogonal to the space of confined bound states (which have zero amplitude on both semi-infinite paths).  Hence, there exists a scattering state with eigenvalue $-\sqrt{d}$ with no amplitude on path 2. By \fct{zero_ampl}, the gadget perfectly reflects at momentum $p$, where $p = -\pi - k$ corresponds to this energy.  It follows that no perfect R/T gadget (and hence no perfect momentum switch) exists between these momenta.
-
-As particular cases, we can take $k = -\frac{\pi}{4}$, where $d = 2$.  In this case, we have that there does not exist an $R/T$ gadget splitting $k$ and $-\frac{3\pi}{4}$.   Similarly, it is possible to show that $k = -\frac{\pi}{6}$ can be written in a basis with entries over $\QQ[\sqrt{3}]$, and thus there does not exist a R/T gadget between $k$ and $-\frac{5\pi}{6}$. 
-
-\subsubsection{Approximate R/T gadget}
-
-\todo{I never particularly liked this bit, and I'll think I'll include it later if I have the time}
-
-
-%%%%%%%%%%%%%%%%%%%
-\subsection{Laplacians vs adjacency matrix}
-
-\todo{If I have time, write this section.  The basic idea is similar to proof removing self-loops from the graph for the BH model.  In particular, in order to turn a degree 3 graph into a 3-regular graph, we use three copies of the original graph.  For each degree-2 vertex $u$ in the original graph, we add another vertex $u_0$ to the overall graph, and add edges from all three $u_i$ for $i\in[3]$ to $u_0$.  For each degree-1 vertex, we do this twice.  Note that for each eigenstate of the original graph, there are two with nearly the same amplitudes.  We can then use these for our scattering eigenstates}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Wavepacket scattering}
 
-Up until this point, we have taken as intuition that the scattering states correspond to an incoming wavepacket at some momentum, and then scatterings with a corresponding $S$-matrix.  However, this is somewhat weird, in that the scattering states are eigenstates of the Hamiltonian, and thus do not change over time, while scattering states explicitly move.  
+Up until this point, we have taken as intuition that the scattering states correspond to an incoming wave packet at some momentum, and then scatterings with a corresponding $S$-matrix.  However, this is somewhat weird, in that the scattering states are eigenstates of the Hamiltonian, and thus do not change over time, while scattering states explicitly move.  
 
-In this section, we will show that our intuitive naming is useful.  In particular, we will show that preparing a wavepacket centered at some momenta will scatter as the $S$-matrix of the corresponding scattering state.  Further, the shape of the wavepacket will remain approximately the same.
+In this section, we will show that our intuitive naming is useful.  In particular, we will show that preparing a wave packet centered at some momenta will scatter as the $S$-matrix of the corresponding scattering state.  Further, the shape of the wave packet will remain approximately the same.
 
-This section is devoted to proving the following lemma describing the scattering behavior of a Gaussian wavepacket.
+In \cite{MPQW}, Childs, Gosset, and W. proved a nice bound on the time-evolution of square wave packets.  These approximations were useful as the necessary mathematics involved in proving the related bounds only involved unweighted sums of amplitudes that were identical to the eigenstates of the corresponding Hamiltonians.  In particular, they were able to prove the following bound:
+\begin{theorem}[Childs, Gosset, W.\cite{MPQW}]
+Let $\widehat{G}$ be an $(N+m)$-vertex graph. Let $G$ be a graph obtained from $\widehat{G}$ by attaching semi-infinite paths to $N$ of its vertices, and let $S$ be the corresponding S-matrix.  Let $k\in(-\pi,0)$, $M,L\in\natural$, $j\in\{1,\ldots,N\}$, and
+\begin{equation}
+  |\psi^{j}(0)\rangle=\frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}e^{-ikx}|x,j\rangle.
+\end{equation}
+Let $c_{0}$ be a constant independent of $L$. Then, for all $0\leq t\leq c_{0}L$,
+\begin{equation}
+  \left\Vert e^{-iA(G) t}|\psi^{j}(0)\rangle-|\alpha^{j}(t)\rangle\right\Vert =\OO(L^{-{1}/{4}})
+\end{equation}
+where 
+\begin{align}
+  |\alpha^{j}(t)\rangle & =  \frac{1}{\sqrt{L}}e^{-2it\cos k}\sum_{x=1}^{\infty}\sum_{q=1}^{N}\left(\delta_{qj} e^{-ikx}R(x-\left\lfloor 2t\sin k\right\rfloor)+S_{qj}(k)e^{ikx}R(-x-\left\lfloor 2t\sin k\right\rfloor)\right)|x,q\rangle
+\end{align}
+with
+\begin{align}
+R(l) & =  \begin{cases}
+1 & \text{if }l\in\{M+1,M+2,\ldots,M+L\}\\
+0 & \text{otherwise.}\end{cases}
+\end{align}
+\end{theorem}
 
+While these bounds were sufficient for the purposes of their paper, as they only required polynomial versus exponential overhead, the bounds they proved where not the best possible.  Their use of square approximations was most likely not optimal in terms of the resulting errors.  
+
+As such, this section is devoted to proving a corresponding bound on the scattering behavior of a Gaussian wave packet, instead of square wave packets.  We prove near quadratically better bounds than those of \cite{MPQW} in regards to the single-particle scattering, as the Guassian wave packets have nice dispersion properties, but unfortunately the proof becomes a little more complicated.  In particular, we prove the following lemma:
 \begin{theorem}
   Let $\widehat{G}$ be an $(N+m)$-vertex graph, let $G$ be the graph obtained from $\widehat{G}$ by attaching $N$ semi-infinite paths to the first $N$ of its vertices, and let $S$ be the corresponding $S$-matrix.  Let $\ket{\psi_j(0)}$ be a cut-off Gaussian distribution with momentum $k$ and standard deviation $\sigma$ centered at $\mu$, with the cut-off at a distance $L$ from the center.  Namely, let 
   \begin{equation}
     \ket{\psi^j(0)} = \gamma \sum_{x = \mu - L}^{\mu + L} e^{- i k x} e^{- (x - \mu)^2/2\sigma^2} \ket{x,j}  \label{eq:guass_start_defn},
   \end{equation}
   where $\gamma$ is the normalization of $\ket{\psi^j(0)}$.  Then let us define the state 
-  \begin{equation}
-    \ket{\alpha^j(t)} =\begin{cases}  \gamma e^{-2 i t \cos k} \sum_{x = \mu(t) -L}^{\mu(t)+L} e^{-i k x} e^{ -(x - \mu(t))^2/2\sigma^2} 
-    			 \ket{x,j} & t < \frac{\mu-L}{2|\sin k|}\\
-			 \gamma e^{-2 i t \cos k} \sum_{x = \mu(t)-L}^{\mu(t) + L} \sum_{q=1}^N  S_{qj}(k) e^{i k x} e^{-(x + \mu(t))^2/2\sigma^2} \ket{x,q} & t > \frac{\mu+L}{2|\sin k|},\end{cases}\label{eq:guass_approximation_defn}
-  \end{equation}
+  \begin{align}
+    \ket{\alpha^j(t)} &= \gamma e^{-2 i t \cos k} \Bigg[ \sum_{x = \max\{\mu(t) -L,1\}}^{\max\{\mu(t)+L,0\}} e^{-i k x} e^{ -(x - \mu(t))^2/2\sigma^2} 
+    			 \ket{x,j} \nonumber\\
+			  &\qquad\qquad\qquad+ \sum_{x = \max\{-\mu(t)-L,1\}}^{\max\{-\mu(t) + L,0\}} \sum_{q=1}^N  S_{qj}(k) e^{i k x} e^{-(x + \mu(t))^2/2\sigma^2} \ket{x,q} \Bigg]\label{eq:guass_approximation_defn}
+  \end{align}
   where
   \begin{equation}
     \mu(t) = \mu - \lceil 2 t \sin(k)\rceil.
   \end{equation}
-  If $\sigma = c_1 \frac{ L}{\sqrt{\log L}}$ for some constant $c_1$, we then have that for $0 < t < \frac{\mu - L}{2|\sin k|}$ and for $\frac{\mu + L}{2|\sin k|} < t < c_2 L$ (assuming the bounds make sense),  
+  If $\sigma = c_1 \frac{ L}{\sqrt{\log L}}$ for some constant $c_1 < \frac{1}{\sqrt{2}}$, we then have that for $0 < t < c_2 L$,  
   \begin{equation}
-    \norm{e^{-i H_g t} \ket{\psi^j(0)} - \ket{\alpha^j (t)}} \leq \chi \sqrt{\frac{\log L}{L}},
+    \norm{e^{-i A(G) t} \ket{\psi^j(0)} - \ket{\alpha^j (t)}} \in \OO \bigg(\sqrt{\frac{\log L}{L}} \bigg).,
   \end{equation}  
-  for some constant $\chi$.
 \label{thm:single_particle_wavepacket_bound}
 \end{theorem}
 
-Note that this theorem requires that the standard deviation and the original distance from the graph be related.  Further, this theorem doesn't give an approximation to the time-evolved state when the approximation has non-zero amplitude inside the graph $\widehat{G}$.
+Note that this bound is extremely similar to that of \cite{MPQW}, albeit with a slightly more complicated definition for the approximate state.  However, when the wave packet is far from the 
 
-\todo{I'm almost positive that I can get this bound down to $\frac{\log L}{L}$, essentially getting rid of the square root.  If I have time I want to get back to this}
+
+
+
+
 
 \subsection{Jacobi $\Theta$-function}
 
@@ -1275,16 +665,17 @@ The Jacobi theta function has several symmetries, such as the fact that $\Theta(
   h_{\infty}^\sigma (\phi) = \Theta\Bigg(\frac{\phi}{2\pi}, \frac{i}{2\pi \sigma^2} \Bigg) = \sqrt{2\pi} \sigma e^{ - \frac{\sigma^2\phi^2}{2}} \Theta \big(i \phi\sigma^2, 2\pi i \sigma^2 \big) =  \sqrt{2\pi} \sigma e^{ - \frac{\sigma^2\phi^2}{2}}  h_{\infty}^{1/(2\pi \sigma)}\big(2\pi i \phi \sigma^2 \big).
   \label{eq:discrete_fourier_transform}
 \end{equation}
-This can be viewed as a discrete version of a Fourier transform, as the summand goes from a Gaussian distribution with standard deviation $\sigma$ to one that has standard deviation $\sigma^{-1}$.  Additionally, note that the argument to the $h$ function is now complex.
+This can be viewed as a discrete version of a Fourier transform, as the summand goes from a Gaussian distribution with standard deviation $\sigma$ to one that has standard deviation proportional to $\sigma^{-1}$ along with an exponential suppression term.  Additionally, note that the argument to the $h$ function is now complex, but we will only use such terms when dealing with the full infinite sum.
 
-Let us now give some bounds comparing the various $h_L^\sigma$.  Note that this simple bound for the normal distribution came from \cite{Cook09}.  Assuming that $L > 0$, and that $\phi$ is real, we have that
+
+Let us now give some bounds on the various norms of $h_L^\sigma$, where some of our bounds where found in \cite{Cook09}.  These will assist us greatly in our proof of the theorem.  Assuming that $L > 0$, and that $\phi$ is real, we have that
 \begin{align}
   \big|h_{\infty}^{\sigma}(\phi) - h_{L}^{\sigma}(\phi) \big| &= \Big| \sum_{n=L+1}^\infty 2 \cos (n\phi) e^{- \frac{n^2}{2\sigma^2}}\Big|\\
    &\leq 2 \sum_{n = L+1}^\infty e^{ -\frac{n^2}{2\sigma^2}}\\ 
    &\leq 2 \int_{L}^\infty e^{- \frac{x^2}{2\sigma^2}} dx\\
    &= 2 \sigma \int_{L/\sigma}^\infty e^{- \frac{u^2}{2}}{du}\\
    &< 2 \sigma \int_{L/\sigma}^\infty \frac{\sigma u}{L} e^{-\frac{u^2}{2}} du\\
-   &= \frac{2 \sigma^2}{L} e^{- \frac{L^2}{2\sigma^2}}\label{eq:hL_bound},
+   &= \frac{2 \sigma^2}{L} e^{- \frac{L^2}{2\sigma^2}},
 \end{align}
 while if $L = 0$ we instead have
 \begin{align}
@@ -1294,46 +685,187 @@ while if $L = 0$ we instead have
    &< 2 e^{- \frac{1}{2\sigma^2}} +  2\sigma^2 e^{-\frac{1}{2\sigma^2}}\\
    &= 2(1+ \sigma^2) e^{-\frac{1}{2\sigma^2}}.
 \end{align}
-These two bounds will allow us to approximate many of the relevant numbers.  
-
-We will now try to bound the size of $h_\infty^\sigma(\phi)$, for small (but real) $\sigma$ and imaginary $\phi$ (so as to use the discrete Fourier transform).  In particular, if we assume that $1 > \sigma^2 |\phi|$, we will have
+In addition, if $\phi$ is complex, We will now try to bound the size of $h_\infty^\sigma(\phi)$, for small (but real) $\sigma$ and imaginary $\phi$ (so as to use the discrete Fourier transform).  In particular, if we assume that $\phi = \phi_r + i \phi_i$ and that $1 > \sigma^2 |\phi_i|$, we will have
 \begin{align}
-  h_\infty^\sigma(\phi) &= \sum_{n=-\infty}^\infty e^{i n \phi} e^{- \frac{n^2}{2\sigma^2}}\\
-    &= 1 + \sum_{n=1}^\infty 2 \cos(n \phi) e^{-\frac{n^2}{2\sigma^2}}\\
-    &\leq 1 + 2 \sum_{n=1}^\infty e^{ -\frac{n^2}{2\sigma^2} + n |\phi|}\\
-%    &= 1 + 2 e^{ \frac{\sigma^2|\phi|^2 }{2}}\sum_{n=1}^\infty  \exp\Big[ -\frac{n^2}{2\sigma^2} + n |\phi| - \frac{ \sigma^2 |\phi|^2}{2}  \Big]\\
-    &< 1 + 2 e^{- \frac{1}{2\sigma^2} + |\phi|} + 2 e^{ \frac{\sigma^2|\phi|^2 }{2}}\sum_{n=2}^\infty \exp\Big[ -\frac{1}{2}\Big(\frac{n}{\sigma} - \sigma |\phi|\Big)^2 \Big]\\
-    &< 1 + 2 e^{ - \frac{1}{2\sigma^2} + |\phi|} + 2 e^{ \frac{\sigma^2|\phi|^2 }{2}}\int_{1}^\infty  \exp\Big[ -\frac{1}{2}\Big(\frac{x}{\sigma} - \sigma |\phi|\Big)^2 \Big]dx\\
-    &= 1 + 2 e^{-\frac{1}{2\sigma^2} + |\phi|} + 2 \sigma e^{ \frac{\sigma^2|\phi|^2 }{2}} \int_{\frac{1}{\sigma} - \sigma|\phi|}^\infty e^{-\frac{u^2}{2}} du\\
-    &< 1 + 2 e^{-\frac{1}{2\sigma^2} + |\phi|} + \frac{2 \sigma e^{\frac{\sigma^2|\phi|^2}{2}}}{\frac{1}{\sigma} - \sigma |\phi|} \int_{\frac{1}{\sigma} - \sigma|\phi|}^\infty u e^{-\frac{u^2}{2}} du\\
-    &= 1 + 2 e^{-\frac{1}{2\sigma^2} + |\phi|} + \frac{2 \sigma}{\frac{1}{\sigma} - \sigma |\phi|} e^{-\frac{1}{2\sigma^2} + \phi}\\
-    &= 1 + 2 \Bigg[ 1 + \frac{\sigma^2}{1 - \sigma^2|\phi|}\Bigg]e^{-\frac{1}{2\sigma^2} + \phi} \label{eq:h_bound}
+  \big|h_\infty^\sigma(\phi) - 1\big| &= \bigg|\sum_{n=1}^\infty 2 \cos(n \phi) e^{-\frac{n^2}{2\sigma^2}}\Bigg|\\
+    &\leq   4 e^{- \frac{1}{2\sigma^2} + |\phi_i|} + 4 e^{ \frac{\sigma^2|\phi_i|^2 }{2}}\sum_{n=2}^\infty \exp\Big[ -\frac{1}{2}\Big(\frac{n}{\sigma} - \sigma |\phi_i|\Big)^2 \Big]\\
+    &< 4 e^{ - \frac{1}{2\sigma^2} + |\phi_i|} + 4 e^{ \frac{\sigma^2|\phi_i|^2 }{2}}\int_{1}^\infty  \exp\Big[ -\frac{1}{2}\Big(\frac{x}{\sigma} - \sigma |\phi_i|\Big)^2 \Big]dx\\
+    &< 4 e^{-\frac{1}{2\sigma^2} + |\phi_i|} + \frac{4 \sigma e^{\frac{\sigma^2|\phi_i|^2}{2}}}{\frac{1}{\sigma} - \sigma |\phi_i|} \int_{\frac{1}{\sigma} - \sigma|\phi_i|}^\infty u e^{-\frac{u^2}{2}} du\\
+    &=  4 e^{-\frac{1}{2\sigma^2} + |\phi_i|} + \frac{4 \sigma}{\frac{1}{\sigma} - \sigma |\phi_i|} e^{-\frac{1}{2\sigma^2} + |\phi_i|}\\
+    &= 4 \Big[1 + \frac{\sigma^2}{1 - \sigma^2 |\phi_i|} \Big]e^{-\frac{1}{2\sigma^2} + |\phi_i|} .
 \end{align}
+
+We can then collect these bounds into a lemma, which we will reference several times in the thesis.
+\begin{lemma}
+\label{lem:h_bounds}
+  Let $h_L^\sigma(\phi)$ be defined as above.  For any real $\phi$, and $L>0$, we have that
+  \begin{align}
+    \big| h_\infty^\sigma(\phi) - h_L^\sigma(\phi)\big| < \frac{2\sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}\label{eq:hL_bound}
+  \end{align}
+  and
+  \begin{align}
+    \big|h_\infty^\sigma(\phi) - 1\big| < 2(1 + \sigma^2) e^{-\frac{1}{2\sigma^2}}\label{eq:h_infinity_bound}.
+  \end{align}
+  Additionally, for complex $\phi = \phi_r + i \phi_i$ with $|\phi_i|\sigma^2 < 1$, we have that
+  \begin{align}
+    \big| h_\infty^\sigma(\phi) - 1\big| < 4 \bigg[1 + \frac{\sigma^2}{1 - \sigma^2 |\phi_i|} \bigg]e^{-\frac{1}{2\sigma^2} + |\phi_i|}\label{eq:h_complex_bound}.
+  \end{align}
+\end{lemma}
 
 In most of the cases we will use, the value of the $h$ function can be approximated by the equivalent value if we use a Guassian distribution over the continuum, plus some small error term that is exponential in either the standard deviation $\sigma$ or its inverse.  As such, we will generally take as intuition that these $h$ functions are Gaussians, which will allow us to construct approximations that are easier to work with.
 
 
+
+
+In addition to this $h$ function, when the particle is incident on the scattering gadget, we will need to bound half of the sum involved in the $h$ function, corresponding to the portion of the wave packet that has support on the same vertices.  In particular, let us define
+\begin{align}
+  V_{v,L}^{\sigma}(\phi) = \sum_{x=v}^L e^{i\phi x} e^{- x^2/2\sigma^2},
+\end{align}
+where $v,L$ are integers larger than zero, and let us assume that $\phi \in (-\pi,-\delta) \cup (\delta, \pi)$, for some constant $\delta>0$. As the finite sums are often difficult to work with, we will try to approximate the sum via an integral over the points of interest. 
+\begin{lemma}
+  Let $v$, $L$, $\sigma$, and $\phi$ be as above, where we also assume that $\sigma^2 \phi > L+1$.  There then exists some constant $\chi$ such that
+  \begin{align}
+    V_{v,L}^\sigma(\phi) < \chi.
+  \end{align}
+\label{lem:tail_bounds}
+\end{lemma}
+
+\begin{proof}
+ We then have that 
+\begin{align}
+  \sum_{x=v}^L e^{-\frac{x^2}{2\sigma^2}} \int_{x}^{x+1} e^{i\phi y} dy = \frac{i}{\phi}\big( 1 - e^{i\phi}\big) V_{v,L}^\sigma (\phi),
+\end{align}
+and thus
+\begin{align}
+  \frac{i}{\phi} \big(1 - e^{i\phi}\big) V_{v,L}^\sigma(\phi) = \int_{v}^{L+1} e^{-\frac{x^2}{2\sigma^2}} e^{i \phi x} dx + \sum_{x=v}^{L} \int_{y=x}^{x+1} e^{i\phi y} \big(e^{-\frac{x^2}{2\sigma^2}} - e^{-\frac{y^2}{2\sigma^2}} \big)dy.
+\end{align}
+While this doesn't look much better in terms of the integrals, we have that
+\begin{align}
+  \int_{v}^{L+1} e^{-\frac{x^2}{2\sigma^2}}e^{i \phi x} dx 
+  &= e^{-\frac{\phi^2\sigma^2}{2}} \int_{v}^{L+1} e^{\big(\frac{\phi \sigma}{\sqrt{2}} - \frac{i x}{\sqrt{2}\sigma} \big)^2} dx\\
+ & =  e^{-\frac{\phi^2\sigma^2}{2}} \int_{0}^{L+1} e^{\big(\frac{\phi \sigma}{\sqrt{2}} - \frac{i x}{\sqrt{2}\sigma} \big)^2} dx
+    - e^{-\frac{\phi^2\sigma^2}{2}} \int_{0}^{v} e^{\big(\frac{\phi \sigma}{\sqrt{2}} - \frac{i x}{\sqrt{2}\sigma} \big)^2} dx.
+\end{align}
+While this expansion isn't particularly different, these integrals are almost exactly of the form of the imaginary error function, $\erfi$.  In fact, as both integrals have the same real part in the exponent, after a change of variables we have that
+\begin{align}
+  \int_{v}^{L+1} e^{-\frac{x^2}{2\sigma^2}}e^{i \phi x} dx 
+    &=i e^{-\frac{\phi^2\sigma^2}{2}} \sqrt{\frac{\pi}{2}} \sigma \bigg[\erfi \bigg(\frac{\phi \sigma}{\sqrt{2}} -i  \frac{L+1}{\sqrt{2} \sigma} \bigg) - \erfi\bigg(\frac{\phi \sigma}{\sqrt{2}} -i  \frac{v}{\sqrt{2} \sigma} \bigg)\bigg].
+\end{align}
+While $\erfi$ diverges for arguments with large real part, when multiplied by $e^{-z^2}$ the resulting function is called the Dawson function.  The Dawson function has nice properties, and in fact converges to zero like $z^{-1}$ for large $z$.  We then have that
+\begin{align}
+  \int_{v}^{L+1} e^{-\frac{x^2}{2\sigma^2}}e^{i \phi x} dx 
+    &=i e^{-\frac{\phi^2\sigma^2}{2}} \sqrt{\frac{\pi}{2}} \sigma \bigg[\erfi \bigg(\frac{\phi \sigma}{\sqrt{2}} -i  \frac{L+1}{\sqrt{2} \sigma} \bigg) - \erfi\bigg(\frac{\phi \sigma}{\sqrt{2}} -i  \frac{v}{\sqrt{2} \sigma} \bigg)\bigg]\\
+    &= i\sigma \sqrt{\frac{\pi}{2}} \bigg[ e^{-\big(\frac{\phi \sigma}{\sqrt{2}} - i \frac{L+1}{\sqrt{2}\sigma} \big)^2} e^{- i \phi (L+1)} e^{- \frac{(L+1)^2}{2\sigma^2}} \erfi \bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{L+1}{\sqrt{2}\sigma} \bigg)\nonumber\\
+    & \qquad -  e^{-\big(\frac{\phi \sigma}{\sqrt{2}} - i \frac{v}{\sqrt{2}\sigma} \big)^2} e^{- i \phi v} e^{- \frac{v^2}{2\sigma^2}} \erfi \bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{v}{\sqrt{2}\sigma} \bigg)\bigg]\\
+    &= i \sigma \sqrt{2} \bigg[ e^{- i \phi (L+1)} e^{- \frac{(L+1)^2}{2\sigma^2}} D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{L+1}{\sqrt{2}\sigma} \bigg)\nonumber\\
+    &\qquad -  e^{- i \phi v} e^{- \frac{v^2}{2\sigma^2}} D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{v}{\sqrt{2}\sigma} \bigg)\bigg],
+\end{align}
+where $D(z)$ is the Dawson function, defined over the entire complex plane as
+\begin{align}
+  D(z) = \frac{\sqrt{\pi}}{2} e^{-z^2} \erfi(z).
+\end{align}
+Additionally, there exists a continued fractioned expansion of Dawson's function, which when restricted to the first value gives an approximation of
+\begin{align}
+  D(z) \approx \frac{z}{1+2z^2}.
+\end{align}
+
+
+Putting all of this together, we then have that
+\begin{align}
+  \frac{i}{\phi}\big(1 - e^{i \phi}\big) V_{v,L}^{\sigma}(\phi) &= \sum_{x=v}^{L} \int_{y=x}^{x+1} e^{i\phi x}\big(e^{-\frac{x^2}{2\sigma^2}}dx - e^{-\frac{y^2}{2\sigma^2}} \big) + i \sigma \sqrt{2} \bigg[ e^{- i \phi (L+1)} e^{- \frac{(L+1)^2}{2\sigma^2}} D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{L+1}{\sqrt{2}\sigma} \bigg)\nonumber\\
+    &\qquad -  e^{- i \phi v} e^{- \frac{v^2}{2\sigma^2}} D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{v}{\sqrt{2}\sigma} \bigg)\bigg].
+\end{align}
+If we then take the absolute value of both sides, we find that
+\begin{align}
+  \big|V_{v,L}^\sigma(\phi)  \big| & \leq \frac{|\phi|}{|1-e^{i\phi}|} \bigg[\sum_{x=v}^{L} \int_{y=x}^{x+1} \big(e^{-\frac{x^2}{2\sigma^2}} - e^{-\frac{y^2}{2\sigma^2}}\big) dx + \sqrt{2} \sigma e^{-\frac{L^2}{2\sigma^2}} \bigg| D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{L+1}{\sqrt{2}\sigma} \bigg) \bigg| \nonumber\\
+  & \qquad + \sqrt{2} \sigma e^{-\frac{v^2}{2\sigma^2}}  \bigg| D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{v}{\sqrt{2}\sigma} \bigg) \bigg|\bigg].
+\end{align}
+
+If we then attempt to bound the norm of each term on the right, we can find that
+\begin{align}
+  \int_{x}^{x+1} \big(e^{-\frac{x^2}{2\sigma^2}} - e^{-\frac{y^2}{2\sigma^2}} \big)dy \leq \int_{0}^{1} t \max_{y\in (x,x+1)}\big\{ -e^{-\frac{y^2}{2\sigma^2}} \big\} dt = \begin{cases}
+    \frac{x+1}{2\sigma^2} e^{-\frac{(x+1)^2}{2\sigma^2}} & x+1 < \sigma\\
+    \frac{x}{2\sigma^2} e^{-\frac{x^2}{2\sigma^2}} & x> \sigma\\
+    \frac{1}{2e\sigma} & 0 \leq \sigma - x \leq 1,
+  \end{cases}
+\end{align}
+we can then bound the first term in the bound of $V_{v,L}^\sigma(\phi)$ as (assuming first that $v<\sigma$)
+\begin{align}
+  \sum_{x=v}^L \int_{x}^{x+1} \big(e^{-\frac{ x^2}{2\sigma^2}} - e^{-\frac{y^2}{2\sigma^2}} \big)dy &\leq \frac{1}{2e\sigma} + \sum_{x=v+1}^{L} \frac{ x}{2\sigma^2} e^{-\frac{x^2}{2\sigma^2}}\\
+  &\leq \frac{1}{e\sigma} + \int_{v+1}^L  \frac{ x}{2\sigma^2} e^{-\frac{x^2}{2\sigma^2}} dx \\
+  & \leq \frac{1}{e\sigma} + \frac{e^{-\frac{(v+1)^2}{2\sigma^2}} - e^{-\frac{L^2}{2\sigma^2}}}{2},
+\end{align}
+whereas if $v>\sigma$ we can bound the first term as
+\begin{align}
+  \sum_{x=v}^L \int_{x}^{x+1} \big(e^{-\frac{ x^2}{2\sigma^2}} - e^{-\frac{y^2}{2\sigma^2}} \big)dy
+   &\leq \sum_{x=v}^L \frac{x}{2\sigma^2} e^{-\frac{x^2}{2\sigma^2}}\\
+   &\leq \frac{v}{2\sigma^2} e^{-\frac{v^2}{2\sigma^2}} + \int_{v}^{L} \frac{x}{2\sigma^2} e^{-\frac{x^2}{2\sigma^2}}dx\\
+   &\leq  \frac{v}{2\sigma^2} e^{-\frac{v^2}{2\sigma^2}} + \frac{e^{-\frac{v^2}{2\sigma^2}} - e^{-\frac{L^2}{2\sigma^2}}}{2}.
+\end{align}
+Combining these bounds, we then have that for any $0<v<L$, we have that
+\begin{align}
+  \sum_{x=v}^L \int_{x}^{x+1}  \big(e^{-\frac{ x^2}{2\sigma^2}} - e^{-\frac{y^2}{2\sigma^2}} \big)dy \leq \frac{1}{e\sigma} + \frac{e^{-\frac{v^2}{2\sigma^2}}}{2}.
+\end{align}
+
+For the two terms involving the Dawson's function, we will refer to a paper dealing explicitly with Dawson's function, namely \cite{McC74}.  In this paper, McCabe shows that
+\begin{align}
+  D(z) - \frac{z}{1+2z^2} = \frac{4 e^{-2z^2}z^3}{3},
+\end{align}
+and thus
+\begin{align}
+  \big| D(x+iy)\big| \leq \frac{4 e^{-2(x^2 - y^2)} (x^2+y^2)^{3/2}}{3} + \frac{\sqrt{x^2+y^2}}{1 + 2 x^2 - 2 y^2}.
+\end{align}
+For the two points of interest, we then have that
+\begin{align}
+  \bigg|D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{L+1}{\sqrt{2}\sigma}\bigg)\bigg| &
+  \leq \frac{ 4 e^{- \phi^2\sigma^2 + (L+1)^2/\sigma^2}}{3} \bigg(\frac{\phi^2\sigma^2}{2} + \frac{(L+1)^2}{2\sigma^2} \bigg)^{3/2} + \frac{ \sqrt{\phi^2 \sigma^2 + \frac{(L+1)^2}{\sigma^2}}}{2(1 + 2\phi^2 \sigma^2 - 2(L+1)^2/\sigma^2)}\\
+  &\leq \frac{4}{3} e^{-\frac{\phi^2\sigma^2}{2}} |\phi|^3 \sigma^3 + \frac{\sqrt{2 \phi^2\sigma^2}}{2 \phi^2\sigma^2},
+\end{align}
+where we used the assumption that $|\phi| >\delta$, along with the fact that $(L+1)/\sigma < \phi \sigma$.  Additionally, we have that
+\begin{align}
+  \bigg|D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{L+1}{\sqrt{2}\sigma}\bigg)\bigg| &
+    \leq \frac{ 4 e^{- \phi^2\sigma^2 + v^2/\sigma^2}}{3} \bigg(\frac{\phi^2\sigma^2}{2} + \frac{v^2}{2\sigma^2} \bigg)^{3/2} + \frac{ \sqrt{\phi^2 \sigma^2 + \frac{v^2}{\sigma^2}}}{2(1 + 2\phi^2 \sigma^2 - 2v^2/\sigma^2)}\\
+    &\leq \frac{4}{3} e^{-\frac{\phi^2\sigma^2}{2}} |\phi|^3 \sigma^3 + \frac{\sqrt{2 \phi^2\sigma^2}}{2 \phi^2\sigma^2}.
+\end{align}
+
+If we now put all of these bounds together, and assume that $\sigma$ is large enough that $e^{-\frac{\phi^2\sigma^2}{2}}|\phi|^3\sigma^4 < 1$, we have
+\begin{align}
+  \big|V_{v,L}^\sigma(\phi)\big| 
+  &\leq\frac{|\phi|}{|1-e^{i\phi}|} \Bigg[\sum_{x=v}^{L} \int_{y=x}^{x+1} \big(e^{-\frac{x^2}{2\sigma^2}} - e^{-\frac{y^2}{2\sigma^2}}\big) dx + \sqrt{2} \sigma e^{-\frac{L^2}{2\sigma^2}} \bigg| D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{L+1}{\sqrt{2}\sigma} \bigg) \bigg| \nonumber\\
+  & \qquad + \sqrt{2} \sigma e^{-\frac{v^2}{2\sigma^2}}  \bigg| D\bigg(\frac{\phi \sigma}{\sqrt{2}} - i \frac{v}{\sqrt{2}\sigma} \bigg) \bigg|\Bigg]\\
+  &\leq \frac{|\phi|}{|1-e^{i\phi|}|} \Bigg[\frac{1}{e\sigma} + \frac{e^{-\frac{v^2}{2\sigma^2}}}{2} + \sqrt{2}\sigma \bigg(\frac{4}{3} e^{-\frac{\phi^2\sigma^2}{2}} |\phi|^3 \sigma^3 + \frac{\sqrt{2 \phi^2\sigma^2}}{2 \phi^2\sigma^2}\bigg)\bigg(e^{-\frac{L^2}{2\sigma^2}} + e^{-\frac{v^2}{2\sigma^2}}\bigg)\Bigg]\\
+  &\leq  \frac{|\phi|}{|1-e^{i\phi|}|}\Bigg[\frac{1}{e\sigma} + \frac{1}{2} + 2\sqrt{2}\bigg(\frac{4}{3}  + \frac{1}{\sqrt{2} |\phi|} \bigg) \Bigg].
+\end{align}
+As $\sigma>1$ and as $|\phi| > \delta$, we then have that $|V_{v,L}^\sigma(\phi)|$ is bounded by a constant, as required.
+\end{proof}
+
+Note that this proof most likely is not the most clean of proofs, but it will suffice for our purposes.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Propagated approximation bounds}
 
+Now that we have some grasp on the mathematics surrounding the definition of the $\ket{\alpha_j(t)}$ states, it will be useful in our proof to show that these states are approximately normalized for all times $t$.  
 
-We will want to show that $\ket{\alpha^j(t)}$ is always normalized for $t < \frac{\mu - L}{2|\sin k|}$ and for $t > \frac{\mu + L}{2|\sin k|}$.  In the first case, we have that 
+As such, let us simply calculate the inner product:
 \begin{align}
-   \braket{\alpha_j(t)}{\alpha_j(t)} &= \gamma^2 \sum_{x = \mu(t) - L}{\mu(t) + L} e^{ -\frac{(x-\mu(t))^2}{\sigma^2}} = \gamma^2 h_{L}^{\sigma/\sqrt{2}} (0) = 1,
+  \braket{\alpha_j(t)}{\alpha_j(t)} 
+  &= \gamma^2 \Bigg[\sum_{x=\max\{\mu(t)-L,1\}}^{\mu(t) + L} e^{-\frac{(x-\mu(t))^2}{\sigma^2}} + \sum_{x=\max\{-\mu(t) - L,1\}}^{-\mu(t)+L} e^{-\frac{(x+\mu(t))^2}{\sigma^2}} \sum_{q=1}^N S_{qj}(k)S^*_{qj}(k)\nonumber\\
+  &\qquad  + \sum_{x=1}^{\min\{\mu(t)+L,-\mu(t) + L\}} e^{-\frac{x^2 + \mu(t)^2}{\sigma^2}} \Big(e^{2ikx} S_qj(k) + e^{-2ikx} S_{qj}^*(k) \Big) \Bigg] \\
+  & = \gamma^2 \Bigg[ \sum_{x=-L}^L e^{-\frac{x^2}{\sigma^2}} - \delta_{|\mu(t)| \leq L} e^{-\frac{\mu(t)^2}{\sigma^2}}  + 2 e^{-\frac{\mu(t)^2}{\sigma^2}} \Re\Big[S_{qj}(k)V_{1,\min\{\mu(t) + L,-\mu(t) + L\}}^{\sigma/\sqrt{2}}(2k)\Big] \Bigg]\\
+  &= 1 - \gamma^2 e^{-\frac{\mu(t)^2}{\sigma^2}} \Bigg[ \delta_{|\mu(t)| \leq L}   - 2 \Re\Big[S_{qj}(k)V_{1,\min\{\mu(t) + L,-\mu(t) + L\}}^{\sigma/\sqrt{2}}(2k)\Big] \Bigg].\label{eq:alpha_norm}
 \end{align}
-where we used the fact that the approximated wavepacket had not yet hit the finite graph.  In the second case, we instead have
-\begin{align}
-  \braket{\alpha_j(t)}{\alpha_j(t)} &= \gamma^2 \sum_{x = \mu(t) - L}{\mu(t) + L} \sum_{q = 1}^N S_{qj(k)}^*S_{qj}(k) e^{ -\frac{(x-\mu(t))^2}{\sigma^2}} \\
-   &= \gamma^2 \sum_{x = \mu(t) - L}{\mu(t) + L}  e^{ -\frac{(x-\mu(t))^2}{\sigma^2}} = 1
-\end{align}
-where we used the fact that $S$ is a unitary matrix, and our previous results.  
+We used in the second equality that $S(k)$ is a unitary matrix, and then combined the first and second sums into one sum.  Note that the second term in \eq{alpha_norm} is zero for $\mu(t)$ larger than $L$, and thus for these times the state $\ket{\alpha_j(t)}$ is exactly normalized.  Further, we have from \lem{tail_bounds} that the last term in \eq{alpha_norm} is bounded in norm by a constant, and thus the norm of $\alpha$ is bonuded away from 1 by some constant times $\gamma^2$.
 
-Additionally, it will be helpful to actually have bounds on $\gamma^{-2}$.  In particular, we have that
+Additionally, it will be helpful to actually have bounds on $\gamma^{-2}$.  In particular, we have from \lem{h_bounds} that 
 \begin{align}
   \gamma^{-2} &= h_{L}^{\sigma/\sqrt{2}}(0)   < h_{\infty}^{\sigma/\sqrt{2}}(0)
      = \sqrt{\pi} \sigma h_{\infty}^{1/(\pi \sigma \sqrt{2})} (0)
      \leq \sqrt{\pi} \sigma \Big[ 1 + 2 \Big( 1 + \frac{1}{2\pi^2\sigma^2}\Big) e^{ - \pi^2\sigma^2}\Big]
 \end{align}
-as an upper bound, while
+works as an upper bound, while
 \begin{align}
   \gamma^{-2} &= h_{L}^{\sigma/\sqrt{2}}(0) = h_{\infty}^{\sigma/\sqrt{2}}(0) - \big( h_{L}^{\sigma/\sqrt{2}}(0) - h_\infty^{\sigma/\sqrt{2}}(0)\big) \geq \sqrt{\pi} \sigma - \frac{\sigma^2}{L} e^{-\frac{L^2}{\sigma^2}} \\
    &= \sqrt{\pi} \sigma \Big(1 - \frac{\sigma}{L\sqrt{\pi}} e^{ - \frac{L^2}{\sigma^2}}\Big) 
@@ -1348,8 +880,12 @@ and
 \end{align}
 where we assume that $L > \sigma > 1$.
 
+From this, we have that the norm of 	$\ket{\alpha_j(t)}$ is within some constant times $\sigma^{-1}$ of 1 for all times $t$.
+
 
 \subsection{Proof of \thm{single_particle_wavepacket_bound}}
+
+Now that we have the requisite bounds on the mathematical quantities used to define our approximations, we can prove \thm{single_particle_wavepacket_bound}.
 
 
 \begin{proof}
@@ -1361,14 +897,23 @@ The main idea behind this proof will be to show that $\ket{\psi_j(0)}$ and $\ket
 In particular, let us examine the inner product between a scattering state $\ket{\scat_j(k+\phi)}$ and $\ket{\alpha_j(t)}$.  We can see that
 \begin{align}
   &\braket{\scat_j(k+\phi)}{\alpha_j(t)}\nonumber\\
-  &\qquad= \begin{cases} 
-      \gamma e^{-2 i t \cos k} \sum_{x=\mu(t)-L}^{\mu(t)+L} \Big(e^{i \phi x} + S_{jj}^*(k+\phi) e^{-i(2k + \phi)x}\Big) e^{ -\frac{(x-\mu(t))^2}{2\sigma^2}}
-        & t < \frac{\mu - L}{2|\sin(k)|}\\
-      \gamma e^{-2 i t \cos k} \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{q=1}^N \Big(\delta_{qj} e^{i (2k+\phi) x}\\
-      \qquad \qquad \qquad \qquad\qquad  + S_{qj}^*(k+\phi) S_{qj}(k) e^{-i\phi x}\Big) e^{ -\frac{(x+\mu(t))^2}{2\sigma^2}}& t > \frac{\mu + L}{2|\sin(k)|}
-      \end{cases} 
- \end{align}
-While this looks like somewhat complicated expression, most of the amplitude results from the terms multiplied by $e^{\pm i \phi x}$.  If we approximate $S_{qj}^*(k+\phi)$ by $S_{qj}^*(k)$, for either of the time ranges the above expression can be seen as $e^{-2it \cos k} e^{ i \phi \mu(t)} h_L^\sigma(\phi)$ plus some small error terms.  Additionally, for $\phi$ small compared to $\sigma$, $h_\infty^\sigma(\phi) \propto e^{-\frac{\sigma^2\phi^2}{2}}$,  so let us define
+  &\qquad = \gamma e^{-2 i t \cos(k)}\Bigg[ \sum_{x = \max\{\mu(t) - L,1\}}^{\mu(t) + L}e^{-\frac{ (x - \mu(t))^2}{2\sigma^2}} \big( e^{ i \phi x} + S_{jj}^*(k+\phi) e^{-i (2k + \phi)x}\big)\nonumber\\
+  &\qquad \qquad + \sum_{x = \max\{-\mu(t) - L,1\}}^{-\mu(t) + L} e^{-\frac{(x + \mu(t))^2}{2\sigma^2}} \bigg[S_{jj}(k) e^{ i(2k + \phi)x} + e^{-i \phi x}\sum_{q=1}^N S_{qj}^*(k+\phi) S_{qj}(k) \bigg]\Bigg]\\
+  &\qquad = \gamma e^{-2it\cos(k)} \Bigg[ \sum_{x=\mu(t)-L}^{\mu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2}} e^{i \phi x}\nonumber\\
+  &\qquad \qquad + \sum_{x=\max\{\mu(t) - L,1\}}^{-\mu(t)+L} e^{-i\phi x} e^{-\frac{(x+\mu(t))^2}{2\sigma^2}} \sum_{q=1}^N \Big(S_{qj}^*(k+\phi) -S_{qj}^*(k)  \Big)S_{qj}(k) \nonumber\\
+  &\qquad\qquad + \Big[\delta_{\mu(t) \geq 0} S_{jj}^*(k+\phi) + \delta_{\mu(t) < 0} S_{jj}(k) \Big] \sum_{x=-\mu(t) - L}^{\mu(t) + L} e^{-i (2k + \phi) x}e^{-\frac{(x-\mu(t))^2}{2\sigma^2}} \nonumber\\
+  &\qquad\qquad + \big(S_{jj}(k) - S_{jj}^*(k+\phi)\big)\big(1 - 2\delta_{\mu(t) < 0}\big)\sum_{x=1}^{-|\mu(t)| + L} e^{-\frac{(x+|\mu(t)|)^2}{2\sigma^2}}e^{-i(2k + \phi) x}\nonumber\\
+  &\qquad\qquad  - \delta_{|\mu(t)| \leq L} \Big(1 + S_{jj}^*(k+\phi) \delta_{\mu(t)\geq 0} + S_{jj}(k) \delta_{\mu(t)< 0}\Big)e^{-\frac{\mu(t)^2}{2\sigma^2}}\Bigg].
+\end{align}
+Note that we gained this expression by collecting terms corresponding to the same Gaussian expressions, along with adding and subtracting some terms to make the sums more easily understood.  In fact, we can then restructure the above expression into the form:
+\begin{align}
+  &\braket{\scat_j(k+\phi)}{\alpha_j(t)}\nonumber\\
+  &\qquad = \gamma e^{-2it\cos(k)} \Bigg[e^{ i \phi \mu(t)} h_L^\sigma(\phi) + e^{-i (2k+\phi) \mu(t)} h_L^\sigma(2k+\phi)\Big[\delta_{\mu(t) \geq 0} S_{jj}^*(k+\phi) + \delta_{\mu(t) < 0} S_{jj}(k) \Big]\nonumber\\
+  &\qquad\qquad  + \sum_{x=\max\{-\mu(t) - L,1\}}^{-\mu(t)+L} e^{-i\phi x} e^{-\frac{(x+\mu(t))^2}{2\sigma^2}} \sum_{q=1}^N \Big(S_{qj}^*(k+\phi) -S_{qj}^*(k)  \Big)S_{qj}(k) \nonumber\\
+ & \qquad \qquad + \big(S_{jj}(k) - S_{jj}^*(k+\phi)\big)\big(1 - 2\delta_{\mu(t) < 0}\big)e^{i(2k+\phi)|\mu(t)|} V_{|\mu(t)| + 1,L}^\sigma(-2k-\phi)\nonumber\\
+  &\qquad\qquad  - \delta_{|\mu(t)| \leq L} \Big(1 + S_{jj}^*(k+\phi) \delta_{\mu(t)\geq 0} + S_{jj}(k) \delta_{\mu(t)< 0}\Big)e^{-\frac{\mu(t)^2}{2\sigma^2}} \Bigg].
+\end{align} 
+While this is a rather complicated expression, most of the amplitude is contained in the $h_L^\sigma(\phi)$ term, as the rest of the terms are relatively small.  Using this, and noting that $h_\infty^\sigma(\phi) \propto e^{-\frac{\sigma^2\phi^2}{2}}$ for constant $\sigma$, let us define
 \begin{align}
   \ket{w_j(t)} = \eta e^{- 2 i t \cos k}\int_{-\delta}^{\delta} \frac{d\phi}{2\pi} e^{ i \phi \mu(t)} e^{-\frac{\sigma^2\phi^2}{2}}\ket{\scat_{j}(k+\phi)} \label{eq:gaussian_w_defn}
 \end{align}
@@ -1389,55 +934,28 @@ Hence, we have that
 \end{align}
 and
 \begin{align}
-  \braket{w_j(t)}{w_j(t)} & \leq 1 - \frac{ 2\sigma \delta}{\sqrt{\pi}(2 \sigma^2 \delta^2 + 1)}e^{- \sigma^2 \delta^2}
+  \braket{w_j(t)}{w_j(t)} & \leq 1 - \frac{ 2\sigma \delta}{\sqrt{\pi}(2 \sigma^2 \delta^2 + 1)}e^{- \sigma^2 \delta^2}.
 \end{align}
 
-
-\begin{comment}
-
-In particular, we can use the bound of \eq{h_bound} to see
-\begin{align}
-  \eta^{-2} 
-  &\leq 2  \sigma^2\int_{0}^\delta d\phi \Big[ h_{\infty}^{1/(2\pi\sigma)} \big(2 \pi i \phi \sigma^2\big)\Big]^2\\
-  &\leq 2\sigma^2 \int_{0}^\delta d\phi \Bigg(1 + 2 \Bigg[ \frac{ 1 + (1 - 2\pi \phi \sigma^2) \frac{1}{4\pi^2\sigma^2}}{1 - \frac{1}{4\pi^2 \sigma^2} (2\pi\phi\sigma^2)}\Bigg]e^{-\frac{(2\pi\sigma)^2}{2} + 2\pi \phi\sigma^2}\Bigg)^2\\
-  & = 2 \sigma^2 \int_{0}^\delta d\phi \Bigg( 1 + 2 \Bigg[ 1 + \frac{1}{2\pi \sigma^2}\frac{1}{2\pi- \phi}\Bigg] e^{2\pi \sigma^2 (\phi - \pi)}\Bigg)^2\\
-  & < 2 \sigma^2 \delta\Bigg( 1 + 2 \Bigg[ 1 + \frac{1}{2\pi \sigma^2}\frac{1}{2\pi - \delta}\Bigg] e^{2\pi \sigma^2 (\delta - \pi)}\Bigg)^2
-\end{align}
-and if $\delta < \pi/2$, we find that
-\begin{equation}
-  \eta^{-2}  < 2 \sigma^2 \delta \big( 1 + 4 e^{-\pi^2 \sigma^2}\big).
-\end{equation}
-If we then note that for purely imaginary $\theta$, $h_L^\sigma(\theta) < h_{L+1}^\sigma(\theta)$ as the additional terms are always positive, and that $h_0^\sigma(\theta) = 1$, we can also bound this value by
-\begin{equation}
-  \eta^{-2} > 2 \sigma^2 \int_{0}^\delta d \phi e^{ - \sigma^2 \phi^2}
-   > 2\sigma^2 \int_{0}^\delta d\phi e^{-\sigma^2\delta^2}= 2 \sigma^2 \delta e^{-\sigma^2\delta^2}
-\end{equation}
-
-\end{comment}
-
-We will also want to know the overlap of these approximations with the states that they will approximate, namely $\ket{\alpha_j(t)}$.  If $t < \frac{\mu - L}{2|\sin k|}$, then we have that
+Now that understand the overlap of $\ket{\alpha_j(t)}$ with each scattering state, and also have our approximations $\ket{w_j(t)}$ defined, we will want to approximate the overlap between the two states.  Namely, we will want to understand:
 \begin{align}
   \braket{w_j(t)}{\alpha_j(t)} &= \eta e^{2 i t \cos k} \int_{-\delta}^\delta \frac{d\phi}{2\pi} \braket{\scat_j(k+\phi)}{\alpha_j(t)}  e^{-\frac{\sigma^2\phi^2}{2}} e^{ - i \phi \mu(t)}\\
-  &= \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{ 2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big( h_L^\sigma(\phi) + S_{jj}^*(k+\phi) e^{-2 i (\phi + k) \mu(t)}h_L^\sigma(2k+\phi) \big)\\
-  &= \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_\infty^\sigma(\phi) +\gamma \eta\int_{-\delta}^\delta \frac{d\phi}{2\pi}e^{-\frac{\sigma^2\phi^2}{2}}  \big( h_L^\sigma(\phi) - h_\infty^\sigma(\phi)\big) \nonumber \\
-  & \qquad + \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{-2 i (\phi + k)\mu(t)}e^{-\frac{\sigma^2\phi^2}{2}}  h_\infty^\sigma(2k + \phi)  \nonumber\\
-  &\qquad + \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{-2 i (\phi + k)\mu(t)}e^{-\frac{\sigma^2\phi^2}{2}}  \big(h_L^\sigma(2k+\phi) - h_\infty^\sigma(2k + \phi) \big).
+  &= \eta \gamma \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2 \phi^2}{2}} e^{-i\phi \mu(t)}\Bigg[e^{ i \phi \mu(t)} h_L^\sigma(\phi) \nonumber\\
+  &\qquad+ e^{-i (2k+\phi) \mu(t)} h_L^\sigma(2k+\phi)\Big[\delta_{\mu(t) \geq 0} S_{jj}^*(k+\phi) + \delta_{\mu(t) < 0} S_{jj}(k) \Big]\nonumber\\
+  &\qquad  + \sum_{x=\max\{-\mu(t) - L,1\}}^{-\mu(t)+L} e^{-i\phi x} e^{-\frac{(x+\mu(t))^2}{2\sigma^2}} \sum_{q=1}^N \Big(S_{qj}^*(k+\phi) -S_{qj}^*(k)  \Big)S_{qj}(k) \nonumber\\
+ & \qquad+ \big(S_{jj}(k) - S_{jj}^*(k+\phi)\big)\big(1 - 2\delta_{\mu(t) < 0}\big)e^{i(2k+\phi)|\mu(t)|} V_{|\mu(t)| + 1,L}^\sigma(-2k-\phi)\nonumber\\
+  &\qquad - \delta_{|\mu(t)| \leq L} \Big(1 + S_{jj}^*(k+\phi) \delta_{\mu(t)\geq 0} + S_{jj}(k) \delta_{\mu(t)< 0}\Big)e^{-\frac{\mu(t)^2}{2\sigma^2}} \Bigg]\label{eq:wa_overlap_terms}
 \end{align}
-If $t > \frac{\mu + L}{2|\sin k|}$, we instead have 
+We will show that most of the overlap between $\ket{w_j(t)}$ and $\ket{\alpha_j(t)}$ comes from the first term on the right hand side of the above equation.  To do so, we will approximate each of the $h_L^\sigma(\theta)$ terms by the corresponding $h_\infty^\sigma(\theta)$ terms, and bound the difference in norms.  We will then also show that the remaining integrals are bounded some small number.
+
+As a first step forward in our proof, note that
 \begin{align}
-  \braket{w_j(t)}{\alpha_j(t)} &= \eta e^{2 i t \cos k} \int_{-\delta}^\delta \frac{d\phi}{2\pi} \braket{\scat_j(k+\phi)}{\alpha_j(t)} e^{-\frac{\sigma^2\phi^2}{2}} e^{ - i \phi \mu(t)}\\
-    &= \gamma\eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi)\mu(t)} S_{jj}(k) e^{-\frac{\sigma^2\phi^2}{2}} h_{L}^\sigma(2k+\phi)\nonumber\\
-    &\qquad +\gamma\eta \sum_{q=1}^N \int_{-\delta}^\delta \frac{d\phi}{2\pi}  S_{qj}^*(k+\phi) S_{qj}(k)e^{-\frac{\sigma^2\phi^2}{2}}  h_L^\sigma(\phi)\\
-    &= \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_\infty^\sigma(\phi)
-      + \gamma \eta\sum_{q=1}^N \int_{-\delta}^\delta \frac{d\phi}{2\pi} \big(S_{qj}^*(k+\phi )- S_{qj}^*(k)\big) S_{qj}(k)e^{-\frac{\sigma^2\phi^2}{2}} h_{\infty}^\sigma(\phi)\nonumber\\
-    &\qquad  + \gamma \eta\sum_{q=1}^N \int_{-\delta}^{\delta} \frac{d\phi}{2\pi} S_{qj}^*(k+\phi)S_{qj}(k) e^{-\frac{\sigma^2\phi^2}{2}} \big(h_L^\sigma(\phi) - h_\infty^\sigma(\phi)\big) \nonumber\\
-    &\qquad + \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi)\mu(t)} S_{jj}(k) e^{-\frac{\sigma^2\phi^2}{2}}  h_\infty^\sigma(2k+\phi)\nonumber \\
-    &\qquad + \gamma \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi)\mu(t)} S_{jj}(k)e^{-\frac{\sigma^2\phi^2}{2}}  \big(h_{L}^\sigma(2k+\phi) - h_\infty^\sigma(2k+\phi )\big).
+  \int_{-\delta}^\delta \frac{d \phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_{L}^\sigma (\phi) &=  \int_{-\delta}^\delta \frac{d \phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_{\infty}^\sigma (\phi)  +  \int_{-\delta}^\delta \frac{d \phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big(h_{L}^\sigma (\phi) -h_\infty^\sigma(\phi)\big).
 \end{align}
-In both cases, most of the norm comes from the first term, and the rest will be small error terms.  In particular, we see that
+If we can bound the first integral from above and below, and also show that the norm of the rest of the terms are relatively small, we will have the first tool to prove our theorem.  In particular, we we can bound the first integral from above as
 \begin{align}
    \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} h_\infty^\sigma(\phi) &= \frac{\sigma}{\sqrt{2\pi}} \int_{-\delta}^\delta d\phi e^{-\sigma^2 \phi^2} h_{\infty}^{1/(2\pi\sigma)}(2\pi i \sigma^2 \phi)\\
-   &\leq \frac{2\sigma}{\sqrt{2\pi}} \int_0^\delta d\phi e^{ - \sigma^2 \phi^2} \Big[ 1 + 2 \Big( 1 + \frac{1}{2\pi \sigma^2} \frac{1}{ 2\pi - \phi}\Big) e^{ - 2\pi \sigma^2 (\pi - \phi)}\Big]\\
+   &\leq \frac{2\sigma}{\sqrt{2\pi}} \int_0^\delta d\phi e^{ - \sigma^2 \phi^2} \Big[ 1 + 2 \Big( 1 + \frac{1}{4\pi^2 \sigma^2} \frac{1}{ 2\pi - \phi}\Big) e^{ - 2\pi \sigma^2 (\pi - \phi)}\Big]\\
    & \leq \frac{2\sigma}{\sqrt{2\pi}} \Big[ 1 + 2 \Big( 1 + \frac{1}{2\pi \sigma^2} \frac{1}{ 2\pi - \delta }\Big) e^{ - 2\pi \sigma^2 (\pi - \delta)}\Big] \int_{0}^{\delta} d\phi e^{ - \sigma^2 \phi^2} \\
    &\leq \frac{1}{\sqrt{2}} \Big[ 1 + 3 e^{ - \pi^2 \sigma^2}\Big]\label{eq:gaussian_approx_gh}
 \end{align}
@@ -1448,31 +966,35 @@ where we assumed that $\delta < \frac{\pi}{2}$. If we also note that $h_L^\sigma
   &= \sigma \sqrt{2\pi} \eta^{-2} \braket{w_j(t)}{w_j(t)}\\
   & \geq \frac{1}{\sqrt{2}}\Big( 1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2}\Big).
 \end{align}
-
-Now let us assume that $t < \frac{\mu - L}{2|\sin k |}$ and examine the first case.  We can use the bound of \eq{hL_bound} to see that
+We can then use the bound of \eq{hL_bound} from \lem{h_bounds} to see that
 \begin{align}
   \Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big(h_{L}^\sigma(\phi) - h_{\infty}^\sigma(\phi)\big) \Big| &\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big| h_L^\sigma(\phi) - h_\infty^\sigma(\phi)\big|\\
    &\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi}  \frac{2\sigma^2}{L} e^{- \frac {L^2}{2\sigma^2}}e^{-\frac{\sigma^2\phi^2}{2}}\\
    & \leq \frac{\sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} \int_{-\infty}^\infty d\phi e^{ - \frac{\sigma^2 \phi^2}{2}}\\
-   &= \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}\label{eq:gaussian_approx_L_to_infinity},
+   &= \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}\label{eq:gaussian_approx_L_to_infinity}.
 \end{align}
-For the third term, we can continue to use the relations for the $h$ functions and note that
+At this point, we then want to bound the norm of each individual term in \eq{wa_overlap_terms}.  The next term in particular can be bounded in a similar manner to the first, where we approximate $h_L$ by $h_\infty$:
 \begin{align}
- &\Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{- 2 i (\phi + k)\mu(t)} h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}} \Big| \nonumber\\
-  & \qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} h_{\infty}^\sigma(2k+\phi) e^{-\frac{\sigma^2\phi^2}{2}} \\
-  & \qquad = \int_{-\delta}^\delta  \frac{d\phi}{\sqrt{2\pi}} \sigma e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)} h_{\infty}^{1/(2\pi\sigma)}(2\pi i (2k+\phi) \sigma^2) \\
+  &\Bigg|\int_{-\delta}^{\delta} \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} e^{-2i (k+\phi) \mu(t)} h_{L}^\sigma(2k+\phi))\Big[\delta_{\mu(t) \geq 0} S_{jj}^*(k+\phi) + \delta_{\mu(t) < 0} S_{jj}(k) \Big] \Bigg|\\
+  &\qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big|h_L^\sigma(2k+\phi)\big|\\
+  &\qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big|h_\infty^\sigma(2k+\phi) \big| + \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big| h_L^\sigma(2k+\phi)- h_\infty^\sigma(2k+\phi)\big|.
+  \end{align}
+Note that the second term can be bounded exactly as in \eq{gaussian_approx_L_to_infinity}, while the first term can be bound as  
+\begin{align}
+&\int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \big|h_\infty^\sigma(2k+\phi) \big|\\
+  &\qquad = \int_{-\delta}^\delta  \frac{d\phi}{\sqrt{2\pi}} \sigma e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)} h_{\infty}^{1/(2\pi\sigma)}(2\pi i (2k+\phi) \sigma^2) \\
   &\qquad \leq \frac{\sigma}{\sqrt{2\pi}} \int_{-\delta}^{\delta} d\phi e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)}\Big( 1 + 2 \Big[ 1 + \frac{1}{2\pi \sigma^2} \frac{1}{ 2\pi - |2k + \phi|}\Big] e^{- 2\pi \sigma^2 (\pi - |2k + \phi|)}\Big)\label{eq:gaussian_k_offset_midstep}
 \end{align}
-where we used equation \eq{h_bound} in the third step.  If $2|k|+ \delta < \pi$, then $h_{\infty}^{1/(2\pi\sigma)} (2k+\phi)$ can be bounded by $2$ for $\sigma > (\pi - 2|k| - \delta)^{-1}$.  We then have
+where we used equation \eq{h_complex_bound} from \lem{h_bounds} in the third step.  If $2|k|+ \delta < \pi$, then $h_{\infty}^{1/(2\pi\sigma)} (2k+\phi)$ can be bounded by $2$ for $\sigma > (\pi - 2|k| - \delta)^{-1}$.  We then have
 \begin{align}
- \Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{- 2 i (\phi + k)\mu(t)} h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}}\Big|&\leq \sqrt{\frac{2}{\pi}} \sigma \int_{-\delta}^\delta d\phi e^{- \frac{\sigma^2}{2} \big( (2k + \phi)^2 + \phi^2\big)}\\
+ \int_{-\delta}^\delta \frac{d\phi}{2\pi} \Big| h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}}\Big|&\leq \sqrt{\frac{2}{\pi}} \sigma \int_{-\delta}^\delta d\phi e^{- \frac{\sigma^2}{2} \big( (2k + \phi)^2 + \phi^2\big)}\\
   & = \sqrt{\frac{2}{\pi}} \sigma \int_{-\delta}^{\delta} d\phi e^{ -\sigma^2 k^2 - \sigma^2 (k + \phi)^2}\\
   & \leq \sqrt{\frac{2}{\pi}} \sigma e^{-\sigma^2 k^2} \int_{-\infty}^\infty d\phi e^{ -\sigma^2 \phi^2}\\
   & = \sqrt{2} e^{-\sigma^2 k^2}.
 \end{align}
 However, if we instead have that  $2|k| + \delta > \pi$, then we can instead bound equation \eq{gaussian_k_offset_midstep}  as
 \begin{align}
-&\Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{- 2 i (\phi + k)\mu(t)} h_\infty^\sigma(2 k+\phi)e^{-\frac{\sigma^2\phi^2}{2}}\Big| \nonumber\\
+&\int_{-\delta}^\delta \frac{d\phi}{2\pi} \Big| h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}}\Big|\nonumber\\
   & \qquad \leq \sqrt{\frac{2}{\pi}} \sigma \int_{-\delta}^{\delta}d\phi e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)}\Bigg( 1 + 2 \Bigg[ 1 + \frac{1}{2\pi \sigma^2} \frac{1}{ 2\pi - |2k + \phi|}\Bigg] e^{- 2\pi \sigma^2 (\pi - |2k + \phi|)}\Bigg)\\
   &\qquad \leq 4 \sqrt{\frac{2}{\pi}}\sigma \int_{-\delta}^{\delta} d\phi e^{ -\frac{\sigma^2}{2} \big( (2k+ \phi)^2 + \phi^2\big)} e^{2 \pi \sigma^2 (2 |k| + \delta - \pi)}\\
   &\qquad =4 \sqrt{\frac{2}{\pi}}\sigma \int_{-\delta}^{\delta} d\phi  e^{  2\sigma^2 \big(-k^2 +2\pi |k| -\pi^2 + \pi \delta - k\phi - \frac{\phi^2}{2} \big)}\\
@@ -1482,90 +1004,55 @@ However, if we instead have that  $2|k| + \delta > \pi$, then we can instead bou
   \end{align}
 where we assumed that $\delta < \frac{(\pi-|k|)^2}{\pi + |k|}$.  In either case, we have that 
 \begin{align}
-\Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{- 2 i (\phi + k)\mu(t)} h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}}\Big|
+\int_{-\delta}^\delta \frac{d\phi}{2\pi} \Big| h_\infty^\sigma(2 k+\phi) e^{-\frac{\sigma^2\phi^2}{2}}\Big|
   & \leq 4 \sqrt{2} e^{ - \sigma^2 \delta}\label{eq:gaussian_cross_term_bound}.
 \end{align}
-Finally, we can again use the same argument as in equation  \eq{gaussian_approx_L_to_infinity}  to see that in to bound the final term as
-\begin{align}
-  & \Big| \int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{jj}^*(k+\phi) e^{2 i (\phi + k)\mu(t)} \big( h_L^\sigma (2k + \phi) - h_{\infty}^\sigma(2k+\phi)\big) e^{-\frac{\sigma^2\phi^2}{2}}\Big| \nonumber\\
-  & \qquad \leq  \int_{-\delta}^\delta \frac{d\phi}{2\pi} \big|h_L^\sigma(2k + \phi) - h_\infty^\sigma(2k+\phi)\big| e^{-\frac{\sigma^2\phi^2}{2}}\\
-  & \qquad \leq \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}
-\end{align}
-where we used \eq{gaussian_approx_L_to_infinity} in the last line.  This is sufficient for us to bound the norm of $\braket{w_j(t)}{\alpha_j(t)}$ for small $t$.
 
-With all of these bounds, we then have that if $t < \frac{\mu - L}{2|\sin k|}$, since most of the amplitude of $\braket{\alpha_j(t)}{w_j(t)}$ is on the term equal to $\braket{w_j(t)}{w_j(t)}$, 
+For the third term in \eq{wa_overlap_terms}, we have
 \begin{align}
-  \norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 &= \braket{\alpha_j(t)} {\alpha_j(t)} + \braket{w_j(t)}{w_j(t)} - 2 \Re\big[ \braket{\alpha_j(t)}{w_j(t)} \big]\\
-  & \leq 1 + \braket{w_j(t)}{w_j(t)}\nonumber\\
-  &\qquad  - 2\gamma\eta  \Bigg[ \frac{1}{\sqrt{2}} \braket{w_j(t)}{w_j(t)} - \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}} - 4 \sqrt{2} e^{-\sigma^2 \delta} - \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}  \Bigg] \\
-  & = 1 + \big( 1 - \sqrt{2} \gamma \eta\big) \braket{w_j(t)}{w_j(t)} + 4 \sqrt{2} \gamma \eta \Big[\frac{ \sigma}{\sqrt{\pi} L} e^{ - \frac{L^2}{2\sigma^2}} + 2 e^{ - \sigma^2 \delta} \Big] 
+  &\Bigg|\int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} e^{-i \phi\mu(t)} \sum_{x=\max\{-\mu(t)-L,1\}}^{-\mu(t)+L} e^{i\phi x}e^{-\frac{(x+\mu(t))^2}{2\sigma^2}} \sum_{q=1}^N \big(S_{qj}^*(k+\phi) - S_{qj}^*(k)\big) S_{qj}(k) \Bigg|\nonumber\\
+  &\qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} N |\phi| \Gamma \sum_{x=\max\{-\mu(t)-L,1}^{-\mu(t) + L} e^{-\frac{(x+\mu(t))^2}{2\sigma^2}}\\
+  &\qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} N |\phi| \Gamma h_{\infty}^\sigma(0)\\
+  &\qquad \leq \frac{N \Gamma h_\infty^\sigma(0)}{\pi} \int_{0}^\infty \phi e^{-\frac{\sigma^2\phi^2}{2}} d\phi\\
+  &\qquad \leq \frac{N\Gamma h_\infty^\sigma(0)}{\pi\sigma^2}  \\
+  &\qquad \leq \frac{3\sqrt{2} N \Gamma }{\sigma}
 \end{align}
-We can then use our bounds on $\gamma$ from equations \eq{gaussian_gamma_upper_bound} and \eq{gaussian_gamma_lower_bound}, along with the bounds on $\braket{w_j(t)}{w_j(t)}$ to see that
-\begin{align}
-  &\norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 \nonumber\\
-  &\qquad \leq 1 + \Big[ 1 - \sqrt{2} \sqrt{2\sqrt{\pi} \sigma} \frac{1}{\sqrt{ \sqrt{\pi} \sigma}} \Big( 1 + 3 e^{ - \pi^2\sigma^2} \Big)^{-1/2} \Big] \Big( 1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2}\Big)\nonumber\\
-  &\qquad \qquad + 4 \sqrt{2} \sqrt{2\sqrt{\pi} \sigma} \frac{1}{\sqrt{ \sqrt{\pi} \sigma}} \Big[ 1 - e^{-\frac{L^2}{2\sigma^2}}\Big]^{-1/2}  \Big[\frac{ \sigma}{\sqrt{\pi} L} e^{ - \frac{L^2}{2\sigma^2}} + 2 e^{ - \sigma^2 \delta} \Big] \\
-  & \qquad \leq 1 + \Big[ 1 - 2 + 3 e^{-\pi^2 \sigma^2}\Big] \Big( 1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2}\Big)
-    + 8 \Big[1 + e^{ - \frac{L^2}{\sigma^2}}\Big]  \Big[\frac{ \sigma}{\sqrt{\pi} L} e^{ - \frac{L^2}{2\sigma^2}} + 2 e^{ - \sigma^2 \delta} \Big] \\
-  &\qquad\leq  3 e^{ - \pi^2 \sigma^2}  + \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2\delta^2} + \frac{ 16\sigma}{\sqrt{\pi} L} e^{ - \frac{L^2}{2\sigma^2}} + 32 e^{ - \sigma^2 \delta}\\
-  &\qquad \leq 36 e^{ - \sigma^2 \delta}  + \frac{16 \sigma}{\sqrt{\pi}L} e^{ - \frac{L^2}{2\sigma^2}}
-\end{align}
-where we assumed that $\sigma > (\delta \sqrt{\pi})^{-1}$.
-
-
-If we now examine the cases for which $t > \frac{\mu + L}{2|\sin k|}$, we have some slightly different errors to bound, but most will utilize the same tricks.  The one that needs different ideas, however, will utilize the fact that $S$ is a matrix of bounded rational functions.  In particular, the Lipschitz constant
+where we used \eq{discrete_fourier_transform} to relate the $h_\infty^\sigma(0)$, and then \eq{h_infinite_bound} from \lem{h_bounds}.  Additionally, we used the fact that $S$ is a matrix of bounded rational functions, so that the Lipschitz constant
 \begin{align}
   \Gamma &= \max_{q,j\in [N]} \max_{p\in [-\pi,\pi]} \Bigg| \frac{d}{dk'} S_{qj}(k') \Big|_{k' = p} \Bigg|
 \end{align}
-is well defined.  Using this, we then have that
+is well defined.
+
+For the fourth and fifth terms in \eq{wa_overlap_terms}, we can use \lem{tail_bounds} and the fact that each of these terms in the integrand are constant.  In particular we have
 \begin{align}
-  &\Big|\int_{-\delta}^\delta \frac{d\phi}{2\pi} \big(S_{qj}^*(k+\phi )- S_{qj}^*(k)\big) S_{qj}(k) e^{-\frac{\sigma^2\phi^2}{2}}h_{\infty}^\sigma(\phi)\Big| \nonumber\\
-   & \qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} \big|S_{qj}^*(k+\phi )- S_{qj}^*(k)\big|e^{-\frac{\sigma^2\phi^2}{2}}h_{\infty}^\sigma(\phi)\\
-   & \qquad\leq \frac{\kappa}{\pi} \int_{0}^\delta d\phi \phi e^{-\frac{\sigma^2\phi^2}{2}}h_\infty^\sigma(\phi)\\
-   & \qquad = \kappa\sigma \sqrt{\frac{2}{\pi}}\int_0^\delta d\phi \phi e^{-\sigma^2 \phi^2} h_{\infty}^{1/(2\pi\sigma)} (2\pi i \sigma^2 \phi)\\
-   & \qquad \leq \kappa\sigma \sqrt{\frac{2}{\pi}} \big( 1 + 3 e^{-\pi^2\sigma^2}\big) \int_{0}^\delta d\phi \phi e^{ -\sigma^2\phi^2}\\
-   & \qquad = \frac{\kappa}{\sigma \sqrt{2\pi}} \big(1 + 3 e^{-\pi^2 \sigma^2}\big) \big( 1 - e^{-\sigma^2\delta^2}\big)
-\end{align}
-where we used our previous bounds on $h_\infty^\sigma(\phi)$.  We also have
-\begin{align}
-  \Big|\int_{-\delta}^\delta \frac{d\phi}{2\pi} S_{qj}^*(k+\phi) S_{qj}(k) \big(h_{L}^\sigma (\phi) - h_\infty^\sigma(\phi)\big) e^{-\frac{\sigma^2\phi^2}{2}}\Big|
-    & \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi}  \big|h_{L}^\sigma (\phi) - h_\infty^\sigma(\phi)\big| e^{-\frac{\sigma^2\phi^2}{2}}\\
-    & \leq \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}
-\end{align}
-where we use equation \eq{gaussian_approx_L_to_infinity} in the last line.  Continuing to extend our previous results, we can utilize equation \eq{gaussian_cross_term_bound} to see that
-\begin{align}
-  \Bigg| \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi) \mu(t)} S_{jj}(k) e^{-\frac{\sigma^2\phi^2}{2}} h_{\infty}^\sigma(2k+\phi)\Bigg| 
-    & \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi}  e^{-\frac{\sigma^2\phi^2}{2}} h_{\infty}^\sigma(2k+\phi) \leq 4 \sqrt{2} e^{ - \sigma^2 \delta}.
-\end{align}
-Finally, we can again use equation \eq{gaussian_approx_L_to_infinity} to show
-\begin{align}
-  &\Bigg| \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{2 i (k+\phi) \mu(t)} S_{jj}(k) \big( h_{L}^\sigma(2k + \phi) - h_{\infty}^\sigma(2k + \phi) \big)e^{-\frac{\sigma^2\phi^2}{2}}\Bigg|  \nonumber\\
-  &\qquad\leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} \big| h_{L}^\sigma(2k + \phi) - h_{\infty}^\sigma(2k + \phi) \big|e^{-\frac{\sigma^2\phi^2}{2}}\\
-  & \qquad \leq \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}.
+  &\Bigg|\int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} e^{-i\phi\mu(t)} \big(S_{jj}(k) - S_{jj}^*(k+\phi)\big)\big(1 - 2\delta_{\mu(t) < 0}\big)e^{i(2k+\phi)|\mu(t)|} V_{|\mu(t)| + 1,L}^\sigma(-2k-\phi)\nonumber\\
+  &\qquad - \delta_{|\mu(t)| \leq L} \Big(1 + S_{jj}^*(k+\phi) \delta_{\mu(t)\geq 0} + S_{jj}(k) \delta_{\mu(t)< 0}\Big)e^{-\frac{\mu(t)^2}{2\sigma^2}} \Bigg|\\
+  &\qquad \qquad \leq \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{-\frac{\sigma^2\phi^2}{2}} \Big( 2 \big|V_{|\mu(t)|+1,L}^{\sigma}(-2k-\phi)\big| + 2e^{-\frac{-\mu(t)^2}{2\sigma^2}}\Big)\\
+  &\qquad \qquad \leq \frac{\chi + 1}{\pi} \int_{-\infty}^\infty e^{-\frac{\sigma^2\phi^2}{2}}d\phi\\
+  &\qquad\qquad \leq \sqrt{\frac{2}{\pi}} \frac{\chi + 1}{\pi\sigma}.
 \end{align}
 
-We now have the ability to bound the error arising from approximating $\ket{\alpha_j(t)}$ for $t > \frac{\mu + L}{2|\sin k|}$.  In particular, we have
+With these bounds, we can then guarantee that $\ket{\alpha_j(t)}$ and $\ket{w_j(t)}$ approximate each other well.  In particular, we have
 \begin{align}
-    \norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 &= \braket{\alpha_j(t)} {\alpha_j(t)} + \braket{w_j(t)}{w_j(t)} - 2 \Re\big[ \braket{\alpha_j(t)}{w_j(t)} \big]\\
-  & \leq 1 + \braket{w_j(t)}{w_j(t)} - 2\gamma \eta \Bigg[  \frac{1}{\sqrt{2}} \braket{w_j(t)}{w_j(t)} \nonumber\\
-  & \qquad  - \sum_{q=1}^N  \frac{\kappa}{\sigma \sqrt{2\pi}}\big(1 + 3 e^{-\pi^2 \sigma^2}\big)\big(1 - e^{-\sigma^2 \delta^2}\big) - \sum_{q=1}^N \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}\nonumber\\
-  &\qquad  - 4 \sqrt{2} e^{-\sigma^2 \delta} - \sqrt{\frac{2}{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}\Bigg]\\
-  &\leq 1 + \big(1 - \sqrt{2}\gamma \eta \big) \braket{w_j(t)}{w_j(t)} + 2\gamma\eta \Bigg[ \frac{N \kappa}{\sigma \sqrt{2\pi}} \big(1 + 3 e^{-\pi^2 \sigma^2}\big) \nonumber\\
-  &\qquad + \sqrt{\frac{2}{\pi}} \frac{(N+1)\sigma}{L} e^{ - \frac{L^2}{2\sigma^2}} + 4 \sqrt{2} e^{-\sigma^2\delta} \Bigg].
+  &\norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2\nonumber\\
+  &\qquad= \braket{\alpha_j(t)} {\alpha_j(t)} + \braket{w_j(t)}{w_j(t)} - 2 \Re\big[ \braket{\alpha_j(t)}{w_j(t)} \big]\\
+  & \qquad \leq 2 + \gamma^2 e^{-\frac{\mu(t)^2}{\sigma^2}}(1 + 2 \chi) + \frac{2\sigma\delta}{\sqrt{\pi}(2\sigma^2\delta^2 +1)} e^{-\sigma^2\delta^2}  - \sqrt{2}\eta\gamma \bigg(1 - \frac{1}{\delta\sigma\sqrt{\pi}} e^{-\sigma^2\delta^2} \bigg) \nonumber\\
+  & \qquad\qquad+ \sqrt{\frac{8}{\pi}}\frac{\eta\gamma \sigma}{L} e^{-\frac{L^2}{2\sigma^2}}+ 8\sqrt{2}\eta\gamma e^{-\sigma^2\delta} + \frac{6 \sqrt{2} N\Gamma\eta\gamma}{\sigma} + \sqrt{\frac{8}{\pi}} \frac{(\chi + 1)\eta\gamma}{\pi \sigma}
 \end{align}
-If we use the same bounds as for $t < \frac{\mu -L}{2|\sin k|}$ we find 
+We can then use our bounds on $\gamma$ from equations \eq{gaussian_gamma_upper_bound} and \eq{gaussian_gamma_lower_bound} to see that
 \begin{align}
-  & \norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 \\
-  & \qquad \leq 1 + \big(1 - 2 + 3 e^{-\pi^2 \sigma^2}\big) \Big(1 - \frac{1}{\delta \sigma \sqrt{\pi}} e^{-\sigma^2 \delta^2} \Big) \nonumber\\
-  &\qquad \qquad \qquad + 2\sqrt{2} \Big( 1 + e^{ - \frac{L^2}{\sigma^2}} \Big)\Bigg( \frac{N \kappa}{\sigma}  + \sqrt{\frac{2}{\pi}} \frac{(N+1)\sigma}{L} e^{-\frac{L^2}{2\sigma^2} }+ 4 \sqrt{2} e^{-\sigma^2 \delta}  \Bigg)\\
-  & \qquad \leq 3 e^{-\pi^2 \sigma^2} + \frac{1}{\delta \sigma \sqrt{\pi}} e^{ - \sigma^2 \delta^2} + 4 \sqrt{2} \Bigg( \frac{N \kappa}{\sigma}  + \sqrt{\frac{2}{\pi}} \frac{(N+1)\sigma}{L} e^{-\frac{L^2}{2\sigma^2} }+ 4 \sqrt{2} e^{-\sigma^2 \delta}\Bigg) \\
-  & \qquad \leq 36  e^{-\sigma^2 \delta} + \frac{32N\kappa}{\sigma} + \frac{8 (N+1)}{\sqrt{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}}
+  &\norm{\ket{\alpha_j(t)} - \ket{w_j(t)}}^2 \nonumber\\
+  &\qquad\leq  2 + \frac{1}{\sqrt{\pi}\sigma} e^{-\frac{\mu(t)^2}{\sigma^2}} \big(1 + 2 \chi\big)\big( 1 + e^{-\frac{L^2}{2\sigma^2}}\big) + \frac{10}{\delta \sigma} e^{-\sigma^2\delta^2} - 2\bigg(1 + \frac{3}{2} e^{-\pi^2\sigma^2}\bigg) \bigg(1 - \frac{1}{\delta\sigma\sqrt{\pi}} e^{-\sigma^2\delta^2} \bigg)\nonumber\\
+  &\qquad \qquad +\bigg( 1 + \frac{1}{2}e^{-\frac{L^2}{2\sigma^2}}\bigg)\bigg(\frac{4\sigma}{L}e^{-\frac{L^2}{2\sigma^2}} + 16 e^{-\sigma^2\delta} + \frac{12 N \Gamma}{\sigma} + \frac{4 (\chi+1)}{\sqrt{\pi^3} \sigma} \bigg)\\
+  &\qquad \leq \frac{1+2\chi}{\sigma} + \frac{1}{\sigma} +\frac{8\sigma}{L}e^{-\frac{L^2}{2\sigma^2}} + \frac{4}{\delta\sqrt{\pi}\sigma}+ 32 e^{-\sigma^2\delta} + \frac{24 N \Gamma}{\sigma} + \frac{8(\chi + 1)}{\sigma}\\
+  &\qquad \leq \frac{10(\chi+1) + 24 N\Gamma + \delta^{-1}}{\sigma} + \frac{8\sigma}{L} e^{-\frac{L^2}{2\sigma^2}} + 32 e^{-\sigma^2\delta}.
 \end{align}
+Hence, we have a bound on the difference in norm between these two states that is independent of the time at which we compare them.
 
 
-At this point, we can now bound the error that arises when approximating $\ket{\alpha_j(t)}$ by a Gaussian for any $t < \frac{\mu -L}{2 |\sin(k)|}$ and for any $t > \frac{\mu +L}{2|\sin(k)|}$.  However, we don't yet know how well $\ket{\alpha_j(t)}$ approximates $\ket{\psi_j(t)}$.  Note, however, that $\ket{\alpha_j(0)} = \ket{\psi_j(0)}$, and thus we already have an approximation to the initial state.  We can then look easily time-evolve this approximation, and compare it to the Gaussian approximation for $\ket{\alpha_j(t)}$. 
+At this point, we can now bound the error that arises when approximating $\ket{\alpha_j(t)}$ by a Gaussian for any time $t$.  However, we don't yet know how well $\ket{\alpha_j(t)}$ approximates $\ket{\psi_j(t)}$.  Note, however, that $\ket{\alpha_j(0)} = \ket{\psi_j(0)}$, and thus we already have an approximation to the initial state.  We can then time-evolve this approximation, and compare it to the Gaussian approximation for $\ket{\alpha_j(t)}$. 
 
-Let us define
+Along these lines, let us define
 \begin{align}
   \ket{v_j(0)} = \ket{w_j(0)} = \eta \int_{-\delta}^\delta \frac{d\phi}{2\pi} e^{ i \phi \mu} e^{ - \frac{\sigma^2 \phi^2}{2}}\ket{\scat_j(k+\phi)}
 \end{align}
@@ -1588,28 +1075,27 @@ The first term is simply the norm of both $\ket{v_j(t)}$ and $\ket{w_j(t)}$, whi
   &\qquad \leq 2 \int_{0}^\delta \frac{d \phi}{2\pi} \big( 2 t \phi^2 + \phi\big) e^{-\sigma^2\phi^2}\\
   & \qquad \leq \frac{1}{2\pi\sigma^2} + \frac{t}{2\sqrt{\pi} \sigma^3}.
 \end{align}
-Noting that the norm of $\braket{v_j(t)}{v_j(t)}$ doesn't change with time, we have that
+Noting that the norm of $\braket{v_j(t)}{v_j(t)}$ doesn't change with time (and is in fact exactly normalized, assuming that $\mu(t) > L$), we have that
 \begin{align}
   \norm{\ket{v_j(t)} - \ket{w_j(t)}}^2 &= \braket{v_j(t)}{v_j(t)} + \braket{w_j(t)}{w_j(t)} - \braket{v_j(t)}{w_j(t)} - \braket{w_j(t)}{v_j(t)}\\
   &\leq 2 \eta^2 \int_{\delta}^\delta \frac{d\phi}{2\pi} e^{-\sigma^2 \phi^2} - 2\eta^2 \int_{\delta}^\delta \frac{d\phi}{2\pi }e^{ - \sigma^2 \phi^2} + \frac{2\eta^2}{2\pi \sigma^2} + \frac{2 \eta^2 t}{2\sqrt{\pi} \sigma^3}\\
   &= 2 \frac{\sqrt{\pi}}{ \sigma} + \frac{2 t }{\sigma^2}.
 \end{align}
 
-Finally, we can combine these three bounds, noting that $\ket{\psi_j(0)} = \ket{\alpha_j(0)}$, and that $\norm{\ket{w_j(t)} - \ket{\alpha_j(t)}} $ is larger for $ t > \frac{\mu+L}{2|\sin k|}$ than for $t < \frac{\mu- L}{2|\sin k|}$.  In particular, we have for all $t \leq \frac{\mu -L}{2 |\sin k|}$ and for all $t > \frac{\mu + L}{2|\sin k|}$ that
+Finally, we can combine these bounds, remembering that $\ket{\psi_j(0)} = \ket{\alpha_j(0)}$.  In particular, we have that
 \begin{align}
   &\norm{ \ket{\psi_j(t)} - \ket{\alpha_j(t)}}\nonumber\\
    &\qquad \leq \norm{ \ket{\psi_j}{(t)} - \ket{v_j(t)}} + \norm{\ket{ v_j(t)} - \ket{w_j(t)}} + \norm{\ket{w_j(t)} - \ket{\alpha_j(t)}}\\
-  & \qquad \leq \Bigg[ 36 e^{-\sigma^2 \delta} + \frac{16 \sigma}{\sqrt{\pi} L} e^{-\frac{L^2}{\sigma^2}} \Bigg]^{1/2} + \Bigg[ \frac{2 \sqrt{\pi}}{\sigma} + \frac{2t}{\sigma^2}\Bigg]^{1/2} \nonumber\\
-  &\qquad \qquad \qquad + \Bigg[36 e^{ -\sigma^2 \delta} + \frac{32 N \kappa}{\sigma} + \frac{8 (N+1)}{\sqrt{\pi}} \frac{\sigma}{L} e^{-\frac{L^2}{2\sigma^2}} \Bigg] ^{1/2}.
+  & \qquad \leq 2\Bigg[ \frac{10(\chi+1) + 24 N\Gamma + \delta^{-1}}{\sigma} + \frac{8\sigma}{L}e^{-\frac{L^2}{2\sigma^2}}+ 32 e^{-\sigma^2\delta} \Bigg]^{1/2} + \Bigg[ \frac{2 \sqrt{\pi}}{\sigma} + \frac{2t}{\sigma^2}\Bigg]^{1/2} .
 \end{align}
-If we then assume that $\sigma = \frac{ c_1 L}{\sqrt{\log L}}$ for some constant $c_1$, and that $t < c_2 L$ for some constant $c_2$, we have that for $L$ large enough
+If we then assume that $\sigma = \frac{ c_1 L}{\sqrt{\log L}}$ for some constant $c_1< \frac{1}{\sqrt{2}}$, and that $t < c_2 L$ for some constant $c_2$, we have that for $L$ large enough
 \begin{align}
   &\norm{ \ket{\psi_j(t)} - \ket{\alpha_j(t)}}\nonumber\\
-   & \qquad \leq \Big( \frac{ c_3}{\sqrt{\log{L}}} \frac{1}{L} \Big)^{1/2} + \Big(\frac{c_4\sqrt{ \log L}}{L} + \frac{ c_2 \log L}{L}   \Big)^{1/2} + \Big( \frac{ c_5\sqrt{\log L}}{L} + \frac{c_6}{L\sqrt{\log L}}\Big)^{1/2}\\
-   &\qquad \leq \chi  \sqrt{\frac{\log L}{L}}
+  & \qquad \leq 2\Bigg[ \frac{10(\chi+1) + 24 N\Gamma + \delta^{-1}}{c_1} \frac{\sqrt{\log L}}{L} +  \frac{8c_1}{\sqrt{\log L}}e^{-\frac{\log L}{2c_1^2}}+ 32 e^{-L\delta} \Bigg]^{1/2} \nonumber\\
+  &\qquad \qquad + \Bigg[ \frac{2 \sqrt{\pi}}{c_1}\frac{\sqrt{\log L}}{L} + \frac{2c_2 \log L}{c_1^2 L}\Bigg]^{1/2} .\\
+  &\qquad \in \OO\bigg( \sqrt{ \frac{\log L}{L}} \bigg)
 \end{align}
-for some constant $\chi$.
-
+and we have the requisite growth properties.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1629,6 +1115,10 @@ While these form a nice foundation, more research can always be done in these fi
 Less ambitiously, if we could give such an algorithm for a restricted set of graphs, such as that given for type 1 and type 2 R/T gadgets, but generalized to multiple input and outputs.  
 
 Along different lines, improving the bounds on our scattering behavior, or showing that they cannot be improved by more than a constant, would give better bounds on results later in the thesis.  This scattering behavior is foundational to the idea of computation via scattering, and thus improved bounds result in smaller guaranteed errors.
+
+\todo{talk about how this can't really be improved without changing our approximation}
+One area in which improvement can be made is in our analysis on the error of propagating Guassian wave packets.  While our results in this chapter are an improvement over \cite{MPQW}, much of the error in the analysis arises from the approximation of our approximate wave packets with exponentials over the scattering states.  Far from the graph gadget, our approximations could 
+
 
 Essentially, graph scattering seems to be a new subfield in the study of graphs, with several areas of research opening up.
 

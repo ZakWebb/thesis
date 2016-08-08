@@ -8,10 +8,9 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+   \foreach \y in {1.2,.3}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+    } 
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
  \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \end{scope}}
@@ -21,12 +20,11 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+   \foreach \y in {1.2,.3}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+    } 
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
- \node at (0.6cm, 2cm){\footnotesize{$\label$}}; 
+ \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \end{scope}}
 \begin{scope}
 %%%%%%%% e01
@@ -35,10 +33,9 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+   \foreach \y in {1.2,.3}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+    } 
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
  \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \end{scope}}
@@ -48,14 +45,16 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+   \foreach \y in {1.2,.3}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+    } 
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
- \node at (0.6cm, 2cm){\footnotesize{$\label$}}; 
+ \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \end{scope}}
 \end{scope}
+
+%%%%%%
+% these are the stuff
 \draw[thick,looseness = 2.6] (6.86,6.2) to [out = 95, in = 110] (-1,1.2); 
 \draw[thick,looseness = 0.5] (3.43,-4.8) to [out = 180, in = 225] (-1,0.3); 
 \draw[thick,looseness = 1.2] (3.43,-5.7) to [out = 250, in = 250] (-3,0.3); 
@@ -78,30 +77,28 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  } 
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
  \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
 \end{scope}}  
-\end{scope}
-\begin{scope}[yshift=3cm]
 % The rectangles above q=1, even ones
 \foreach \offset/\unitary/\label in
 {3.9/1/{e_{01}(1,1)},12.7/1/{e_{01}(1,3)}}
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {1.25/black,0/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+  {       \draw[fill=black,draw=black] (1.25 cm, \y cm) circle (.66mm);
+    }
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
  \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
-\end{scope}}  
+\end{scope}} 
+
+ 
 \draw[thick,looseness = 1.2] (3.43,-1.8) to [out = 180, in = 180] (2.1,1.2); 
 \draw[thick,looseness = 0.5] (5.86,-1.8) to [out = 0, in = 0] (5.15,1.2); 
 \draw[thick,looseness = 0.5] (10.29,-1.8) to [out = 180, in = 180] (10.9,1.2); 
@@ -114,30 +111,29 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
-\node at (0.6cm, .75cm) {\large{$\unitary$}};   
- \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+  \foreach \y in {1.2,.55}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  } 
+  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+ \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
 \end{scope}}  
-\end{scope}
-\begin{scope}[yshift=-3cm]
+
 % The rectangles below q=1, even ones
 \foreach \offset/\unitary/\label in
 {3.9/1/{e_{11}(1,1)},12.7/1/{e_{11}(1,3)}}
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {1.25/black,0/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+  {       \draw[fill=black,draw=black] (1.25 cm, \y cm) circle (.66mm);
+    }
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
- \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+ \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
-\end{scope}}  
+\end{scope}} 
+
+
 \draw[thick,looseness = 1.2] (3.43,3.3) to [out = 180, in = 180] (2.1,1.2); 
 \draw[thick,looseness = 0.5] (5.86,3.3) to [out = 0, in = 0] (5.15,1.2); 
 \draw[thick,looseness = 0.5] (10.29,3.3) to [out = 180, in = 180] (10.9,1.2); 
@@ -151,7 +147,34 @@
 	\draw[thick] (12.72,\y) -- (13.72,\y);
 }
   % The rectangles 
- \foreach \offset/\unitary/\label in {0/1/1_{\mathrm{in}},3.43/1/{d(1,1)},6.86/1/{d(1,2)},10.29/1/{d(1,3)},13.72/H/1_{\mathrm{out}}}
+  
+
+\draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+  \foreach \y in {1.2,.95,.55,.3}
+  {       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }
+  \foreach \y in {.95,.55}
+  {       \draw[fill=gray,draw=gray] (2.43 cm, \y cm) circle (.66mm);
+  } 
+  \node at (1.22cm, .75cm) {\large{$1$}};   
+ \node at (1.22cm, 2cm){\large{$1_{\text{in}}$}}; 
+ 
+\begin{scope}[xshift = 13.72 cm] 
+ \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+  \foreach \y in {.95,.55}
+  {       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }
+  \foreach \y in {1.2,.95,.55,.3}
+  {       \draw[fill=gray,draw=gray] (2.43 cm, \y cm) circle (.66mm);
+  } 
+  \node at (1.22cm, .75cm) {\large{$H$}};   
+ \node at (1.22cm, 2cm){\large{$1_{\text{out}}$}};   
+\end{scope}
+
+  
+ \foreach \offset/\unitary/\label in {3.43/1/{d(1,1)},6.86/1/{d(1,2)},10.29/1/{d(1,3)}}
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
@@ -167,20 +190,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% q=2
 \begin{scope}[yshift=-11cm]
 \begin{scope}[yshift=3cm]
+
+
+
 % The rectangles above q=2, odd ones
 \foreach \offset/\unitary/\label in
 {6.5/1/{e_{00}(2,2)},10.9/1/{e_{00}(2,3)}}
 {   
 \begin{scope}[xshift=\offset cm]       
-\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  } 
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
  \node at (0.6cm, 2cm){\footnotesize{$\label$}};
-\end{scope}}  
+\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
+\end{scope}}   
 \end{scope}
 \begin{scope}[yshift=3cm]
 % The rectangles above q=2, even ones
@@ -192,15 +217,14 @@
 {8.3/1/{e_{01}(2,2)},12.7/1/{e_{01}(2,3)}}
 {   
 \begin{scope}[xshift=\offset cm]       
-\draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {1.25/black,0/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+  {       \draw[fill=black,draw=black] (1.25 cm, \y cm) circle (.66mm);
+    }
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
  \node at (0.6cm, 2cm){\footnotesize{$\label$}};
-\end{scope}}  
+\draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
+\end{scope}}   
 \end{scope}
 \begin{scope}[yshift=-3cm]
 % The rectangles below q=2, odd ones
@@ -208,29 +232,27 @@
 {6.5/1/{e_{10}(2,2)},10.9/1/{e_{10}(2,3)}}
 {   
 \begin{scope}[xshift=\offset cm]       
-\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
-\node at (0.6cm, .75cm) {\large{$\unitary$}};   
- \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+  \foreach \y in {1.2,.55}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  } 
+  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+ \node at (0.6cm, 2cm){\footnotesize{$\label$}};
+\draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
 \end{scope}}  
 \end{scope}
 \begin{scope}[yshift=-3cm]
 % The rectangles below q=2, even ones
 \foreach \offset/\unitary/\label in
 {8.3/1/{e_{11}(2,2)},12.7/1/{e_{11}(2,3)}}
-{
+{   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {1.25/black,0/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+  {       \draw[fill=black,draw=black] (1.25 cm, \y cm) circle (.66mm);
+    }
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
- \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+ \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
 \end{scope}}   
 \draw[thick,looseness = 0.7] (6.86,3.3) to [out = 180, in = 180] (6.5,1.2); 
@@ -246,7 +268,31 @@
 	\draw[thick] (12.72,\y) -- (13.72,\y);
 }
   % The rectangles 
- \foreach \offset/\unitary/\label in {0/1/2_{\mathrm{in}},3.43/1/{d(2,1)},6.86/1/{d(2,2)},10.29/1/{d(2,3)},13.72/HT/2_{\mathrm{out}}}
+  \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+  \foreach \y in {1.2,.95,.55,.3}
+  {       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }
+  \foreach \y in {.95,.55}
+  {       \draw[fill=gray,draw=gray] (2.43 cm, \y cm) circle (.66mm);
+  } 
+  \node at (1.22cm, .75cm) {\large{$1$}};   
+ \node at (1.22cm, 2cm){\large{$1_{\text{in}}$}}; 
+ 
+\begin{scope}[xshift = 13.72 cm] 
+ \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+  \foreach \y in {.95,.55}
+  {       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }
+  \foreach \y in {1.2,.95,.55,.3}
+  {       \draw[fill=gray,draw=gray] (2.43 cm, \y cm) circle (.66mm);
+  } 
+  \node at (1.22cm, .75cm) {\large{$HT$}};   
+ \node at (1.22cm, 2cm){\large{$1_{\text{out}}$}};   
+\end{scope}
+  
+ \foreach \offset/\unitary/\label in {3.43/1/{d(2,1)},6.86/1/{d(2,2)},10.29/1/{d(2,3)}}
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
@@ -272,14 +318,13 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  } 
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
  \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
-\end{scope}}  
+\end{scope}} 
 \end{scope}
 \begin{scope}[yshift=3cm]
 % The rectangles above q=3, even ones
@@ -288,10 +333,9 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {1.25/black,0/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+  {       \draw[fill=black,draw=black] (1.25 cm, \y cm) circle (.66mm);
+    }
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
  \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
@@ -310,14 +354,13 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {0/black,1.25/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
-\node at (0.6cm, .75cm) {\large{$\unitary$}};   
- \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+  \foreach \y in {1.2,.55}
+{       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  } 
+  \node at (0.6cm, .75cm) {\large{$\unitary$}};   
+ \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (0,0.55) to [out = 135, in = 225] (-.01,0.55);  
-\end{scope}}  
+\end{scope}}   
 \end{scope}
 \begin{scope}[yshift=-3cm]
 % The rectangles below q=3, even ones
@@ -326,14 +369,13 @@
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (1.25cm,1.5 cm);  
-  \foreach \x /\color in {1.25/black,0/gray}
-{     \foreach \y in {1.2,.95,.55,.3}
-{       \draw[fill=\color,draw=\color] (\x cm, \y cm) circle (.66mm);
-    }} 
+  \foreach \y in {1.2,.55}
+  {       \draw[fill=black,draw=black] (1.25 cm, \y cm) circle (.66mm);
+    }
   \node at (0.6cm, .75cm) {\large{$\unitary$}};   
- \node at (0.6cm, -0.5cm){\footnotesize{$\label$}};   
+ \node at (0.6cm, 2cm){\footnotesize{$\label$}};
 \draw[thick,looseness = 200] (1.25,0.55) to [out = 45, in = -45] (1.24,0.55);  
-\end{scope}}  
+\end{scope}}     
 \draw[thick,looseness = 1.2] (3.43,3.3) to [out = 180, in = 180] (2.1,1.2); 
 \draw[thick,looseness = 0.5] (5.86,3.3) to [out = 0, in = 0] (5.15,1.2); 
 \draw[thick,looseness = 0.7] (6.86,3.3) to [out = 180, in = 180] (6.5,1.2); 
@@ -349,7 +391,31 @@
 	\draw[thick] (12.72,\y) -- (13.72,\y);
 }
   % The rectangles 
- \foreach \offset/\unitary/\label in {0/1/3_{\mathrm{in}},3.43/1/{d(3,1)},6.86/1/{d(3,2)},10.29/1/{d(3,3)},13.72/1/3_{\mathrm{out}}}
+    \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+  \foreach \y in {1.2,.95,.55,.3}
+  {       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }
+  \foreach \y in {.95,.55}
+  {       \draw[fill=gray,draw=gray] (2.43 cm, \y cm) circle (.66mm);
+  } 
+  \node at (1.22cm, .75cm) {\large{$1$}};   
+ \node at (1.22cm, 2cm){\large{$1_{\text{in}}$}}; 
+ 
+\begin{scope}[xshift = 13.72 cm] 
+ \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  
+  \foreach \x /\color in {0/black,2.43/gray}
+  \foreach \y in {.95,.55}
+  {       \draw[fill=black,draw=black] (0 cm, \y cm) circle (.66mm);
+  }
+  \foreach \y in {1.2,.95,.55,.3}
+  {       \draw[fill=gray,draw=gray] (2.43 cm, \y cm) circle (.66mm);
+  } 
+  \node at (1.22cm, .75cm) {\large{$HT$}};   
+ \node at (1.22cm, 2cm){\large{$1_{\text{out}}$}};   
+\end{scope}
+  
+ \foreach \offset/\unitary/\label in {3.43/1/{d(3,1)},6.86/1/{d(3,2)},10.29/1/{d(3,3)}}
 {   
 \begin{scope}[xshift=\offset cm]       
 \draw[rounded corners=2mm,thick] (0,0) rectangle (2.43cm,1.5 cm);  

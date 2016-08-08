@@ -284,6 +284,33 @@ For momentum $\pi/2$, we have that the graph (create Figure) implements a Hadama
 
 (I'd really like to also have universal gates at $\pi/3$ and $2\pi/3$, since they move at the same speed, and we have a momentum switch between them.  However, I don't have one yet.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+  \centering
+  \subfloat[][]{ 
+    \tikzsetnextfilename{SG_pi_4_phase}
+    \input{../tikz/SG_pi_4_phase}
+    \label{fig:pi_4_phase}
+  }
+  \qquad
+  \subfloat[][]{
+    \tikzsetnextfilename{SG_pi_4_basis_change}
+    \input{../tikz/SG_pi_4_basis_change.tex}
+    \label{fig:pi_4_basis_change}
+   }
+   \caption{Encoded one-qubit gates at $k = -\frac{\pi}{4}$.  \subfig{pi_4_phase}  A phase gate.  \subfig{pi_4_basis_change}  Basis-changing gate.}
+   \label{fig:pi_4_universal}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{SG_pi_2_had}
+  \input{../tikz/SG_pi_2_had}
+  \caption{Graph implementing a Hadamard gate at $k = -\frac{\pi}{2}$.
+    \label{fig:pi_2_had}}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -435,8 +462,12 @@ exactly as in \sec{single_qubit_multi_gate_computation} and our error bound does
 
 \section{Universality via single-particle scattering}
 
+\todo{I'm not happy with the wording of much of this section}
+
+
 Thus far, we have shown how to simulate the application of a quantum circuit on a computational basis state, when a circuit is of a particular form.  This nearly shows that quantum walk is universal for quantum computation, but to make things precise we need to explicitly define a decision problem.
 
+\todo{Change definition of problem?}
 As such, let us define the problem \QWE:
 \begin{problem}[\QWE] Given a $d$-sparse, row-computable simple graph $G$ on $\Theta(2^n)$ vertices, an efficiently preparable initial state $\ket{\phi_{\text{init}}^G}$, a subset of the vertices $\mathcal{V}_{\text{accept}}$ (for which membership is easily verified), and a time $T \in \poly(n)$, determine whether
 \begin{itemize}

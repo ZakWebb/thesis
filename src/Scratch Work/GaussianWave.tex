@@ -7,8 +7,8 @@
     \ket{\psi^j(0)} = \gamma \sum_{x = \mu - L}^{\mu + L} e^{- i k x} e^{- (x - \mu)^2/2\sigma^2} \ket{x,j}  \label{eq:guass_start_defn},
   \end{equation}
   where $\gamma$ is the normalization of $\ket{\psi^j(0)}$.  Then let us define the state 
-  \begin{equation}
-    \ket{\alpha^j(t)} =\begin{cases}  \gamma e^{-2 i t \cos k} \sum_{x = \mu(t) -L}^{\mu(t)+L} e^{-i k x} e^{ -(x - \mu(t))^2/2\sigma^2} 
+  \begin{align}
+    \ket{\alpha^j(t)} &= \gamma e^{-2 i t \cos k} \sum_{x = \mu(t) -L}^{\mu(t)+L} e^{-i k x} e^{ -(x - \mu(t))^2/2\sigma^2} 
     			 \ket{x,j} & t < \frac{\mu-L}{2|\sin k|}\\
 			 \gamma e^{-2 i t \cos k} \sum_{x = \mu(t)-L}^{\mu(t) + L} \sum_{q=1}^N  S_{qj}(k) e^{i k x} e^{-(x + \mu(t))^2/2\sigma^2} \ket{x,q} & t > \frac{\mu+L}{2|\sin k|},\end{cases}\label{eq:guass_approximation_defn}
   \end{equation}
@@ -686,6 +686,8 @@ If we have chosen $\sigma = \frac{ L}{2 \sqrt{\log(L)}}$, we then have that for 
 \end{align}
 where $\chi_2$ is a constant.
 \end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 
