@@ -1,0 +1,143 @@
+\begin{tikzpicture}[scale=.5,
+  attach/.style={circle,fill=white,draw=black,
+    inner sep=1pt,minimum size=0pt},
+  vert/.style={circle,draw=black,fill=black,
+    inner sep=1pt,minimum size=0pt},
+  dots/.style={circle,fill=black,inner sep=.4pt,
+    minimum size=0pt}
+  ]
+  \foreach \xsh in {0,9,18}{
+  \foreach \ysh in {0,2,5.5,7.5}{
+  \begin{scope}[xshift=\xsh cm,yshift=\ysh cm]
+    \draw (0,0) -- (2,0);
+    \draw (4,0) -- (6,0);
+    \draw[densely dotted] (2,0) -- (2.33,0);
+    \draw[densely dotted] (3.66,0) -- (4,0);
+
+    \node at (0,0) [attach] {};
+    \node at (1,0) [vert]{};
+    \node at (2,0) [vert]{};
+    \node at (2.66,0) [dots]{};
+    \node at (3,0) [dots]{};
+    \node at (3.33,0) [dots]{};
+    \node at (4,0) [vert]{};
+    \node at (5,0) [vert]{};
+    \node at (6,0) [attach]{};
+  \end{scope}}}
+
+
+
+  \begin{scope}[xshift=6cm]
+    \node (0inhad) at (0,2) [attach]{};
+    \node (1inhad) at (0,0) [attach]{};
+    \node (0outhad) at (3,2) [attach]{};
+    \node (1outhad) at (3,0) [attach]{};
+    
+    \node (1had) at (1,0) [vert]{};
+    \node (2had) at (2,0) [vert]{};
+    \node (3had) at (1.5,.5) [vert]{};
+    \node (4had) at (1,1) [vert]{};
+    \node (5had) at (1.5,1) [vert] {};
+    \node (6had) at (2,1) [vert] {};
+    \node (7had) at (1.5,1.5) [vert]{};
+    \node (8had) at (1,2) [vert]{};
+    \node (9had) at (2,2) [vert]{};
+
+    \draw (8had) -- (1had);
+    \draw (9had) -- (2had);
+    \draw (4had) -- (9had);
+    \draw (1had) -- (6had);
+    \draw (4had) -- (6had);
+    \draw (3had) -- (4had);
+    \draw (7had) -- (6had);
+    \draw (1inhad) -- (2had);
+    \draw (8had) -- (9had);
+    \draw (8had) -- (5had)[ultra thick,white];
+    \draw (5had) -- (2had)[ultra thick,white];
+    \draw (8had) -- (2had);
+    
+    \draw (9had) -- (1outhad);
+    \draw (0inhad) -- (7had)[ultra thick,white];
+    \draw (0inhad) -- (7had);
+
+    \draw (3had) to[out=0,in=240] (0outhad)[ultra thick,white];
+    \draw (3had) to[out=0,in=240] (0outhad);
+
+    \node at (0inhad) [attach]{};
+    \node at (1outhad) [attach]{};
+    \node at (0outhad) [attach]{};
+
+  \end{scope}
+
+
+
+  \draw (15,0) -- (18,0);
+  \draw (15,2) -- (18,2);
+  
+  \node at (15,0) [attach] {};
+  \node at (18,0) [attach] {};
+  \node at (15,2) [attach] {};
+  \node at (18,2) [attach] {};
+
+
+
+  \begin{scope}[xshift=6cm,yshift = 5.5cm]
+    \draw (0,0) -- (3,0);
+    \draw (0,2) -- (3,2);
+%    \draw[xshift=.5cm] (1,0) -- (1,.59) -- (.58,1) --  (1,1.42) 
+%       -- (1.42,1) -- (1,.59);
+
+    \node at (0,0) [attach]{};
+    \node at (1.5,0) [vert] {};
+    \node at (3,0) [attach]{};
+%    \node at (1.5,.59) [vert]{};
+%    \node at (1.08,1) [vert]{};
+%    \node at (1.92,1) [vert]{};
+ %   \node at (1.5,1.42) [vert]{};
+  %  \node at (1,2) [vert]{};
+ %   \node at (2,2) [vert]{};
+    \node at (1.5,2) [vert]{};
+    \node at (0,2) [attach]{};
+    \node at (3,2) [attach]{};
+  \end{scope}
+
+
+
+  \begin{scope}[xshift=15cm,yshift=5.5cm]
+    \draw (0,0) -- (3,0);
+    \draw (0,2) -- (3,2);
+    \draw (1,0) -- (1,2);
+    \draw (2,0) -- (2,2);
+
+    \foreach \x in {1,2}{
+    \foreach \y in {0,1,2}{
+      \node at (\x,\y) [vert]{};
+    }}
+
+    \foreach \x in {0,3}{
+    \foreach \y in {0,2}{
+      \node at (\x,\y) [attach]{};
+    }}
+
+  \end{scope}
+
+\node at (15.5,2) [vert]{};
+\node at (15.5,0) [vert]{};
+
+%  \foreach \x in {0,9,18}{
+%  \draw[xshift=\x cm,yshift=2.4cm,|-|] (-.25,0) 
+%&      to node[above]{$L+2M(-\pi/2)$} (6.25,0);
+  
+%  \draw[xshift=\x cm,yshift=5.1cm,|-|] (-.25,0)
+%      to node[below]{$L+2M(-\pi/4)$} (6.25,0);
+%  }    
+
+  \draw [dashed] (-.5,-.5) rectangle (15.5,8.5);
+
+  \draw [dashed] (8.5,-1) rectangle (24.5,8);
+
+  \node at (4,9.1) {Graph for $U_1$};
+
+  \node at (20.5,8.6) {Graph for $U_2$};
+
+\end{tikzpicture}

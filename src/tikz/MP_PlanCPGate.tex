@@ -1,0 +1,73 @@
+\begin{tikzpicture}[
+  scale=2,
+  split/.style={circle,draw=black,fill=white,
+    inner sep=0pt, minimum size= 4mm},
+  attach/.style={circle,draw=black,fill=white,
+    inner sep=1pt, minimum size=0},
+  vert/.style={circle,fill=black,inner sep=.7pt,minimum size=0}]
+
+  \foreach \x in {0,.06,...,4}{
+  \foreach \y in {.25, .5, 1.5, 1.75}{
+    \node at (\x,\y) [vert] {};
+  }}
+  
+  \foreach \x in {1.5,2.5}{
+  \foreach \y in {.5,.56,...,1.5}{
+    \node at (\x,\y) [vert]{};
+  }}
+
+  \draw (0,.25) node[label=left:$1_{i+1,\text{in}}$] {} 
+     -- (4,.25) node[label=right:$1_{i+1,\text{out}}$] {};
+
+  \node (s1) at (1.5,.5) [split] {};
+  \node (s2) at (2.5,.5) [split] {};
+  \node (s3) at (1.5,1.5) [split] {};
+  \node (s4) at (2.5,1.5) [split] {};
+
+  \draw (0,1.75) node[label=left:$0_{i,\text{in}}$] {}
+     -- (4,1.75) node[label=right:$0_{i,\text{out}}$] {};
+
+  \draw (0,.5) node[label=left:$0_{i+1,\text{in}}$] {}
+     -- (s1.west);
+  \draw (0,1.5) node[label=left:$1_{i,\text{in}}$] {}
+     -- (s3.west);
+
+  \draw (s4.east) -- (4,1.5) node[label=right:$1_{i,\text{out}}$]{};
+  \draw (s2.east) -- (4,0.5) node[label=right:$0_{i+1,\text{out}}$]{};
+
+  \draw (s1.east) -- (s2.west);
+  \draw (s3.east) -- (s4.west);
+  \draw (s1.north) -- (s3.south);
+  \draw (s2.north) -- (s4.south);
+
+  \draw (s1.west) to[out=0,in=-90] (s1.north)[line width=.5pt];
+  \draw (s1.east) to[out=-180,in=-90] (s1.north) [line width =1.5pt];
+  \draw (s1.east) to[out=-180,in=-90] (s1.north) [white,line width=.5pt];
+
+  \draw (s2.east) to[out=-180,in=-90] (s2.north)[line width=.5pt];
+  \draw (s2.west) to[out=0,in=-90] (s2.north)[line width=1.5pt];  
+  \draw (s2.west) to[out=0,in=-90] (s2.north)[white,line width=.5pt];
+
+  \draw (s3.east) to[out=-180,in=90] (s3.south)[line width=.5pt];
+  \draw (s3.west) to[out=0,in=90] (s3.south)[line width=1.5pt];
+  \draw (s3.west) to[out=0,in=90] (s3.south)[white,line width=.5pt];
+
+  \draw (s4.west) to[out=0,in=90] (s4.south)[line width=.5pt];
+  \draw (s4.east) to[out=-180,in=90] (s4.south)[line width=1.5pt];
+  \draw (s4.east) to[out=-180,in=90] (s4.south)[white,line width=.5pt];
+
+  \foreach \n in {s1, s2, s3, s4}{
+    \node at (\n.west) [attach]{};
+    \node at (\n.east) [attach]{};
+  }
+  
+  \node at (s1.north) [attach]{};
+  \node at (s2.north) [attach]{};
+  \node at (s3.south) [attach]{};
+  \node at (s4.south) [attach]{};
+  
+  \foreach \x in {0,4}{
+  \foreach \y in {.25, .5, 1.5, 1.75}{
+    \node at (\x,\y) [attach]{};
+  }}
+\end{tikzpicture}

@@ -1579,7 +1579,7 @@ where the state associated with each vertex on one side of a bipartition of the 
 Now we use the fact that the Laplacian of any connected graph has smallest eigenvalue zero, with a unique eigenvector equal to the all-ones vector.
 \todo{Find a citation for this claim}. Hence for each block we get an eigenvector in the nullspace of \eq{restriction_h_triangle}) given by \eq{phi_z_a_q}. Ranging over all $z,a\in\FF_2$ and $q\in[R]$ gives the claimed basis for the $e_1$-energy ground space of $A(G^{\triangle})$.
 
-To prove the lower bound on the eigenvalue gap, we use the Nullspace Projection Lemma (\lem{npl}) with 
+To prove the lower bound on the eigenvalue gap, we use the Nullspace Projection Lemma (\lem{NPL}) with 
 \begin{equation}
 H_{A}=A(G^{\diamondsuit})-e_{1}\qquad H_{B}=h_{\mathcal{E}^{\triangle}}
 \end{equation}
@@ -1593,7 +1593,7 @@ and where $S=\spn(\mathcal{W})$ is the nullspace of $H_{A}$ as shown in \sec{The
 \end{equation*}
 since $R\geq2$. 
 
-Using this bound and the fact that $\gamma(H_{A})>c_{\diamondsuit}$ (from equation \eq{one_thirteenth_bound}) and $\left\Vert H_{B}\right\Vert =2$ (from equation \eq{h_E_bound}) and plugging into \lem{npl} gives
+Using this bound and the fact that $\gamma(H_{A})>c_{\diamondsuit}$ (from equation \eq{one_thirteenth_bound}) and $\left\Vert H_{B}\right\Vert =2$ (from equation \eq{h_E_bound}) and plugging into \lem{NPL} gives
 \begin{equation}
   \gamma(A(G^{\triangle})-e_{1})\geq\frac{c_{\diamondsuit}\cdot\frac{1}{32kR^{2}}}{c_{\diamondsuit}+2}>\frac{c_{\diamondsuit}}{94 kR^{2}}=\frac{c_{\triangle}}{R^2}. 
 \end{equation}
@@ -1668,7 +1668,7 @@ We show that its nullspace is equal to $\mathcal{I}_{\triangle}$, and we lower b
 \end{equation}
 Additionally, we will show that $B$ annihilates those states in $\mathcal{I}_{\triangle}$, so that $\mathcal{I}_{\triangle}$ is the nullspace of $H(G^{\triangle},N)$ as claimed.
 
-We will first prove equation \eq{lowerbound_HG_triangle} using this bound on the added movement terms (equation \eq{bound_R6}) and the fact that $B$ annihilates $\mathcal{I}_{\triangle}$. We apply the Nullspace Projection Lemma (\lem{npl}) with $H_{A}$ and $H_{B}$ given by the first and second terms in equation \eq{H_G^triangle,diamond}; in this case the nullspace of $H_{A}$ is $S=\mathcal{I}_{\diamondsuit}$ (from \lem{The-nullspace-of_Hdiamond}). Now applying \lem{npl} and using the bounds $\gamma(H_{A})>\gamma_{\diamondsuit}$ (from \lem{The-nullspace-of_Hdiamond}), $\left\Vert H_{B}\right\Vert \leq N\left\Vert h_{\mathcal{E}^{\triangle}}\right\Vert =2N\leq2R$ (from equation \eq{h_E_bound} and the fact that $N\leq R$), and the bound \eq{bound_R6} on $\gamma(H_{B}|_{S})$, we find
+We will first prove equation \eq{lowerbound_HG_triangle} using this bound on the added movement terms (equation \eq{bound_R6}) and the fact that $B$ annihilates $\mathcal{I}_{\triangle}$. We apply the Nullspace Projection Lemma (\lem{NPL}) with $H_{A}$ and $H_{B}$ given by the first and second terms in equation \eq{H_G^triangle,diamond}; in this case the nullspace of $H_{A}$ is $S=\mathcal{I}_{\diamondsuit}$ (from \lem{The-nullspace-of_Hdiamond}). Now applying \lem{NPL} and using the bounds $\gamma(H_{A})>\gamma_{\diamondsuit}$ (from \lem{The-nullspace-of_Hdiamond}), $\left\Vert H_{B}\right\Vert \leq N\left\Vert h_{\mathcal{E}^{\triangle}}\right\Vert =2N\leq2R$ (from equation \eq{h_E_bound} and the fact that $N\leq R$), and the bound \eq{bound_R6} on $\gamma(H_{B}|_{S})$, we find
 \begin{equation}
   \gamma(H(G^{\triangle},N)-B)\geq\frac{\frac{12c_{\triangle}\gamma_{\diamondsuit}}{(4R)^{6}}}{\gamma_{\diamondsuit}+2R}\geq\frac{16 \gamma_{\diamondsuit} c_{\triangle}}{(4R)^7}=\frac{\gamma_\triangle}{R^{7}}.
 \end{equation}
@@ -2064,11 +2064,11 @@ In this case
   &= \frac{b_{\text{adj}}}{3R+2} + \frac{b_{\text{int}}}{(3R+2)^2}\\
   &\geq\frac{1}{(3R+2)^2}b,\label{eq:bound_thetaprime}
 \end{align}
-This establishes that the nullspace of $H(G^{\square},N)$ is empty, i.e., $\lambda_{N}^{1}(G^{\square})>0$, so $\lambda_{N}^{1}(G^{\square})=\gamma(H(G^{\square},N))$. We lower bound $\lambda_{N}^{1}(G^{\square})$ using the Nullspace Projection Lemma (\lem{npl}) with
+This establishes that the nullspace of $H(G^{\square},N)$ is empty, i.e., $\lambda_{N}^{1}(G^{\square})>0$, so $\lambda_{N}^{1}(G^{\square})=\gamma(H(G^{\square},N))$. We lower bound $\lambda_{N}^{1}(G^{\square})$ using the Nullspace Projection Lemma (\lem{NPL}) with
 \begin{equation}
   H_{A}=H(G^{\triangle},N)\qquad H_{B}=\sum_{w=1}^{N}\left(h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}\right)^{(w)}\bigg|_{\mathcal{Z}_{N}(G^{\square})} + C'
 \end{equation}
-and where the nullspace of $H_{A}$ is $S=\mathcal{I}_{\triangle}$. We apply \lem{npl} and use the bounds $\gamma(H_{A})>\frac{\gamma_\triangle}{R^{7}}$ (from \lem{The-nullspace-of_H_triangle}), $\gamma(H_{B}|_{S})\geq\frac{b}{(3R+2)^2}$ (from equation \eq{bound_thetaprime}), and 
+and where the nullspace of $H_{A}$ is $S=\mathcal{I}_{\triangle}$. We apply \lem{NPL} and use the bounds $\gamma(H_{A})>\frac{\gamma_\triangle}{R^{7}}$ (from \lem{The-nullspace-of_H_triangle}), $\gamma(H_{B}|_{S})\geq\frac{b}{(3R+2)^2}$ (from equation \eq{bound_thetaprime}), and 
 \begin{equation}
   \left\Vert H_{B}\right\Vert \leq N\left\Vert {h_{\mathcal{E}^{0}}+h_{\mathcal{S}^{0}}}\right\Vert  + \norm{H_{\text{int}}} \leq3N + d_{\mathcal{U}} N^{\nu}
   \leq d_{\mathcal{U}}R^{\nu_\mathcal{U}}
@@ -2411,7 +2411,7 @@ We now outline the sequence of Hamiltonians considered in the following Sections
 \end{equation}
 in \sec{Legal-configurations-and}, where we prove that a subset $\mathcal{B}_{\text{legal}}\subset\mathcal{B}_{n}$ is a basis for the nullspace of \eq{restriction}, and that its smallest nonzero eigenvalue is also lower bounded by a positive constant.
 
-For the remainder of the proof we use the Nullspace Projection Lemma (\lem{npl}) four times, using the decompositions 
+For the remainder of the proof we use the Nullspace Projection Lemma (\lem{NPL}) four times, using the decompositions 
 \begin{align}
 H(G_{2},G_X^{\text{oc}},n) & =H(G_{1},G_X^{\text{oc}},n)+H_{1}\big|_{\mathcal{I}(G_{2},G_X^{\text{oc}},n)}\label{eq:H_G2}\\
 H(G_{3},G_X^{\text{oc}},n) & =H(G_{2},G_X^{\text{oc}},n)+H_{2}\big|_{\mathcal{I}(G_{3},G_X^{\text{oc}},n)}\label{eq:H_G3}\\
@@ -2445,7 +2445,7 @@ We also solve for $S_2$, which is equal to the nullspace of \eq{H1_restriction}.
   \sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}\big|_{S_{3}},\quad\text{and}\quad
   H_{\text{out}}\big|_{S_{4}}.
 \end{equation}
-Analyzing these restrictions involves extensive computation of matrix elements, which is the point of this section.  We first define a useful subspace and basis for these interactions, which is related to the allowed positions of the particles, but then we explicitly calculate these matrix elements.  Once we have the matrix elements, we can then find the ground states for each of the Hamiltonians, and use the Nullspace Projection Lemma (\lem{npl}) to calculate the various eigenvalue gaps.
+Analyzing these restrictions involves extensive computation of matrix elements, which is the point of this section.  We first define a useful subspace and basis for these interactions, which is related to the allowed positions of the particles, but then we explicitly calculate these matrix elements.  Once we have the matrix elements, we can then find the ground states for each of the Hamiltonians, and use the Nullspace Projection Lemma (\lem{NPL}) to calculate the various eigenvalue gaps.
 %To simplify and organize these computations, we first compute the restrictions of each of these operators to the space $S_{1}$. We present the results of this computation in \sec{Matrix-elements-in}; details of the calculation can be found in \sec{matrix_els_details}. In \sec{Frustration-free-states} we proceed with the remaining computations and apply the Nullspace Projection Lemma three times using equations \eq{H_G2}, \eq{H_G3}, and \eq{H_G4}. Finally, in \sec{Completeness-and-Soundness} we apply the Lemma again using equation \eq{H_GC} and we prove \thm{main_thm_with_occ_constraints}.
 
 
@@ -3688,7 +3688,7 @@ The smallest nonzero eigenvalue within each block is $\frac{1}{240}$ (correspond
 \gamma(H_{1}|_{S_{1}})=\frac{1}{240}.\label{eq:lowerbnd_H1S_alph}
 \end{equation}
 
-To get the stated lower bound, we use \lem{npl} with $H(G_{2},G_X^{\text{oc}},n) = H_{A}+H_{B}$ where 
+To get the stated lower bound, we use \lem{NPL} with $H(G_{2},G_X^{\text{oc}},n) = H_{A}+H_{B}$ where 
 \begin{equation}
 H_{A}=H(G_{1},G_X^{\text{oc}},n)\qquad H_{B}=H_{1}|_{\mathcal{I}(G_{2},G_X^{\text{oc}},n)}
 \end{equation}
@@ -3809,7 +3809,7 @@ This matrix is just $\frac{1}{128}$ times the Laplacian of a path of length $M$,
 \begin{equation}
   \gamma(H_{2}|_{S_{2}}) \geq \frac{1}{120M^{2}}.\label{eq:gamma_HB}
 \end{equation}
-To get the stated lower bound on $\gamma(H(G_{3},G_X^{\text{oc}},n))$, we apply \lem{npl} with 
+To get the stated lower bound on $\gamma(H(G_{3},G_X^{\text{oc}},n))$, we apply \lem{NPL} with 
 \begin{align}
   H_{A} &= H(G_{2},G_X^{\text{oc}},n) \qquad H_{B}=H_{2}|_{\mathcal{I}(G_{3},G_X^{\text{oc}},n)}
 \end{align}
@@ -3875,7 +3875,7 @@ is diagonal in the basis $\{|\mathcal{H}(\vec{z},\vec{a},\pi)\rangle\colon\vec{z
 \begin{equation}
 \gamma\left(\sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}\big|_{S_{3}}\right)\geq\frac{1}{960M}\label{eq:lbnd_Hinj}
 \end{equation}
-since $j_{\min,i}\geq1$. To get the stated lower bound we now apply \lem{npl} with 
+since $j_{\min,i}\geq1$. To get the stated lower bound we now apply \lem{NPL} with 
 \begin{align}
 H_{A} & =H(G_{3},G_X^{\text{oc}},n)\qquad H_{B}=\sum_{i=n_{\text{in}}+1}^{n}H_{\text{in},i}\big|_{\mathcal{I}(G_{4},G_X^{\text{oc}},n)}
 \end{align}
@@ -3958,7 +3958,7 @@ Recall that $S_{4}$ is the nullspace of $H(G_{4},G_X^{\text{occ}},n)$ and consid
 \begin{equation}
 H_{{\text{out}}}\big|_{S_{4}}.\label{eq:res_S4}
 \end{equation}
-We now show that the smallest eigenvalue of \eq{res_S4} is strictly positive. This implies that the nullspace of $H(G_{X},G_X^{\text{occ}},n)$ is empty, which can be seen from \eq{H_GC} since both terms in this equation are positive semidefinite and $S_4$ is the nullspace of the first term. We then use \lem{npl} to lower bound the smallest eigenvalue $\lambda_n^{1}(G_{X},G_X^{\text{occ}})$ of $H(G_{X},G_X^{\text{occ}},n)$.
+We now show that the smallest eigenvalue of \eq{res_S4} is strictly positive. This implies that the nullspace of $H(G_{X},G_X^{\text{occ}},n)$ is empty, which can be seen from \eq{H_GC} since both terms in this equation are positive semidefinite and $S_4$ is the nullspace of the first term. We then use \lem{NPL} to lower bound the smallest eigenvalue $\lambda_n^{1}(G_{X},G_X^{\text{occ}})$ of $H(G_{X},G_X^{\text{occ}},n)$.
 
 By \lem{G_IV}, the states 
 \begin{align}
@@ -3987,7 +3987,7 @@ $H(G_{X},G_X^{\text{occ}},n)$, i.e.,
 \begin{align}
 \lambda_{n}^{1}\left(G_{X},G_X^{\text{occ}}\right)=\gamma(H(G_{X},G_X^{\text{occ}},n)).
 \end{align}
-To lower bound this quantity we apply \lem{npl} with
+To lower bound this quantity we apply \lem{NPL} with
 \begin{align}
 H_{A} &= H(G_{4},G_X^{\text{occ}},n)\qquad H_{B}=H_{{\text{out}}}\big|_{\mathcal{I}(G_{X},G_X^{\text{occ}},n)}
 \end{align}

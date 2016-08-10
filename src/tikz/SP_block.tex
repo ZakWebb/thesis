@@ -9,55 +9,68 @@
     inner sep=0pt,minimum size=1.5pt},
   vert/.style={circle,fill=black,
     inner sep=.7pt,minimum size=0pt},
-  attach/.style={circle,draw=black,fill=white,inner sep=1.15pt,minimum size=0}]
+  attach/.style={circle,draw=black,fill=white,inner sep=1.15pt,minimum size=0},
+  decoration={markings,
+    mark = between positions 0 and 1 step 0.02 with {\node at (0,0) [vert]{};}
+  }]
+  \begin{scope}[yshift = 2.5 cm]
+      \draw[postaction = {decorate}] (10,-.27) to (5,-.27);
+      \draw[postaction = {decorate}] (10,.27) to (5,.27);
+  \end{scope}
+  
+  \draw[postaction = {decorate}] (5.4,1.77) to[out=0,in=-180,looseness=0.3] (10,1.23);
+  \draw[line width = 1mm, color=white] (5.4,1.23) to[out=0,in=-180,looseness=0.3] (10,1.77);
+  \draw[color=black,postaction = {decorate}]  (5.4,1.23) to[out=0,in=-180,looseness=0.3] (10,1.77);
+  
+  \draw[postaction = {decorate}] (5.4,.27) to[out=0,in=-180,looseness=0.3] (10,-.27);
+  \draw[line width = 1mm, color=white] (5.4,-.27) to[out=0,in=-180,looseness=0.3] (10,.27);
+  \draw[color=black,postaction = {decorate}]  (5.4,-.27) to[out=0,in=-180,looseness=0.3] (10,.27);
+  
 
-  \foreach \n /\y in {U_1/2.5,U_2/1.5,U_n/0,{V_{\med}}/-2}{
+  \foreach \n /\y in {U_{0\ldots0}/2.5,U_{0\cdots1}/1.5,U_{1\cdots1}/0}{
     \begin{scope}[yshift = \y cm]
-      \foreach \x in {0,.12,...,10} {
-        \node at (\x, -.15) [vert] {};
-        \node at (\x, .15) [vert] {};
-      }
-      \draw (0, -.15) to (10, -.15);
-      \draw (0,  .15) to (10,  .15);
+      \draw[postaction = {decorate}] (0,-.27) to (5,-.27);
+      \draw[postaction = {decorate}] (0,.27) to (5,.27);
+%      \draw (0, -.27) to (10, -.27);
+ %     \draw (0,  .27) to (10,  .27);
       \node at (5,0) [unitary]{$ \n $};
-
-
     \end{scope}
   }
   
+
   \foreach \x in {0,5.34}{
-  \foreach \y /\p in {2.5/4,-2/2}{
+  \foreach \y /\p in {2.75/4}{
   \begin{scope}[xshift=\x cm,yshift=\y cm]
-    \node (\x\p) at (2.33,.5)[above] {$2M(-\frac{\pi}{\p}) + L$};
+    \node (\x\p) at (2.33,.5)[above] {$K$};
   
     \draw (0.02,0.2) to[out=80,in=-90,looseness=0.3] (2.33,.5)
                      to[out=-90,in=100,looseness=0.3] (4.64,.2);
   \end{scope}}} 
                   
-  \draw (10.15,2.75) to[out=0,in=-180,looseness=0.3] (10.45,1.25)
-                    to[out=-180,in=0,looseness=0.3] (10.15,-.25);
-  \node at (11.9,1.25)
-      {\begin{tabular}{c}
-          Computational\\ 
-          Qubits\end{tabular}};
+ % \draw (10.15,2.75) to[out=0,in=-180,looseness=0.3] (10.45,1.25)
+ %                   to[out=-180,in=0,looseness=0.3] (10.15,-.25);
+%  \node at (11.9,1.25)
+%      {\begin{tabular}{c}
+ %         Computational\\ 
+  %        Qubits\end{tabular}};
 
 
-  \draw (-1,3) to (0, 3) to (0,-2.5) to (-1,-2.5) [dashed];
-  \draw (13.5,3) to (10,3) to (10,-2.5) to (13.5,-2.5) [dashed];
+%  \draw (-1,3) to (0, 3) to (0,-2.5) to (-1,-2.5) [dashed];
+%  \draw (13.5,3) to (10,3) to (10,-2.5) to (13.5,-2.5) [dashed];
 
   \node at (5,.9) [dots] {};
   \node at (5,.75)    [dots] {};
   \node at (5,.6) [dots] {};
 
-  \draw (10.15,-1.75) to[out=0,in=-180,looseness=1.5] (10.45,-2)
-                    to[out=-180,in=0,looseness=1.5] (10.15,-2.25);
-  \node at (11.9,-2) 
-      {\begin{tabular}{c}
-          Mediator\\ 
-          Qubit\end{tabular}};
+ % \draw (10.15,-1.75) to[out=0,in=-180,looseness=1.5] (10.45,-2)
+%                    to[out=-180,in=0,looseness=1.5] (10.15,-2.25);
+  %\node at (11.9,-2) 
+  %    {\begin{tabular}{c}
+  %        Mediator\\ 
+  %        Qubit\end{tabular}};
           
    \foreach \x in {0, 10, 4.64, 5.34}{
-   \foreach \y in {2.35,2.65,1.65,1.35,.15,-.15,-1.85,-2.15}{
+   \foreach \y in {2.23,2.77,1.77,1.23,.27,-.27}{
      \node at (\x, \y) [attach] {};
    }}
 \end{tikzpicture}

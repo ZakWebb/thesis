@@ -46,23 +46,25 @@ Big O notation.
 
 Overloading of notation; in particular, when adding $z\in \FF_2$ to $j\in \NN$, the result is in $\NN$.
 
+Permutation operators.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Quantum information}
 \label{sec:quantum_information}
 
 As this thesis is about quantum information, I will assume a familiarity with the basics 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Indistinguishable particles}
-\label{sec:indistinguishable_particles}
-
-A foundational aspect of this thesis is understanding how defining the small scale interactions between multiple particles effects the large scale behavior of the system.  As we want to define the large scale systems in terms of these small systems, the Hamiltonians that we will be interested in will have symmetries when we permute the different particles.
-
-More concretely, when we restrict our Hamiltonians to the case with $n$ particles, each particle will have the same (finite) Hilbert space to work with, and the Hamiltonian will be symmetric under a relabelling of the particles.  Explicitly, we will have that each particle will have a Hilbert space $\mathcal{H}_{\text{ind}} = \CC^{d}$ for some dimension $d$, so that the total Hilbert space of $n$ particles is $\mathcal{H}_{\text{tot}}  = \mathcal{H}_{\text{ind}}^{\otimes n} = \CC^{dn}$, and the Hamiltonian is an operator on $\mathcal{H}_{\text{tot}}$ that commutes with the operators that swap the individual particle Hilbert spaces.
-
-\todo{Make this more coherent}
-
-The reason that we do this is the simple fact that particles are almost always indistinguishable.  As such, any initial state for these multiparticle Hamiltonians will have the same symmetry as the underlying particles.  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Indistinguishable particles}
+%\label{sec:indistinguishable_particles}
+%
+%A foundational aspect of this thesis is understanding how defining the small scale interactions between multiple particles effects the large scale behavior of the system.  As we want to define the large scale systems in terms of these small systems, the Hamiltonians that we will be interested in will have symmetries when we permute the different particles.
+%
+%More concretely, when we restrict our Hamiltonians to the case with $n$ particles, each particle will have the same (finite) Hilbert space to work with, and the Hamiltonian will be symmetric under a relabelling of the particles.  Explicitly, we will have that each particle will have a Hilbert space $\mathcal{H}_{\text{ind}} = \CC^{d}$ for some dimension $d$, so that the total Hilbert space of $n$ particles is $\mathcal{H}_{\text{tot}}  = \mathcal{H}_{\text{ind}}^{\otimes n} = \CC^{dn}$, and the Hamiltonian is an operator on $\mathcal{H}_{\text{tot}}$ that commutes with the operators that swap the individual particle Hilbert spaces.
+%
+%\todo{Make this more coherent}
+%
+%The reason that we do this is the simple fact that particles are almost always indistinguishable.  As such, any initial state for these multiparticle Hamiltonians will have the same symmetry as the underlying particles.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Complexity Theory}

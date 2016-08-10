@@ -21,6 +21,7 @@
 \usepackage{enumitem}
 \usepackage{nicefrac}
 \usepackage{thmtools}
+\usepackage{pgfplots}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,6 +111,11 @@
 
 \newcounter{mycount}
 
+\pgfmathdeclarefunction{gauss}{2}{%
+  \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
+}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bra/Ket Macros
 \newcommand{\tinyspace}{\mspace{1mu}}
@@ -138,7 +144,9 @@
 \DeclareMathOperator{\poly}{poly}
 \DeclareMathOperator{\spn}{span}
 \DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\ASym}{Asym}
 \DeclareMathOperator{\adj}{adj}
+\DeclareMathOperator{\sign}{sign}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Scattering states macro

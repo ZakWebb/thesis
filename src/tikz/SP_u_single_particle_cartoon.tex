@@ -14,16 +14,24 @@
 
   \node (1) at (5,0) [unitary] {$U$};
 
-  \draw[xshift=-1cm] (1.05,.45) to (1.25,.45) to (1.25,.85) to (3.25,.85) 
-           to (3.25,.45) to (3.45,.45);
+%  \draw[xshift=-1cm] (1.05,.45) to (1.25,.45) to (1.25,.85) to (3.25,.85) 
+%           to (3.25,.45) to (3.45,.45);
+  \begin{scope}[yshift=.5cm,yscale = .1,xscale = .3333]
+  \begin{axis}[every axis plot post/.append style={
+    mark=none,domain=-3:3,samples=50,smooth}, % All plots: from -2:2, 50 samples, smooth, no marks
+    axis lines = none] 
+    \addplot[color=black]{gauss(0,.75)};
+  \end{axis}
+  \end{scope}
+
 
   \node (momentum) at (1.25,1.3) [] {$k\rightarrow$};
 
-  \draw[|-|] (-2,-.8)   to node[below] {$M(k)$} (0.25,-.8);
-  \draw[|-|] (0.25,-.8) to node[below] {$L$}   (2.25,-.8);
-  \draw[|-|] (2.25,-.8) to node[below] {$M(k)$} (4.5,-.8); 
+  \draw[|-|] (-2,-.8)   to node[below] {$\alpha\mu$} (0.25,-.8);
+  \draw[|-|] (0.25,-.8) to node[below] {$2L$}   (2.25,-.8);
+  \draw[|-|] (2.25,-.8) to node[below] {$\mu - L$} (4.5,-.8); 
 
-  \draw[|-|] (5.5,-.8) to node[below] {$L + 2M(k)$} (12,-.8);
+  \draw[|-|] (5.5,-.8) to node[below] {$K$} (12,-.8);
 
   \foreach \x in {-2, 12, 4.54, 5.46}{
   \foreach \y in {-.25, .25}{  
@@ -40,24 +48,33 @@
   }}
   
   \node (2) at (17,0) [unitary] {$U$};
+ \foreach \yshift in {.5,-.1}{
+   \begin{scope}[yshift=\yshift cm,xshift = 19.5cm,yscale = .05,xscale = .3333]
+  \begin{axis}[every axis plot post/.append style={
+    mark=none,domain=-3:3,samples=50,smooth}, % All plots: from -2:2, 50 samples, smooth, no marks
+    axis lines = none] 
+    \addplot[color=black]{gauss(0,.75)};
+  \end{axis}
+  \end{scope}}
  
-  \draw[xshift=1cm] (18.55,.45) to (18.75,.45) to (18.75,.6)
+%  \draw[xshift=1cm] (18.55,.45) to (18.75,.45) to (18.75,.6)
      to (20.75,.6) to (20.75,.45) to (20.95,.45);
 
-  \draw[xshift=1cm] (18.55,-.1) to (18.75,-.1) to (18.75,.05)
+ % \draw[xshift=1cm] (18.55,-.1) to (18.75,-.1) to (18.75,.05)
      to (20.75,.05) to (20.75,-.1) to (20.95,-.1);
 
   \node (momentum2) at (20.75,1.3) [] {$k\rightarrow$};
 
 
-  \draw[|-|] (10,-.8) to node[below] {$L+2M(k)$} (16.5,-.8);
-  \draw[|-|] (17.5,-.8) to node[below] {$M(k)$} (19.75,-.8);
-  \draw[|-|] (19.75,-.8) to node[below] {$L$} (21.75,-.8);
-  \draw[|-|] (21.75,-.8) to node[below] {$M(k)$} (24,-.8);
+  \draw[|-|] (10,-.8) to node[below] {$K$} (16.5,-.8);
+  \draw[|-|] (17.5,-.8) to node[below] {$\mu-L$} (19.75,-.8);
+  \draw[|-|] (19.75,-.8) to node[below] {$2L$} (21.75,-.8);
+  \draw[|-|] (21.75,-.8) to node[below] {$\alpha\mu$} (24,-.8);
   
   \foreach \x in {10, 24, 16.54, 17.46}{
   \foreach \y in {-.25, .25}{  
     \node at (\x,\y) [attach]{};
   }}
 \end{scope}
+
 \end{tikzpicture}

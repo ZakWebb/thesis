@@ -33,23 +33,33 @@ In this chapter, we will define our model of multi-particle quantum walk, and an
 
 \section{Multi-particle quantum walk}
 
-We have already seen how a single particle moves on some given graph; the evolution proceeds with the Hamiltonian given by the adjacency matrix of the graph.  In order for our multi-particle framework to extend the single-particle case, we will want to ensure that each individual particle in our framework evolves as in the single-particle case.
+In \chap{scattering_on_graphs}, we analyzed a single-particle quantum walk, and in particular we found that the evolution proceeds with a Hamiltonian given by the adjacency matrix of the graph.  If we want to generalize this framework to multiple particles, we will want to ensure that each individual particle in our framework evolves as in the single-particle case.
 
-Namely, if we assume that $N$ particles each move independently on a given graph $G$, we will want the Hamiltonian of this larger system to be as though each particle sees its own copy of $G$.  To do this, we will have that the $N$ particle quantum walk with no interaction takes the form
+Namely, we had that the Hilbert space for the single-particle quantum walk on a graph $G$ was given by $\CC^{|V(G)|}$, with the computational basis given by the states labeled by the vertices of the graph:
 \begin{align}
-  H_{\text{mov}}^N = \sum_{w\in [N]} A(G)^{(w)}
+  \big\{ \ket{v}: v\in V(G)\big\}.
 \end{align}
-where $B^{(w)}$ is the operator that acts on $N$ particles as $B$ on the $w$th particle and $\II$ on the rest.  With such a Hamiltonian, the evolution operator decomposes into a product of commuting terms, where each term acts as the single particle evolution for a different particle.  This is exactly what we would want for the $N$-particle case.
-
-However, the eigenstates of such a Hamiltonian easily decompose into product states, where each of the individual particles are in an eigenstate of $A(G)$.  Such a system is only as computationally powerful as that of a single-particle system, since the individual particles cannot interact.  For our purposes, we will thus want to force some interaction between the particles. We will also want to ensure that we capture the intuitive structure of particle interactions in the continuum, where the interaction only depends on the distance between particles.  This translation invariance can have several different abstractions to a general graph, but on a one dimensional lattice we would expect the interaction to only depend on the distance between the particles, as measured by the shortest path between vertices.
-
-We will take this requirement on the infinite path and use it for all vertices.  Further, we will assume some finite range of interaction, so that particles with large physical separation don't interact.   Namely, let us choose some $\dmax \in \NN$ to be the finite range of the interaction, and then choose $d+1$ symmetric polynomials in two variables, $U_{d}$ for $0\leq d \leq \dmax$.  Additionally, let $\hat{n}_v$ for $v\in V(G)$ be the operator that counts the number of particles at vertex $v$, explicitly given by 
+If we want to extend this to multiple particles, we shall take multiple copies of this Hilbert space.  As such, we will assume that Hilbert space for the $N$-particle quantum walk on a graph $G$ is $\CC^{|V(G)|^N}$, with the computational basis given by
 \begin{align}
-  \hat{n}_v = \sum_{w\in [N]} \ketbra{v}{v}^{(w)}.
+  \big\{ \ket{v_1,v_2,\cdots,v_N} : \forall i \in [N], v_i\in V(G)\big\}.
+\end{align}
+Note that for the moment we assume that the $N$ particles are distinguishable.
+
+Now that we have a Hilbert space for the $N$-particle quantum walk, we still need the Hamiltonian to understand the time-evolution.  As the Hamiltonian for a single particle is simply the adjacency matrix of the graph $G$, we will take as our definition of the $N$-particle quantum walk (without interaction) as a sum of Hamiltonians that each generate the correct single-particle evolution for a given particle.  Namely, we have that the $N$ particle quantum walk with no interaction takes the form
+\begin{align}
+  H_{\text{mov}}^N = \sum_{w\in [N]} A(G)^{(w)} \label{eq:MPQW_movement}
+\end{align}
+where $B^{(w)}$ is the operator that acts on $N$ particles as $B$ on the $w$th particle and $\II$ on the rest.  With such a Hamiltonian, the evolution operator decomposes into a product of commuting terms, where each term acts as the single particle evolution for a different particle, exactly as we want.
+
+While this definition of an $N$-particle quantum walk does nicely generalize that of a single-particle quantum walk, it is not any more interesting than the original single-particle walk.  In particular, the eigenstates of \eq{MPQW_movement} easily decompose into product states, where each of the individual particles are in an eigenstate of $A(G)$.  Such a system is only as computationally powerful as that of a single-particle system, since we can simulate the $N$-particle system via $N$ single-particle evolutions.  To get around this, we will thus want to force some interaction between the particles. We will also want to ensure that we capture the intuitive structure of particle interactions from the continuum, so that our model makes sense as a quantum walk.  Note that in the continuum, the interaction between particles only depends on the distance between the particles.  This translation invariance can have several different abstractions to a general graph, but on a one dimensional lattice we would expect the interaction to only depend on the distance between the particles, as measured by the shortest path between vertices.
+
+We will take this requirement on the infinite path and use it for all vertices.  Further, we will assume some finite range of interaction, so that particles with large physical separation don't interact.   Namely, let us choose some $\dmax \in \NN$ to be the finite range of the interaction, and then choose $d+1$ symmetric polynomials in two variables, $U_{d}$, for $0\leq d \leq \dmax$.  Additionally, assuming that we know that there are a total of $N$ particles, let $\hat{n}_v$ for $v\in V(G)$ be the operator that counts the number of particles at vertex $v$, explicitly given by 
+\begin{align}
+  \hat{n}_v = \sum_{w\in [N]} \ketbra{v}{v}^{(w)}.\label{eq:n_hat}
 \end{align}
 With these values, and if $d(u,v)$ is the distance function on the graph $G$ given by the length of the shortest path between $u$ and $v$, we can define the interaction
 \begin{align}
-  H_{\text{int}} = \sum_{d=0}^{\dmax} \sum_{\substack{ u,v\in V(G)\\d(u,v) = d}}U_{d} (\hat{n}_u,\hat{n}_v).
+  H_{\text{int}} = \sum_{d=0}^{\dmax} \sum_{\substack{ u,v\in V(G)\\d(u,v) = d}}U_{d} (\hat{n}_u,\hat{n}_v).\label{eq:MPQW_int}
 \end{align}
 Note that on the infinite path (and in fact on any lattice), this interaction has the form we require.
 
@@ -58,29 +68,132 @@ With such a chosen interaction, (i.e., with $\dmax$ and the $U_d$ well defined),
   H_G^N = H_{\text{mov}}^N + H_{\text{int}}^N = \sum_{w\in [N]} A(G)^{(w)} + \sum_{d=0}^{\dmax}  \sum_{\substack{ u,v\in V(G)\\d(u,v) = d}}U_{d} (\hat{n}_u,\hat{n}_v). 
   \label{eq:MPQW_H_defn}
 \end{align}
-Hamiltonians of this form will be the study of this thesis.
+Hamiltonians of this form will be the study of this thesis.  Note that we call the component of \eq{MPQW_H_defn} corresponding to the sum of adjacency matrices \eq{MPQW_movement} the movement term of the Hamiltonian, while the part corresponding to the interaction \eq{MPQW_int} is called the interaction term.
+
+Several times in the thesis, we will need to reference particular values that the interaction Hamiltonian takes.  As such, we will use as shorthand 
+\begin{align}
+  \mathcal{U}_{d}^{a,b} = \mathcal{U}_{d} (a,b).
+\end{align}
+
+%%%%
+\subsection{Indistinguishable particles}
+
+Note that in our definition of MPQW, we assume that the particles are all distinguishable, and thus we can locate each of the $N$ particles.  In many cases of interest, though, we will actually not have this ability, as the particles will be indistinguishable.  One might then think that we would need to change our definition in order to characterize these indistinguishable walks.
+
+This turns out to not be the case, however, as Hamiltonian \eq{MPQW_H_defn} is permutation invariant.  In other words, we have that for any permutation of the underlying particle particles (given by $V_\pi$ for a given permutation $\pi \in S_N$),
+\begin{align}
+  V_\pi H_{G}^N V_\pi^\dag = H_G^N.
+\end{align}
+Using this, we can then see that the Hamiltonian preserves the symmetric and anti-symmetric subspaces, corresponding to either fermions or bosons.
+
+As such, if we want to restrict our attention to bosonic multi-particle quantum walk, we simply have that the relevant Hilbert space is
+\begin{align}
+  \span\Big\{\Sym\big(\ket{v_1,v_2,\cdots,v_N} \big): \forall i\in [N], v_i\in V(G) \Big\},
+\end{align}
+where
+\begin{align}
+  \Sym\big(\ket{\phi}\big) = \frac{1}{N!} \sum_{\pi\in S_n} V_\pi \ket{\phi},
+\end{align}
+but where the Hamiltonian for the walk is still given by \eq{MPQW_H_defn}.  Similarly, we have that fermionic MPQW, the Hilbert space is given by 
+\begin{align}
+  \span\Big\{\ASym\big(\ket{v_1,v_2,\cdots,v_N} \big): \forall i\in [N], v_i\in V(G) \Big\},
+\end{align}
+where
+\begin{align}
+  \Sym\big(\ket{\phi}\big) = \frac{1}{N!} \sum_{\pi\in S_n} \sign(\pi) V_\pi \ket{\phi},
+\end{align}
+and we again use the same Hamiltonian.
 
 \subsection{Examples}
 
-While a mathematician does not need motivation in order to study a particular model, this thesis is an attempt to understand the computational power of various well known interactions.  As such, we would like to ensure that the class of models that we study includes some well known interactions.
+While \eq{MPQW_H_defn} is a well defined mathematical object for a given graph $G$, interaction range $\dmax$, symmetric polynomials $\mathcal{U}_d$, and a number of particles, $N$, as of yet we haven't given any well-known models that fall into this class of interactions.  However, the idea of translation invariant interactions, in which the interaction does not depend on the particular location of a given particle, is abundant in physics, and thus there are several well-know models that relate to our MPQW.
 
+\subsubsection{Bose-Hubbard model}
 
-As a particular example, if $\dmax = 0$, and 
+The Bose-Hubbard model on a graph, where the particles are taken to be bosons, and there is a given onsite interaction between the particles in probably the first interaction that falls into our class of interactions.  In particular, we have that in the second quantized basis, the Hamiltonian for the Bose-Hubbard model on a graph $G$ is usually given by 
 \begin{align}
-  U_0(x,y) = \frac{\gamma }{4}(x + y) (x + y -2) \label{eq:bh_int}
+  H_{G}^{\text{BH}} = t_{\text{hop}} \sum_{i,j\in V(G)} A(G)_{ij} a_i^\dag a_j + J_\text{int} \sum_{k\in V(G)} n_k (n_k - 1), \label{eq:BH_H_Fock}
 \end{align}
-we have an onsite interaction with strength $\gamma$, for which, if we restrict our attention to symmetric states, is the Bose-Hubbard Hamiltonian with strength $\frac{\gamma}{2}$.  Similarly, if $\dmax = 1$, $U_0 (x,y) = 0$, and $U_1(x,y) = \gamma xy$, we have a nearest-neighbor interaction with strength $\gamma$.
+where $a_i^\dag$ creates a boson at vertex $i$, and $n_i = a_ia_i^\dag$ counts the number of particles at vertex $i$.  Note that this form of the Hamiltonian does not require knowledge of the number of particles, as it works in the Fock space which allows for an arbitrary number of particles.  Additionally, we have that \eq{BH_H_Fock} preserves the number of particles, and thus decomposes into blocks for each particle number.
+
+While this form of \eq{BH_H_Fock} is not quite that of \eq{MPQW_H_defn}, if we assume that there are $N$ particles, we can rewrite the Hamiltonian in the first quantized basis (after restricting to the symmetric subspace) as
+\begin{align}
+  H_G^{\text{BH},N} = t_{\text{hop}} \sum_{w\in [N]} \sum_{i,j\in V(G)} A_{i,j} \big( \ketbra{i}{j} \big)^{(w)} + J_{\text{int}}\sum_{v\in V(G)}\hat{n}_v\big( \hat{n}_v - 1\big).
+\end{align}
+This is simply a rescaling by $t_{\text{hop}}$ of a Hamiltonian the form \eq{MPQW_H_defn}, where $\dmax = 0$ and 
+\begin{align}
+  \mathcal{U}_0(x,y) = \frac{J_{\text{int}}}{4t_{\text{hop}}} (x+y) (x+y-2)
+\end{align}
+
+\subsubsection{Nearest-neighbor interactions}
+
+While the Bose-Hubbard model (and onsite-interactions in general) are a well studied phenomenon, they unfortunately do not affect anti-symmetric states at all.  As such, if we want an interaction that will change the structure of the entire Hilbert space, we will need to increase our $\dmax$ to at least 1, arriving at the nearest neighbor interactions.  
+
+While there are many different interactions with $\dmax = 1$, probably the most simple is given by $\mathcal{U}_0 = 0$ and 
+\begin{align}
+  \mathcal{U}_1(x,y) = \gamma xy.
+\end{align}
+With this interaction, we then have that the corresponding MPQW Hamiltonian is given by
+\begin{align}
+  H_{G}^{\text{NN},N} = \sum_{w\in [N]} A(G)^{(w)} +  \gamma \sum_{\substack{ \{u,v\}\in E(G)}}\hat{n}_u,\hat{n}_v
+\end{align}
+
+%
+%\subsubsection{XY Hamiltonian}
+%
+%
+%As a particular example, if $\dmax = 0$, and 
+%\begin{align}
+%  U_0(x,y) = \frac{\gamma }{4}(x + y) (x + y -2) \label{eq:bh_int}
+%\end{align}
+%we have an onsite interaction with strength $\gamma$, for which, if we restrict our attention to symmetric states, is the Bose-Hubbard Hamiltonian with strength $\frac{\gamma}{2}$.  Similarly, if $\dmax = 1$, $U_0 (x,y) = 0$, and $U_1(x,y) = \gamma xy$, we have a nearest-neighbor interaction with strength $\gamma$.
 
 
-\section{Applications}
+\subsection{Evolution on disconnected graphs}
 
-??? There's got to be something.
+While a general result about the eigenstates of an $N$-particle quantum walk on a given graph $G$ might be difficult, we can reason about some properties of the eigenstates and time-evolved states without needing to explicitly calculate the overall form of the eigenstates.  In particular, if a given graph on which the particles walk has some property, then so too might the time-evolved states.
 
-\section{Two-particle scattering on an infinite path}
+Perhaps the most obvious such property is the connectivity of the graph itself.  In particular, our MPQW Hamiltonian \eq{MPQW_H_defn} only allows particles to move between vertices that have a path between them; if two vertices are not connected in $G$, then the corresponding off-diagonal element of the time evolution unitary will always be zero.
+
+We can use this to decompose the time-evolution unitary into a product of commuting unitaries, each corresponding to a specific component of $G$.  If each of the $N$ particles in a state $\ket{\phi}$ have support only on one component of the graph $G$, then the evolution operator is simply a product of $n_c$-particle MPQW evolutions for each component $G_c$ of $G$, where $n_c$ particles are on the $c$-th component.  Explicitly, we have the following lemma:
+
+\begin{lemma}
+  Let $G$ be a disconnected graph with $M$ components, and let us examine the $N$-particle MPQW on $G$.  If $\ket{\psi}$ is an $N$-particle state such that each particle $j$ only has support on the $G_{c_j}$th component of $G$, then 
+  \begin{align}
+    e^{-i H_G^N t} \ket{\phi} = \prod_{c=1}^M W_{c}^\dag \Big(e^{- i H_{G_c}^{n_c} t } \Big)^{(1,2,\cdots,n_c)} W_{c} \ket{\phi}\label{eq:MPQW_disconnect_evolution}
+  \end{align}
+  where $n_c$ is the number of particles with support on $G_c$, and $W_c$ is a permutation operator that takes the particles with support on $G_c$ to the first $n_c$ particles.  In the special case where $n_c \leq 1$ for all $c$, this then reduces to
+  \begin{align}
+    e^{-i H_G^N t} \ket{\phi} = \prod_{j=1}^n \Big( e^{-i A(G_{k_j}) t}\Big)^{(j)} \ket{\phi}.
+  \end{align}
+\label{lem:disconnected_MPQW}
+\end{lemma}
+\begin{proof}
+  Let us assume an arbitrary ordering on the components of $G$, and let $\ket{\phi} = \ket{v_1,v_2,\cdots , v_N}$ be any $N$-particle basis state on $G$, with $n_c$ particles on the $c$-th component of $G$, and where that the first $n_1$ vertices are in $G_1$, then next $n_2$ vertices are in $G_2$, and continuing for all components of $G$.  Note that for all times $t\in \RR$, $e^{-i A(G) t} \ket{v_i}$ only has support on the component of $G$ to which $v_i$ belongs, and thus $e^{-i A(G) t} \ket{v_i} = e^{-i A(G_{c_j})t} \ket{v_i}$ (with the natural identification between basis vectors in the smaller Hilbert space).
+
+As the interaction term of \eq{MPQW_H_defn} is diagonal in the computational basis, we have that for all times $t$, $e^{-i H_G^N t} \ket{\phi}$ only has support on states 
+  \begin{align}
+    \big\{ \ket{w_1,\cdots, w_N} : \forall i\in [N],  w_i \in V(G_{c_i}) \big\}.
+  \end{align}
+  Further, as the interaction in \eq{MPQW_H_defn} is finite range (and vertices in different components have infinite distance), this implies that only particles on the same component can interact, and the interaction is restricted to $H(G_c,n_c)$ for each component.
+
+  
+  Combining these two results, we then have that, when restricted to states of the form $\ket{\phi}$, we have that the evolution according to $H_G^N$ is equal to that of
+  \begin{align}
+    e^{-i H_G^N t} \ket{\phi} = \prod_{c=1}^M \Big(e^{-i H_{G_c}^{n_c} t}\Big)^{(  m_c+1,m_c+2,\cdots, m_c+n_c)} \ket{\phi}, 
+  \end{align}
+  where $m_c = \sum_{j=1}^{c-1} n_c$. If we then use the fact that $H_G^N$ commutes with all permutations of the underlying particles, and that states of the form $\ket{\phi}$ (and their permutations) span the relevant space, we then have \eq{MPQW_disconnect_evolution}.  If we restrict ourselves to the case where each particle is on a separate component, the second equation follows immediately.
+\end{proof}
+
+Note that if we combine this lemma with the truncation lemma (\lem{truncation}), we have that when particles are separated from each other they almost evolve independently, as one might expect.  We will use this intuition several times in the remainder of the thesis.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Two-particle scattering on an infinite path}\label{sec:two_particle_scattering}
 
 After choosing a given interaction, equation \eq{MPQW_H_defn} provides us with a well defined MPQW Hamiltonian for $N$-particles.  With this, we can explicitly evolve a given state, and hopefully use such systems for algorithmic advantages.  However, this requires an understanding of the eigenstates of a multi-particle interacting system, for which we have few examples of analytic solutions.  On the other hand, we \emph{can} analyze some highly symmetric systems, when we restrict ourselves to a small number of particles.  Our understanding of these small systems can then be leveraged to gain some information about MPQW with many particles on some given graphs.
 
-In particular, we already know from \chap{scattering_on_graphs} the basic properties of a single particle interacting on a long path.  One might expect that that next step would be to understand two particles interacting on a similar scattering graph, but unfortunately even this is a little to complicated for this thesis.  However, we can analyze two particles interacting on an infinite path.
+In particular, we already know from \chap{scattering_on_graphs} the basic properties of a single particle moving on a long path.  One might expect that that next step would be to understand two particles interacting on a similar scattering graph, but unfortunately even this is a little too complicated for this thesis.  However, we can analyze two particles interacting on an infinite path.
 
 Namely, let us assume that the interaction Hamiltonian has been chosen, such that there is a $\dmax$ and a set of $d+1$ symmetric functions $U_d$.  We can then write the Hamiltonian \eq{MPQW_H_defn} in the basis $\ket{x,y}$, where $x,y\in \ZZ$ are the positions of the first and second particles, as
 \begin{align}
@@ -92,26 +205,24 @@ where the single-particle Hamiltonian $H^1$ is simply the adjacency matrix for t
   H^{1} = \sum_{x\in\ZZ} \ket{x+1}\bra{x} + \ket{x}\bra{x+1}.
 \end{align}
 
-Without the interaction term, the eigenstates for this Hamiltonian would simply by two independent scattering eigenstates, with amplitudes of the form $e^{i k x + i py}$.  However, the interaction causes there to be correlations between the two particles.  These correlations will be similar to the single particle interactions scattering off of a graph with two attached semi-infinite paths.
+Without the interaction term, the eigenstates for this Hamiltonian would simply by two independent scattering eigenstates, with amplitudes of the form $e^{i k_1 x + i k_2y}$.  However, the interaction causes there to be correlations between the two particles, and these correlations will be similar to the single particle interactions scattering off of a graph with two attached semi-infinite paths.  
 
-As we are interested in the dynamics of two particles initially prepared in spatially separated wave packets moving toward each other along the path with momenta $k_1\in(-\pi,0) $ and $k_2\in (0,\pi)$, we will need to understand these scattering eigenstates.  Moreover, as in the single-particle scattering case, the intuition gained from the dynamics will help us in understanding the two-particle scattering eigenstates.
+%As we will eventually be interested in the dynamics of two particles initially prepared in spatially separated wave-packets moving toward each other along the path with momenta $k_1\in(-\pi,0) $ and $k_2\in (0,\pi)$, we will need to understand these scattering eigenstates.  Moreover, as in the single-particle scattering case, the intuition gained from the dynamics will help us in understanding the two-particle scattering eigenstates.
 
-With our given Hamiltonian \eq{two_part_H_xy}, we will want to decompose the Hamiltonian in terms of its eigenstates.  In the current basis, however, while we do have a permutation invariance we aren't in the correct basis to make use of all of the symmetries of the underlying graph.  To make use of this symmetry, we will need to change to a different basis.
+While our given Hamiltonian \eq{two_part_H_xy} is simple to define, in order to understand dynamics we will want to diagonalize it.  Further, while the current basis does have a permutation invariance between the two particles, it does not make use of the translation invariance of the interaction.  To make use of this symmetry, we will need to change to a different basis.
 
-In particular, let us look at the new basis $\ket{s:r}$, where $s = x+y$ and $r = x-y$, and where the allowed values of $(s,r)$ range over those values where $s$ and $r$ are either both even or both odd (i.e., $s+r$ must be even).  If we then expand \eq{two_part_H_xy} in this basis, we find 
+In particular, let us look at the new basis $\ket{s;r}$, where $s = x+y$ and $r = x-y$, and where the allowed values of $(s,r)$ range over those values where $s$ and $r$ are either both even or both odd (i.e., $s+r$ must be even).  If we then expand \eq{two_part_H_xy} in this basis, we find 
 \begin{equation}
   H^{(1)}\otimes H^{(1)} + \II\otimes \sum_{r\in \ZZ} \mathcal{V}(|r|) \, \ket{r}\bra{r},
 \label{eq:two_part_H_rs}
 \end{equation}
 where $V(0) = U_0(2,2)$ and $V(r) = U_r(1,1)$ for $r >0$.  
 
-Note that \eq{two_part_H_rs} looks to be much nicer to analyze than \eq{two_part_H_xy}, as we nearly have a separable decomposition of the Hamiltonian.  We do have a decomposition such that the eigenstates corresponding to $s$ don't rely on the current state of $r$, and we will see that once we chose a particular eigenstate for the $s$, the corresponding eigenvalue equation for $r$ will look exactly as a scaled single-particle scattering equation.
+Note that \eq{two_part_H_rs} looks to be much nicer to analyze than \eq{two_part_H_xy}, as we nearly have a separable decomposition of the Hamiltonian.  We do have a decomposition such that the eigenstates corresponding to $s$ don't rely on the current state of $r$, and we will see that once we chose a particular eigenstate for the $s$, the corresponding eigenvalue equation for $r$ will look exactly as a scaled single-particle scattering equation as in \chap{scattering_on_graphs}.
 
 \subsection{Eigenstates on the path}
 
-\todo{rewrite this section}
-
-Now that we have the decomposition of the Hamiltonian that nicely decouples the center of mass movement from the relative movement of two particles (i.e., the physical meaning of $r$ and $s$), we can make use of the decomposition of \eq{two_part_H_rs}.  
+With the decomposition of \eq{two_part_H_xy} that nicely decouples the center of mass movement from the relative movement of two particles (i.e., the physical meaning of $r$ and $s$), we can determine the eigenvalues and eigenvectors of the Hamiltonian.  
 
 Namely, let us make the ansatz that the eigenstates of \eq{two_part_H_rs} take the form
 \begin{align}
@@ -121,55 +232,58 @@ where $p_1 \in (-\pi,\pi)$.  With this assumption, we then have that the effecti
 \begin{equation}
  2\cos\left(\frac{p_1}{2}\right) H^{(1)}_r + \sum_{r\in \ZZ} \mathcal{V}(|r|) \, \ket{r}\bra{r}.\label{eq:vr_eqn}
 \end{equation}
-Note that this is simply a rescaled single-particle scattering problem, as in \chap{scattering_on_graphs}, except where the weights of the graph gadget need not be normalized, and with a slight relabeling of the semi-infinite paths.  As such, we can then see that for each eigenstate of \eq{vr_eqn}, there is a corresponding eigenstate of \eq{two_part_H_rs}.  In particular, we then have that for each $p_2\in (0,\pi)$ there is a scattering eigenstate of the form
+Note that this is simply a rescaled single-particle scattering problem, as in \chap{scattering_on_graphs}, except where the weights of the graph gadget need not be normalized, and with a slight relabeling of the semi-infinite paths (i.e., the paths do not start from $1$).   We can then use the intuition from the chapter to see that for each $p_2\in (0,\pi)$ there is a scattering eigenstate of the form
 \begin{equation}
 \langle r|\psi (p_1;p_2)\rangle= \begin{cases}  e^{-i p_2 r} + R(p_1,p_2) e^{i p_2 r} &  \text{if } r \leq -\dmax\\
   	f(p_1,p_2,r) &  \text{if } |r| < \dmax\\
   	T(p_1,p_2) e^{- i p_2 r}  & \text{if } r \geq \dmax.\end{cases}
 \label{eq:psip1p2}
 \end{equation}
-for $p_2\in (0,\pi)$. Here the reflection and transmission coefficients $R$ and $T$ and the amplitudes of the scattering state for $|r|<\dmax$ (described by the function $f$) depend on both momenta as well as the interaction $\mathcal{V}$.  With $R$, $T$, and $f$ chosen appropriately, the state $|\mathrm{sc}(p_1;p_2)\rangle$ is an eigenstate of $H^{(2)}$ with eigenvalue $4\cos(p_1/2)\cos(p_2)$.
+for $p_2\in (0,\pi)$. Here the reflection and transmission coefficients $R$ and $T$ and the amplitudes of the scattering state for $|r|<\dmax$ (described by the function $f$) depend on both momenta as well as the interaction $\mathcal{V}$.  With $R$, $T$, and $f$ chosen appropriately, the state $|\mathrm{sc}(p_1;p_2)\rangle$ is an eigenstate of $H^{(2)}$ with eigenvalue $4\cos(p_1/2)\cos(p_2)$.  While it is not possible to give an explicit closed-form solution for all interactions, the form of \eq{psip1p2} will be sufficient for most of our purposes.
 
-Since $\mathcal{V}(|r|)$ is an even function of $r$, we can also define scattering states for $p_2\in (-\pi,0)$ by
+Additionally, we can use the fact that $\mathcal{V}(|r|)$ is an even function of $r$ to also define scattering states for $p_2\in (-\pi,0)$ by
 \begin{align}
   \langle s;r|\mathrm{sc}(p_1;p_2)\rangle=\langle s;-r|\mathrm{sc}(p_1;-p_2)\rangle.
 \end{align}
 These other states are obtained by swapping $x$ and $y$, corresponding to interchanging the two particles.
 
-Additionally, if there are any bound states of \eq{vr_eqn}, then there will be corresponding traveling states where the two particles move together.  These are the well known dimer states, and while they are important to find a basis for the entire Hilbert space they will play a role similar to the bound states of single-particle scattering; only exponentially small amplitude of the states of interest will be on these states.
+While we will not need a complete basis for for this Hamiltonian, note that if there are any bound states of \eq{vr_eqn}, then there will be corresponding traveling states where the two particles move together.  These are the well known dimer states, and while they are important to find a basis for the entire Hilbert space they will play a role similar to the bound states of single-particle scattering; only exponentially small amplitude of the states of interest will be on these states, and thus we will neglect their study.
 
 
 
-\todo{if I want to give a better error bound, I'll need to talk about the dimer states}
-
-
-
-\todo{double check this}	
 The construction of the symmetric and anti-symmetric scattering states follows as one would expect. For $p_1\in (-\pi,\pi)$ and $p_2\in (0,\pi)$, we define
 \begin{align}
   \ket{\mathrm{sc}(p_1;p_2)}_\pm = \frac{1}{\sqrt2}\big(\ket{\mathrm{sc}(p_1;p_2)} \pm \ket{\mathrm{sc}(p_1;-p_2)}\big).
 \end{align}
-If we note that the unitarity of $S$ and the fact that $V(|r|)$ being even in $r$ forces $R(p_1,p_2) = R(p_1,-p_2)$ and $T(p_1,p_2)  = T(p_1,-p_2)$ we can then see that the combinations
+If we note that the unitarity of the underlying scattering matrix $S$ and the fact that $V(|r|)$ being even in $r$ forces $R(p_1,p_2) = R(p_1,-p_2)$ and $T(p_1,p_2)  = T(p_1,-p_2)$ we can then see that the combinations
 \begin{align}
   |T(p_1,p_2) \pm R(p_1,p_2)| = 1.  
 \end{align}
 With this, we can then see that the symmeterized scattering states can be expanded as
-\todo{this is wrong, not the correct placement for the $\pm$}
+
 \begin{align}
     \braket{s;r}{\mathrm{sc}(p_1;p_2)}_\pm
-      &= \frac{1}{\sqrt{2}}e^{-i p_1 s/2} \begin{cases}  e^{i p_2 |r|} \pm e^{i\theta_{\pm}(p_1,p_2)} e^{-i p_2 |r|} &  \text{if } |r| \geq C\\
-  	f(p_1,p_2,r) \pm f(p_1,p_2,-r) & \text{if }  |r| < C\end{cases}
+      &= \frac{1}{\sqrt{2}}e^{-i p_1 s/2} \begin{cases}  e^{-i p_2 r} \pm e^{i\theta_{\pm}(p_1,p_2)} e^{i p_2 r} &  \text{if }r \leq- C\\
+  	f(p_1,p_2,r) \pm f(p_1,-p_2,-r) & \text{if }  |r| < C\\
+	  e^{i\theta_{\pm}(p_1,p_2)} e^{-i p_2 r}\pm e^{i p_2 r}  &  \text{if }r \geq C, \end{cases}
 \label{eq:symscatter}
 \end{align}
-where $\theta_{\pm}(p_1,p_2)$ is a real function defined through
+where $\theta_{\pm}(p_1;p_2)$ is a real function defined through
 \begin{equation}
-e^{i\theta_{\pm}(p_1,p_2)}= T(p_1,p_2)\pm R(p_1,p_2). \label{eq:delta_pm}
+e^{i\theta_{\pm}(p_1;p_2)}= T(p_1;p_2)\pm R(p_1;p_2). \label{eq:delta_pm}
 \end{equation}
 
 
 These eigenstates allow us to understand what happens when two particles with momenta $k_1\in(-\pi,0)$ and $k_2\in(0,\pi)$ move toward each other. Here $p_1=-k_1-k_2$ and $p_2=(k_2-k_1)/2$.  Similar to the scattering states of \chap{scattering_on_graphs}, we have that for $|r|\geq C$ the scattering state is a sum of two terms, one corresponding to the two particles moving toward each other and one corresponding to the two particles moving apart after scattering, but where the outgoing term has a  phase of $T\pm R$ relative to the incoming term (as depicted in \fig{wte}). This phase arises from the interaction between the two particles.
 
-
+In particular, we can transform \eq{symscatter} to the $(x,y)$ basis as
+\begin{align}
+  &\braket{x,y}{\mathrm{sc}(k_1,k_2)}_{\pm} \nonumber\\
+  &\qquad= \frac{1}{\sqrt{2}} e^{i (k_1 + k_2) \frac{x+y}{2}} \begin{cases}  e^{i (k_1 - k_1) \frac{x-y}{2}} \pm e^{i\theta_{\pm}(k_1,k_2)} e^{i (k_2- k_2) \frac{x-y}{2}} &  \text{if }x-y \leq- C\\
+  	f\Big(-k_1-k_2,\frac{k_2-k_1}{2},x-y\Big) \pm f(-k_1-k_2,\frac{k_1-k_2}{2},y-x) & \text{if }  |x-y| < C\\
+	  e^{i\theta_{\pm}(k_1,k_2)} e^{i (k_1 - k_2) \frac{x-y}{2}}\pm e^{i (k_2- k_1) \frac{x-y}{2}}  &  \text{if }x-y \geq C, \end{cases}
+\end{align}
+where we defined $\theta_{\pm}(k_1,k_2) = \theta_{\pm}(-k_1-k_2; (k_2-k_1)/2)$.
 
 \begin{figure}
   \centering
@@ -182,80 +296,93 @@ These eigenstates allow us to understand what happens when two particles with mo
 
 \subsection{Examples}
 
-\todo{I don't like this section here.  Find a place to put it}
+While our understanding of two-particle scattering for arbitrary interactions is useful, as we know that for almost any interaction the form of the eigenstates are scattering states, it will be useful to instantiate our claims and have explicit examples for the functions $\theta_{\pm}$.
 
-For example, consider the Bose-Hubbard model, where $\mathcal{V}(|r|) = U\delta_{r,0}$. Here $C=0$ and $T=1+R$.  In this case the scattering state $|\mathrm{sc}(p_1;p_2)\rangle_+$ is
+\subsubsection{Bose-Hubbard model}
+
+If we consider the Bose-Hubbard model for two particles, we have $\mathcal{V}(|r|) = \mathcal{U}_0^{2,2}\delta_{r,0}$. Here $C=0$ and $T=1+R$.  In this case the scattering state $|\mathrm{sc}(p_1;p_2)\rangle_+$ is
 \begin{align}
 \langle x,y|\mathrm{sc}(p_1;p_2)\rangle_+=\frac{1}{\sqrt{2}}e^{-ip_1 \left(\frac{x+y}{2}\right)}\left(e^{ip_2 |x-y|}+e^{i\theta_+(p_1,p_2)}e^{-ip_2 |x-y|}\right).
 \end{align}
 The first term describes the two particles moving toward each other and the second term describes them moving away from each other. To solve for the applied phase $e^{i\theta_+(p_1,p_2)}$ we look at the eigenvalue equation for $|\psi(p_1;p_2)\rangle$ at $r=0$. This gives
 \begin{align}
-  R(p_1,p_2) =- \frac{U}{U - 4i\cos({p_1}/{2})\sin(p_2)}.
+  R(p_1,p_2) =- \frac{\mathcal{U}_0^{2,2}}{\mathcal{U}_0^{2,2} - 4i\cos({p_1}/{2})\sin(p_2)}.
 \end{align}
 So for the Bose-Hubbard model,
 \begin{align}
-  e^{i \theta_{+} (p_1,p_2)} = T(p_1,p_2) + R(p_1,p_2) = - \frac{ U + 4 i \cos({p_1}/{2}) \sin(p_2)}{U - 4 i \cos({p_1}/{2}) \sin(p_2)} =  \frac{2 \left(\sin(k_2) - \sin(k_1)\right) - i U}{2 \left(\sin(k_2) - \sin(k_1)\right) + i U}.
+  e^{i \theta_{+} (p_1,p_2)} = T(p_1,p_2) + R(p_1,p_2) = - \frac{ \mathcal{U}_0^{2,2} + 4 i \cos({p_1}/{2}) \sin(p_2)}{\mathcal{U}_0^{2,2} - 4 i \cos({p_1}/{2}) \sin(p_2)} =  \frac{2 \left(\sin(k_2) - \sin(k_1)\right) - i \mathcal{U}_0^{2,2}}{2 \left(\sin(k_2) - \sin(k_1)\right) + i \mathcal{U}_0^{2,2}}.
 \end{align}
-For example, if $U = 2+\sqrt{2}$ then two particles with momenta $k_1 =-{ \pi}/{2}$ and $k_2={\pi}/{4}$ acquire a phase of $e^{-i\pi/2}= -i$ after scattering.
+For example, if $\mathcal{U}_0^{2,2} = 2+\sqrt{2}$ then two particles with momenta $k_1 =-{ \pi}/{2}$ and $k_2={\pi}/{4}$ acquire a phase of $e^{-i\pi/2}= -i$ after scattering.
 
-For a multi-particle quantum walk with nearest-neighbor interactions, $\mathcal{V}(|r|)=U\delta_{|r|,1}$ and $C=1$.  In this case the eigenvalue equations for $|\psi(p_1;p_2)\rangle$ at $r=-1$, $r=1$, and $r=0$ are
-\begin{align*}
- 4 \cos\left(\frac{p_1}{2}\right)  \cos(p_2) ( e^{i p_2} + R(p_1,p_2) e^{-i p_2} ) &= U ( e^{i p_2} + R(p_1,p_2) e^{-i p_2}) \\
+\subsubsection{Nearest-neighbor interaction}
+
+\todo{if time, find perfect reflection with good momenta}
+
+For a multi-particle quantum walk with nearest-neighbor interactions, $\mathcal{V}(|r|)=\mathcal{U}_1^{1,1}\delta_{|r|,1}$ and $C=1$.  In this case the eigenvalue equations for $|\psi(p_1;p_2)\rangle$ at $r=-1$, $r=1$, and $r=0$ are
+\begin{align}
+ 4 \cos\left(\frac{p_1}{2}\right)  \cos(p_2) ( e^{i p_2} + R(p_1,p_2) e^{-i p_2} ) &= U_1^{1,1} ( e^{i p_2} + R(p_1,p_2) e^{-i p_2}) \\
 & \quad + 2\cos\left(\frac{p_1}{2}\right) \left( e^{2i p_2} + R(p_1,p_2) e^{-2i p_2}+f(p_1,p_2,0)\right) \\
- 4 \cos\left(\frac{p_1}{2}\right)  \cos(p_2) T(p_1,p_2) e^{-ip_2} & =UT(p_1,p_2)e^{-ip_2}\\
+ 4 \cos\left(\frac{p_1}{2}\right)  \cos(p_2) T(p_1,p_2) e^{-ip_2} & =U_1^{1,1}T(p_1,p_2)e^{-ip_2}\\
 & \quad +2\cos \left(\frac{p_1}{2}\right)\left(f(p_1,p_2,0)+T(p_1,p_2)e^{-2ip_2}\right)\\
 2 \cos(p_2) f(p_1,p_2,0) &=T(p_1,p_2)e^{-ip_2}+e^{ip_2}+R(p_1,p_2)e^{-ip_2},
-\end{align*}
+\end{align}
 respectively.
 
-Solving these equations for $R$, $T$, and $f(p_1,p_2,0)$, we can construct the corresponding scattering states for bosons, fermions, or distinguishable particles (for more on the last case, see \sec{distinguishable}). Unlike the case of the Bose-Hubbard model, we may not have $1+R=T$. For example, when $U=-2-\sqrt{2}$, $p_1={\pi}/{4}$, and $p_2={3\pi}/{8}$, we get $R=0$ and $T=i$ (see \sec{distinguishable}).
+Solving these equations for $R$, $T$, and $f(p_1,p_2,0)$, we can construct the corresponding scattering states for bosons, fermions, or distinguishable particles. Unlike the case of the Bose-Hubbard model, we may not have $1+R=T$. For example, when $U_1^{1,1}=-2-\sqrt{2}$, $p_1={\pi}/{4}$, and $p_2={3\pi}/{8}$, we get $R=0$ and $T=i$. 
 
-\subsection{Two-particle basis}
+Additionally, in the special case of $k_1 = \frac{2\pi}{3}$ and $k_2 = -\frac{\pi}{3}$, we have that 
+\begin{align}
+  R = \frac{U_1^{1,1}}{U_1^{1,1}-i \sqrt{3}} \qquad T = 1 - R = \frac{ \sqrt{3}}{\sqrt{3} + i U_1^{1,1}},
+\end{align}
+and thus $\theta_+(k_1,k_2) = 0$, while 
+\begin{align}
+  e^{i \theta_-(k_1,k_2)} = - \frac{U_1^{1,1} + i \sqrt{3}}{U_1^{1,1} - i \sqrt{3}}.
+\end{align}
+In this way, we have that the symmetric subspace has no acquired phase, while the anti-symmetric does acquire a phase.
 
-\todo{Can I bootstrap Andrew and David's basis result to decompose the identity?}
+\subsection{Two-particle orthonormality}
 
-
-The states $\{|\mathrm{sc}(p_1;p_2)\rangle \colon p_1\in (-\pi,\pi),\,p_2\in(-\pi,0)\cup(0,\pi)\}$ are (delta-function) orthonormal:
-\begin{align*}
-\langle  \mathrm{sc}(p_1';p_2')|\mathrm{sc}(p_1;p_2)\rangle &= \langle \mathrm{sc}(p_1'; p_2')|\left(\sum_{\text{$r,s$ even}}|r\rangle\langle r| \otimes |s\rangle \langle s| \right)|\mathrm{sc}(p_1;p_2)\rangle\\
-&\quad + \langle \mathrm{sc}(p_1'; p_2')|\left(\sum_{\text{$r,s$ odd}}|r\rangle \langle r|\otimes  |s\rangle \langle s|\right)|\mathrm{sc}(p_1;p_2)\rangle\\
-&= \sum_{\text{$s$ even}} e^{-i(p_1-p_1') {s}/{2}}\sum_{\text{$r$ even}}\langle \psi(p_1';p_2')|r\rangle\langle r|\psi(p_1;p_2)\rangle \\
-& \quad + \sum_{\text{$s$ odd}} e^{-i(p_1-p_1') {s}/{2}}\sum_{\text{$r$ odd}}\langle  \psi(p_1';p_2')|r\rangle\langle r|\psi(p_1;p_2)\rangle\\
+While the states $\ket{\mathrm{sc}(p_1;p_2)}$ do not necessarily span the entire Hilbert space, they will span the portion of the space that will be needed for this thesis.  However, we will need that they satisfy some orthogonality constraints, and in particular that they are (delta-function) orthonormal. As such, we have that the states $\{|\mathrm{sc}(p_1;p_2)\rangle \colon p_1\in (-\pi,\pi),\,p_2\in(-\pi,0)\cup(0,\pi)\}$ have the following inner product:
+\begin{align}
+\langle  \mathrm{sc}(p_1';p_2')|\mathrm{sc}(p_1;p_2)\rangle &= \langle \mathrm{sc}(p_1'; p_2')|\left(\sum_{\text{$r,s$ even}}|r\rangle\langle r| \otimes |s\rangle \langle s| \right)|\mathrm{sc}(p_1;p_2)\rangle\nonumber\\
+&\qquad + \langle \mathrm{sc}(p_1'; p_2')|\left(\sum_{\text{$r,s$ odd}}|r\rangle \langle r|\otimes  |s\rangle \langle s|\right)|\mathrm{sc}(p_1;p_2)\rangle\\
+&= \sum_{\text{$s$ even}} e^{-i(p_1-p_1') {s}/{2}}\sum_{\text{$r$ even}}\langle \psi(p_1';p_2')|r\rangle\langle r|\psi(p_1;p_2)\rangle\nonumber \\
+& \qquad + \sum_{\text{$s$ odd}} e^{-i(p_1-p_1') {s}/{2}}\sum_{\text{$r$ odd}}\langle  \psi(p_1';p_2')|r\rangle\langle r|\psi(p_1;p_2)\rangle\\
 &= 2\pi \delta(p_1-p_1') \sum_{r=-\infty}^{\infty}\langle \psi(p_1;p_2')|r\rangle\langle r|\psi(p_1;p_2)\rangle\\
 &= 4\pi^2 \delta(p_1-p_1')\delta(p_2-p_2')
-\end{align*}
-where in the last step we used the fact that $\langle\psi(p_1;p_2')|\psi(p_1;p_2)\rangle=2\pi\delta(p_2-p_2')$.
+\end{align}
+where in the last step we used the fact that $\langle\psi(p_1;p_2')|\psi(p_1;p_2)\rangle=2\pi\delta(p_2-p_2')$, which can be derived from \lem{orthonormality_of_scattering_states}.
 
 %%%%%%%%%%%%%%%%%
 %  Wave-packet scattering
 
 \section{Wave-packet scattering}
 
-\todo{go over section, ensure correct, and make equations all fit}
+Now that we have an understanding of the two-particle scattering eigenstates on an infinite path, we will want to understand the time-evolution of wave-packets on the infinite path.  In particular, if we initially have a product state corresponding to two Gaussian wave-packets traveling towards each other, how does the time-evolved state look?
 
-Now that we have a thorough understanding of the two-particle scattering eigenstates on an infinite path, we will want to understand the time-evolution of wavepackets on the infinite path.  In particular, if we initially have a product state corresponding to two Guassian wavepackets traveling towards each other, how does the time-evolved state look?
+We would expect that the two wave-packets would simply evolve forward in time, where the center of the wave-packets each move with a speed $2\sin k_i$, possibly acquiring a phase if they move past each other.  It turns out that this is exactly what happens, but proving the fact is a little complicated. 
 
-Along those lines, let $k\in(-\pi,\pi)$, and let $\mu \in \NN$.  We will define a Gaussian wavepacket centered at $\mu$, with momentum $k$, standard deviation $\sigma$, and cutoff $L$ as the state
-\begin{align}
-  \ket{\chi_{\mu,k}} = \gamma \sum_{x=\mu-L}^{\mu+L} e^{i k x} e^{ -\frac{(x-\mu)^2}{2\sigma^2}} \ket{x},
-\end{align}
-where $\gamma^2$ is a normalization factor given by $\gamma^{-2} = h_L^{\sigma/\sqrt{2}}(0)$.  Note that this is nearly the same state as for single-particle scattering, but now we don't have to deal with the multiple semi-infinite paths and the graph $\widehat{G}$.
+\todo{put everything inside margins!}
 
-This section is focused on proving the following lemma discussing wavepacket propagation:
+Along these lines, this section is focused on proving the following lemma discussing wave-packet propagation:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{theorem}
-Let $H^{(2)}$ be a two-particle Hamiltonian of the form \eq{something} with interaction range at most $d$.  Let $\theta_{\pm}(p_1,p_2)$ be given by equation \eq{something_else}.  Let $k_1\in (-\pi,0)$ and let $k_2 \in (0,\pi)$, let $L,\mu, \nu \in \NN$ with $L>0$ and and let $\sigma > 0$.  Let us then define the states
+Let $H^{(2)}$ be a two-particle Hamiltonian of the form \eq{MPQW_H_defn} with interaction range at most $d$.  Let $\theta_{\pm}(p_1;p_2)$ be given by equation \eq{delta_pm} (with associated $\theta_{\pm}(k_1,k_2)$).  Let $k_1\in (-\pi,0)$ and let $k_2 \in (0,\pi)$, let $L,\mu, \nu \in \NN$ with $L>0$ and and let $\sigma > 0$.  Let us then define the states
 \begin{align}
-  \ket{\alpha(t)}_{\pm} = \frac{\gamma^2}{\sqrt{2}} e^{-2i t (\cos k_1 + \cos k_2)} \sum_{x = \mu(t)-L}^{\mu(t)+L} \sum_{y = \nu(t) -L}^{\nu(t)+L} e^{ -\frac{ (x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i k_1 x + i k_2 y} \alpha_{xy} \big( \ket{x,y} \pm \ket{y,x}\big),
+  \ket{\alpha(t)}_{\pm} = \frac{\gamma}{\sqrt{2}} e^{-2i t (\cos k_1 + \cos k_2)} \sum_{x = \mu(t)-L}^{\mu(t)+L} \sum_{y = \nu(t) -L}^{\nu(t)+L} e^{ -\frac{ (x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i k_1 x + i k_2 y} \alpha_{xy} \big( \ket{x,y} \pm \ket{y,x}\big),
 \end{align}
 where
 \begin{align}
   \mu(t) = \mu - \lceil 2 t \sin k_1\rceil, \quad
-  \nu(t) = \nu - \lceil 2 t \sin k_2\rceil, \quad \text{and} \qquad
+  \nu(t) = \nu - \lceil 2 t \sin k_2\rceil, \qquad
   \alpha_{xy} = \begin{cases} 1  & y-x > r\\
   e^{i\theta_\pm(k_1,k_2)} & x-y > r\\
-  0 & \text{otherwise}.
+  0 & \text{otherwise},
   \end{cases}
+\end{align}
+and
+\begin{align}
+  \gamma^{-2} = \sum_{x,y=-L}^L e^{-\frac{1}{\sigma^2}(x^2+y^2)} = \Big(h_L^{\sigma/\sqrt{2}}(0)\Big)^2.
 \end{align}
 Additionally, let us define the initial state
 \begin{align}
@@ -265,10 +392,10 @@ If $\sigma = \frac{ L}{2\sqrt{\log L}}$, and if $0 \leq t < c L$ for some consta
 \begin{align}
   \norm{e^{ - i H^2 t} \ket{\psi(0)}_{\pm} - \ket{\alpha(t)}}_{\pm} \leq 4 \sqrt{\frac{c\log L}{L}}.
 \end{align}
-\label{thm:two_particle_wavepacket_bound}
+\label{thm:two_particle_wave-packet_bound}
 \end{theorem}
 
-Note that we will use many of the tools used in the proof of \thm{single_particle_wavepacket_bound}.
+Note that we will use many of the tools used in the proof of \thm{single_particle_wave_packet_bound}, and in particular we use the function $h_L^\sigma(\phi)$ several times.
 
 \begin{proof}
 We will first want to show that our approximation to the time-evolved state is a nearly normalized state.  In particular, we have that
@@ -278,9 +405,9 @@ We will first want to show that our approximation to the time-evolved state is a
   &\qquad \qquad \pm  \sum_{x,y=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}}e^{i (k_1-k_2) x}e^{i(k_2-k_1)y} \alpha_{xy}\alpha_{yx}^* \nonumber\\
   &\qquad \qquad - \sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L}\sum_{y=\max\{x-d,\mu(t)-L,\nu(t)-L\}}^{\min\{x+d,\mu(t)+L,\nu(t)+L\}} e^{-\frac{(x-\mu(t))^2}{\sigma^2} - \frac{(y-\nu(t))^2}{\sigma^2}} \Bigg].\label{eq:approximation_ip}
 \end{align}
-While this is a rather complicated expression when $|\mu(t) - \nu(t)| \leq 2L$, for times outside this range only the first term is nonzero, and is in fact exactly $\gamma^{-2}$.  Hence, for times when the two wave packets do not overlap, our approximation $\ket{\alpha(t)}_{\pm}$ is exactly normalized.  If we can show that the latter two terms are small for all times $t$, we will then have that our approximation is almost normalized, as we need.
+While this is a rather complicated expression when $|\mu(t) - \nu(t)| \leq 2L$, for times outside this range only the first term is nonzero, and is in fact exactly $\gamma^{-2}$.  Hence, for times when the two wave-packets do not overlap, our approximation $\ket{\alpha(t)}_{\pm}$ is exactly normalized.  If we can show that the latter two terms are small for all times $t$, we will then have that our approximation is almost normalized, as we need.
 
-Let us first inspect the second term in \eq{approximation_ip}, corresponding to the cross terms between the two wave packets.  We can expand the sum as
+Let us first inspect the second term in \eq{approximation_ip}, corresponding to the cross terms between the two wave-packets.  We can expand the sum as
 \begin{align}
   &\sum_{x,y=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}}e^{i (k_1-k_2) x}e^{i(k_2-k_1)y} \alpha_{xy}\alpha_{yx}^*\nonumber\\
   &\qquad = e^{-i\theta_{\pm}} \sum_{\substack{x,y=\max\{\mu(t),\nu(t)\}-L\\y-x > d}}^{\min\{\mu(t),\nu(t)\}+L}  e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x}e^{i (k_2 - k_1) y}\nonumber\\
@@ -385,7 +512,7 @@ and as the second term on the right hand side of \eq{w_norm} is non-negative, we
 %%%%
 % 1 integrand
 
-We will now want to understand the relationship between the $\ket{\alpha(t)}$ and $\ket{w(t)}$, as we did in the proof of \thm{single_particle_wavepacket_bound}.  We then have
+We will now want to understand the relationship between the $\ket{\alpha(t)}$ and $\ket{w(t)}$, as we did in the proof of \thm{single_particle_wave-packet_bound}.  We then have
 \begin{align}
 &\braket{w(t)}{\alpha(t)}_{\pm} \nonumber\\
 &\qquad = \eta e^{2it(\cos k_1 + \cos k_2)}\int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{-i \phi_1 \frac{\mu(t) + \nu(t)}{2}} e^{i \phi_1(\nu(t) - \mu(t))} e^{-\frac{\sigma^2 \phi_1^2}{4} - \sigma^2 \phi_2^2}\nonumber\\
@@ -433,7 +560,7 @@ From this, we then approximately know the norm of the first term in \eq{w_alpha_
 
 %%
 % Second integrand
-For the second term in \eq{w_alpha_ip}, we will show that it can be bounded in norm, using the fact that the angle $\theta_\pm$ is a bounded rational function of the momentum.  From this, we know that it is differentiable as a function of both $\phi_1$ and $\phi_2$ on some neighborhood $U$ of $(p_1,p_2)$.  Let us assume that $\delta$ is chosen so that $[-\delta,\delta]\times [-\delta,\delta] \subset U$, and now let
+For the second term in \eq{w_alpha_ip}, we will show that it can be bounded in norm, using the fact that the angle $\theta_\pm(p_1,p_2)$ is a bounded rational function of the momentum.  From this, we know that it is differentiable as a function of both $\phi_1$ and $\phi_2$ on some neighborhood $U$ of $(p_1,p_2)$.  Let us assume that $\delta$ is chosen so that $[-\delta,\delta]\times [-\delta,\delta] \subset U$, and now let
 \begin{align}
   \Gamma = \max_{[-\delta,\delta]\times [-\delta,\delta]} \big|\nabla e^{i \theta_{\pm}(p_1 +\phi_1, p_2 +\phi_2)}\big|.
 \end{align}
@@ -604,303 +731,76 @@ If we chose $\sigma = \frac{ L}{2 \sqrt{\log(L)}}$, we then have that for $L$ la
 Note that the constant in our bound only arises from the term corresponding to our approximate time evolution, as the other terms use a slightly smaller power of $\log L$.  
 \end{proof}
 
-%\begin{proof}
-%The main idea behind this proof will be to show that $\ket{\psi(0)}$ and $\ket{\alpha (t)}$ are both well approximated by a Gaussian distribution over eigenstates of $H^{(2)}$ with momenta near $k_1$ and $k_2$, and then show that time evolving the Gaussian approximation for $\ket{\psi(0)}$ is well approximated by the Gaussian approximation for $\ket{\alpha(t)}$.  
-%  
-%
-%For the first term, we have
-%\begin{align}
-%  &\int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} h_\infty^\sigma \Big(\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big( \frac{\phi_1}{2} + \phi_2\Big)\nonumber\\
-%  & \qquad =  \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2} h_\infty^{1/(2\pi \sigma)} \Big[2 \pi i \sigma^2 \Big(\frac{\phi_1}{2} - \phi_2 \Big)\Big]h_\infty^{1/(2\pi \sigma)} \Big[2 \pi i \sigma^2 \Big(\frac{\phi_1}{2} +\phi_2 \Big)\Big]\\
-% & \qquad \geq \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2}\\
-% & \qquad = \frac{1}{2} \braket{w(t)}{w(t)}
-%\end{align}
-%where we used the fact that $h_\infty^\sigma(i \phi) \geq 1$.  Using the upper bounds on $h$, we also have that
-%\begin{align}
-%&\int_{-\delta}^\delta \int_{-\delta}^{\delta} \frac{ d\phi_1 d\phi_2}{4\pi^2} e^{ - \frac{\sigma^2\phi_1^2}{4} - \sigma^2 \phi_2^2} h_\infty^\sigma \Big(\frac{\phi_1}{2} - \phi_2\Big) h_\infty^\sigma \Big( \frac{\phi_1}{2} + \phi_2\Big)\nonumber\\
-%& \qquad \leq \frac{\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta d\phi_1 d\phi_2 e^{ -\frac{\sigma^2 \phi_1^2}{2} - 2\sigma^2 \phi_2^2} \Bigg[1 + 2 \Big(1 + \frac{ 1}{\pi \sigma^2} \frac{1}{4 \pi -  | \phi_1 - 2\phi_2|} \Big)e^{-2\pi^2 \sigma^2 + \pi \sigma^2 (\phi_1 - 2 \phi_2)} \Bigg]\nonumber\\
-%& \qquad \qquad \times   \Bigg[1 + 2 \Big(1 + \frac{ 1}{\pi \sigma^2} \frac{1}{4 \pi -  | \phi_1+ 2\phi_2|} \ \Big)e^{-2\pi^2 \sigma^2 +   \pi \sigma^2 (\phi_1 + 2 \phi_2)} \Bigg]\\
-%& \qquad \leq \frac{1}{2} \Big[1 + 3 e^{ -  \pi^2 \sigma^2 \big(2 \pi - 3\delta\big)} \Big]^2  \braket{w(t)}{w(t)}
-%\end{align}
-%where we assumed that $2\pi > 3 \delta$, and that $\sigma \geq 1$. 
-%
-%For the second term, note that for any $\varphi_1$, $\varphi_2$, and for any $L > \sigma \geq 1$, we have that
-%\begin{align}
-%  &\big| \big(h_L^\sigma(\varphi_1) + h_{\infty}^\sigma(\varphi_1)\big)\big(h_L^\sigma(\varphi_2) - h_\infty^\sigma(\varphi_2) \big) \big| \nonumber\\
-%  &\qquad\leq \big| h_L^\sigma(\varphi_1) + h_{\infty}^\sigma(\varphi_1)\big| \frac{2\sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}\\
-%   & \qquad\leq \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }\Big [ 2 + \big|h_L^\sigma (\varphi_2) - h_\infty^\sigma(\varphi_2) \big| + 2 \big| 1 - h_\infty^\sigma(\varphi_2) \big| \Big]\\
-%   & \qquad \leq  \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }\Big [ 2 +   \frac{2 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2} }  + 4 (1 + \sigma^2) e^{ -\frac{1}{2\sigma^2}}\Big]\\
-%   & \qquad \leq \frac{24 \sigma^4}{L}  e^{ - \frac{L^2}{2\sigma^2}}.
-%\end{align}
-%If we then use this bound for the integrand, we have 
-%\begin{align}
-%  &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\Bigg|\nonumber\\
-%  & \qquad \leq  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \frac{24 \sigma^4}{L}  e^{-\frac{L^2}{2\sigma^2}}\\
-%  & \qquad \leq \frac{6\sigma^4}{\pi^2 L}  e^{ - \frac{ L^2}{2\sigma^2}}\int_{-\infty}^\infty \int_{-\infty}^\infty  d\phi_1 d\phi_2 e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}\\
-%  & \qquad = \frac{ 12 \sigma^2}{\pi L}  e^{ - \frac{L^2}{2\sigma^2}}.
-%\end{align}
-%
-%For the third term, we can use the same argument, and we have
-%\begin{align}
-%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   \nonumber\\
-%   &\quad \times\Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + 2p_2+ \phi_2 \Big)\Big]\nonumber\\
-%   &\quad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2p_2- \phi_2\Big)\Big]\Bigg|\nonumber\\
-%   &\qquad \qquad \leq \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{ - \frac{L^2}{2\sigma^2}} \leq \frac{ 12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}}.
-%\end{align}
-%
-%For the fourth term, we instead need to use the fact that $h(\phi)$ rapidly decreases for large $\phi$.  In particular, if we assume that $\sigma^{-1} < 2\pi - |k_1| - |k_2|$, we have
-%\begin{align}
-%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
-%    &  \qquad \leq  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big)\\
-%    &\qquad = \frac{\sigma^2}{2\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)} \nonumber\\
-%    &\qquad \qquad \qquad \times h_{\infty}^{1/(2\pi\sigma)} \Big[2\pi i \sigma^2 \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)\Big] h_\infty^{1/(2\pi\sigma)}\Big[ 2\pi i \sigma^2  \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Big]\\
-%    & \leq  \frac{\sigma^2}{2\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)}\big( 1 + 3 e^{ - 2 \pi \sigma^2 ( \pi - | 2 p_2 + \phi_2 - \frac{\phi_1}{2} | )}\big) \big( 1 + 3 e^{ - 2 \pi \sigma^2 ( \pi - | 2 p_2 + \phi_2 + \frac{\phi_1}{2} | )}\big) 
-%\end{align}
-%At this point, if $\pi > |k_1| + |k_2|$, we can choose $\delta$ so that $\pi > |k_1| + |k_2| + 2\delta$ and thus 
-%\begin{align}
-%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
-%    &  \qquad \leq \frac{8\sigma^2}{\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)}\\
-%    & \qquad \leq \frac{8 \sigma}{\sqrt{\pi}} \int_{-\delta}^\delta d\phi_2 e^{ - 2\sigma^2 ( p_2^2 + (p_2 + \phi_2)^2)}\\
-%    &\qquad \leq 4\sqrt{2} e^{ -2 \sigma^2 p_2^2} = 4\sqrt{2} e^{-\frac{\sigma^2}{2} (k_2-k_1)^2}.
-%\end{align}
-%However, if $\pi \leq |k_1| + |k_2|$, we can instead bound the functions approximating $h$ by their largest value, which is attained when $2\phi_2 \pm \phi_1 = 3 \delta$.  In particular, we have
-%\begin{align}
-%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
-%    &  \qquad \leq \frac{8\sigma^2}{\pi}\int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2}  e^{- \sigma^2 \phi_1^2}e^{-\sigma^2 (\phi_2^2 + (2p_2 + \phi_2)^2)} e^{ 4 \pi \sigma^2 ( 2|p_2| + \frac{3\delta}{2} - \pi)} \\
-%    & \qquad \leq \frac{8 \sigma}{\sqrt{\pi}} e^{4\pi \sigma^2 (2|p_2| + \frac{3}{2}\delta -\pi) - 2 \sigma^2 p_2^2 } \int_{-\delta}^\delta d\phi_2 e^{ -2\sigma^2( p_2 + 2 p_2 \phi_2 + \phi_2^2)}\\
-%    &\qquad \leq \frac{16\delta}{\sqrt{\pi}}e^{-\sigma^2 ( 4\pi^2  - 8 \pi |p_2|  + 4 \sigma^2 p_2^2 - 6 \pi \delta + 2\delta^2 - 4 \delta |p_2| )}\\
-%    & \qquad \leq \frac{16 \delta}{\sqrt{\pi}} e^{ -\sigma^2 (4 [\pi - |p_2|]^2 - (4|p_2| + 6\pi)\delta)}\\
-%    &\qquad \leq \frac{ 16 \delta}{\sqrt{\pi}} e^{ - 3 \sigma^2 \delta}
-%\end{align}
-%where we assume that $\delta < \frac{ (\pi - |p_2|)^2}{4|p_2| + 6\pi}$.  We can then put these two bounds together, if we assume that $\delta < p_2^2$ and that $\delta <  \frac{ (\pi - |p_2|)^2}{4|p_2| + 6\pi}$, so that 
-%\begin{align}
-%    &\Bigg | \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{ i \theta_{\pm}(p_1+\phi_1, p_2+\phi_2)} e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}   h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg| \nonumber\\
-%    & \qquad \leq \frac{16 }{\sqrt{\pi}} e^{ - 2 \sigma^2 \delta}.
-%\end{align}
-%
-%We can now combine these results, and thus show that $\ket{\alpha(t)}_{\pm}$ is well approximated by $\ket{w(t)}$ for $0\leq t < \frac{\nu(t) - \mu(t) - 2 L}{2 \sin k_2 - 2 \sin k_1}$.  In particular, we have
-%\begin{align}
-%   &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
-%    &\qquad\leq {}_{\pm}\braket{\alpha(t)}{\alpha(t)}_{\pm} + \braket{w(t)}{w(t)} - \braket{w(t)}{\alpha(t)}_{\pm} - {}_\pm \braket{\alpha(t)}{w(t)}\\
-%    &\qquad \leq 1 + \braket{w(t)}{w(t)} - 2 \eta\gamma^2 \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{12 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}} - \frac{12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big).
-%\end{align}
-%For large enough $\sigma$, $L$, and small enough $\delta$, we have that the term multiplying $\eta\gamma$ is negative, and thus we need to give a lower bound on $\eta\gamma^2$.  We know the value of $\eta$, and as a lower bound on $\gamma^2$ we have
-%\begin{align}
-%  \gamma^2 = \frac{1}{h_L^{\sigma/\sqrt{2}}(0)} \geq \frac{1}{\sqrt{\pi} \sigma (1 + 3 e^{-\pi^2\sigma^2})} \geq \frac{1}{\sqrt{\pi} \sigma} \big(1 - 3 e^{-\pi^2 \sigma^2}\big).
-%\end{align}
-%From this, and using our upper bounds on the norm of $\braket{w(t)}{w(t)}$, we have
-%\begin{align}
-% &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2 \nonumber\\
-% &\qquad \leq 1 + \braket{w(t)}{w(t)} - 4 \big(1 - 3 e^{-\pi^2 \sigma^2} \big) \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{24 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}}  -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big)\\
-% & \qquad \leq 1 - \braket{w(t)}{w(t)} (1 -6 e^{-\pi^2 \sigma^2}) + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
-% & \qquad \leq 1 - \Big( 1 - \frac{1}{\pi \delta^2 \sigma^2} e^{-\frac{5 \sigma^2 \delta^2}{2}} \Big)(1 -6 e^{-\pi^2 \sigma^2}) + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
-% & \qquad \leq \frac{1}{\pi \delta^2 \sigma^2} e^{-\frac{5 \sigma^2 \delta^2}{2}} + 6 e^{-\pi^2 \sigma^2} + \frac{96 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}} + \frac{64}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
-% &\qquad \leq 44 e^{-2 \sigma^2 \delta} + \frac{32 \sigma^2}{L} e^{-\frac{L^2}{2\sigma^2}}.
-%\end{align}
-%
-%Let us now examine how close $\ket{w(t)}$ and $\ket{\alpha(t)}_\pm$ are for $t > \frac{\nu(t) - \mu(t) + 2L}{2\sin k_2 - 2 \sin k_1}$.  In particular, we have for these times that
-%\begin{align}
-%  &\braket{w(t)}{\alpha(t)}_\pm \nonumber\\
-%  &\qquad= \eta \gamma^2 e^{i \theta_{\pm}(p_1,p_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d \phi_2}{4\pi^2}  e^{-\frac{\sigma^2 \phi_1^2}{4}}  e^{- \sigma^2 \phi_2^2}\Big[e^{-i \theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} h_L^\sigma \big(\frac{\phi_1}{2} - \phi_2 \big) h_L^\sigma\Big( \frac{\phi_1}{2} + \phi_2 \Big) \nonumber\\
-%  & \qquad \quad\pm e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))} h_L^\sigma\Big(\frac{\phi_1}{2} - 2 p_2 - \phi_2\Big) h_L^\sigma\Big(\frac{\phi_1}{2}+ 2 p_2 + \phi_2\Big)\Big]\\
-%  & \qquad = \eta\gamma^2 e^{i \theta_{\pm}(p_1,p_2)}  \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \Bigg[ e^{-i \theta_{\pm}(p_1,p_2) }h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \nonumber\\
-%  &\qquad\quad \Big(e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} - e^{- i \theta_{\pm}(p_1, p_2)}  \Big) h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \nonumber\\
-% &\qquad \quad  + e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\nonumber\\
-%   &\qquad \quad\pm  e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}  \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + 2p_2+ \phi_2 \Big)\Big] \nonumber\\
-%   &\qquad \quad \qquad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2p_2- \phi_2\Big)\Big]\nonumber\\
-%   &\qquad \quad\pm  e^{ 2 i( p_2 + \phi_2)(\mu(t) - \nu(t))}h_\infty^{\sigma} \Big(\frac{\phi_1}{2} + 2p_2 +\phi_2 \Big) h_\infty^{\sigma} \Big(\frac{\phi_1}{2} - 2p_2 -\phi_2 \Big) \Bigg].
-%\end{align}
-%This is nearly an identical overlap as for the small $t$ case, except for the changing angle $\theta_\pm$.  As such, we can bound most of the terms as before.
-%
-%The first term in the bound is simply
-%\begin{align}
-%  &e^{i\theta_\pm(p_1,p_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{-i \theta_{\pm}(p_1,p_2) }h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \\
-%  &  \qquad = \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2) \\
-%  & \qquad \geq \frac{1}{2} \braket{w(t)}{w(t)}
-%\end{align}
-%as in the small $t$ case.
-%
-%The second term is slightly more complicated.  However, remember from equation ?????? \todo{find the correct equation} that $\theta_\pm(p_1+\phi_1,p_2+\phi_2)$ are bounded rational functions of $e^{i\phi_1}$ and $e^{i\phi_2}$.  As such, they are differentiable as functions of both $\phi_1$ and $\phi_2$ on some neighborhood $U$ of $(0,0)$.  Let us assume that $\delta$ is chosen so that $[-\delta,\delta]\times [-\delta,\delta] \subset U$, and now let
-%\begin{align}
-%  \Gamma = \max_{[-\delta,\delta]\times [-\delta,\delta]} \big|\nabla e^{i \theta_{\pm}(p_1 +\phi_1, p_2 +\phi_2)}\big|
-%\end{align}
-%From this, we then have that
-%\begin{align}
-%  &\Bigg|\int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \big(e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)} - e^{- i \theta_{\pm}(p_1, p_2)}  \big) h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2)\Bigg|\nonumber\\
-%  & \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}  \big(\phi_1^2 + \phi_2^2 \big) \Gamma h_\infty^\sigma(\frac{\phi_1}{2} - \phi_{2} ) h_{\infty}^\sigma ( \frac{\phi_1}{2} + \phi_2)\\
-%  & \qquad = \frac{\Gamma\sigma^2}{2\pi} \int_{-\delta}^\delta \int_{-\delta}^\delta {d\phi_1 d\phi_2} e^{- \frac{\sigma^2 \phi_1^2}{2}}e^{-2\sigma^2 \phi_2^2}( \phi_1^2 + \phi_2^2) h_\infty^{1/(2\pi \sigma)} \Big(2 \pi i \sigma^2 \Big[\frac{\phi_1}{2} - \phi_2 \Big]\Big) h_\infty^{1/(2\pi \sigma)}  \Big(2 \pi i \sigma^2 \Big[\frac{\phi_1}{2} + \phi_2 \Big]\Big) \\
-%  & \qquad \leq \frac{\Gamma\sigma^2}{2\pi} (1 + 3 e^{- \pi^2 \sigma^2}) \int_{-\infty}^\infty \int_{-\infty}^\infty {d\phi_1 d\phi_2} e^{- \frac{\sigma^2 \phi_1^2}{2}}e^{-2\sigma^2 \phi_2^2}( \phi_1^2 + \phi_2^2)\\
-%  & \qquad \leq \frac{5\Gamma }{2\sigma^2}.
-%\end{align}
-%
-%The third term can be bounded exactly as the second term for small $t$.  In particular, we have bounds on the differences and sums of $h$, and thus 
-%\begin{align}
-%  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}e^{- i\theta_{\pm}(p_1 + \phi_1, p_2 + \phi_2)}\nonumber\\
-%  &\qquad \times \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} + \phi_2 \Big)\Big] \Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} - \phi_2\Big)\Big]\Bigg|\nonumber\\
-%  &\qquad\qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{-\frac{L^2}{2\sigma^2}}\\
-%  &\qquad \qquad \leq \frac{12 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}}.
-%\end{align}
-%In a similar manner, we have that the fourth term can be bounded as the third for small $t$.
-%\begin{align}
-%  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}e^{- 2i (p_2 + \phi_2)(\mu(t) - \nu(t))} \Big[h_L^{\sigma} \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)  + h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\Big] \nonumber\\
-%  &\qquad \times\Big[ h_{L}^\sigma\Big(\frac{\phi_1}{2} -2 p_2 - \phi_2 \Big) - h_\infty^\sigma\Big(\frac{\phi_1}{2} -2 p_2 - \phi_2\Big)\Big]\Bigg|\nonumber\\
-%  & \qquad \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} \frac{24 \sigma^4}{L} e^{-\frac{L^2}{2\sigma^2}}\\
-%  &\qquad \qquad \leq \frac{12 \sigma^2}{\pi L} e^{-\frac{L^2}{2\sigma^2}}.
-%\end{align}
-%
-%Finally, we have that the final term can be bounded as
-%\begin{align}
-%  &\Bigg| \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2} e^{2i (p_2 + \phi_2)(\mu(t) - \nu(t))}h_\infty^\sigma \Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big)h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\Bigg| \nonumber\\
-%  & \qquad \leq \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{- \frac{\sigma^2 \phi_1^2}{4}}e^{-\sigma^2 \phi_2^2}h_\infty^\sigma \Big(\frac{\phi_1}{2} -2p_2 - \phi_2 \Big)h_\infty^\sigma \Big(\frac{\phi_1}{2} +2p_2 + \phi_2 \Big)\\
-%  & \qquad \leq \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}
-%\end{align} 
-%where we used the bounds for small $t$.
-%
-%We can then use the bounds on all of the individual terms to show that $\ket{w(t)}$ and $\ket{\alpha(t)}$ are close.  In particular, we have 
-%\begin{align}   
-%  &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
-%    &\qquad\leq {}_{\pm}\braket{\alpha(t)}{\alpha(t)}_{\pm} + \braket{w(t)}{w(t)} - \braket{w(t)}{\alpha(t)}_{\pm} - {}_\pm \braket{\alpha(t)}{w(t)}\\
-%    &\qquad \leq 1 + \braket{w(t)}{w(t)} - 2 \eta\gamma^2 \Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{5 \Gamma}{2\sigma^2}- \frac{12 \sigma^2}{\pi L} e^{ -\frac{L^2}{2\sigma^2}} - \frac{12 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big).
-%\end{align}
-%If we again use our bounds on $\gamma^2$ and on $\braket{w(t)}{w(t)}$, we find
-%\begin{align}
-%    &\norm{\ket{\alpha(t)}_{\pm} - \ket{w(t)}}^2\nonumber\\
-%    & \qquad \leq 1 + \braket{w(t)}{w(t)} - 4 (1 - 3 e^{-\pi^2 \sigma^2})\Big(\frac{1}{2} \braket{w(t)}{w(t)} - \frac{5 \Gamma}{2\sigma^2}- \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} -  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\Big)\\
-%    & \qquad \leq 1 - \braket{w(t)}{w(t)} ( 1 - 6 e^{-\pi^2 \sigma^2}) + \frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
-%    & \qquad \leq 1 - \Big(1 - \frac{1}{\pi \delta^2 \sigma^2} e^{- \frac{5 \sigma^2 \delta^2}{2}} \Big)( 1 - 6 e^{-\pi^2 \sigma^2}) + \frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
-%    & \qquad \leq \frac{1}{\pi \delta^2 \sigma^2}e^{- \frac{5 \sigma^2 \delta^2}{2}}  + 6 e^{-\pi^2 \sigma^2} +\frac{5 \Gamma}{2\sigma^2}+ \frac{24 \sigma^2}{\pi L} e^{ - \frac{L^2}{2\sigma^2}} +  \frac{16}{\sqrt{\pi}} e^{-2\sigma^2 \delta}\\
-%    & \qquad \leq 44e^{-2\sigma^2 \delta} + \frac{32\sigma^2}{L} e^{- \frac{L^2}{2\sigma^2}} + \frac{5 \Gamma}{2\sigma^2}.
-%\end{align}
-%
-%
-%
-%\end{proof}
-
 
 %%%%%%%%%%%%%%%%%
-%  Disconnected Graphs
-
-\section{Disconnected graphs}
-\todo{rewrite this section}
-While a general result about the eigenstates of an $N$-particle quantum walk on a given graph $G$ might be difficult, we can reason about some properties of the eigenstates and time-evolved states without needing to explicitly calculate the overall form of the eigenstates.  In particular, if a given graph on which the particles walk has some property, then we can state some basic ideas about the eigenstates.
-
-Perhaps the most obvious such property is in the very connectivity of the graph itself.  In particular, our MPQW Hamiltonian \eq{MPQW_H_defn} only allows particles to move between vertices that have a path between them; if two vertices are not connected in $G$, then the corresponding off-diagonal element of the time evolution unitary will always be zero.
-
-We can use this to decompose the unitary corresponding to time evolution into a direct sum of unitaries, each belonging to a different case of particle locations on a given component of the graph $G$.  Namely:
-\begin{lemma}
-  Let $G$ be a disconnected graph with $M$ components, and let us examine the $N$-particle MPQW on $G$.  If $\ket{\psi}$ is an $N$-particle state such that each particle $j$ only has support on the $G_{k_j}$th component of $G$, then 
-  \begin{align}
-    e^{-i H_G^N t} \ket{\phi} = \prod_{c=1}^M W_{c}^\dag \Big(e^{- i H_{G_c}^{n_c} t } \big)^{(1,2,\cdots,n_c)} W_{c} \ket{\phi}
-  \end{align}
-  where $n_c$ is the number of particles with support on $G_c$, and $W_c$ is a permutation operator that takes the particles with support on $G_c$ to the first $n_c$ particles.  In the special case where $n_c \leq 1$ for all $c$, this then reduces to
-  \begin{align}
-    e^{-i H_G^N t} \ket{\phi} = \prod_{j=1}^n \big( e^{-i A(G_{k_j}) t}\big)^{(j)} \ket{\phi}.
-  \end{align}
-\label{lem:disconnected_MPQW}
-\end{lemma}
-\begin{proof}
-\todo{rewrite and fix proof}
-  Let $\ket{\phi} = \ket{v_1,v_2,\cdots , v_N}$ be any $N$-particle basis state such that each $v_i$ is in a different component.  Note that for all times $t\in \RR$, $e^{-i A(G) t} \ket{v_i}$ only has support on the component to which $v_i$ belongs. 
-  
-  As the interaction term of the Hamiltonian $H_G^N$ is diagonal in the computational basis, we then have that for all times $t$, $e^{-i H_G^N t} \ket{\phi}$ only has support on states 
-  \begin{align}
-    \big\{ \ket{w_1,\cdots, w_N} : w_i \sim v_i \big\},
-  \end{align}
-  where two vertices are equivalent according to $\sim$ if they belong to the same component of $G$.  However, this means that for all times, each particle remains in separate components and thus is constantly in the nullspace of the interaction Hamiltonian.  As such, we then have that
-  \begin{align}
-    e^{-i H_G^N t} \ket{\phi} = e^{- i H_\text{mov}^N} \ket{\phi} = e^{-i \sum_{j=1}^N A(G)^{(j)} t} \ket{\phi} = \prod_{j=1}^N e^{-i A(G)^{(j)} t} \ket{\phi} = \prod_{j=1}^N \big(e^{- i A(G) t} \big)^{(j)} \ket{\phi}
-  \end{align}
-  and thus the lemma statement holds true for each computational basis state.
-  
-  If we then note that unitary evolution is linear, we then have that this result still holds true for all states $\ket{\psi}$.
-\end{proof}
-
-\section{Ground states and frustration-free states}
-%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Frustration-free}
+%  Trying
 
 
-While showing that this problem is contained in \QMA is relatively easy, in our proof of \QMA-hardness we will want to impose additional structure on the problem.  In particular, we will want the problem to have the extra promise that if the particular instance is a yes instance, then the interaction term will essentially add no energy to the ground state.  In particular, we will want the ground state of the system to be a ground state for each term in the Hamilonian individually, which is usually a statement that the Hamiltonian is frustration-free.
+\section{MPQW with positive-semidefinite interactions}
 
-The reason that this helps us is that it actually allows us to determine the actual ground energies of various Hamiltonians, and lets us convert the problem to one of adding positive semi-definite matrices.  This allows us to use our Nullspace Projection Lemma (\lem{NPL}), and give strong bounds on the resulting eigenvalue gaps.  Additionally, the guarantee that certain Hamilonians are frustration-free will allow us to give some additional results on various spin systems.
+Up to this point, we have studied MPQW with near-arbitrary finite-range interactions.  In particular, while the exact phase $\theta_\pm(k_1,k_2)$ from \sec{two_particle_scattering} depends on the particular interaction, the overall framework for the scattering does not rely on the interaction.  If we want to relate the eigenvalues of a MPQW with $N$ particles to that of the same walk with $N+1$ particles, we will need to have some additional restrictions on the interaction.
 
-
-
-\todo{does this work for both bosons and fermions?.  I think it will, but I'm not sure.  It might not be worth it to discuss fermions right now.}
-
-With all of this, let $G$ be a graph, and let us assume that the interaction is $\mathcal{U}$.  If we then restrict to the $N$-particle sector, we have that the Hamiltonian is given by
+In particular, in order to easily relate the low-energy eigenvalues of the quantum walks, we will restrict our attention to non-negative interactions.  Namely, we want to restrict our attention to interactions such that for all $x,y \in \NN^+$, and all $0\leq d \leq \dmax$, 
 \begin{align}
-  H_{\mathcal{U},G}^N &= \sum_{(i,j) \in E(G)} (a_i^\dag a_j + a_j^\dag a_i) + \sum_{i,j\in V(G)} \mathcal{U}_{d(i,j)}(n_i,n_j)\\
-    &= \sum_{w=1}^N A(G)^{(w)} + \sum_{i,j\in V(G)} \mathcal{U}_{d(i,j)} (\hat{n}_i,\hat{n}_j)\label{eq:MPQW_Hamiltonian}
+0 \leq \mathcal{U}_{\dmax}(x,y) \leq \mathcal{U}_{\dmax}(x+1,y).
 \end{align}
-where
-\begin{equation}
-  \hat{n}_i = \sum_{w=1}^N \ketbra{i}{i}^{(w)}.
-\end{equation}
-Additionally, we will again assume that 
-\begin{equation}
-  H_{G,\text{move}}^N = \sum_{w=1}^N A(G)^{(w)}
-  \label{eq:MPQW_Hamiltonian_move}
-\end{equation}
-is the movement term of the Hamiltonian, and that
-\begin{equation}
-  H_{\mathcal{U},G,\text{int}}^{N} =  \sum_{i,j\in V(G)} \mathcal{U}_{d(i,j)} (\hat{n}_i,\hat{n}_j)
-  \label{eq:MPQW_Hamiltonian_int}
-\end{equation}
-is the interaction term of the Hamiltonian.
+With such a restriction, we then have that the interaction Hamiltonian is a positive-semidefinite matrix that can only increase its energy when particles are added.  We can then use several properties of positive-semidefinite matrices to relate the eigenvalues between MPQW on a graph $G$ with differing number of particles.
 
-
-While $H_{\mathcal{U},G}^N$ acts on the entire $|V|^N$ dimensional system of distinguishable particles, we want to deal with indistinguishable particles (and in particular bosonic particles).  As such, we will want to look at the restriction of $H_{\mathcal{U},G}^N$ to the bosonic subspace:
+While the interaction term of the MPQW is now guaranteed to be positive-semidefinite, it is possible that the movement term is negative.  However, if we let $\mu(G)$ be the smallest eigenvalue of $A(G)$, and define the Hamiltonian
 \begin{equation}
-  \overline{H}_{\mathcal{U},G}^N := H_{\mathcal{U},G}^N \big|_{\mathcal{Z}_N(G)}
+  H_{\mathcal{U}}(G,N) = H_{\mathcal{U},G}^n - N \mu(G).
 \end{equation}
+Since $A(G) - \mu(G) \II\geq 0$ (by the definition of $\mu(G)$), and since $H_{\text{int}} \geq 0$, we then have that $H_{\mathcal{U}}(G,N)$ is positive-semidefinite.
 
-\todo{check boson/fermion}
-
-At this point, it will be extremely useful to add a term proportional to the identity in order to make a positive semidefinite operator. In particular, if we let $\mu(G)$ be the smallest eigenvalue of $A(G)$, we can consider 
+With a particular choice of interaction, we shall write
 \begin{equation}
-  H_{\mathcal{U}}(G,N) = \overline{H}_{\mathcal{U},G}^n - N \mu(G)
-\end{equation}
-which is a positive-semidefinite matrix.  Additionally, as $\mu(G)$ can be efficiently computed using a classical polynomial-time algorithm, we have that the complexity of approximating the ground energy of $H_{\mathcal{U}}(G,N)$ is equivalent to the complexity of approximating the ground energy of $\overline{H}_{\mathcal{U},G}^N$.  
-
-We shall write
-\begin{equation}
-  0 \leq \lambda_N^1(G) \leq \lambda_N^2(G) \leq \cdots \leq \lambda_N^{D_N} (G)
+  0 \leq \lambda_N^1(G) \leq \lambda_N^2(G) \leq \cdots \leq \lambda_N^{|V(G)|^N} (G)
 \end{equation}
 for the eigenvalues of $H_{\mathcal{U}}(G,N)$ and $\{\ket{\lambda_N^j(G)}\}$ for the associated eigenvectors.
 
-Note that when $\lambda_N^1(G) = 1$, the ground energy of the $N$-particle MPQW Hamiltonian $\overline{H}_{\mathcal{U},G}^N$ is equal to $N$ times the single-particle ground energy $\mu(G)$.  In this case, we say that the $N$-particle MPQW Hamiltonian is frustration free, as the ground state minimizes both the movement term and the interaction term.  We also define frustration freeness for $N$-particle states.
+Note that when $\lambda_N^1(G) = 0$, the ground energy of the $N$-particle MPQW Hamiltonian $H_{\mathcal{U},G}^N$ is equal to $N$ times the single-particle ground energy $\mu(G)$.  In this case, we say that the $N$-particle MPQW Hamiltonian is frustration free, as the ground state minimizes both the movement term and the interaction term (this terminology arises from spin systems).  With this idea, we can then define $N$-particle frustration-free states:
 \begin{definition}[Frustration-free state]  
-If $\ket{\psi}\in \mathcal{Z}_{N}(G)$ satisfies $H_{\mathcal{U}}(G,N) \ket{\psi} = 0$, then we say that $\ket{\psi}$ is an $N$-particle frustration-free state for $\mathcal{U}$ on $G$.
+  If $\ket{\psi}\in \CC^{|V(G)|^N}$ satisfies $H_{\mathcal{U}}(G,N) \ket{\psi} = 0$, then we say that $\ket{\psi}$ is an $N$-particle frustration-free state for $\mathcal{U}$ on $G$.
 \end{definition}
+These frustration-free states will be very useful to us in \chap{MP_ground}, as we can use them to iteratively construct the ground states of larger and larger graphs.
+
+
+
+
+
 
 %%%%%
-\subsubsection{Basic properties}
+\subsection{Basic properties of $H(G,N)$}
 
 We now give some basic properties of $H_{\mathcal{U}}(G,N)$.  In particular we will want to understand how the eigenvalues of the Hamiltonian change when we increase the number of particles, as well as understand such a system when looking at many disconnected copies of graphs.
 
 \begin{lemma}
   For all $N>1$, $\lambda_{N+1}^1(G) \geq \lambda_{N}^1(G)$.
+  \label{lem:MPQW_particle_number_eigenvalues}
 \end{lemma}
 \begin{proof}
-\todo{Fix this for an arbitrary interaciton}
-Let $\widehat{n}_{i}^{N}$ be the number operator \eq{n_hat} defined in the $N$-particle space and let $\widehat{n}_{i}^{N+1}$ be the corresponding operator in the $\left(N+1\right)$-particle space. Note that
+Let $\widehat{n}_{i}^{N}$ be the number operator \eq{n_hat} defined in the $N$-particle space and let $\widehat{n}_{i}^{N+1}$ be the corresponding operator in the $\left(N+1\right)$-particle space. Noting that
 \begin{equation}
-\widehat{n}_{i}^{N+1} = \widehat{n}_{i}^{N}\otimes\II+|i\rangle\langle i|^{(N+1)} \geq \widehat{n}_{i}^{N}\otimes\II.
+\widehat{n}_{i}^{N+1} = \widehat{n}_{i}^{N}\otimes\II+|i\rangle\langle i|^{(N+1)} \geq \widehat{n}_{i}^{N}\otimes\II,
 \end{equation}
-Using this and the fact that $A(G)\geq\mu(G)$, we get 
-\begin{equation}
-H_{G}^{N+1}-\left(N+1\right)\mu(G)\geq\left(H_{G}^{N}-N\mu(G)\right)\otimes\II.
-\end{equation}
+we can use this, the fact that $A(G)\geq\mu(G)$, and our assumptions on the interaction $\mathcal{U}$, to see 
+\begin{align}
+H_{G}^{N+1}-\left(N+1\right)\mu(G)&=\sum_{w\in[N+1]} \big( A(G)- \mu(G)\II\big)^{(w)} + \sum_{d=0}^{\dmax} \sum_{\substack{u,v\in V(G)\\d(u,v) = d}} \mathcal{U}_d (\hat{n}_v^{N+1},\hat{n}_u^{N+1})\\
+&\geq \sum_{w\in[N]}\big( A(G) - \mu(G)\II\big)^{(w)} + \sum_{d=0}^{\dmax} \sum_{\substack{u,v\in V(G)\\d(u,v) = d}} \mathcal{U}_d (\hat{n}_v^{N}\otimes \II,\hat{n}_u^{N}\otimes \II)\\
+& = \big( H_G^N - N\mu(G) \big)\otimes \II.
+\end{align}
 Hence 
 \begin{align}
-  \lambda_{N+1}^{1}(G) & =\min_{|\psi\rangle\in\mathcal{Z}_{N+1}(G)\colon \langle\psi|\psi\rangle=1}\langle\psi|H_{G}^{N+1}-\left(N+1\right)\mu(G)|\psi\rangle\\
- & \geq\min_{|\psi\rangle\in\mathcal{Z}_{N}(G)\otimes\CC^{|V|}\colon \langle\psi|\psi\rangle=1}\langle\psi|\left(H_{G}^{N}-N\mu(G)\right)\otimes\II |\psi\rangle\\
- & =\lambda_{N}^{1}(G)
+  \lambda_{N+1}^{1}(G) & =\min_{|\psi\rangle\in\CC^{|V(G)|^{N+1}}\colon \langle\psi|\psi\rangle=1}\langle\psi|H_{G}^{N+1}-\left(N+1\right)\mu(G)|\psi\rangle\label{eq:MPQW_particle_number_min}\\
+ & \geq\min_{|\psi\rangle\in\CC^{|V(G)|^{N+1}}\colon \langle\psi|\psi\rangle=1}\langle\psi|\left(H_{G}^{N}-N\mu(G)\right)\otimes\II |\psi\rangle\\
+ & =\lambda_{N}^{1}(G)\qedhere
 \end{align}
-(using the fact that $\mathcal{Z}_{N+1}(G)\subset\mathcal{Z}_{N}(G)\otimes\CC^{|V|}$). 
 \end{proof}
-We will encounter graphs $G$ with more than one component. In the cases of interest, the smallest eigenvalue of the adjacency matrix for each component is the same. The following Lemma shows that the eigenvalues of $H(G,N)$ on such a graph can be written as sums of eigenvalues for the components. In this Lemma (and throughout the paper), we let $[k] = \{1,2,\ldots,k\}$.
+
+Note that this theorem remains true if we restrict ourselves to the symmetric (or anti-symmetric) subspaces, as the only part that would change is the minimization in \eq{MPQW_particle_number_min}.  However, the inequality still holds true if we restrict ourselves to the symmetric (anti-symmetric) subspace for the $n+1$-particle subspace and $n$-particle subspace.
+
+
+Additionally, we will often encounter graphs $G$ with more than one component and, in the cases of interest, the smallest eigenvalue of the adjacency matrix for each component is the same. The following Lemma shows that the eigenvalues of $H(G,N)$ on such a graph can be written as sums of eigenvalues for the components. Note that this lemma is similar in flavor to \lem{disconnected_MPQW}.
 
 \begin{lemma}
 \label{lem:BH_disconnected_graphs}
@@ -908,34 +808,62 @@ Suppose $G=\bigcup_{i=1}^{k}G_{i}$ with $\mu(G_{1})=\mu(G_{2})=\cdots=\mu(G_{k})
 \begin{equation}
 \sum_{i\in[k]\colon N_{i}\neq0}\lambda_{N_{i}}^{y_{i}}(G_{i})
 \end{equation}
-where $N_{1},\ldots,N_{k}\in\{0,1,2,\ldots\}$ with $\sum_{i}N_{i}=N$ and $y_{i}\in[D_{N_{i}}].$ The corresponding eigenvectors are (up to normalization) 
+where $N_{1},\ldots,N_{k}\in\{0,1,2,\ldots\}$ with $\sum_{i}N_{i}=N$ and $y_{i}\in[V(G)^{N_i}].$ The corresponding eigenvectors are (possibly including repeats)
 \begin{equation}
-\Sym\Bigg(\prod_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg).
+V_\pi\Bigg(\bigotimes_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg),
 \label{eq:eigvecs_disconnected}
 \end{equation}
+for each $\pi \in S_n$.
 \end{lemma}
 
 \begin{proof}
-Recall that the action of $H_{G}-N\mu(G)$ on the Hilbert space \eq{occupation_num_states} is the same as the action of $H(G,N)$ on the Hilbert space $\mathcal{Z}_{N}(G)$. States in these Hilbert spaces are identified via the mapping described in equation \eq{occup_num_symmetrized}. It is convenient to prove the Lemma by working with the second-quantized Hamiltonian $H_{G}$. We then translate our results into the first-quantized picture to obtain the stated claims.
+To prove this lemma, we will show that each state of the form \eq{eigvecs_disconnected} is an eigenvector of $H(G,N)$ with the corresponding eigenvalue, and that these states span the entire Hilbert space.
 
-For a graph with $k$ components, equation \eq{Bose-Hubbard_Ham} gives 
-\begin{equation}
-H_{G}=\sum_{i=1}^{k}H_{G_{i}}\label{eq:H_G_disconnected}
-\end{equation}
-where $[H_{G_{i}},H_{G_{j}}]=0.$ Label each vertex of $G$ by $(a,b)$ where $b\in[k]$ and $a\in[|V_{b}|]$, where $V_{b}$ is the vertex set of the component $G_{b}$. An occupation number basis state \eq{occupation_num_states} can be written 
-\begin{equation}
-|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle.\label{eq:prod_basis_occ_num}
-\end{equation}
-The Hamiltonian $H_{G}-N\mu(G)$ conserves the number of particles $N_{b}$ in each component $b$. Within the sector corresponding to a given set $N_{1},\ldots,N_{k}$ with $\sum_{i \in [k]} N_i=N$, we have
+Let us first note that since $H(G,N)$ is permutation invariant, we have that
 \begin{align}
-& \left(H_{G}-N\mu(G)\right)|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\\
-&\quad =\big(H_{G_1}-N_1\mu(G_1)|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle\big)|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\\
-&\qquad+|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle\big(H_{G_2}-N_2\mu(G_2)|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\big)\ldots|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle + \cdots\\
-&\qquad+|l_{1,1},\ldots,l_{|V_{1}|,1}\rangle|l_{1,2},\ldots,l_{|V_{2}|,2}\rangle\ldots\big(H_{G_k}-N_k\mu(G_k)|l_{1,k},\ldots,l_{|V_{k}|,k}\rangle\big),
+  H(G,N) V_\pi\Bigg(\bigotimes_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg) = V_\pi H(G,N)\Bigg(\bigotimes_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg),
 \end{align}
-where we used the fact that $\mu(G_i)=\mu(G)$ for $i\in[k]$.  From this equation we see that the eigenstates of $H_{G}$ can be obtained as product states with $k$ factors in the basis \eq{prod_basis_occ_num}. In each such product state, the $i$th factor is an eigenstate of $H_{G_{i}}-N_{i}\mu(G_{i})=H_{G_{i}}-N_{i}\mu(G)$ in the $N_{i}$-particle sector, with eigenvalue $\lambda_{N_{i}}^{j_{i}}(G_{i})$. Rewriting this result in the ``first-quantized'' language, we obtain the Lemma. 
+and thus we need only determine whether
+\begin{align}
+  H(G,N) \Bigg(\bigotimes_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg) = \sum_{i\in[k]\colon N_{i}\neq0}\lambda_{N_{i}}^{y_{i}}(G_{i})\Bigg(\bigotimes_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg).
+\end{align}
+However, note that the interaction Hamiltonian $H_\text{int}$ is zero between different components, and thus
+\begin{align}
+H(G,N) &= \sum_{w\in[N]} \sum_{i=1}^k A(G_i)^{(w)} + \sum_{i=1}^k \sum_{d=0}^{\dmax} \sum_{\substack{u,v\in V(G_i)\\d(u,v) = d}} \mathcal{U}_d(\hat{n}_u,\hat{n}_v) - N\mu(G)\\
+  & \sum_{i=1}^k \Bigg[\sum_{w\in[N]}A(G_i)^{(w)} + \sum_{d=0}^{\dmax} \sum_{\substack{u,v\in V(G_i)\\d(u,v) = d}} \mathcal{U}_d(\hat{n}_u,\hat{n}_v)\Bigg] - N \mu(G).
+\end{align}
+Using this expansion of $H(G,N)$, we then have that for each component $G_i$, only the eigenvector supported on $G_i$ is not annihilated by the sum:
+\begin{align}
+  &\Bigg[\sum_{w\in[N]}A(G_i)^{(w)} + \sum_{d=0}^{\dmax} \sum_{\substack{u,v\in V(G_i)\\d(u,v) = d}} \mathcal{U}_d(\hat{n}_u,\hat{n}_v)\Bigg]   \Bigg(\bigotimes_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle\Bigg) \nonumber\\
+  &\qquad\qquad\qquad= \big(\lambda_{N_i}^{y_i}(G_i) + N_i \mu(G)\big) \bigotimes_{i\in[k]\colon N_{i}\neq0}|\lambda_{N_{i}}^{y_{i}}(G_{i})\rangle.
+\end{align}
+If we then sum over each component, we have the requisite eigenvalue.
+
+We now show that these states span the relevant Hilbert space.  First of all, note that for two states $\ket{\phi}$ and $\ket{\psi}$, if the number of particles in each component for the two states is not equal (i.e., $(N_1,\cdots, N_k)\neq (M_1,\cdots, M_k)$), then the states $\ket{\phi}$ and $\ket{\psi}$ are orthogonal, since they are supported on orthogonal states.  Additionally, if the number of particles is the same, but the two permutations $\pi$ and $\sigma$ don't satisfy the condition that $\pi^{-1}\sigma$ is contained in $S_{N_1} \times S_{N_2}\times\cdots \times S_{N_k}$ (i.e., it permutes the support of the particles), then $\ket{\phi}$ and $\ket{\psi}$ are still orthogonal.  The only time that the two states might overlap is when the permutation between the two states ($\sigma^{-1}\pi$) only permutes the particles within a given component.  As such, we have that the space spanned by the vectors \eq{eigvecs_disconnected} is at least dimension
+\begin{align}
+  \sum_{\substack{0\leq N_1,\cdots N_k\\N_1+\cdots+N_k = N}} \frac{N!}{N_1! N_2! \cdots N_k!} |V(G_1)|^{N_1} \cdots |V(G_k)|^{N_k}.
+\end{align}
+However, this combinatoric problem can be simplified if we use the binomial theorem:
+\begin{align}
+  (A+B)^C = \sum_{x=0}^C \binom{C}{x} A^xB^{C-x}.
+\end{align}
+Namely, we have
+\begin{align}
+  &\sum_{\substack{0\leq N_1,\cdots N_k\\N_1+\cdots+N_k = N}} \frac{N!}{N_1! N_2! \cdots N_k!} |V(G_1)|^{N_1} \cdots |V(G_k)|^{N_k}\nonumber\\
+  &\qquad  = \sum_{\substack{0\leq N_1,\cdots N_{k-1}\\N_1+\cdots+N_{k-1} = N}} \frac{N!}{N_1! N_2! \cdots N_{k-1}!} |V(G_1)|^{N_1} \cdots |V(G_{k-2})|^{N_{k-2}} \big(|V(G_{k-1})| + |V(G_{k})| \big)^{N_{k-1}}\\
+  &\qquad = \Big(|V(G_1)| + \cdots |V(G_k)|\big)^{N} = |V(G)|^N,
+\end{align}
+which is the dimension of the entire Hilbert space.  As such, we have that the vectors \eq{eigvecs_disconnected} span the entire Hilbert space.
 \end{proof}
 
+Note that this theorem remains true if we restrict ourselves to the symmetric or antisymmetric subspaces, but note that the dimension of the relevant Hilbert spaces becomes much smaller.
+
+
+\section{Simulation of MPQW on a quantum computer}
+
+As this thesis is about the computational power of various many-body systems, we would like to place an upper bound on the computational resources necessary in order to compute various problems related to the walk.  This can be done by showing how to simulate the interaction on a given initial state to high probability.
+
+As one might expect, we will show that a universal quantum computer can simulate an $N$-particle quantum walk.  The main idea will be to note that our Hamiltonians are sparse, and thus can be simulated using standard techniques.
 
 
 \section{Conclusions and extensions}

@@ -16,31 +16,33 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Quantum walk is an intuitive framework for developing quantum algorithms, inspired by the classical model of random walk.  This framework has lead to examples of exponential speedups over classical computation \cite{CCDFGS03}, as well as optimal algorithms for element distinctness \cite{Amb07} and formula evaluation \cite{FGG08}.  Additionally, the framework of \chap{scattering_on_graphs} can be thought of as a special kind of continuos-time quantum walk.
+Quantum walk is an intuitive framework for developing quantum algorithms, inspired by the classical model of random walk.  This framework has lead to examples of exponential speedups over classical computation \cite{CCDFGS03}, as well as optimal algorithms for element distinctness \cite{Amb07} and formula evaluation \cite{FGG08}.  We have also seen examples of this in \chap{scattering_on_graphs} and \chap{scattering_gadgets}, as graph scattering can be seen as a restricted form of quantum walk.
 
-With all of these algorithmic uses, we would then wonder at the computational power of this model.  Using the ideas of graph scattering, Childs \cite{Chi09} was able to show that the model of continuous time quantum walk is universal for quantum computation (and later showed the same for discrete-time quantum walk \cite{Chi10}).  This chapter will also show this result, but with a slightly different proof technique.
+With all of these algorithmic uses (and thinking of the title to this thesis), we would then wonder at the computational power of quantum walk.   We already know that this model is contained in \BQP from \chap{scattering_on_graphs}, and thus can only be as powerful as a quantum computer, but we would also like to give a lower bound on its power.  Using the ideas of graph scattering, Childs \cite{Chi09} was able to show that the model of continuous-time quantum walk is universal for quantum computation. (Childs later showed that the discrete-time model was also universal by giving a method to simulate a continuous-time quantum walk via a discrete-time quantum walk in \cite{Chi10}, but this universality was shown directly by Lovett, et.al. soon after in \cite{LCETK10}.)  In this chapter, we will again show the universality of quantum walk, using the tools of \chap{scattering_on_graphs} and \chap{scattering_gadgets}.  
 
-In particular, we will use results on the scattering behavior of finite-length wave-packets to implement single gates, and we will then show how to compose these scattering events for an entire computation.  This chapter is really a primer for \chap{MP_universality}, as many of the proof-techniques and ideas of this chapter will be used for the multi-particle case as well.
+In particular, we have from \chap{scattering_gadgets} several scattering gadgets whose scattering behavior can be viewed as an encoded single qubit gate.  Using our results on the scattering behavior of finite-length wave-packets from \thm{single_particle_wavepacket_bound} and our finite truncation of Hamiltonians from \lem{truncation}, we will show how to implement single-qubit gates using finite graphs.  We will then show how to combine these single-qubit gates to have multiple scattering events to encode an entire computation.
 
-Most of this chapter will be devoted to showing how to simulate a circuit of a given form via graph scattering.
+This chapter can be thought of as a primer for \chap{MP_universality}, as many of the proof techniques and ideas from this chapter will be used for the multi-particle case as well.  However, there will be some additional difficulties in \chap{MP_universality}, so having an intuitive understanding of the proof idea will be helpful.  Additionally, this is a novel use of our results on graphs scattering, which might lead to some more uses for the techniques.  Note that the encoding and global scheme for this chapter is similar to that of Childs original universality result \cite{Chi09}, using the proof techniques of Childs, Gosset, and Webb's universality result for multiple particles \cite{MPQW}.  However, this particular proof is new to this thesis.
 
-\todo{Move wavepacket propagation to this chapter?}
+The eventual goal of this chapter is to simulate a given circuit $\mathcal{C}_X = U_{M} U_{M-1}\cdots U_1$ acting on some initial state $\ket{x}$, where each gate $U_i$ comes from some universal gate set and the simulation accepts the state with high probability if and only if the circuit accepts with high probability.  We will first show how to do this for single-qubit computations in \sec{SP_single_qubit_computations}.  We will then extend this technique to multi-qubit computations in \sec{SP_multi_qubit_computations}.
+
+
+
 \todo{Make many figures (after writeup of other chapters)}
 \todo{Explict encodings for different momenta}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section{Single qubit simulation}\label{sec:single_qubit_computations}
+\section{Single qubit simulation}\label{sec:SP_single_qubit_computations}
 
-With our eventual goal of simulating an entire circuit via graph scattering, we will first need to understand how to perform single-qubit computations.  We will use many of the results of \chap{scattering_on_graphs}, and show that specific scattering behavior can be used as a computational tool.  This section will first encode the qubit, then show how to have a simulate a single gate, and finally show how to simulate multiple single-qubit gates.   These results will then be generalized for multiple-qubits in \sec{multi_qubit_computations}, and will be used nearly verbatim in \chap{MP_universality}.
+With our eventual goal of simulating an entire circuit via graph scattering, we will first need to understand how to perform single-qubit computations.  We will use many of the results of \chap{scattering_on_graphs} and gadgets from \chap{scattering_gadgets}, and show that specific scattering behavior can be used as a computational tool.  This section will first encode the qubit, then show how to have a simulate a single gate, and finally show how to simulate multiple single-qubit gates.   These results will then be generalized for multiple-qubits in \sec{multi_qubit_computations}.  This section will be used nearly in \chap{MP_universality}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Single qubit encoding}\label{sec:single_qubit_encoding}
 
-In our search for simulations, we will first need to encode the logical state into some graph state.  We can then take inspiration from the current literature, or else see motivation from classical asynchronous systems, to encode our logical system via dual-rails.  In particular, a single qubit will correspond to two infinite paths, with a single wave-packet at specified momentum $k$ traveling along one of the two paths.  If the particle is located on the first (top) path, then the encoded qubit is in the logical state $\ket{0}$, while if the particle is on the second (bottom) path then the encoded qubit is in the logical state $\ket{1}$.  Schematically, this can be seen in \fig{wavetrain_encoding}.
+In our endeavour to simulate a circuit, we will first need to encode the logical state of the circuit into a state on some simple graph.  Taking motivation from the literature, we will encode our logical system in a dual-rail encoding on two long paths.  In particular, a single qubit will correspond to two infinite paths, with a single wave-packet at some specified momentum $k$ traveling along one of the two paths.  If the particle is located on the first (top) path, then the encoded qubit is in the logical state $\ket{0}$, while if the particle is on the second (bottom) path then the encoded qubit is in the logical state $\ket{1}$.  Schematically, this can be seen in \fig{wavetrain_encoding}.
 
 \todo{change figure to Gaussian as opposed to square?}
 
@@ -61,32 +63,35 @@ In our search for simulations, we will first need to encode the logical state in
   \label{fig:wavetrain_encoding}
 \end{figure}
 
-If we didn't mind using an infinite Hilbert space to encode our qubits, we could actually use the eigenstates of the two paths to correspond to the two logical states, but we will eventually want to assume that the encodings have a well-defined position in space to ensure that we need only measure a (relatively) small number of qubits in order to determine the location of the particle with high probability.  To ensure this localization in space (and to use some of our error bounds on the time evolution), we will assume that the logical states are encoded using a truncated Gaussian wave-packet, with four attributes that specify the state: the momentum $k$, the standard deviation $\sigma$, the center of mass $\mu$, and the cutoff range $L$ (which will be closely related to $\sigma$).  With these four values, and assuming that the vertices of the infinite path are labeled as $(x,z)$ for $x\in \ZZ$ and $z\in \FF_2$, we then have that the logical qubit in our system will be encoded into the states
+If we could use an infinite Hilbert space to encode our qubits, we could then actually use the eigenstates of the two paths to correspond to the two logical states.  However, since we will eventually want to measure the encoded states, we will want to assume that the encodings have a well-defined position in space to ensure that we need only measure a (relatively) small number of vertices in order to determine the encoded logical state with high probability.  To ensure this localization in space (and to use some of our error bounds on the time evolution), we will assume that the logical states are encoded using a truncated Gaussian wave-packet, with four attributes that specify the state: the momentum $k$, the standard deviation $\sigma$, the center of mass $\mu$, and the cutoff range $L$ (which will be closely related to $\sigma$).  With these four values, and assuming that the vertices of the two infinite paths are labeled as $(x,z)$ for $x\in \ZZ$ and $z\in \FF_2$, we will have that the logical qubit for our system will be encoded into the states
 \begin{align}
   \ket{z}_{\text{log}} = \gamma \sum_{x = \mu - L}^{\mu + L} e^{ i k x} e^{ - \frac{(x-\mu)^2}{2\sigma^2}} \ket{x,z} \label{eq:single_qubit_encoding}.
 \end{align}
-It is important to realize that none of these four values depend on the value of the encoded qubit; this will allow us to interfere the wave-packets arising from different paths to the same computational basis path as there will be no extraneous information about the logical state.
+It is important to realize that none of these four values depend on the value of the encoded qubit; this will allow us to interfere the wave-packets arising from different paths to the same computational basis, as there will be no extraneous information about the logical state.
 
 This encoding is specifically chosen so that we can use \thm{single_particle_wavepacket_bound}, and guarantee various attributes about the time evolution of such systems.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{One single-qubit unitary}
+\subsection{One single-qubit unitary}\label{sec:SP_1_single_qubit_unitary}
 
 With an actual encoding of a logical qubit, the next step will be to apply an encoded unitary to the logical state.  However, our current encoding is on two (disconnected) paths, and as such if we want to apply any unitary that mixes amplitudes among the two basis states we somehow need to connect the two paths. (Unitaries diagonal in the computational basis will use the same formalism, but they have additional constraints that might make them easier to apply.)
 
 
-Note that \chap{scattering_on_graphs} was all about connecting (semi-) infinite paths, where the amplitudes move from one path to another.  As hinted in the chapter, we can implement encoded unitaries in this manner, if we restrict ourselves to specific momenta and specific scattering gadgets.  Namely, we will examine graphs $\widehat{G}$ with four terminal vertices such that at the momentum $k$ encoding the qubits, the scattering matrices take the form
+Note that \chap{scattering_gadgets} was all about connecting (semi-) infinite paths, where the amplitudes move from one path to another.  As hinted in the chapter, we can implement encoded unitaries in this manner, if we restrict ourselves to specific momenta and specific scattering gadgets.  Namely, we will examine graphs $\widehat{G}$ with four terminal vertices such that at the momentum $k$ encoding the qubits, the scattering matrices take the form
 \begin{align}
   S(k) &= \begin{pmatrix} 0 & U^{T} \\
   U & 0\end{pmatrix},
   \label{eq:unitary_s_matrix}
 \end{align}
-where $U$ is a specific $2\times 2$ unitary matrix.  This will then allow us to apply the unitary $U$ to the encoded qubit.
+where $U$ is a specific $2\times 2$ unitary matrix.  Note that if we label the four basis states as $0_{\text{in}}$, $1_{\text{in}}$, $0_{\text{out}}$, and $1_{\text{out}}$ (in order), we have that the scattering has perfect transfer from input to output vertices.  We will be able to use scattering gadgets of this form to apply the unitary $U$ to the encoded qubit.  Note that there are several explicit examples of these gadgets in \sec{gadgets_unitary}.
 
-More explicitly, we will have four semi-infinite paths, and we will label the four paths by $0_{\text{in}}$, $1_{\text{in}}$, $0_{\text{out}}$, and $1_{\text{out}}$ (where this labeling is the same as in equation \eq{unitary_s_matrix}).  We assume that the wave-packet encoding a qubit travels toward the graph $\widehat{G}$ along the two paths $0_{\text{in}}$ and $1_{\text{in}}$.  Far from the graph the evolution of this wavepacket is nearly identical to that of an infinite path, and thus our encoded qubit is well defined.  As the wavepacket scatters through the graph $\widehat{G}$, the state of the qubit is not well defined, but after scattering, most of the amplitude is on the $0_{\text{out}}$ and $1_{\text{out}}$ paths, and is in the form of an encoded qubit. 
+More explicitly, we will have four semi-infinite paths, and we will label the four paths by $0_{\text{in}}$, $1_{\text{in}}$, $0_{\text{out}}$, and $1_{\text{out}}$ (where this labeling of the paths is the same as in equation \eq{unitary_s_matrix}).  (This graph is similar to that of \fig{single_qubit_scattering_graph}, except with semi-infinite paths.) We assume that the wave-packet encoding a qubit travels toward the graph $\widehat{G}$ along the two paths $0_{\text{in}}$ and $1_{\text{in}}$.  Far from the graph the evolution of this wavepacket is nearly identical to that of an infinite path, and thus our encoded qubit is well defined.  As the wavepacket scatters through the graph $\widehat{G}$, the state of the qubit is not well defined, but after scattering, most of the amplitude is on the $0_{\text{out}}$ and $1_{\text{out}}$ paths, and is in the form of an encoded qubit. 
+
 
 For specific $\mu$, $L$, $\sigma$, and $t$, we the have from \thm{single_particle_wavepacket_bound} that the outgoing wave-packet for the two computational basis states is well approximated by the wave-packet corresponding to the state $U \ket{z}$.  If we remember that the form of the wave-packet doesn't depend on the value of the initial encoded qubit, we can see that the evolution of the two basis states interfere, and thus for \text{any} encoded state $\ket{\phi}$, the outgoing wavepacket is well approximated by the encoded $U\ket{\phi}$.  This is exactly what we were looking for.
+
+
 
 
 \todo{make graph?}
@@ -94,7 +99,7 @@ For specific $\mu$, $L$, $\sigma$, and $t$, we the have from \thm{single_particl
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Evolution on a finite graph}\label{sec:single_qubit_finite_graph}
+\subsection{Evolution on a finite graph}\label{sec:SP_single_qubit_finite_graph}
 
 
 Unfortunately, a single unitary will not be sufficient for our purposes; while we could probably find a four-terminal graph that computes whether a given circuit accepts or rejects its input, most of the computation would be found in the construction of the underlying graph, as opposed to the evolution itself.  To ensure that the computational power arises from the time evolution of the system, we will need to place multiple graphs as scattering obstacles for the computation.  This causes problems, though, in that we extensively utilize the semi-infinite paths in our analysis; we somehow need to truncate the graph while maintaining our results about the time-evolution.
@@ -105,21 +110,21 @@ To do this, we will apply our truncation lemma (\lem{truncation}), as it was des
   \centering
   \tikzsetnextfilename{SP_u_single_qubit_scattering_graph}
   \input{../tikz/SP_u_single_qubit_scattering_graph.tex}
-  \caption{A graph $G(K)$ used to perform a single-qubit gate on an encoded qubit. 
-  \label{fig:single_qubit_scattering_graph}}
+  \caption{A graph $G(K)$ used to perform a single-qubit gate on an encoded qubit. }
+  \label{fig:single_qubit_scattering_graph}
 \end{figure}
 
-More concretely, let $H=A(G)$ be the Hamiltonian for a single particle scattering off of a finite graph $\widehat{G}$ with $N$ paths.  Let $G(K)$ be the finite graph obtained from $G$ by truncating each of the paths to have a total length $K$ (so that the endpoints of the paths are labeled $(K,j)$ for $j\in [N]$), and choose $\widetilde{H}=A(G(K))$ (see \fig{single_qubit_scattering_garph}). Let the subspace $\mathcal{K}$ be spanned by basis states corresponding to vertices in $G(K)$.  Choose a momentum $k\in (-\pi,0)$, a position $\mu$, and a cutoff length $L$, and let $|\Phi\rangle=|\psi^j(0)\rangle$ be the same initial state as in \thm{single_particle_scattering_bound}.  We will choose the evolution time $T$ so that for $0\leq t\leq T$, the time-evolved state remains far from the vertices labeled $(K,j)$ (for each $j\in\{1,\ldots,N\}$), and thus far from the effect of truncating the paths.  Note that this requires $K > \mu + L$.  More precisely, we will choose $T=\OO(L)$ and $K = \OO(L)$ so that, for times $0\leq t\leq T$, the state $|\alpha^j (t)\rangle$ from \thm{single_particle_wavepacket_bound} has no amplitude on vertices within a distance $N_0=\Omega(L)$ from the endpoints of the paths. For such times $t$ we have
+More concretely, let $H=A(G)$ be the Hamiltonian for a single particle scattering off of a finite graph $\widehat{G}$ with $N$ paths.  Let $G(K)$ be the finite graph obtained from $G$ by truncating each of the paths to have a total length $K$ (so that the endpoints of the paths are labeled $(K,j)$ for $j\in [N]$), and choose $\widetilde{H}=A(G(K))$ (see \fig{single_qubit_scattering_graph} in the special case for $N=4$). Let the subspace $\mathcal{K}$ be spanned by basis states corresponding to vertices in $G(K)$.  Choose a momentum $k\in (-\pi,0)$, a position $\mu$, and a cutoff length $L$, and let $|\Phi\rangle=|\psi^j(0)\rangle$ be the same initial state as in \thm{single_particle_scattering_bound}.  We will choose the evolution time $T$ so that for $0\leq t\leq T$, the time-evolved state remains far from the vertices labeled $(K,j)$ (for each $j\in\{1,\ldots,N\}$), and thus far from the effect of truncating the paths.  Note that this requires $K > \mu + L$.  More precisely, we will choose $T=\OO(L)$ and $K = \OO(L)$ so that, for times $0\leq t\leq T$, the state $|\alpha^j (t)\rangle$ from \thm{single_particle_wavepacket_bound} has no amplitude on vertices within a distance $N_0=\Omega(L)$ from the endpoints of the paths. For such times $t$ we have
 \begin{align}
 \left(1-P\right)H^r |\alpha^j \left(t\right)\rangle=0 \text{ for all } 0\leq  r < N_0,
 \end{align}
 where $P$ is the projector onto $\mathcal{K}$.   With these values, we can apply \lem{truncation} where $W=H=A(G)$, $|\gamma(t)\rangle=|\alpha^j(t)\rangle$, and the bound $\delta=\OO(\sqrt{\log L/L})$ from \thm{single_particle_wavepacket_bound}. The lemma then says that, for times $t$ such that $0\leq t\leq T$,
 \begin{equation}
-  \big\Vert \left(e^{-iA(G) t}-e^{-iA(G(K))t}\right)|\psi^{j}(0)\rangle \big\Vert=\OO\Bigg(\sqrt{\frac{\log L}{L}}\Bigg)
+  \bigg\Vert \left(e^{-iA(G) t}-e^{-iA(G(K))t}\right)|\psi^{j}(0)\rangle \bigg\Vert=\OO\Bigg(\sqrt{\frac{\log L}{L}}\Bigg)
 \end{equation}
 so, for $0\leq t\leq T$, when combined with \thm{single_particle_wavepacket_bound}, we can see
 \begin{align}
-  \big\Vert e^{-iA(G(K)) t}|\psi^{j}(0)\rangle-|\alpha^{j}(t)\rangle \big\Vert =\OO\Bigg(\sqrt{\frac{\log L}{L}}\Bigg).
+  \Big\Vert e^{-iA(G(K)) t}|\psi^{j}(0)\rangle-|\alpha^{j}(t)\rangle \Big\Vert =\OO\Bigg(\sqrt{\frac{\log L}{L}}\Bigg).
     \label{eq:trunc_paths}
 \end{align}
 In other words, for small enough evolution times, the conclusion of \thm{single_particle_wavepacket_bound} still holds if we replace the full Hamiltonian $A(G)$ with the truncated Hamiltonian $A(G(K))$ (albeit with a larger constant).  Note that this analysis is rather informal, and is more to give an intuition for the more exact analysis.
@@ -152,7 +157,7 @@ With these definitions, we will want to show that the input states evolve to the
 % Lemma for single-qubit single unitary computation
 \begin{lemma}
 \label{lem:single_qubit_encoded_computation}
-  Let $k\in (-\pi,0)$, and let $\widehat{G}$ be a four-terminal gate gadget, such that its scattering matrix at momentum $k$ is of the form \eq{unitary_s_matrix}.  Letting the logical states $\ket{z}_{\text{log},\text{in}}$ and $\ket{z}_{\text{log},\text{out}}$ be defined as in \eq{single_qubit_input_encoding} and \eq{single_qubit_output_encoding}, where $\mu \geq 2L $ and $K \geq \frac{5 \mu}{3}$ and $T = \frac{\mu}{\sin |k|}$, we have that there exists some constant $\xi$ such that for all $0 \leq t \leq T$
+  Let $k\in (-\pi,0)$, and let $\widehat{G}$ be a four-terminal gate gadget, such that its scattering matrix at momentum $k$ is of the form \eq{unitary_s_matrix}.  Letting the logical states $\ket{z}_{\text{log},\text{in}}$ and $\ket{z}_{\text{log},\text{out}}$ be defined as in \eq{single_qubit_input_encoding} and \eq{single_qubit_output_encoding}, where $\mu \geq L $, $\mu \in \OO(L)$, $K \geq \frac{5 \mu}{3}$, and $T = \frac{\mu}{\sin |k|}$, we have that there exists some constant $\xi$ such that for all $0 \leq t \leq T$
 \begin{align}
   \Big\Vert e^{-i A(G(K))t} \ket{\phi(0)} - \ket{\phi(t)} \Big\Vert \leq \xi \sqrt{\frac{\log L}{L}},
 \end{align}
@@ -204,14 +209,11 @@ If we then note that $\phi(0) = \ket{\psi}_{\text{log},\text{in}}$ and $\phi(T) 
 
 Essentially, \lem{single_qubit_encoded_computation} tells us that even when truncated to finite length paths, the scattering events on our graphs apply an encoded unitary to the logical states.  This is represented pictorially in \fig{single_particle_cartoon}.
  
-
-\todo{correct \fig{single_particle_cartoon}.}
-
 \begin{figure}
   \centering
   \tikzsetnextfilename{SP_u_single_particle_cartoon}
   \input{../tikz/SP_u_single_particle_cartoon.tex}
-  \caption{A single-qubit gate $U$ acts on an encoded qubit. The wave packet starts on the paths on the left-hand side of the figure, a distance $M(k)$ from the ends of the paths. After time $t_{\mathrm{I}}={3L}/{2}$ the logical gate has been applied and the wave packet has traveled a distance $2M(k)+L$ (up to error terms that are bounded as $\O(L^{-{1}/{4}}))$.}
+  \caption{A single-qubit gate $U$ acts on an encoded qubit. The wave packet starts on the paths on the left-hand side of the figure, a distance $\alpha\mu$ from the ends of the paths (for some constant $\alpha$). After time $\frac{\mu}{\sin |k|}$ the logical gate has been applied and the wave packet has traveled a distance $2\mu$.}
   \label{fig:single_particle_cartoon}
 \end{figure}
 
@@ -225,7 +227,7 @@ Now that we have a good approximation for the time evolution of a scattering eve
 
 Along these lines, let us assume that a single-qubit circuit $\mathcal{C}$ is composed of $g$ unitaries, where the $i$th unitary applied is given by $U_i$.  Moreover, let us assume that at a momentum $k$, the graphs $\widehat{G}_i$ have scattering matrices of the form \eq{unitary_s_matrix} corresponding to the unitary $U_i$ (i.e., at momentum $k$, the graph $\widehat{G}_i$ implements an encoded $U_i$).  We can then construct a graph $G_{\mathcal{C}}$ which we will use to compute the circuit $\mathcal{C}$ using wave-packets at momentum $k$. 
 
-The graph $G_{\mathcal{C}}$ is constructed by combining the $G_i(K)$ into a single graph, where $G_i(K)$ is defined in \sec{single_qubit_single_gate_computation}, by associating the output paths of $G_i(K)$ with the input paths of $G_{i+1}(K)$.  Assuming that the vertices of $G_i(K)$ are labeled as $(u,i)$, this essentially means that most of the vertices along the long paths have two labels, $(x,3, i)$ and $(K+1 -x,i+1)$ or $(x,4,i)$ and $(K+1-x,2,i+1)$.  Equivalently, the graph $G_{\mathcal{C}}$ can be constructed by removing the input paths (paths $1$ and $2$) for all the $G_i(K)$ (except for $G_1(K)$), shorten each of the terminal paths by 1 (except for $G_g(K)$), and then connect the end of the paths for $G_i(K)$ to the input terminals of $G_{i+1}(K)$.
+The graph $G_{\mathcal{C}}$ is constructed by combining the $G_i(K)$ into a single graph (where $G_i(K)$ is defined in \sec{SP_1_single_qubit_unitary}) by associating the output paths of $G_i(K)$ with the input paths of $G_{i+1}(K)$.  Assuming that the vertices of $G_i(K)$ are labeled as $(u,i)$, this essentially means that most of the vertices along the long paths have two labels, $(x,3, i)$ and $(K+1 -x,i+1)$ or $(x,4,i)$ and $(K+1-x,2,i+1)$.  Equivalently, the graph $G_{\mathcal{C}}$ can be constructed by removing the input paths (paths $1$ and $2$) for all the $G_i(K)$ (except for $G_1(K)$), shortening each of the terminal paths by 1 (except for $G_g(K)$), and then connect the end of the paths for $G_i(K)$ to the input terminals of $G_{i+1}(K)$.
 
 \todo{make a simple figure}
 
@@ -268,61 +270,61 @@ As such, if we take $L$ larger than $g^2\kappa^2\log^2(g\kappa)$ we find that th
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Explicit encodings}\label{sec:explicit_encodings}
-
-\todo{Find universal gate set for several momenta ($\pi/2$, $\pi/4$, $\pi/3$, etc.)}
-
-Thus far, we have given a general recipe for constructing graphs that implement particular encoded unitaries for wave-packets at a particular momentum $k$, assuming that we have scattering gadgets at momentum $k$ that implement a universal set of one-qubit unitaries.  While the framework is useful, in that it works for any such momentum, we need to show that there exists at least one momentum for which a universal set of gadgets exist.  
-
-While we could search ourselves for these gadgets, Blumer, Underwood, and Feder (\cite{BUF11}) have already searched over all graphs with up to $9$ vertices for graphs that implement encoded unitaries at particular momentum.  Combined with the universal gadgets given by Childs \cite{Chi09}, these will be enough for our purposes.
-
-In particular, at momentum $k = -\frac{\pi}{4}$ or at momentum $p = - \frac{3\pi}{4}$, the two gadgets from \cite{Chi09} are depicted in 
-(Create Figure).  Moreover, they implement the unitaries:
-
-For momentum $\pi/2$, we have that the graph (create Figure) implements a Hadamard gate.  Additionally, we have from \cite{BUF11} that the graphs in Figure ???? (find) implement unitaries that form the V-basis.
-
-(I'd really like to also have universal gates at $\pi/3$ and $2\pi/3$, since they move at the same speed, and we have a momentum switch between them.  However, I don't have one yet.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}
-  \centering
-  \subfloat[][]{ 
-    \tikzsetnextfilename{SG_pi_4_phase}
-    \input{../tikz/SG_pi_4_phase}
-    \label{fig:pi_4_phase}
-  }
-  \qquad
-  \subfloat[][]{
-    \tikzsetnextfilename{SG_pi_4_basis_change}
-    \input{../tikz/SG_pi_4_basis_change.tex}
-    \label{fig:pi_4_basis_change}
-   }
-   \caption{Encoded one-qubit gates at $k = -\frac{\pi}{4}$.  \subfig{pi_4_phase}  A phase gate.  \subfig{pi_4_basis_change}  Basis-changing gate.}
-   \label{fig:pi_4_universal}
-\end{figure}
-
-
-%%%%%%%%%%%%%%%%%
-\begin{figure}
-  \centering
-  \tikzsetnextfilename{SG_pi_2_had}
-  \input{../tikz/SG_pi_2_had}
-  \caption{Graph implementing a Hadamard gate at $k = -\frac{\pi}{2}$.
-    \label{fig:pi_2_had}}
-\end{figure}
-
-
+%
+%\subsection{Explicit encodings}\label{sec:explicit_encodings}
+%
+%\todo{Find universal gate set for several momenta ($\pi/2$, $\pi/4$, $\pi/3$, etc.)}
+%
+%Thus far, we have given a general recipe for constructing graphs that implement particular encoded unitaries for wave-packets at a particular momentum $k$, assuming that we have scattering gadgets at momentum $k$ that implement a universal set of one-qubit unitaries.  While the framework is useful, in that it works for any such momentum, we need to show that there exists at least one momentum for which a universal set of gadgets exist.  
+%
+%While we could search ourselves for these gadgets, Blumer, Underwood, and Feder (\cite{BUF11}) have already searched over all graphs with up to $9$ vertices for graphs that implement encoded unitaries at particular momentum.  Combined with the universal gadgets given by Childs \cite{Chi09}, these will be enough for our purposes.
+%
+%In particular, at momentum $k = -\frac{\pi}{4}$ or at momentum $p = - \frac{3\pi}{4}$, the two gadgets from \cite{Chi09} are depicted in 
+%(Create Figure).  Moreover, they implement the unitaries:
+%
+%For momentum $\pi/2$, we have that the graph (create Figure) implements a Hadamard gate.  Additionally, we have from \cite{BUF11} that the graphs in Figure ???? (find) implement unitaries that form the V-basis.
+%
+%(I'd really like to also have universal gates at $\pi/3$ and $2\pi/3$, since they move at the same speed, and we have a momentum switch between them.  However, I don't have one yet.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{figure}
+%  \centering
+%  \subfloat[][]{ 
+%    \tikzsetnextfilename{SG_pi_4_phase}
+%    \input{../tikz/SG_pi_4_phase}
+%    \label{fig:pi_4_phase}
+%  }
+%  \qquad
+%  \subfloat[][]{
+%    \tikzsetnextfilename{SG_pi_4_basis_change}
+%    \input{../tikz/SG_pi_4_basis_change.tex}
+%    \label{fig:pi_4_basis_change}
+%   }
+%   \caption{Encoded one-qubit gates at $k = -\frac{\pi}{4}$.  \subfig{pi_4_phase}  A phase gate.  \subfig{pi_4_basis_change}  Basis-changing gate.}
+%   \label{fig:pi_4_universal}
+%\end{figure}
+%
+%
+%%%%%%%%%%%%%%%%%%
+%\begin{figure}
+%  \centering
+%  \tikzsetnextfilename{SG_pi_2_had}
+%  \input{../tikz/SG_pi_2_had}
+%  \caption{Graph implementing a Hadamard gate at $k = -\frac{\pi}{2}$.
+%    \label{fig:pi_2_had}}
+%\end{figure}
+%
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Multi-qubit computations}
-\label{sec:multi_qubit_computations}
+\label{sec:SP_multi_qubit_computations}
 
-With our understanding of single-qubit circuit simulation via scattering, we can now try to apply our results to multi-qubit circuts.  The intuitive construction will remain the same, but the requisite number of vertices will become rather large.  In particular, our construction will require an exponential number of long paths, corresponding to the exponential size of the corresponding Hilbert space.
+Now that we understand how to simulate a single-qubit circuit via scattering, we can try to apply our results to multi-qubit circuits.  The intuitive construction remains the same, but the requisite number of vertices will become rather large.  In particular, our construction will require an exponential number of long paths, corresponding to the exponential size of the Hilbert space we want to simulate.
 
 To begin, let us give the encoding of $n$ qubits in our scattering framework.  As in \sec{single_qubit_encoding}, we will encode the state as a wave-packet traveling along an infinite path, where the value of the qubit is encoded in the path on which the particle is located.  For a single qubit, this meant that we had two infinite paths, corresponding to logical $0$ and $1$.  For $n$ qubits, however, this means that we need $2^n$ infinite paths, one path corresponding to each logical basis state.
 
-We will still have four important quantities that are independent of the state of the qubit, namely the momentum of the wave-packet $k$, the position of the center of the wave-packet $\mu$ (which depends on $t$), the cutoff distance $L$, and the standard deviation of the Guassian $\sigma$.  As such, if we label the $2^n$ infinite paths by the strings $\mathbf{z}\in \FF_2^n$, and the vertices as $(x,\mathbf{s})$ for $x\in \ZZ$ and $\mathbf{z}\in \FF_2^n$, we have that the logical states are encoded in the wave-packets
+We will still have four important quantities that are independent of the state of the qubit, namely the momentum of the wave-packet $k$, the position of the center of the wave-packet $\mu$ (which depends on $t$), the cutoff distance $L$, and the standard deviation of the approximating Gaussian $\sigma$.  As such, if we label the $2^n$ infinite paths by the strings $\mathbf{z}\in \FF_2^n$, and the vertices as $(x,\mathbf{s})$ for $x\in \ZZ$ and $\mathbf{z}\in \FF_2^n$, we have that the logical states are encoded in the wave-packets
 \begin{align}
   \ket{\mathbf{z}}_{\text{log}} = \gamma \sum_{x = \mu - L}^{\mu + L} e^{ i k x} e^{ - \frac{(x-\mu)^2}{2\sigma^2}} \ket{x,\mathbf{z}} \label{eq:multi_qubit_encoding}.
 \end{align}
@@ -332,27 +334,29 @@ Note that we again use this encoded form so that we will be able to analyze the 
 
 \subsection{One multi-qubit unitary}\label{sec:multi_qubit_single_gate}
 
-Now that we have an encoding of our qubits, we will need to somehow apply encoded unitary gates.  We have already done most of the work in \sec{single_qubit_computations}, and we just need to show how to use the single-qubit results in our larger encoding, and how to perform multi-qubit entangling gates.
+Now that we have an encoding of our qubits, we will need to somehow apply encoded unitary gates.  We have already done most of the work in \sec{SP_single_qubit_computations}, and we just need to show how to use the single-qubit results in our larger encoding, and how to perform multi-qubit entangling gates.
 
 Our implementation of single-qubit unitaries for multi-qubit computations is to use many copies of the single-qubit implementation.  In particular, since a single qubit unitary $U$ acting on qubit $w\in [n]$ can be written as
 \begin{align}
   \II_{2^{w-1}} \otimes U \otimes \II_{2^{n-w}} = \sum_{x \in \FF_2^{w-1}, y\in \FF_2^{n-w}} \ketbra{x}{x} \otimes U \otimes \ketbra{y}{y},
 \end{align}
-we can apply the unitary $U$ on the encoded $w$ qubit by ensuring that the scattering occurs for each computational basis state of the other qubits.  This means that by placing $2^{n-1}$ copies of the graph $\widehat{G}$ as obstacles in the paths, one for each computational basis state, the scattering behavior is exactly as expended.  We will call the infinite graph corresponding to the unitary $U$ acting on $n$ qubits $G_U^n$.
+we can apply the unitary $U$ on the encoded $w$ qubit by ensuring that the scattering occurs for each computational basis state of the other qubits.  This means that by placing $2^{n-1}$ copies of the graph $\widehat{G}$ as obstacles in the paths, one for each computational basis state of the qubits not used in the unitary, the scattering behavior is exactly as expected.  We will call the infinite graph corresponding to the unitary $U$ acting on $n$ qubits $G_U^n$.
 
-\todo{make multi qubit gate figure}
+For multi-qubit entangling unitaries, the solution is even more simple; we simply relabel the output paths.  Noting that many multi-qubit gates, such as the controlled-NOT gate or the Toffoli gate, simply permute the computational basis states, along with the fact that the particular path a particle travels along corresponds to its logical state, by relabeling the paths, or equivalently by permuting the paths, we apply an encoded entangling gate.    Note that this method of applying a multi-qubit gate is independent of the encoding momenta, and thus can be used for all momenta (so that we don't need to find additional graphs with scattering matrices at the encoding momentum).  
 
+Assuming that a given two-qubit unitary $V$ occurs after some single-qubit unitary $U$, we construct the graph $G_{VU}^n$ implementing $VU$ by taking a copy of $G_U^n$, and then permuting its output paths.  Note that this means that for a given copy of $\widehat{G}_j$, the logical states corresponding to the input paths might be different from the logical states corresponding to the output paths.  However, since $V$ is only a two-qubit permutation, the output paths can be efficiently determined for a given copy of $\widehat{G}_j$. An example of such a graph can be seen in \fig{SP_block}, except with semi-infinite paths.
 
-For multi-qubit entangling unitaries, the solution is even more simple; we simply relabel the output paths.  If we note that many multi-qubit gates such as a controlled-NOT gate or a Toffoli gate simply permutes the computational basis states, along with the fact that the particular path a particle travels along corresponds to its logical state, by relabeling the paths, or equivalently by permuting the paths, we apply an encoded entangling gate.  Schematically, this can be seen in \fig{entangling_gate}.  Note that this method of applying a multi-qubit gate is independent of the encoding momenta, and thus can be used for all momenta (so that we don't need to find additional graphs with scattering matrices at the encoding momentum).  
+As in \sec{SP_single_qubit_finite_graph}, we can then define $G_{VU}^n(K)$ as the graph that that remains after truncating each of the infinite paths of $G_{VU}^n$ to length $K$.
 
-Assuming that a given two-qubit unitary $V$ occurs after some single-qubit unitary $U$, we construct the graph $G_{VU}^n$ implementing $VU$ by taking a copy of $G_U^n$, and then permuting its output paths.  Note that this means that for a given copy of $\widehat{G}_j$, the logical states corresponding to the input paths might be different from the logical states corresponding to the output paths.  However, since $V$ is only a two-qubit permutation, the output paths can be efficiently determined for a given copy of $\widehat{G}_j$.
+\begin{figure}
+  \centering
+  \tikzsetnextfilename{SP_block}
+  \input{../tikz/SP_block.tex}
+  \caption{The intuitive idea for the graph simulating a single unitary.  Each $U_{x}$ for $x\in \FF_2^{n-1}$ is the same, and note that the output paths are flipped if the last bit is 1.}
+  \label{fig:SP_block}
+\end{figure}
 
-As in \sec{single_qubit_finite_graph}, we can then define $G_{VU}^n(K)$ as the graph that that remains after truncating each of the infinite paths of $G_{VU}^n$ to length $K$.
-
-\todo{make \fig{entangling_gate} entangling gate}.
-
-
-With all of this, and assuming that the $2^{n+1}$ paths are labeled as in \fig{multi_qubit_scattering_graph} where the path for $\mathbf{z}_{\text{in}}$ for $\mathbf{z}\in \FF_2^n$ is labeled as $z+1$ while the $\mathbf{z}_{\text{out}}$ are labeled as $z+2^n+1$, we have that our input logical basis states are
+With all of this, and assuming that the $2^{n+1}$ paths are labeled with the path corresponding to $\mathbf{z}_{\text{in}}$ for $\mathbf{z}\in \FF_2^n$ is labeled as $z+1$ while the $\mathbf{z}_{\text{out}}$ are labeled as $z+2^n+1$, we have that our input logical basis states are
 \begin{align}
   \ket{\mathbf{z}}_{\text{log},\text{in}} = \gamma \sum_{x = \mu - L}^{\mu + L} e^{ i k x} e^{ - \frac{(x-\mu)^2}{2\sigma^2}} \ket{x,z+1},
   \label{eq:multi_qubit_input_encoding}
@@ -410,15 +414,7 @@ where each $V_j$ is a two-qubit gate, and each $U_1$ is a one-qubit gate.
 
 As in \sec{single_qubit_multi_gate_computation}, we will construct a graph for this circuit, $G_{\mathcal{C}}$, by examining the graphs $G_{V_jU_j}^{n}$ for each $j\in [g]$, and then combining them by associating the output paths of $G_{V_jU_jj}^{n}(K)$ with the input paths of $G_{V_{j+1}U_{j+1}}^{n}(K)$.  Explicitly, the vertices along the output paths of $G_{V_jU_j}^{n}(K)$ labeled as $(x,2^{n} + 1 +z, j)$ for $\mathbf{z}\in \FF_2^n$ are defined to be the same vertices on the input paths of $G_{V_{j+1}U_{j+1}}^{n}(K)$ labeled as $(K+1-x,z+1,j+1)$.  This can be seen pictorially in \fig{SP_block} for one of these blocks.
 
-\todo{fix figure \fig{SP_block}}
 
-\begin{figure}
-  \centering
-  \tikzsetnextfilename{SP_block}
-  \input{../tikz/SP_block.tex}
-  \caption{The intuitive idea for a single-particle block.}
-  \label{fig:SP_block}
-\end{figure}
   
 With this construction, we will use exactly the same idea as in the \sec{single_qubit_multi_gate_computation} to analyze the time-evolution of a particular initial logical state, with the analysis proceeding accordingly.  Using \lem{truncation} to focus on the vertices close to a the wavepacket (and in particular the nearest copy of $G_{V_jU_j}^{n}(K)$) we can the use \cor{multi_qubit_single_gate_encoded_computation} to approximate the evolution.
  
@@ -456,10 +452,13 @@ where $\kappa$ is depends on $k$ and the maximum degree of $G_{\mathcal{C}}$ (wh
 \end{align}
 exactly as in \sec{single_qubit_multi_gate_computation} and our error bound does not explicitly depend on $n$.  As such, if we take $L$ larger than $g^2\kappa^2 \log^2 (g\kappa)$ we find that the error can be made arbitrarily small, and thus we can simulate a particular $n$-qubit $g$-gate circuit with constant error via graph scattering on a graph of $\OO(2^n g^3 \log^2 g)$ vertices for a time $\OO(g^3\log^2 g)$.
 
+\subsection{Explicit examples}
+
+\todo{include explicit mention of momenta for which this works}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\begin{comment}
 \section{Universality via single-particle scattering}
 
 \todo{I'm not happy with the wording of much of this section}
@@ -525,17 +524,20 @@ As the quantum walker fails with probability at most $\frac{1}{3}$ (i.e., accept
 
 Put together with our results using scattering, we then have that \QWE{} is \BQP-complete, or that quantum walks are universal for quantum computation.
 
+\end{comment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Discussion and extensions}
 
-Note that these results are essentially already known.  In particular, Childs gave a similar result using scattering theory, but where his time evolution arose from the theory of stationary phases. 
+At this point, we have shown that single-particle graph scattering can be used to simulate an arbitrary quantum computation.  In particular, we were able to use a dual-rail encoding, and simulate each unitary from a universal gate set via scattering.  By combining these scattering events (and bounding the resulting error), we were able to simulate the computation.  It is important to realize that most of the technical results for this universality proof are contained in our understanding of single-particle scattering from \chap{scattering_on_graphs}, along with a technical truncation lemma (\lem{truncation}), and the portion of the proof in this chapter are simply applications of those results.
 
-This discussion has essentially been plug-and-play for the momentum $k$, assuming that a set of universal scattering gadgets are known for the momenta.  However, we only have these gadgets for a small set of momenta.  It might be interesting to find these universal gate sets for a larger group, or show that they do not exist for some particular momentum.
+While this is a novel proof of the universality of quantum walk, both the result and the proof strategy are not new.  In particular, Childs gave a similar result using scattering theory \cite{Chi09}, but where his time evolution arose from the theory of stationary phases, while the proof strategy is nearly identical to that of Childs, Gosset, and Webb in their proof of universality for multi-particle quantum walk \cite{MPQW}.  However, the point of this chapter was not to prove anything novel, but to give an intuitive understanding for the proof strategy.
 
-As a possible extension of this work, the permutation of the underlying paths corresponding to a two-qubit unitary plays a key part in our encoded gates.  However, these permutations are intrinsically non-planar (assuming that there are more than three non-identity 2-qubit gates).  One might ask whether \text{any} planar graph could be used to encode a computation, or whether non-planarity is required to capture the entire power of quantum walk.  In a similar manner, one might ask what other properties of the underlying graph are needed to maintain the same computational power.
+Additionally, the discussion in this chapter has essentially been plug-and-play for the momentum $k$, assuming that a set of universal scattering gadgets are known for the momentum in question.  However, we have only found these gadgets for a small set of momenta, described in \sec{gadgets_unitary}.  One might be able to extend this proof to work for all momenta, if we could find a set of gadgets that work for all momenta.  It might also be possible to show that this construction does not work for some momentum, although I think that unlikely.
 
-Additionally, our current construction assumes no errors, and error-correction cannot trivially be implemented in our scheme.  We are unsure how error correction could be implemented using this construction, since both non-local measurements and measurements in the middle of the computation seem rather difficult.  Including error correction in our graph scattering (or quantum walk in general) would be of great help in the applications toward universality.  This might also help us in the next chapter, as we use similar methods to show the universality of multi-qubit quantum walk.
+As a possible extension of this work, the permutation of the underlying paths corresponding to a two-qubit unitary plays a key part in our encoded gates.  However, these permutations are intrinsically non-planar (assuming that there are more than three non-identity 2-qubit gates).  One might ask whether \text{any} planar graph could be used to encode a computation, or whether non-planarity is required to capture the entire power of quantum walk.  In a similar manner, one might ask what other properties of the underlying graph are needed to maintain the same computational power.  While this is not necessary for any physical reason (since the exponential size of the graph is infeasible to construct in reality), there might be some relation between different graph properties and their use as a computational tool.
+
+Additionally, our current construction assumes no errors, and error-correction cannot trivially be implemented in our scheme.  We are unsure how error correction could be implemented using this construction, since both non-local measurements and measurements in the middle of the computation seem rather difficult.  Further, one of the inherent properties of quantum walk is the lack of a time-dependent Hamiltonian; most current error correction methods seem contrary to the spirit of quantum walk.  As such, including some kind of error correction naturally in our graph scattering (or quantum walk in general) would be of great help in the applications toward universality.  This might also help us in \chap{MP_universality}, as we use similar methods to show the universality of multi-qubit quantum walk.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
