@@ -87,7 +87,7 @@ While an understanding of the scattering behavior for infinite graphs is useful 
   \centering  
   \tikzsetnextfilename{MP_u_sqf}
   \input{../tikz/MP_u_sqf.tex}
-  \caption{A finite graph applying a single-qubit unitary to the first qubit.}
+  \caption[MPQW single-qubit unitary]{A finite graph applying a single-qubit unitary to the first qubit.}
 \label{fig:MP_u_sqf}
 \end{figure}
 
@@ -199,7 +199,7 @@ Note that the graph and analysis described here only works for two particles.  H
   \input{../tikz/MP_u_cd_gate.tex}
   \label{fig:cd_gate}
 }
-\caption{\subfig{mom_switch} Momentum switch schematic. \subfig{cd_gate} $\CD$ gate.}
+\caption[MPQW $\CD$ gate]{\subfig{mom_switch} Momentum switch schematic. \subfig{cd_gate} $\CD$ gate.}
 \label{fig:onepsplit}
 \end{figure}
 
@@ -230,7 +230,7 @@ The $\CD$ gate is implemented using the graph shown in \fig{explicit_cd}. In thi
   \centering
   \tikzsetnextfilename{MP_u_explicit_cd}
   \input{../tikz/MP_u_explicit_cd.tex} 
-  \caption{Graph $G'$ used to implement the $\CD$ gate. The integers $Z$, $X$, and $W$ are specified in equations \eq{Z_eq}, \eq{X_eq}, and \eq{W_eq}, respectively.}
+  \caption[Explicit $\CD$ gate]{Graph $G'$ used to implement the $\CD$ gate. The integers $Z$, $X$, and $W$ are specified in equations \eq{Z_eq}, \eq{X_eq}, and \eq{W_eq}, respectively.}
 \label{fig:explicit_cd}
 \end{figure}
 
@@ -290,7 +290,7 @@ where  $\nu_1=\mu_1 + \lceil 2t_{\CD} \sin |k_1|\rceil $ and $\nu_{2}=\mu_2 + \l
   \centering
   \tikzsetnextfilename{MP_u_11_scattering_cartoon}
   \input{../tikz/MP_u_11_scattering_cartoon.tex} 
-  \caption{This picture illustrates the scattering process for two wave-packets that are incident on the input paths as shown in figure (a) at time $t=0$. Figure (b) shows the location of the two wave-packets after a time $t_{1}$ and figure (c) shows the wave-packets after a time $t_{2}$. After the particles pass one another they acquire an overall phase of $e^{i\theta_\pm}$. Figure (d) shows the final configuration of the wave-packets after a total evolution time $t_{\CD}$.}
+  \caption[$\CD$ gate cartoon]{This picture illustrates the scattering process for two wave-packets that are incident on the input paths as shown in figure (a) at time $t=0$. Figure (b) shows the location of the two wave-packets after a time $t_{1}$ and figure (c) shows the wave-packets after a time $t_{2}$. After the particles pass one another they acquire an overall phase of $e^{i\theta_\pm}$. Figure (d) shows the final configuration of the wave-packets after a total evolution time $t_{\CD}$.}
   \label{fig:11_scattering_cartoon}
 \end{figure}
 
@@ -558,7 +558,7 @@ Let the resulting graph be called $G_{X}$
   \centering
   \tikzsetnextfilename{MP_combining_graphs}
   \input{../tikz/MP_combining_graphs.tex} 
-  \caption{An example of concatenating two single-gate graphs.  The particular gadgets are between momenta $k_1 = -\frac{\pi}{4}$ and $k_2 = -\frac{\pi}{2}$.}
+  \caption[Combining graph example]{An example of concatenating two single-gate graphs.  The particular gadgets are between momenta $k_1 = -\frac{\pi}{4}$ and $k_2 = -\frac{\pi}{2}$.}
   \label{fig:combining_graphs}
 \end{figure}
 
@@ -660,7 +660,7 @@ If we can then also guarantee that the scattering gadgets used to implement the 
 \centering
   \tikzsetnextfilename{MP_PlanCPGate}
   \input{../tikz/MP_PlanCPGate.tex}   
-\caption{The planar entangling gate between adjacent encoded qubits $i$ and $i+1$. This graph implements the unitary $\XX_{i+1} (\CD)^2_{i,i+1} \XX_{i+1}$.}
+\caption[Planar entangling gate]{The planar entangling gate between adjacent encoded qubits $i$ and $i+1$. This graph implements the unitary $\XX_{i+1} (\CD)^2_{i,i+1} \XX_{i+1}$.}
 \label{fig:PlanCPGate}
 \end{figure}
 
@@ -687,10 +687,9 @@ Note that it may be possible to implement an entangling two-qubit gate in other 
 
 \section{Conclusions and open problems}
 
-What about long-range interactions, but where the interactions die off?
-Additionally, what about error correction?
+Using scattering theory for one and two-qubit interactions on a graph, we were able to encode $n$ qubits in the location of $n$-particles on a polynomial sized graph.  We then used our bounds on the scattering behavior for these small number of particles to understand the $n$-particle evolution.  
 
-smaller constants
+Note that we have already improved known results in this construction, as our error bounds are nearly a quadratic improvement.  However, the resulting bounds are still rather large; if we could improve these bounds in any manner, either by changing our construction or decreasing the error from scattering events, this would be a nice result.
 
 \biblio{}
 

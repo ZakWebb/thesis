@@ -14,15 +14,12 @@
 \chapter{Scattering on graphs}
 \label{chap:scattering_on_graphs}
 
-\todo{write a better introduction, including more citations}
 
-Scattering is one of the more basic ideas of physics, with a surprisingly large usefulness.  The old joke about physicists throwing two frogs at each other \todo{cite} in order to understand their internal components has a grain of truth; particle accelerators \todo{cite}, gravitational lensing \todo{cite}, and x-ray crystallography \todo{cite} are just some examples out of many in which scattering plays a key role in physicists probing of the universe.
+Since scattering is useful as an analytic tool near everywhere in physics \cite{RSScat}, one might at the usefulness of scattering in quantum information.  High energy physics uses scattering to probe atoms and molecules, but we would want to discretize the system for use in quantum information.  In this manner, we would replace the continuum by a discrete set of positions, and understand the evolution in such a model.
 
-Along these lines, we would wonder at the usefulness of scattering in quantum information.  High energy physics uses scattering to probe atoms and molecules \todo{cite multiple}, but we would want to discretize the system for use in quantum information \todo{should I include some bit about discretized quantum field theories? Probably not}.  In this manner, we would replace the continuum by a discrete set of positions, and understand the evolution in such a model.
+With this discretization, we are analyzing a system propagating on an infinite graph, and thus we can also think of this as the limit of a continuous time quantum walk to infinite graphs.  We know that quantum walks are useful algorithmic devices (e.g., \cite{CCDFGS03,Amb07}), and one might wonder whether these infinite systems can allow for intuitive algorithms.  It turns out that this answer is yes, and the original motivation for graph scattering was an algorithm using graph scattering to solve a problem for decision trees \cite{FG98}, which eventually led to an algorithm solving boolean formulas faster than any randomized classical computation \cite{FGG08}.  This algorithm was easily understood using the intuition from scattering, and thus graph scattering became a useful tool for understanding quantum walk algorithms.
 
-With this discretization, we are analyzing a system propagating on an infinite graph, and thus we can also think of this as the limit of a continuous time quantum walk to infinite graphs.  We know that quantum walks are useful algorithmic devices \todo{cite QW algorithms}, and one might wonder whether these infinite systems can allow for intuitive algorithms.  It turns out that this answer is yes, and the original motivation for graph scattering was an algorithm using graph scattering to solve a problem on boolean formulas faster than any randomized classical computation \cite{FGG08}.  This algorithm was easily understood using the intuition from scattering, and thus graph scattering became a useful tool for understanding quantum walk algorithms.
-
-This chapter should serve as a broad introduction to graph scattering.  In particular, the notations of scattering matrices, bound states, and wavepackets have all been used in previous works.  This chapter attempts to standardize notations, while also explaining how everything works.  While there is some original work in this chapter, we also utilize and state several of the results from \cite{FGG08,Chi09,CS11,CG12} in which the author did not contribute.
+This chapter should serve as a broad introduction to graph scattering.  In particular, the notations of scattering matrices, bound states, and wave-packets have all been used in previous works.  This chapter attempts to standardize notations, while also explaining how everything works.  While there is some original work in this chapter, we also utilize and state several of the results from \cite{FGG08,Chi09,CS11,CG12} in which the author did not contribute.
 
 \section{Free particles in the continuum}
 
@@ -34,7 +31,7 @@ which requires the (unnormalizable) solutions,
 \begin{equation}
   \psi(x) = A \exp(- i k x) + B \exp(i k x) \label{eq:simple_motivating_momentum_states}
 \end{equation}
-for real $k$ and for arbitrary constant $A$ and $B$.  These \textit{momentum states} correspond to particles travelling with momentum $k$ along the real line, and form a basis for the entire Hilbert space.
+for real $k$ and for arbitrary constant $A$ and $B$.  These \textit{momentum states} correspond to particles travelling with momentum $k$ along the real line, and they span the Hilbert space.  Note that these momentum states are not technically within the Hilbert space, since they are not normalizable. 
 
 While these momentum states are useful for understanding the propagation of particles in the quantum setting, if we want to understand more complicated behavior we need to change the potential energy of the system.  In particular, we will now include some finite-range potential $V$ that is non-zero only for $|x| < d$ for some constant $d$, so that outside this range the eigenstates remain unchanged.  The only difference is that we will deal with a superposition of states for each energy instead of the pure momentum states, forcing some relation between the $A$ and $B$ of equation \eq{simple_motivating_momentum_states}.  Namely, the eigenstates of this system become
 \begin{equation}
@@ -46,10 +43,7 @@ While these momentum states are useful for understanding the propagation of part
 \end{equation}
 for some functions $R(k)$, $T(k)$, and $\phi(x,k)$ that depends on the interaction $V$.  As intuition, these states can be seen as a particle with momentum $k$ coming in from the left, hitting the potential, and then scattering (which motivates the $T$ and $R$ labels).  
 
-In addition to these scattering states, it is also possible for bound states to exist.  These are normalizable states that have most (or all) of their amplitude near the non-zero potential, so that they do not affect scattering states that originate far from the interaction.  They simply exist as additional states in the Hilbert space.
-
-
-\todo{possibly include a $\delta$-function potential scattering problem in the thesis}
+In addition to these scattering states, it is also possible for bound states to exist.  These are normalizable states that have a constant fraction  of their amplitude near the non-zero potential, so that they do not affect scattering states that originate far from the interaction.  They simply exist as additional states in the Hilbert space.
 
 
 \subsection{Free particles on an infinite path}
@@ -77,9 +71,9 @@ If we rescale the energy term, and then break the vector equation into its compo
 \end{equation}
 for all $x\in \ZZ$.  Taking motivation from the continuous case,  we then make the ansatz that $\braket{x}{\psi} = e^{i k x}$ for some $k$, and find
 \begin{align}
-  \braket{x+1}{\psi} + \braket{x-1}{\psi} = e^{i k } e^{i k x} + e^{-ik} e^{ikx} &= E_\psi e^{ik x} = E_\psi \braket{x}{\psi} &\Rightarrow \\ E_\psi &= e^{ik} + e^{-i k} = 2 \cos(k).
+  \braket{x+1}{\psi} + \braket{x-1}{\psi} = e^{i k } e^{i k x} + e^{-ik} e^{ikx} &= E_\psi e^{ik x} = E_\psi \braket{x}{\psi}  \\ E_\psi &= e^{ik} + e^{-i k} = 2 \cos(k).
 \end{align}
-If we then use the fact that $E_\psi$ must be real, and that the amplitudes should not diverge to infinity as $x\rightarrow \pm \infty$, we find that the only possible values of $k$ are between $[-\pi,\pi)$.    Hence, in analogy with the continuous case, the eigenbasis of the Hamiltonian corresponds to momentum states, but where the possible momenta only range over $[-\pi,\pi)$.  We represent this momentum state with momenta $k$ as $\ket{\tilde{k}}$.
+If we then use the fact that $E_\psi$ must be real, and that the amplitudes should not diverge to infinity as $x\rightarrow \pm \infty$, we find that the only possible values of $k$ are between $[-\pi,\pi)$.    Hence, in analogy with the continuous case, the eigenbasis of the Hamiltonian corresponds to momentum states, but where the possible momenta only range over $[-\pi,\pi)$.  We represent this momentum state with momenta $k$ as $\ket{\tilde{k}}$.  Note that similar to the continuum, these momentum states are not technically in the relevant Hilbert space.  This won't won't be problematic for our purposes, but it can lead to some headaches
 
 Additionally, we can discuss the ``speed'' of these eigenstates, which is given by the derivative of the energy with respect to momentum.  We con then see that 
 \begin{equation}
@@ -87,7 +81,7 @@ Additionally, we can discuss the ``speed'' of these eigenstates, which is given 
 \end{equation}
 which is to be compared with $s \propto |k|$ for in the continuum case.  While the discretization does change the relationship between momentum, energy, and speed, if we restrict ourselves to small $k$ (so that the discretization is not noticeable), we recover the linear relationship.  In this way, as the distance between vertices grows smaller, we recover the continuum case.  
 
-One slight problem with this discussion is that these momentum states are not normalizable, and thus technically are not states in the Hilbert space.  This problem is identical to that of the continuum, and thus we shall not worry about these states of the extended Hilbert space.  However, one problem that is unique to our discretized system is that  there are an uncountable number of momentum states, while the position basis contains only a countable number of basis states.  It turns out that the resolution to this conundrum is that the two bases have different orthogonality conditions: the position basis elements are Kronecker delta orthogonal, while the momentum basis elements are Dirac $\delta$-function orthogonal.  Namely,
+One problem that is unique to our discretized system is that  there are an uncountable number of momentum states, while the position basis contains only a countable number of basis states.  It turns out that the resolution to this conundrum is that the two bases have different orthogonality conditions: the position basis elements are Kronecker delta orthogonal, while the momentum basis elements are Dirac $\delta$-function orthogonal.  Namely,
 \begin{equation}
   \braket{\tilde{k}}{\tilde{p}} = \sum_{x=-\infty}^\infty e^{- i k x} e^{i k p} = \sum_{x=-\infty}^\infty e^{i (p-k) x} = 2\pi \delta(p-k),
 \end{equation}
@@ -108,9 +102,8 @@ To solve this problem, we will connect graphs in such a way that far from our co
 
 With this construction, the eigenvalue equation must still be satisfied along the semi-infinite paths, and thus the form of the eigenstates along the paths must still be of the form $e^{i k x}$ for some $k$ and $x$.  However, we can no longer assume that $k$ is real, as the fact that the attached semi-infinite paths are only infinite in one direction allow for an exponentially decaying amplitudes along the paths.  Additionally, we can have nontrivial correlations between the amplitudes among the different paths, similar to the correlated reflection and transmission coefficients in the continuous case.
 
-Note that the topic of graph scattering is widely used in the literature.  Most of this section is not original work, and should be taken as background material.  In particular, these results are taken from \cite{FGG08, Chi09, CS11, CG12}
+Note that the topic of graph scattering has appeared previously in the literature.  Most of this section is not original work, and should be taken as background material.  In particular, these results are taken from \cite{FGG08, Chi09, CS11, CG12}.  I will also include 
 
-\todo{Find more accurate citations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Infinite path and a Graph}\label{sec:infinite_path_and_graph}
@@ -120,7 +113,7 @@ In the most simple example, let us attached a graph $\widetilde{G}$ to an infini
   A(G) = A(\widetilde{G}) + \sum_{v\in S \subset V(\widetilde{G})} \ketbra{v}{0} + \ketbra{0}{v} + \sum_{x=-\infty}^\infty \ketbra{x}{x+1} + \ketbra{x+1}{x}.
 \end{equation}
 
-If we then want to inspect the eigenvectors of this Hamiltonian, we find that the eigenvalue equation on the infinite path is identical to that of an infinite path without the graph attached.  Hence, we can see that any eigenstate of the Hamiltonian must take the form $Ae^{i k x} + Be^{-i k x}$ for some $k$ along the infinite paths.  
+If we then want to inspect the eigenvectors of this Hamiltonian, we find that the eigenvalue equation remains unchanged for non-zero vertices on the path.  Hence, we can see that any eigenstate of the Hamiltonian must take the form $Ae^{i k x} + Be^{-i k x}$ for some $k$ along the infinite paths.  
 
 
 %%%%%%%%
@@ -128,7 +121,7 @@ If we then want to inspect the eigenvectors of this Hamiltonian, we find that th
   \centering
   \tikzsetnextfilename{GS_path_and_graph}
   \input{../tikz/GS_path_and_graph.tex}
-  \caption{A simple example for graph scattering.  A graph $\widetilde{G}$ is attached to an infinite path.}
+  \caption[Simple example for graph scattering]{A simple example for graph scattering.  A graph $\widetilde{G}$ is attached to an infinite path.}
   \label{fig:path_and_graph}
 \end{figure}
 
@@ -160,10 +153,10 @@ a modified version of the eigenvalue equation for the graph $A(\widetilde{G})$.
 
 Let us finally assume that the state is a scattering state.  Note that the eigenvalue of the state must be in the range $[-2,2]$, and that the form of the eigenstate along the paths must be scalar multiples of $e^{ikx}$ and $e^{-ikx}$, for some $k\in [-\pi, \pi]$.  Explicitly, the state must be of the form
 \begin{align}
-  \braket{x}{\psi} = \begin{cases} Ae^{i k x} + B e^{i k x} & x \leq 0\\
-   C e^{i k x} + D e^{i k x} & x\geq 0\end{cases}
+  \braket{x}{\psi} = \begin{cases} Ae^{i k x} + B e^{-i k x} & x \leq 0\\
+   C e^{i k x} + D e^{-i k x} & x\geq 0\end{cases}
 \end{align}
-where we note that the amplitude can change at $x=0$, since we have attached the graph $\widetilde{G}$.  However, we do have that $A + B=C +D$, since the amplitude at $0$ is single valued, and that the eigenvalue of this state is given by $2\cos(k)$.  Note that we have not yet determined the form of the eigenstate inside the graph $\widetilde{G}$, but if we define $\ket{\phi}$ to be the restriction of $\ket{\psi}$ to the finite graph $\widetilde{G}$, then $\ket{\phi}$ must satisfy the equation
+where the additional edges at $x=0$ can change the coefficients of each $e^{ik}$.  However, we do have that $A + B=C +D$, since the amplitude at $0$ is single valued, and that the eigenvalue of this state is given by $2\cos(k)$.  Note that we have not yet determined the form of the eigenstate inside the graph $\widetilde{G}$, but if we define $\ket{\phi}$ to be the restriction of $\ket{\psi}$ to the finite graph $\widetilde{G}$, then $\ket{\phi}$ must satisfy the equation
 \begin{equation}
   A(G) \ket{\phi} + (A+ B)\sum_{v\in S} \ket{v}\braket{v}{\phi} = 2\cos(k) \ket{\phi},
 \end{equation}
@@ -183,7 +176,7 @@ so that $1+ B  =C$.  Note that this is reminiscent of a scattering state, with r
 %%%%%%%%%%%%%%%
 \subsection{General graphs}\label{sec:general_graphs}
 
-Let us now turn our attention to scattering on more general graphs.  In particular, let $\widehat{G}$ be any finite graph, with $N+m$ vertices and an adjacency matrix given by the block matrix
+Let us now turn our attention to scattering on more general graphs (and note that this section is very similar to \cite{CG12}).  In particular, let $\widehat{G}$ be any finite graph, with $N+m$ vertices and an adjacency matrix given by the block matrix
 \begin{equation}
   A(\widehat{G}) = \begin{pmatrix}A & B^\dag\\ B & D\end{pmatrix},
 \end{equation}
@@ -202,7 +195,7 @@ While we will mostly be interested in the third such type, corresponding to scat
   \centering
   \tikzsetnextfilename{GS_basic_graph}
   \input{../tikz/GS_basic_graph.tex}
-  \caption{An infinite graph $G$ obtained from a finite graph $\widehat{G}$ by attaching $n$ semi-infinite paths. The open circles are \emph{terminals}, vertices of $\widehat{G}$ to which semi-infinite paths are attached. The internal vertices of $\widehat{G}$ are not shown.}
+  \caption[Infinite used for scattering]{An infinite graph $G$ obtained from a finite graph $\widehat{G}$ by attaching $n$ semi-infinite paths. The open circles are \emph{terminals}, vertices of $\widehat{G}$ to which semi-infinite paths are attached. The internal vertices of $\widehat{G}$ are not shown.}
   \label{fig:basic_graph}
 \end{figure}
 
@@ -223,7 +216,7 @@ The next possible type of eigenstates are those that are not confined to the fin
 \begin{equation}
   2 \cos(k) = 2\cos(k_r + i k_i) = 2 \cos(k_r) \cosh(k_i) - i \sin(k_r) \sinh(k_i).
 \end{equation}
-Hence, if we assume that the state is normalizable, then $k_i \neq 0$, and as the adjacency matrix is Hermitian, we must have that the eigenvalue is real, forcing $k_r = \pi n$ for some $n\in \NN$.  Note that this then implies that $e^{i k} = z$, for some $z\in(-1,1)\setminus\{0\}$ (where $0$ corresponds to the confined bound states).
+Hence, if we assume that the state is normalizable, then $k_i \neq 0$, and as the adjacency matrix is Hermitian, we must have that the eigenvalue is real, forcing $k_r = \pi n$ for some $n\in \NN$.  Note that this then implies that $e^{i k} = z$, for some $z\in(-1,1)\setminus\{0\}$.
 
 As the eigenvalue equation for these states are guaranteed to be satisfied along the paths, we need to construct the form of the eigenstates inside the graph $\widehat{G}$.  We can then see that the eigenvalue equation for these vertices is given by
 \begin{align}
@@ -248,9 +241,6 @@ where $\vec{\alpha} \in \CC^N$ and $\vec{\beta}\in \CC^m$.  Note that the amplit
 
 While there is no immediate reason to guess that the total number of bound states is finite, it has been shown that this number is indeed finite (see \cite{CG12} for a more thorough explanation, using Levinson's theorem for graphs).
 
-\todo{I know that they are finite from the Levinson's theorem, but is there any other reason to guarantee that they are finite?}
-
-
 %%%%
 \subsubsection{Scattering states}
 
@@ -261,8 +251,6 @@ Taking some intuition from the classical case, we will construct a set of states
   \braket{x,q}{\scat_{j}(k)} = \delta_{j,q} e^{-i k x} + S_{qj} e^{i k x}.\label{eq:scattering_amplitude_paths}
 \end{equation}
 We then need to see whether such an eigenstate exists.  In this case, note that $S_{qj}$ corresponds to the transmitted amplitude along the $q$-th path if the particle was incident along the $j$-th path.  In the continuous case, $S$ forms a unitary matrix, which essentially means that any incoming particle must also leave, and be distinguishable from a particle incident from a different direction.  This intuition will also hold in the discrete case, but we will show this later.
-
-\todo{this seems a little clunkly; try to go over and rewrite}
 
 If we continue to make the assumption that these states exist, we can also write the amplitudes of the $m$ interval vertices as a column vector, as $\vec{\psi}_i(k)$, in which $\vec{\psi}_{i}(k)$ is the projection of $\ket{\scat_j(k)}$ onto the internal vertices of $\widehat{G}$.  We can then collect these vectors into an $m\times N$ matrix, namely
 \begin{equation}
@@ -305,7 +293,7 @@ Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist
 %%%%
 \subsubsection{Half-bound states}
 
-As a limiting case for both the scattering states and the unconfined bound states, we have those states with $k = 0$ or $k= \pi$ (or equivalently with $z = \pm 1$).  In either case, the two momenta correspond to particles that don't move, but the states themselves are not normalizable.  They won't play much of a role in this paper, but I did want to mention them.
+As a limiting case for both the scattering states and the unconfined bound states, we have those states with $k = 0$ or $k= \pi$ (or equivalently with $z = \pm 1$).  In either case, the two momenta correspond to particles that don't move, but the states themselves are not normalizable.  They won't play much of a role in this thesis, but I did want to mention them.
 
 
 %%%%
@@ -559,27 +547,25 @@ With the fact that the scattering states are orthogonal, it will also be useful 
 \label{thm:scat_basis}
 \end{theorem}
 
-\todo{Should I include a proof of this theorem?  It's not mine, but I will use.}
-
 Most of our results will be in regards to the scattering states, but having this decomposition of the identity will allow us to show better bounds.  In particular, we will be able to guarantee that certain states have almost no support on states other than scattering states.
 
-\section{Applications of graph scattering}
-
-While graph scattering is a relatively new area of study, it has found several applications.  As the behavior of a scattered particle is heavily dependent on both the momentum and the graph used for scattering, we can use the scattering behavior as a probe of properties about the graph, as well as a kind of probe for the momentum of the incoming particle.  In particular, if we know the momentum of a wavepacket, we can determine the scattering amplitudes to gain information about the graph, such as whether it has eigenstates at particular momentum.  If we know a graphs scattering behavior, we can then use the scattering to check whether a wavepacket has a desired momentum, and then do something to the particular wavepacket.
-
-\subsection{NAND Trees}
-
-The original motivating idea for understanding graph scattering was an oracular separation between quantum and classical computation, for a problem involving NAND trees.  In particular, Edward Fahri, Jeffrey Goldstone, and Sam Gutmann gave a scattering algorithm \cite{FGG08} for this problem that was provably faster than any classical algorithm.
-
-A NAND tree is a function on $N$ variables, where $N$ is a power of two, such that the value of the leaves are given by the input to the function, while each parent node's value is given by the NAND of its children's values.  The NAND tree problem is then to evaluate the root.  
-
-Now for any oracular problem, we are given black-box access to the input, and want to minimize the total number of queries to the input.  In particular, the actual runtime of an algorithm generally is not measured, and instead we simply count the number of bits of the input the algorithm accesses.  While this might not always give a realistic gauge for the time a particular problem takes to solve, it does allow for information theoretic bounds on the number of queries.  In particular, oracular problems often allow us to guarantee that any algorithm will require a certain number of queries in order to solve the problem.
-
-If we perform an analysis on the NAND tree problem, any deterministic algorithm will require $N$ queries in order to evaluate the root, as in the worst case we will need to examine every bit of the input.  However, if we instead work with probabilistic computation, there is a randomized algorithm \cite{SW86} that can solve this problem in $\OO(N^\alpha)$ time, where $\alpha = \log_2(1 + \sqrt{33}) - 2 \approx 0.753$.  Additionally, any randomized algorithm will require this many queries \cite{San95}.  Fahri, Goldstone, and Gutmann were able to construct a quantum algorithm that solves the NAND tree using only $\OO(\sqrt{N})$ queries, which is provably better than in the classical case.
-
-The reason that we are interested in this is that the original algorithm uses graph scattering explicitly.  In particular, a binary tree is attached to an infinite path at the root, and then additional vertices are attached to the leaves depending on whether the binary value is 0 or 1.  It turns out that at energy 0 (i.e., momentum $-\pi/2$), such a tree has perfect transmission from one path to the other if the tree evaluates to 1, and perfect reflection if the tree evaluates to 0.  Hence, if a wave packet with momentum centered around $-\pi/2$ is scattered off of such a graph, by determining the location of the particle after it has scattered we evaluate the tree. 
-
-In this case, the requisite size of the wavepacket turns out to be $\OO(\sqrt{N})$, and thus this amount of time is required in order for the scattering to occur.  The total evolution time is closely related to the number of queries that the algorithm uses during the computation, and thus this is a quantum algorithm that has a provable advantage over classical computing.
+%\section{Applications of graph scattering}
+%
+%While graph scattering is a relatively new area of study, it has found several applications.  As the behavior of a scattered particle is heavily dependent on both the momentum and the graph used for scattering, we can use the scattering behavior as a probe of properties about the graph, as well as a kind of probe for the momentum of the incoming particle.  In particular, if we know the momentum of a wave-packet, we can determine the scattering amplitudes to gain information about the graph, such as whether it has eigenstates at particular momentum.  If we know a graphs scattering behavior, we can then use the scattering to check whether a wave-packet has a desired momentum, and then do something to the particular wave-packet.
+%
+%\subsection{NAND Trees}
+%
+%The original motivating idea for understanding graph scattering was an oracular separation between quantum and classical computation, for a problem involving NAND trees.  In particular, Edward Fahri, Jeffrey Goldstone, and Sam Gutmann gave a scattering algorithm \cite{FGG08} for this problem that was provably faster than any classical algorithm.
+%
+%A NAND tree is a function on $N$ variables, where $N$ is a power of two, such that the value of the leaves are given by the input to the function, while each parent node's value is given by the NAND of its children's values.  The NAND tree problem is then to evaluate the root.  
+%
+%Now for any oracular problem, we are given black-box access to the input, and want to minimize the total number of queries to the input.  In particular, the actual runtime of an algorithm generally is not measured, and instead we simply count the number of bits of the input the algorithm accesses.  While this might not always give a realistic gauge for the time a particular problem takes to solve, it does allow for information theoretic bounds on the number of queries.  In particular, oracular problems often allow us to guarantee that any algorithm will require a certain number of queries in order to solve the problem.
+%
+%If we perform an analysis on the NAND tree problem, any deterministic algorithm will require $N$ queries in order to evaluate the root, as in the worst case we will need to examine every bit of the input.  However, if we instead work with probabilistic computation, there is a randomized algorithm \cite{SW86} that can solve this problem in $\OO(N^\alpha)$ time, where $\alpha = \log_2(1 + \sqrt{33}) - 2 \approx 0.753$.  Additionally, any randomized algorithm will require this many queries \cite{San95}.  Fahri, Goldstone, and Gutmann were able to construct a quantum algorithm that solves the NAND tree using only $\OO(\sqrt{N})$ queries, which is provably better than in the classical case.
+%
+%The reason that we are interested in this is that the original algorithm uses graph scattering explicitly.  In particular, a binary tree is attached to an infinite path at the root, and then additional vertices are attached to the leaves depending on whether the binary value is 0 or 1.  It turns out that at energy 0 (i.e., momentum $-\pi/2$), such a tree has perfect transmission from one path to the other if the tree evaluates to 1, and perfect reflection if the tree evaluates to 0.  Hence, if a wave packet with momentum centered around $-\pi/2$ is scattered off of such a graph, by determining the location of the particle after it has scattered we evaluate the tree. 
+%
+%In this case, the requisite size of the wave-packet turns out to be $\OO(\sqrt{N})$, and thus this amount of time is required in order for the scattering to occur.  The total evolution time is closely related to the number of queries that the algorithm uses during the computation, and thus this is a quantum algorithm that has a provable advantage over classical computing.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -591,7 +577,7 @@ In this section, we will show that our intuitive naming is useful.  In particula
 
 In \cite{MPQW}, Childs, Gosset, and W. proved a nice bound on the time-evolution of square wave packets.  These approximations were useful as the necessary mathematics involved in proving the related bounds only involved unweighted sums of amplitudes that were identical to the eigenstates of the corresponding Hamiltonians.  In particular, they were able to prove the following bound:
 \begin{theorem}[Childs, Gosset, W.\cite{MPQW}]
-Let $\widehat{G}$ be an $(N+m)$-vertex graph. Let $G$ be a graph obtained from $\widehat{G}$ by attaching semi-infinite paths to $N$ of its vertices, and let $S$ be the corresponding S-matrix.  Let $k\in(-\pi,0)$, $M,L\in\natural$, $j\in\{1,\ldots,N\}$, and
+Let $\widehat{G}$ be an $(N+m)$-vertex graph. Let $G$ be a graph obtained from $\widehat{G}$ by attaching semi-infinite paths to $N$ of its vertices, and let $S$ be the corresponding S-matrix.  Let $k\in(-\pi,0)$, $M,L\in\NN$, $j\in\{1,\ldots,N\}$, and
 \begin{equation}
   |\psi^{j}(0)\rangle=\frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}e^{-ikx}|x,j\rangle.
 \end{equation}
@@ -1101,23 +1087,11 @@ and we have the requisite growth properties.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions and extensions}
 
-\todo{I still don't like this conclusions section, but something is better than nothing}
+At this point, we have a general understanding of graph scattering off of a single graph.  The idea of a wave-packet moving along an infinite path  and scattering off of some given graph is intuitively similar to that of other scattering events.  We know how to calculate this scattering behavior for a given graph at a particular momenta, and we have bounds on the error arising from such a scattering event.
 
+While our current result on the error bounds arising from scattering with finite wave-packets are useful, improving the bounds on our scattering behavior, or showing that they cannot be improved by more than a constant might be interesting result in of themselves.  This scattering behavior is foundational to the idea of computation via scattering, and thus improved bounds result in smaller guaranteed errors.
 
-At this point, we have a general understanding of graph scattering off of a single graph.  The idea of a wavepacket moving along an infinite path makes sense, as does its scattering behavior off of some given graph.  We know how to calculate this scattering behavior for a given graph at a particular momenta, and we have bounds on the error arising from such a scattering event.
-
-Additionally, we know how to construct graphs with simple scattering behaviors.  While these behaviors depend on the eigenstates of arbitrary graphs, we have given examples that might be of use as building blocks for some scattering algorithm.
-
-Finally, we have also shown that some scattering behavior cannot exist.  While this means that certain schemes cannot be simplified, this is of theoretical interest.  Further, it also allows us to stop searching for graphs with these behaviors.
-
-While these form a nice foundation, more research can always be done in these fields.  Ideally, giving an explicit algorithm that constructs a graph with a particular scattering behavior, or says that such a graph doesn't exist, would be of great interest.  Even if such an algorithm took an exponential amount of time, this would be a theoretical achievement since we don't know whether this problem is currently decidable.  
-
-Less ambitiously, if we could give such an algorithm for a restricted set of graphs, such as that given for type 1 and type 2 R/T gadgets, but generalized to multiple input and outputs.  
-
-Along different lines, improving the bounds on our scattering behavior, or showing that they cannot be improved by more than a constant, would give better bounds on results later in the thesis.  This scattering behavior is foundational to the idea of computation via scattering, and thus improved bounds result in smaller guaranteed errors.
-
-\todo{talk about how this can't really be improved without changing our approximation}
-One area in which improvement can be made is in our analysis on the error of propagating Guassian wave packets.  While our results in this chapter are an improvement over \cite{MPQW}, much of the error in the analysis arises from the approximation of our approximate wave packets with exponentials over the scattering states.  Far from the graph gadget, our approximations could 
+Note that we will give further applications for this graph scattering later in the thesis.
 
 
 Essentially, graph scattering seems to be a new subfield in the study of graphs, with several areas of research opening up.

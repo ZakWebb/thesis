@@ -14,49 +14,48 @@
 \chapter{Ground energy of quantum walk}
 \label{chap:SP_ground}
 
-To get some flavor for \QMA-completeness results.
+While evolution according to some Hamiltonian is probably the most physically relevant question on could ask about a particular Hamiltonian, one could also ask about the ground energy of the Hamiltonian.  These minimization problems are a natural quantum analog of classical constraint satisfaction problems, and in a similar manner are often computationally intractable.  For many classes of Hamiltonians and suitable notions of approximation, these problems are \QMA-complete
 
-Now that we have shown the universality of these Quantum Walk Hamiltonians via time evolution, we might want to ask related computational questions about these systems.  In particular, once the computational universality of a system is shown, people often ask about the related ground energy problem.  The reason for this is that many of these systems that allow for universal computation via time evolution also allow for the encoding of a computation in the ground space, which along with some energy penalties, allow one to show that the ground energy problem is \QMA-hard. 
+In this chapter we will analyze the ground energy problem for Quantum Walk Hamiltonians, and show that this problem is \QMA-complete.  The proof strategy follows the usual structure of \QMA-completeness originally laid out by Kitaev \cite{KSV02}, in that we encode the evolution of a state under a circuit in the ground space of a quantum walk Hamiltonian.  There are a few small modifications to the usual circuit-to-Hamiltonian mapping to ensure that the resulting Hamiltonian is a 0-1 matrix, but the main point of this chapter is to give an introduction to \QMA-hardness proofs, as well as providing a \QMA-complete problem that might be more accessible to classical computer scientists.  
 
-The point of this chapter is to give a decent introduction to the flavor of \QMA-hardness proofs, as well as providing a \QMA-complete problem that might be more accessible to classical computer scientists.
+Additionally, we will use some of the circuit-to-graph mappings from this chapter in our \QMA-hardness proof for the MPQW Hamiltonian.  By analyzing the single particle quantum walk in this chapter, the results will more easily follow in the sequel.  
+
+Note that this result was shown in an appendix of Childs, Gosset, and Webb \cite{BHQMA}.
 
 %======================================================================
 \section{The ground-energy problem}
 
-Essentially, we know that the single-particle quantum walk is governed by the adjacency matrix of the underlying graph.  In particular, the Hamiltonian is exactly equal to the adjacency matrix, and thus asking questions about the ground energy of a single-particle quantum walk is simply asking a question about the smallest eigenvalue of a particular adjacency matrix.
+We know that the single-particle quantum walk is governed by the adjacency matrix of the underlying graph.  In particular, the Hamiltonian is exactly equal to the adjacency matrix, and thus asking questions about the ground energy of a single-particle quantum walk is simply asking a question about the smallest eigenvalue of a particular adjacency matrix.
 
-However, the Hilbert space on which the quantum walk acts is necessarily exponential in size, with efficiently computable matrix entries.  As such, this is a question about very specific types of matrices.
+For an arbitrary adjacency matrix, we can efficiently and exactly compute the eigenvalues of an $n$ vertex graph in time polynomial in $n$. However, the Hilbert space on which the quantum walk acts is necessarily exponential in size, and the corresponding algorithm for arbitrary graphs then requires exponential time to even read the input.  The important property of quantum walk Hamiltonians is that they have efficiently computable matrix entries, and the corresponding energy problem is about very specific types of matrices.  Noting that the graph for a quantum walk has bounded degree, and is usually efficiently specifiable, the corresponding Hamiltonian is a sparse, row-computable, symmetric 0-1 matrix.  
 
-\begin{problem}[$d$-sparse graph eigenvalue problem] Given a $d$-sparse, row-computable graph $G$, and two constants $a< b$, is the smallest eigenvalue of $A(G)$ below $a$ or above $b$, with the guarantee that one of these cases occur.
+We then have the following problem statement:
+
+\begin{problem}[$d$-sparse graph eigenvalue problem] Given a $d$-sparse, row-computable graph $G$ on $D$ vertices, a constant $a$, and a precision parameter $\epsilon = N^{-1}$, where $N$ is specified in unary, is the smallest eigenvalue of $A(G)$ below $a$ or above $a+\epsilon$, with the guarantee that one of these cases occur.
 \end{problem}
 
-While this problem is definitely inspired from quantum walks, it actually makes no reference to quantum mechanics.
+While this problem is inspired from quantum walks, it actually makes no reference to quantum mechanics.  This might be of interest to classical computer scientists, as it relates succinctly specifiable instances of the adjacency matrix eigenvalue problem to the complexity class \QMA.
 
 \subsection{Containment in \QMA}
 
-The proof that this problem is in \QMA follows many other such Hamiltonian problems.  In particular, this proof strategy works for any system in which we can evolve according to a particular Hamiltonian.
-
-The main idea is to be given a particular state, and use phase estimation to determine the energy of the given state, up to some error.  In the case that the smallest eigenvalue of the system is below $a$, the prover can provide the corresponding eigenvector encoded in a quantum state.  The phase estimation algorithm will then (with high probability) find this eigenvalue, and the system will accept.  If the smallest eigenvalue is above $b$, then no matter what state the prover provides, the phase estimation algorithm will project onto one of the eigenstates and determine the corresponding eigenvalue, which will necessarily be above $b$.
-
-More concretely, we have 
+The proof that this problem is in \QMA follows the same pattern as most other Hamiltonian problems.  Using a sparse-Hamiltonian simulation algorithm (such as \cite{BACS07,BCK15}), we perform phase estimation \cite{CEMM98} on the provided state to approximate the energy.
 
 
+In the case that the smallest eigenvalue of the system is below $a$, the prover can provide the corresponding eigenvector encoded in a quantum state.  The phase estimation algorithm will then (with high probability) find this eigenvalue, and the system will accept.  If the smallest eigenvalue is above $a+\epsilon$, then no matter what state the prover provides, the phase estimation algorithm will project onto one of the eigenstates and determine the corresponding eigenvalue, which will necessarily be above $a+\epsilon$.
+
+Hence, the $d$-sparse graph eigenvalue problem is contained within \QMA.
 
 %======================================================================
 \section{\QMA-hardness}
 
-The main way that this works is that we will use the well known Kitaev Hamiltonian, with some particular changes so that we get taken to a Hamiltonian of a particular form.  Once we have that form, we can easily see that the result we want.
+The main way that this works is that we will use the well known Kitaev circuit-to-Hamiltonian mapping, with some small changes so that we the resulting Hamiltonian is proportional to the adjacency matrix of a graph.  Once we have the Hamiltonian of the correct form, we can then add positive semi-definite terms that penalize particular states, and use the nullspace projection lemma (\lem{npl}) to bound the resulting eigenvalues.  
 
 %%%%%%%%%%%%%%%%%%%%%
 \subsection{Kitaev Hamiltonian}\label{sec:Kitaev_Hamiltonian}
 
-With the definition of the class \QMA, the requirement is that for each input there exists some quantum circuit and some particular input state that the circuit either accepts or rejects.  When attempting to prove that a particular Hamiltonian has a similar computational power, we need to construct a ``circuit-to-Hamiltionian'' map.  The predominant (and really only) such map is the so-called Kitaev-Hamiltonian.
+With the definition of the class \QMA, the requirement is that for each input there exists some quantum circuit and some particular input state that the circuit either accepts or rejects.  When attempting to prove that a particular Hamiltonian has the same computational power as the class \QMA, we need to construct a ``circuit-to-Hamiltionian'' map.  The predominant such map is the Feynmann-Kitaev circuit-to-Hamiltonian mapping.
 
-In this mapping, we attempt to encode the computation into the ground space of the Hamiltonian, in a similar manner to how the proof that 3-SAT is NP-Hard encodes the entire computation of a nondeterministic Turing Machine.
-\todo{NP-hardness of 3-Sat reference}
-However, we run into a problem on how to insure that neighboring time steps are only seperated by a single local unitary.  In the classical case we can write down the entire state of the system at each timestep, or else only write down the changes that occur at each time step.  In the first case we run into a problem in that information is copied between time steps, which is impossible for a general state by the no-cloning theorem
-\todo{reference no-cloning}
-while the second case quickly becomes infeasible as the changes to the quantum state might effect many basis states.
+In this mapping, we attempt to encode the computation into the ground space of the Hamiltonian, in a similar manner to how the proof that 3-SAT is NP-Hard encodes the entire computation of a nondeterministic Turing Machine  \cite{SipserToC}.  However, we run into a problem on how to insure that neighboring time steps are only seperated by a single local unitary.  In the classical case we can write down the entire state of the system at each timestep, or else only write down the changes that occur at each time step.  In the first case we run into a problem in that information is copied between time steps, which is impossible for a general state by the no-cloning theorem \cite{KSV02}, while the second case quickly becomes infeasible as the changes to the quantum state might effect many basis states.
 
 Kitaev worked around this problem by enlarging the Hilbert space on which the circuit acts, by having both a clock and a state register.  The computation of the system was then encoded as an entangled state between these two registers.  In this way, by having a projection into those states that evolve correctly for a particular time step, we can have a local check for the correctness of evolution.
 
@@ -219,7 +218,7 @@ At this point, we then have a symmetric 0-1 matrix whose ground-space is spanned
 \subsection{Upper bound on the smallest eigenvalue for yes instances}
 \label{sec:mappingyes}
 
-Suppose $x$ is a yes instance; then there exists some $n_{\text{input}}$-qubit state $|\psi_{\text{input}}\rangle$ satisfying $\text{AP}\left(\mathcal{C}_{x},|\psi_{\text{input}}\rangle\right)\geq1-\frac{1}{2^{|x|}}$. Let
+Let us suppose that  $x$ is a yes instance for a \QMA-complete problem; there then exists some $n_{\text{input}}$-qubit state $|\psi_{\text{input}}\rangle$ satisfying $\text{AP}\left(\mathcal{C}_{x},|\psi_{\text{input}}\rangle\right)\geq1-\frac{1}{2^{|x|}}$. Let
 \begin{equation}
 |\text{wit}\rangle=\frac{1}{\sqrt{2M}}\sum_{t=1}^{2M}W_{t-1}W_{t-2}\ldots W_{1}\left(|\psi_{\text{input}}\rangle|0\rangle^{\otimes n-n_{\text{input}}}\right)|t\rangle|\omega\rangle
 \end{equation}
@@ -288,12 +287,12 @@ Since $H_{B}|_{S_{A}}$ has an empty nullspace, $A_{x}-e_{1}\cdot\II$ has an empt
 %=============================================================================
 \section{Extensions and Discussion}
 
-While this result is interesting in its own right, as it shows that finding the ground energy of a sparse, row-computable matrix is $\QMA$-complete, perhaps the most interesting result is that nothing particularly quantum is involved in the definition of the problem.  In particular, the only condition we have on the matrix is that it is sparse, and row-computable.  This condition might allow for a more natural understanding for more classically-minded computer scientists, as a \QMA-complete problem could be stated without having to delve into any quantum computing.
+While this result is interesting in its own right --- as it shows that finding the ground energy of a sparse, row-computable matrix is $\QMA$-complete --- perhaps the most interesting feature is that nothing particularly quantum is involved in the definition of the problem.  In particular, the only condition we have on the matrix is that it is sparse, and row-computable.  This condition might allow for a more natural understanding for more classically-minded computer scientists, as a \QMA-complete problem could be stated without having to delve into any quantum computing.
 
 As an additional problem, since the circuit-to-Hamiltonian map creates a 7-regular, simple graph, one might wonder if the removal of these conditions are necessary when the boundary terms are added.  This is obviously going to be necessary, as otherwise we would have that determining the lowest eigenvalue of a Laplacian is \QMA-complete, but it is a well known fact that the smallest eigenvalue of a Laplacian is zero.  
 
-\todo{can I use the same techniques as the self-loop removal to remove self-loops from this system?}
+As a possible extension to this result, note that the graphs construction in our proof of \QMA-hardness contain self-loops, as the terms penalizing the initial ancilla and output qubit are diagonal in the computational basis.  As graphs are usually defined without self-loops, it might be worthwhile finding a construction that results in a simple graph.
 
-\todo{Write more}
 
+\biblio{}
 \end{document}

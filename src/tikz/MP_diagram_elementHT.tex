@@ -9,14 +9,15 @@
 }
 }     
 % Labels  
-\foreach \z in {0,1}
-{    
-\node[right] at (0,1.66-\z) {\footnotesize $(\z,1)$}; 
-   \node[right] at (0,1.33-\z) {\footnotesize $(\z,3)$};     
-% Output nodes change for each type  
-  \node[left] at (3.24,1.66-\z) {\footnotesize $(\z,4)$}; 
-   \node[left] at (3.24,1.33-\z) {\footnotesize $(\z,6)$}; 
- }    
+\node[right] at (0,1.66) {\footnotesize $(0,2)$}; 
+\node[right] at (0,.66) {\footnotesize $(1,2k+2)$}; 
+\node[right] at (0,1.33) {\footnotesize $(0,k+2)$};
+\node[right] at (0,.33) {\footnotesize $(1,3k+2)$};    
+% Output nodes change for each type 
+   \node[left] at (3.24,1.66) {\footnotesize $(0,4k+1)$}; 
+   \node[left] at (3.24,1.33) {\footnotesize $(0,5k+1)$};
+   \node[left] at (3.24,.66) {\footnotesize $(1,6k+1)$}; 
+   \node[left] at (3.24,.33) {\footnotesize $(1,7k+1)$};  
  % Type of Graph  
-\node at (1.62,1) {\huge $HT$}; 
+\node at (1.62,2.5) {\huge $HT$}; 
  \end{tikzpicture}

@@ -15,7 +15,7 @@
 \label{chap:mathematical_preliminaries}
 
 
-Several topics in this thesis require a background that not all researcher will have experience in.  Especially as this thesis is multi-disciplinary, I would like to include at least some basic introduction to various physical and computer science topics.  Additionally, several lemmas used in this manuscript might be of independent interest, as their applicability is not restricted to the various models studied in this thesis. 
+Several topics in this thesis require a background that not all researcher will have experience in.  As this is a physics thesis, there will be some basic complexity theory definitions used throughout this thesis.  Additionally, several lemmas used in this manuscript might be of independent interest, as their applicability is not restricted to the various models studied in this thesis. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mathematical notation}
@@ -25,34 +25,35 @@ Perhaps the most simple point that I would like to raise before the thesis begin
 
 The first such notation will be for the shorthand definition of sets of particular size.  Namely,
 \begin{equation}
-[k] := \{0,1,\cdots, k-1\}.
+[k] := \{1,2,\cdots, k\}.
 \end{equation}
-This is a set of size $k$, with the elements ordered and labeled by the integers from $0$ to $k-1$.  We will often think of these as elements from $\ZZ_{k}$, with addition and multiplication defined over the integers modulo $k$.
+This is a set of size $k$, with the elements ordered and labeled by the integers from $1$ to $kk$.  We will often think of these as elements from $\ZZ_{k}$, with addition and multiplication defined over the integers modulo $k$.
 
-Often this paper will want to investigate systems with many particles, and we will want an operator to only act nontrivially on one particle.  In particular, if we have a Hilbert space $\HHH_{\text{total}} = \HHH_{\text{single}}^{\otimes N}$ that consists of $N$ copies of some single Hilbert space, and if we have an operator $M$ that acts on $\HHH_{\text{single}}$, we can define an operator $M^{(w)}$ that acts nontrivially only on the $w$-th copy of $\HHH_{\text{single}}$, namely
+As we will also be working with graphs, we will want to note that the letter $G$ usually denotes a particular graph.  Further, $A(G)$ describes the adjacency matrix of the graph $G$.  $V(G)$ then describes the vertex set of $G$, and $E(G)$ describes the edge set of $G$.  Note that this thesis will always deal with undirected graphs, with at most a single edge between vertices.  As such, the adjacency matrix $A(G)$ will be a symmetric 0-1 matrix.  We will at times want to work with a simple graph, in which self-loops do not occur, but unless otherwise specified a graph $G$ might contain self-loops.
+
+Much of the work in this thesis, especially when describing the ground energy of a particular Hamiltonian, deals only with positive semi-definite operators. If $A$ is a positive semi-definite matrix, then $\gamma(A)$ will denote the smallest non-zero eigenvalue of $A$.   Note that if $A$ has a 0-eigenvalue, then this corresponds to the energy gap between the ground state and the first excited state, but if $A$ does not have a 0-eigenvalue then this is simply the smallest eigenvalue of $A$.
+
+Another notation to define is the restriction of an operator to a subspace.  Let us assume that $A$ acts on a Hilbert space $\HHH$, and that $\mathcal{S}$ is a subspace of $\HHH$.  We will then write the restriction of $A$ to the subspace $\mathcal{S}$ as $A\big|_\mathcal{S}$. 
+
+
+Often this paper will want to investigate systems with many particles, and we will want an operator to only act nontrivially on one particle.  If we have a Hilbert space $\HHH_{\text{total}} = \HHH_{\text{single}}^{\otimes N}$ that consists of $N$ copies of some single Hilbert space, and if we have an operator $M$ that acts on $\HHH_{\text{single}}$, we can define an operator $M^{(w)}$ that acts nontrivially only on the $w$-th copy of $\HHH_{\text{single}}$, namely
 \begin{equation}
   M^{(w)} = \II^{\otimes w-1} \otimes M \otimes \II^{N- w}.
 \end{equation}
 In this manner, only the $w$-th copy of $\HHH_{\text{single}}$ is effected.
 
-As we will also be working with graphs, we will want to note that the letter $G$ usually denotes a particular graph.  Further, $A(G)$ describes the adjacency matrix of the graph $G$.  $V(G)$ then describes the vertex set of $G$, and $E(G)$ describes the edge set of $G$.  Note that this thesis will always deal with undirected graphs, with at most a single edge between vertices.  As such, the adjacency matrix $A(G)$ will be a symmetric 0-1 matrix.  We will at times want to work with a simple graph, in which self-loops do not occur, but unless otherwise specified a graph $G$ might contain self-loops.
+In a similar manner, if we have many particles living in identical Hilbert spaces, we might need to permute the particles for ease of notation or to define certain subspaces.  Letting $\HHH_{\text{total}} = \HHH_{\text{single}}^{\otimes N}$ consist of $N$ copies of a single Hilbert space, and letting $\pi \in S_N$ be a permutation the $N$ objects, we define the permutation operator $V_\pi$ acting on the basis states of $\HHH_{\text{total}}$ as
+\begin{equation}
+  V_\pi \ket{x_1,x_2,\cdots,x_N} = \ket{x_{\pi^{-1}(1)},x_{\pi^{-1}(2)},\cdots,x_{\pi^{-1}(N)}},
+\end{equation}
+and extend it linearly to the rest of the Hilbert space.
 
 
-Much of the work in this thesis, especially when describing the ground energy of particular Hamiltonian, deals only with positive semi-definite operators.  As such, if $A$ is a positive semi-definite matrix, then $\gamma(A)$ is the smallest non-zero eigenvalue.   Note that if $A$ has a 0-eigenvalue, then this corresponds to the energy gap between the ground state and the first excited state, but if $A$ does not have a 0-eigenvalue then this is simply the smallest eigenvalue of $A$.
-
-Finally, let us assume that $A$ acts on a Hilbert space $\HHH$, and that $\mathcal{S}$ is a subspace of $\HHH$.  We will then write the restriction of $A$ to the subspace $\mathcal{S}$ as $A\big|_\mathcal{S}$. 
-
-Big O notation.
-
-Overloading of notation; in particular, when adding $z\in \FF_2$ to $j\in \NN$, the result is in $\NN$.
-
-Permutation operators.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Quantum information}
-\label{sec:quantum_information}
-
-As this thesis is about quantum information, I will assume a familiarity with the basics 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Quantum information}
+%\label{sec:quantum_information}
+%
+%As this thesis is about quantum information, I will assume a familiarity with the basics 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Indistinguishable particles}
@@ -94,7 +95,7 @@ Computational complexity then deals with understanding subsets of these strings.
 
 Related to these language problems are promise problems, in which there are two subsets of $\Gamma^*$, namely $\Pi_{\text{yes}}$ and $\Pi_{\text{no}}$, such that $\Pi_{\text{yes}} \cap \Pi_{\text{no}} = \emptyset$.  We are then \emph{promised} that the $x\in \Gamma^*$ that we need to sort is contained either $\Pi_{\text{yes}} \cup \Pi_{\text{no}}$.  This generally opens up some more interesting problems, as without this restriction certain complexity classes do not make sense.
 
-\todo{revise and revisit}
+Most complexity classes related to quantum computing are classes of promise problems.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Turing machines}
@@ -105,15 +106,14 @@ Up to this point, we have only discussed classifications of strings, and stated 
 
 At their most basic level, a Turing machine is simply a finite program along with a (countably) infinite tape that allows the machine to store information.  The input to the algorithm is initially written on the tape, and the machine starts in some initial configuration.  The machine can only access it's internal memory along with a single character at a time from the infinite tape, and the program progresses by changing the internal state of the machine, changing one character on the tape, and moving along the tape.  While extremely limited, these machines have so far captured our ideas of computation.
 
-Formally, a Turing-machine is $M$ is described by a tuple $(\Gamma,Q,\delta)$, where $\Gamma$ is a finite set of symbol's that can be written on the infinite tape, $Q$ is a set of possible internal states that $M$ can store as internal memory, and $\delta$ is a function $Q\times \Gamma \rightarrow Q \times \Gamma\times \{L,S,R\}$ describing the required action of the machine $M$.  Included in $Q$ are two special ``halting'' states generally labeled \texttt{accept} and \texttt{reject}, such that the machine stops operating if it ever enters these two states, and the machine either accepts or rejects the current string.  Note that we always assume that the alphabet contains a special character \textvisiblespace that is not used for the input but denotes empty space along the infinite tape after the input string.
+Formally, a Turing-machine is $M$ is described by a tuple $(\Gamma,Q,\delta)$, where $\Gamma$ is a finite set of symbol's that can be written on the infinite tape, $Q$ is a set of possible internal states that $M$ can store as internal memory, and $\delta$ is a function $Q\times \Gamma \rightarrow Q \times \Gamma\times \{L,S,R\}$ describing the required action of the machine $M$.  Included in $Q$ are two special ``halting'' states generally labeled \texttt{accept} and \texttt{reject}, such that the machine stops operating if it ever enters these two states, and the machine either accepts or rejects the current string.  Note that we always assume that the alphabet contains a special character \textvisiblespace {} that is not used for the input but denotes empty space along the infinite tape after the input string.
 
-During an actual computation, a Turing Machine always starts with its internal state in a specified position, with the string used for input on the initial segment of the infinite tape and the special character \textvisiblespace on every character after the input.  Additionally, the pointer of the machine is located at the beginning of the tape, so that the machine is able to start reading the input (if needed).  At each time step the machine then applies the transition function, updating its internal state, the character located at the current position of the tape, along with the current position of the tape until the machine reaches one of its halting states.
+During an actual computation, a Turing Machine always starts with its internal state in a specified position, with the string used for input on the initial segment of the infinite tape and the special character \textvisiblespace{}  on every character after the input.  Additionally, the pointer of the machine is located at the beginning of the tape, so that the machine is able to start reading the input (if needed).  At each time step the machine then applies the transition function, updating its internal state, the character located at the current position of the tape, along with the current position of the tape until the machine reaches one of its halting states.
 
 Note that there are several variations on these Turing Machines, such as those that have multiple infinite tapes instead of just one, and one that can move to an arbitrary position along the tape.  These variations do not change the overall computational power of the model, just make it slightly more efficient.  This definition is perhaps the most simple, and will suffice for now.
 
-\todo{get a picture of a TM here}
 
-One slight modification that will be useful for us is machines that compute a particular function.  In particular, for a given function $f:\Gamma^*\rightarrow \Gamma^*$, we say that a Turing Machine $M$ computes the function $f$ if for all inputs $x$, the machine eventually halts and after it halts the tape will have $f(x)$ on the output tape (and nothing else).
+One slight modification that will be useful for us are machines that compute a particular function.  In particular, for a given function $f:\Gamma^*\rightarrow \Gamma^*$, we say that a Turing Machine $M$ computes the function $f$ if for all inputs $x$, the machine eventually halts and after it halts the tape will have $f(x)$ on the output tape (and nothing else).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Resources}
@@ -142,7 +142,7 @@ To get around this, we will need to compute the circuit for the computation give
 
 Note that this definition makes no reference to the type of circuit, although we will generally assume that the circuit comes from some specific gate set.
 
-\todo{completely update this}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Useful complexity classes}
@@ -152,25 +152,24 @@ Once we have an understanding of what defines a relation, and how these are rela
 %%%
 \subsubsection{Classical complexity classes}
 
-  Perhaps the most well known question in computational complexity is the \PP vs \NP problem.  However, what exactly are these classes.  At a most basic level, one can think of \PP as those classification problems that have an efficient classical solution, while \NP are those that can be checked in an efficient manner.  
+  Perhaps the most well known question in computational complexity is the \PP{} vs \NP problem.  However, what exactly are these classes.  At a most basic level, one can think of \PP{} as those classification problems that have an efficient classical solution, while \NP{} are those that can be checked in an efficient manner.  
 
 
 \begin{definition}[\PP]
-  A promise problem $\AAA= (\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \PP if there exists a polynomial-time Turing Machine $M$ such that $M(x)$ accepts $x$ if and only if $x\in \AAA_{\text{yes}}$.
+  A promise problem $\AAA= (\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \PP{} if there exists a polynomial-time Turing Machine $M$ such that $M(x)$ accepts $x$ if and only if $x\in \AAA_{\text{yes}}$.
 \end{definition}
 
-Note that the Turing Machine $M$ is required to halt on all inputs, and thus this is exactly what we mean by a polynomial-computation.  Some simple examples of languages in \P are 
+Note that the Turing Machine $M$ is required to halt on all inputs, and thus this is exactly what we mean by a polynomial-computation.  Some simple examples of languages in \PP{} are whether the triple $(a,b,c)$ satisfies $ab = c$, and whether a particular list of values is sorted.
 
-\todo{find \PP languages}
 
 \begin{definition}[\NP]
   A promise problem $\AAA=(\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \NP if there exists a polynomial $q$ and a polynomial-time Turing Machine $M$ such that
   \begin{itemize}
     \item if $x\in \AAA_{\text{yes}}$, then there exists a string $y\in \Sigma^{q(|x|)}$ such that $M(x,y)$ accepts.
-    \item if $x\in \AAA_{\text{no}}$, then for all strings $y\in \Sigma^{(q(|x|)}$, $M(x,y)$ rejects.
+    \item if $x\in \AAA_{\text{no}}$, then for all strings $y\in \Sigma^{q(|x|)}$, $M(x,y)$ rejects.
   \end{itemize}
 \end{definition}
-Essentially, a language is in \NP if a given string can be proven to be in the language.  This includes useful problems such as whether a given graph has a 3-coloring, whether an integer $p$ has at least $k$ prime factors, and all problems in \P.
+Essentially, a language is in \NP{} if a given string can be proven to be in the language.  This includes useful problems such as whether a given graph has a 3-coloring, whether an integer $p$ has at least $k$ prime factors, and all problems in \PP.
 
 
 %%%
@@ -178,58 +177,59 @@ Essentially, a language is in \NP if a given string can be proven to be in the l
 
 With these classical problems now defined, we will want to understand what happens when we include quantum mechanics.  There is a way to define a quantum Turing machine, in an analog to the classical case, but the current state of the art has instead gone toward using quantum circuits instead.  
 
-Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consists of those problems that can be solved by a quantum computer efficiently.  However, we need to somehow encode the circuit 
+Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consists of those problems that can be solved by a quantum computer efficiently, and thus is the quantum version of \PP.  However, we need to somehow encode the circuit so that computation cannot be hidden in the circuit definition.  This is exactly the reason for our definition of uniform circuit families, as it is impossible to hide additional computation in a time-bounded Turing machine, especially when the quantum circuits themselves most likely have more computational power.
 
-
-\begin{definition}[\BQP] A promise problem $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}})$ if there exist a uniform family of quantum circuits $Q = \{Q_n: n\in \NN\}$ such that 
+\begin{definition}[\BQP] A promise problem $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \BQP{} if there exist a uniform family of quantum circuits $Q = \{Q_n: n\in \NN\}$ such that 
   \begin{itemize}
-    \item If $x\in \AAA_{\text{yes}}$, then $Q_{|x|}(\ket{x}) \geq \frac{2}{3}$.
-    \item If $x\in \AAA_{\text{no}}$, then $Q_{|x|}(\ket{x}) \leq \frac{1}{3}$.
+    \item If $x\in \AAA_{\text{yes}}$, then $\AP(Q_{|x|},\ket{x}) \geq \frac{2}{3}$.
+    \item If $x\in \AAA_{\text{no}}$, then $\AP(Q_{|x|},\ket{x}) \leq \frac{1}{3}$.
   \end{itemize}
 \end{definition}
 
-Note that these t
+Note that $\AP(Q,\ket{psi})$ is the acceptance probability of a circuit $Q$, with input $\ket{\psi}$, given by
+\begin{align}
+  \AP(Q,\ket{psi})=\bra{\psi} Q^\dag (\ketbra{0}{0}\otimes \II) Q\ket{\psi}.
+\end{align}
+From this, we have that the class \BQP{} does not always output the correct answer, but it does with a bounded probability. 
+
+If a problem is \BQP-hard, then we say that it is universal for quantum computing.
 
 %%%
 \subsubsection{Quantum Merlin-Arthur}
 
-In addition to having an understanding of when a quantum computer can solve a particular problem, we will also want an understanding of those problems that most likely cannot be 
+In addition to the efficient quantum computations, we also have those computations that are efficient to check with a quantum computer, \QMA.  This class is analogous to \NP{} in that it includes problems that are thought difficult for a quantum computer.  Intuitively, these problems are those for which an all powerful person gave you a ``proof'' state $\ket{\psi}$, and you could run this state through a quantum circuit and be convinced of some property.
 
-
-\begin{definition}[\QMA]  A promise problem $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}})$ if there exists a uniform family of quantum circuits $Q=\{Q_n:n\in \NN\}$ such that
+\begin{definition}[\QMA]  A promise problem $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \QMA{} if there exists a uniform family of quantum circuits $Q=\{Q_n:n\in \NN\}$ such that
 \begin{itemize}
   \item If $x\in \AAA_{\text{yes}}$, then there exists a state $\ket{\psi}\in \CC^{p(|x|)}$ such that $Q_{|x|}(\ket{x},\ket{\psi}) \geq \frac{2}{3}$.
   \item If $x\in \AAA_{\text{no}}$, then for all states $\ket{\psi}\in \CC^{p(|x|)}$, $Q_{|x|}(\ket{x},\ket{\psi}) \leq \frac{1}{3}$.
 \end{itemize}
 \end{definition}
 
-Intuitively, this is like the class \NP in that the circuit only accepts if there exists a proof that the input is in the language.  This proof might be extremely difficult to construct, but it still exists.
+Note that these constants $\frac{2}{3}$ and $\frac{1}{3}$ can actually be replaced by $1-2^{|x|}$ and $2^{|x|}$ if we would like.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Reductions and Complete Problems}
 
-While we are interested in these complexity classes, it is often difficult to work with the exact definitions used.  As an example, in the definition of \NP, to show something for all of the class we would somehow need to encode the entire computation of the Turing machine in our proof.  One way to get around this is via reductions.
+While we are interested in these complexity classes, it is often difficult to work with the exact definitions used.  As an example, in the definition of \NP, to show something for all of the class we would somehow need to encode the entire computation of the Turing machine in our proof, which is a very difficult endeavour.  However, if we know of a particular problem such that every 
 
-Essentially a reduction is a polynomial-time computable function from one computational problem to another.  Because this reduction is easy to compute, if we can solve the second problem, then we can also solve the first problem.  More concretely, let $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}}$ and $\BBB=(\BBB_{\text{yes}},\BBB_{\text{no}})$ be two promise problems.  We say that there 
+Essentially a reduction is a polynomial-time computable function from one computational problem to another.  Because this reduction is easy to compute, if we can solve the second problem, then we can also solve the first problem.  More concretely, let $\AAA = (\AAA_{\text{yes}},\AAA_{\text{no}}$ and $\BBB=(\BBB_{\text{yes}},\BBB_{\text{no}})$ be two promise problems.  We say that there is a reduction from $\AAA$ to $\BBB$ if there is an efficient function $f$ such that for each $a\in \AAA_{\text{yes}}$ $f(a)\in \BBB_{\text{yes}}$ and for each $a\in \AAA_{\text{no}}$, $f(a) \in \BBB_{\text{no}}$.  
 
+With these reductions in mind, a particular problem $\AAA$ is hard for a given complexity class \class{C}{} if for every $\BBB\in$\class{C}, there is a reduction from $\BBB$ to $\AAA$.  In this way, we can think of $\AAA$ as being as hard as any problem in \class{C}{}.  A problem is \class{C}-complete if it is \class{C}-hard and contained in \class{C}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Hamiltonian simulation}\label{sec:hamiltonian_simulation}
 
-\todo{Give a high level overview of the simulation algorithm?}
-
-With the definitions of the various complexity classes, and in particular defining complete problems for these classes, we will find that we often need to reduce one problem to another, in order to show that a given problem is contained within a complexity class.  Of particular interest to us will be the simulation of Hamiltonian dynamics, as all of the problems in this thesis are defined in terms of Hamiltonians.
-
-In particular, we will need to show how to simulate the evolution of a sparse, row-computable Hamiltonian on a given state $\ket{\phi}$.  The state $\ket{\phi}$ might be a en efficiently computable state, or it might be a provided to us in a \QMA-style procedure, but we are really only interested in understanding the dynamics.
+Several times in this thesis, we will need to show how to simulate the evolution of a sparse, row-computable Hamiltonian on a given state $\ket{\phi}$ using a quantum circuit.  The state $\ket{\phi}$ might be an efficiently computable state, or it might be a provided to us in a \QMA-style procedure, but in either case we are really only interested in understanding the dynamics of the simulation.
 
 The problem of simulating Hamiltonian dynamics has been featured rather heavily in the literature, as it was the original motivation that Feynman gave for quantum computers \cite{Fey82,Fey85}.  In particular, Lloyd showed how to simulate sums of local operators \cite{Llo96}, and this idea was generalized by Aharanov and Ta-Shma to (efficiently computable) sparse Hamiltonians \cite{AT03}.  Since then, various schemes have improved the requirements on time \cite{BACS07,WBHS11,BC12}, as well as the dependence on the precision \cite{BCCKS14,BCCKS15} and various other avenues of research \cite{Chi09, PQSV11}, have managed to greatly improve our ability to simulate quantum dynamics.  
 
 While Hamiltonians that are a sum of local operations are relatively easy to understand, $d$-sparse Hamiltonians are relatively more complex.  The reason that much of the literature has focused on local Hamiltonians is that they are easy to specify, as we need only write down each of the local Hamiltonians.  In particular, they are succinct representations for Hamiltonians on an exponential-sized Hilbert space, such that each non-zero term of the Hamiltonian corresponding to a specific basis vector can be determined efficiently.  Additionally, these local-Hamiltonians are further restricted to only have non-zero transition amplitudes for states that satisfy some locality conditions, but for the purposes of simulation the succinctness property is what we care about.
 
-Namely, the fact that a local Hamiltonian is succinctly representable is all that is used in the algorithms for simulating Hamiltonian dynamics.  As such, if we can generalize these properties, we can generalize the Hamiltonians that we can simulate.  A row-computable, $d$-spare matrix is such a generalization, in which each row of a given Hamiltonian has at most $d$ non-zero entries, and there exists some efficiently computable function $f_{i}(x)$ that outputs the value (and position) of the $i$th nonzero entry of the $x$th row.  Note that $k$-local Hamiltonians are $d$-sparse (for some $d$ depending on the local dimension and connectivity), and easily row-computable; this is the natural generalization.
+Namely, the fact that a local Hamiltonian is succinctly representable is all that is used in the algorithms for simulating Hamiltonian dynamics.  As such, if we can generalize these properties, we can generalize the Hamiltonians that we can simulate.  A row-computable, $d$-spare matrix is such a generalization, in which each row of a given Hamiltonian has at most $d$ non-zero entries, and there exists some efficiently computable function $f_{i}(x)$ that outputs the value (and position) of the $i$th nonzero entry of the $x$th row.  Note that $k$-local Hamiltonians are $d$-sparse (for some $d$ depending on the local dimension and connectivity), and easily row-computable.
 
-The basic idea behind most simulation algorithms is to color each non-zero matrix element of the Hamiltonian $H$ so that the matrix corresponding to each color satisfies some technical property, show how to simulate each color individually for a short period of time, and then show how to combine the individual simulations into a simulation of the entire Hamiltonian.  The current state of the art \cite{BCK15} uses several techniques, including quantum walk algorithms, simulations of linear combinations of unitaries, and Bessel functions, but their main result is the following
+The current state of the art simulation algorithms \cite{BCK15} uses several techniques, including quantum walk algorithms, simulations of linear combinations of unitaries, and Bessel functions, to simulate a given Hamiltonian, but their main result is the following
 \begin{theorem}[Theorem 1 of \cite{BCK15}]\label{thm:hamiltonian_simulation}
 A $d$-sparse Hamiltonian $H$ acting on $n$ qubits can be simulated for time $t$ within error $\epsilon$ with
 \begin{align}
@@ -243,84 +243,84 @@ queries and
 \end{align}
 additional $2$-qubit gates, where $\tau := d \Vert H \Vert_{\max} t$.
 \end{theorem}
-Note that the theorem was proved in the black box model, where the function $f$ was provided via black box.  Assume that $f$ is superlinear in both $n$ and $\log^{5/2}(\tau/\epsilon)$, the time-complexity for simulating such a Hamiltonian is simply the product of the complexity of $f$ with \eq{hamiltonian_query_bound}.  Note that if $f$ is efficient to compute, this is an efficient simulation of the Hamiltonian dynamics.
+Note that the theorem was proved in the black box model, where the function $f$ was provided via black box.  Assuming that $f$ is superlinear in both $n$ and $\log^{5/2}(\tau/\epsilon)$, the time-complexity for simulating such a Hamiltonian is simply the product of the complexity of $f$ with \eq{hamiltonian_query_bound}.  Note that if $f$ is efficient to compute, this is an efficient simulation of the Hamiltonian dynamics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Various Mathematical Lemmas}
 
-In addition to these various complexity results, it will also be useful to have a list of certain mathematical lemmas that will be used several times in the thesis.  These lemmas might also be of independent interest.
+In addition to these various mathematical definitions, it will also be useful to have a list of certain mathematical lemmas that will be used several times in the thesis.  These lemmas might also be of independent interest.
 %%%%%%%%%%%%%%%%%
 \subsection{Truncation Lemma}
 
-Perhaps the first such lemma we called the truncation lemma.  The idea behind this lemma is to approximate the evolution of a state under some particular Hamiltonian with another, where the differences between the two Hamiltonians only occur far from the support of the given state.  One would expect that since the state must evolve ``far'' in order to reach the differs between the two Hamiltonians, the evolution between the two will be close.  This lemma makes this intuition precise.
+Perhaps the first such lemma we called the truncation lemma.  The idea behind this lemma is to approximate the evolution of a state under some particular Hamiltonian with another, where the differences between the two Hamiltonians only occur far from the support of the given state.  One would expect that since the state must evolve ``far'' in order to reach the differs between the two Hamiltonians, the evolution between the two will be close.  This lemma makes this intuition precise.  This lemma was shown by Childs, Gosset, and Webb in \cite{MPQW}.
 
 \begin{lemma}[Truncation Lemma]
 \label{lem:truncation}
 Let $H$ be a Hamiltonian acting on a Hilbertspace $\mathcal{H}$ and let $\ket{\Phi}\in\mathcal{H}$ be a normalized state. Let
 $\mathcal{K}$ be a subspace of $\mathcal{H}$, let $P$ be the projector onto $\mathcal{K}$,
 and let $\tilde{H}=PHP$ be the Hamiltonian within this subspace. Suppose
-that, for some $T>0$, $W\in\{H,\tilde{H}\}$, $N_0\in\natural$,
+that, for some $T>0$, $W\in\{H,\tilde{H}\}$, $N_0\in\NN$,
 and $\delta>0$, we have, for all $0\leq t\leq T$, 
-\begin{align*}
+\begin{align}
 e^{-iWt}|\Phi\rangle & = |\gamma(t)\rangle+|\epsilon(t)\rangle \text{ with }
 \left\Vert |\epsilon(t)\rangle\right\Vert \leq \delta
-\end{align*}
+\end{align}
 and
-\begin{align*}
+\begin{align}
   (1-P) H^{r}|\gamma(t)\rangle & = 0 \text{ for all } r\in\{0,1,\ldots, N_0-1\}.
-\end{align*}
+\end{align}
 Then, for all $0\leq t \leq T$, 
-\[
+\begin{align}
   \Norm{\left(e^{-iHt}-e^{-i\tilde{H}t}\right)|\Phi\rangle}
   \leq \left(\frac{4e\norm{H}t}{N_0} + 2 \right) 
         \left(\delta + 2^{-N_0}(1+\delta)\right).
-\]
+\end{align}
 \end{lemma}
 
-This lemma actually combines two different methods.  The first assumes that the 
-
-
+This lemma actually combines two different methods.  The first assumes some locality condition on the Hamiltonian, and uses a Taylor series to bound the error in approximating the evolution according to the truncation.
 \begin{proposition}
-\label{pro:trunc_prop}Let $H$ be a Hamiltonian acting on a Hilbert
+\label{prop:trunc_prop}Let $H$ be a Hamiltonian acting on a Hilbert
 space $\mathcal{H}$, and let $\ket{\Phi}\in\mathcal{H}$ be a normalized state. Let
 $\mathcal{K}$ be a subspace of $\mathcal{H}$ such that there exists an $N_0\in\natural$
 so that for all $\ket{\alpha}\in \mathcal{K}^{\perp}$ and for all $n\in\{0,1,2,\ldots, N_0-1\}$, $\bra{\alpha}H^{n}\ket{\Phi}=0$.
 Let $P$ be the projector onto $\mathcal{K}$ and let $\tilde{H}=PHP$ be
 the Hamiltonian within this subspace.  Then
-\[
+\begin{align}
 \norm{e^{-it\tilde{H}}\ket{\Phi}-e^{-itH}\ket{\Phi}} \leq 2\left(\frac{e\norm{H}t}{N_0}\right)^{N_0}.
-\]
+\end{align}
 \end{proposition}
 
 \begin{proof}
 Define $\ket{\Phi(t)}$ and $\ket{\tilde\Phi(t)}$
 as
-\[
+\begin{align}
 \ket{\Phi(t)}=e^{-itH}\ket{\Phi}=\sum_{k=0}^{\infty}\frac{(-it)^{k}}{k!}H^{k}\ket{\Phi}\qquad\ket{\tilde\Phi(t)}=e^{-it\tilde{H}}\ket{\Phi}=\sum_{k=0}^{\infty}\frac{(-it)^{k}}{k!}\tilde{H}^{k}\ket{\Phi}.
-\]
+\end{align}
 Note that by assumption, $\tilde{H}^{k}\ket{\Phi}=H^{k}\ket{\Phi}$ for all $k< N_0$, and thus the first $N_0$ terms in the two above sums are equal. Looking at the difference between these two states, we have
-\begin{align*}
+\begin{align}
 \norm{\ket{\Phi(t)}-\ket{\tilde\Phi(t)}} & =\Norm{\sum_{k=0}^{\infty}\frac{(-it)^{k}}{k!}\left(H^{k}-\tilde{H}^{k}\right)\ket{\Phi}}\\
  & =\Norm{\sum_{k=0}^{N_0-1}\frac{(-it)^{k}}{k!}\left(H^{k}-\tilde{H}^{k}\right)\ket{\Phi}-\sum_{k=N_0}^{\infty}\frac{(-it)^{k}}{k!}\left(H^{k}-\tilde{H}^{k}\right)\ket{\Phi}}\\
  & \leq\sum_{k=N_0}^{\infty}\frac{t^{k}}{k!}\left(\norm{H}^{k}+\norm{\tilde{H}}^{k}\right) \\
  & \leq 2\sum_{k=N_0}^{\infty}\frac{t^{k}}{k!} \norm{H}^{k}
-\end{align*}
+\end{align}
 where the last step uses the fact that $\norm{\tilde{H}}\leq\norm{P}\norm{H}\norm{P} = \norm{H}$.  Thus for any $c \ge 1$, we have
-\begin{align*}
+\begin{align}
 \norm{\ket{\Phi(t)}-\ket{\tilde\Phi(t)}}
  & \leq\frac{2}{c^{N_0}}\sum_{k=N_0}^{\infty}\frac{(ct)^{k}}{k!}\norm{H}^{k}\\
  & \leq\frac{2}{c^{N_0}}\exp(ct\norm{H}).
-\end{align*}
+\end{align}
 We obtain the best bound by choosing $c=N_0/\norm{Ht}$, which gives
-\[
+\begin{align}
   \norm{\ket{\Phi(t)}-\ket{\tilde\Phi(t)}}
   \le 2\left(\frac{e\norm{H}t}{N_0}\right)^{N_0}
-\]
+\end{align}
 as claimed.  (If $c < 1$ then the bound is trivial.)
 \end{proof}
 
+The second proof is related to the difference between two different products of unitaries.
+
 \begin{proposition}
-\label{pro:hybrid}Let $U_1,\ldots, U_n$ and $V_1,\ldots, V_n$  be unitary operators.  Then for any $\ket{\psi}$,
+\label{prop:hybrid}Let $U_1,\ldots, U_n$ and $V_1,\ldots, V_n$  be unitary operators.  Then for any $\ket{\psi}$,
 \begin{equation}
   \Norm{\left(\prod_{i=n}^1 U_i - \prod_{i=n}^1 V_i \right) \ket{\psi}}   \le \sum_{j=1}^n \Bigg\|{(U_j - V_j)\prod_{i=j-1}^1 U_i \ket{\psi}}\Bigg\|.
 \end{equation}
@@ -330,9 +330,9 @@ as claimed.  (If $c < 1$ then the bound is trivial.)
 The proof is by induction on $n$.  The case $n=1$ is obvious.  For the induction step, we have \begin{align}   \Norm{\left(\prod_{i=n}^1 U_i - \prod_{i=n}^1 V_i \right) \ket{\psi}}   &= \Norm{\left(\prod_{i=n}^1 U_i - V_n \prod_{i=n-1}^1 U_i             + V_n \prod_{i=n-1}^1 U_i - \prod_{i=n}^1 V_i \right) \ket{\psi}} \\   &\le \Norm{(U_n - V_n) \prod_{i=n-1}^1 U_i \ket{\psi}}       +\Norm{\left(\prod_{i=n-1}^1 U_i - \prod_{i=n-1}^1 V_i \right) \ket{\psi}} \\   &\le \sum_{j=1}^n \Norm{(U_j - V_j)\prod_{i=j-1}^1 U_i \ket{\psi}} \end{align} where the last step uses the induction hypothesis. 
 \end{proof}
 
-\begin{proof}[Proof of {\lem{trunc}}]
-For $M \in \natural$ write
-\begin{align*}
+\begin{proof}[Proof of {\lem{truncation}}]
+For $M \in \NN$ write
+\begin{align}
   \norm{(e^{-iHt}-e^{-i\tilde{H}t}) \ket{\Phi}}
   &= \Norm{\left(\left(e^{-iH\frac{t}{M}}\right)^{M} -
      \left(e^{-i\tilde{H}\frac{t}{M}}\right)^{M}\right) \ket{\Phi}} \\
@@ -350,19 +350,19 @@ For $M \in \natural$ write
     \Norm{\ket{\gamma(\tfrac{(j-1)t}{M})}}\\ 
   & \leq 2M\delta 
     + 2M\left(\frac{e\norm{H}t}{M N_0}\right)^{N_0}(1+\delta)
-\end{align*}
+\end{align}
 where in the second line we have used \propo{hybrid} and in the last step we have used \propo{trunc_prop} and the fact that $\Vert |\gamma(t)\rangle\Vert \leq 1+\delta$.
 Now, for some $\eta>1$, choose
-\[
+\begin{align}
   M= \left\lceil \frac{\eta e\norm{H}t}{N_0} \right\rceil
-\]
+\end{align}
 for $0<t\leq T$ to get
-\begin{align*}
+\begin{align}
   \norm{(e^{-iHt}-e^{-i\tilde{H}t}) \ket{\Phi}}
   &\leq 2M\left(\delta + \eta^{-N_0}(1+\delta)\right) \\
   &\leq 2\left(\frac{\eta e\norm{H}t}{N_0} + 1 \right) 
         \left(\delta + \eta^{-N_0}(1+\delta)\right).
-\end{align*}
+\end{align}
 The choice $\eta=2$ gives the stated conclusion.
 \end{proof}
 
@@ -371,9 +371,7 @@ Note that it would be slightly better to take a smaller value of $\eta$.  Howeve
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Nullspace Projection Lemma}
 
-When we discuss the ground spaces and ground energies of various Hamiltonians, we will often want to know what happens to the ground spaces and ground energies when two such Hamiltonians are added together (such as adding penalties enforcing particular initial states).  As such, the Nullspace Projection Lemma exactly discusses how such systems add together.  As far as I am aware this lemma was initially used (implicitly) by Mizel et. al.  
-\todo{find correct reference}
-We then used this in our proof of the \QMA-completeness for the Bose-Hubbard model.  We then found an additional place that used a similar lemma, with slightly better bounds.  While the improvement is minor, here is a proof of the improved bound (and note that the improvement was left as a proof for the reader in the newer result).
+When we discuss the ground spaces and ground energies of various Hamiltonians, we will often want to know what happens to the ground spaces and ground energies when two such Hamiltonians are added together (such as adding penalties enforcing particular initial states).  As such, the Nullspace Projection Lemma exactly discusses how such systems add together.  As far as I am aware this lemma was initially used (implicitly) by Mizel, et. al., \cite{MLM99}.  We then used this in our proof of the \QMA-completeness for the Bose-Hubbard model \cite{BHQMA}.  We then found a similar lemma by Alicki, et. al. \cite{AFH09}.  While the improvement is minor, this is a proof of the improved bound (and note that the improvement was left as a proof for the reader in the newer result).
 \begin{lemma}[Nullspace Projection Lemma]
 Let $H_A$ and $H_B$ be positive semi-definite matrices.  Suppose that the nullspace, $S$, of $H_A$ is nonempty, and that 
 \begin{equation}

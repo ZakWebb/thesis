@@ -13,10 +13,15 @@
  
 \chapter{Conclusions}
 
-Many-body systems have, in general, been found to be extremely difficult to understand.  
+This thesis has been mostly about studying interactions of many particles on some well defined graphs.  Starting with a single-particle evolving on an infinite path, we were able to construct an entire theory of graph scattering, including some bounds on the evolution of finite wave-packets.  By searching over many graphs, we were able to find gadgets for several important scattering behaviors.
 
-\section{Open Problems}
+We then used our results on the single-particle scattering on simple graphs to show that this model is universal for quantum computing.  This novel proof heavily uses the results on the behavior of finite wave-packet scattering, along with a result on the evolution of a truncated Hamiltonian far from the pruning.
 
-While we have shown several interesting results, many interesting avenues remain open for investigation.  
+
+With the single-particle case analyzed, we then expanded to multiple particles.  In particular, we defined a multi-particle interacting system on a given graph, and analyzed the special case when two finite length wave-packets move past each other on a long path.  Using this result, along with our result on single-particle scattering, we were able to simulate a quantum computer with our MPQW.  Additionally, the proof in this thesis is an improvement over previously know results on MPQW.
+
+After analyzing the dynamics, we turned our attention to the ground energy of these problems.  Using basic techniques from Hamiltonian complexity, we gave a \QMA-completeness result for the ground energy problem related to the single-particle quantum walk that makes no reference to quantum mechanics.
+
+Finally, we studied the ground energy problem of MPQW.  By restricting ourselves to only examine those problems for which the ground state nearly minimize both the movement and interaction terms of the Hamiltonian, we were able to guarantee the form of the ground space for a particular type of graph. By combining these features in a special manner, and assuming that particular unwanted states were not in the ground space, we were able to prove that the resulting ground energy was closely related to a simulated quantum circuit.   We were then able to provide a construction transforming these special graphs with removed states into a larger graphs that was guaranteed to have these unwanted states outside the ground space.  Hence, the resulting ground energy of the MPQW was closely related to that of the circuit's acceptance.
 
 \end{document}

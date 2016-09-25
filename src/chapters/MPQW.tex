@@ -14,22 +14,18 @@
 \chapter{Multi-particle quantum walk}
 \label{chap:MPQW}
 
-\todo{rewrite entire intro, find more MPQW stuff}
-
 So far, we have only focused on the case of a single walker moving on a graph.  These systems exhibit all the hallmarks of quantum systems, with superpositions of states, entanglement, and the like, but neccessity forces the corresponding graphs to be unphysical; as each vertex corresponds to a computational basis state, in order to get nontrivial computational power we are forced to work on graphs that are not practical to implement in the real world.
 
 From a computational point of view, this does not matter.  \chap{SP_universality} showed that quantum walk is universal for quantum computation, and thus we wouldn't expect it to be easier to implement than a universal quantum computer.  However, several experimental implementations of quantum walk have been carried out \cite{DSBEFFMZ05, KFC09, PLP08}, where the encoding has been done in a non-scalable manner.  
 
 Continuing in this manner, experimentalists have also examined what happens when multiple particles interact on the same graph.  Explicitly, they have analyzed what happens when two bosons walk on a graph \cite{BLMS09, PLM10,SSVMCRO12}, what happens when multiple bosons move along a long path, and various other simple experiments.
 
-\todo{find more recent MPQW stuff}
-
 While these experimental realizations of multi-particle quantum walk have flourished, the theoretical side has only seen some small development.  In particular, there have been attempts to use these MPQW as tools for analyzing graph properties, in the hope that they might be useful for the graph isomorphism problem, but many of these avenues have been proven impossible.  Additionally, there are some continuous space analysis on the eigenstates of some interaction Hamiltonians, but in most cases no closed form solution exists.
 
 In this chapter, we will define our model of multi-particle quantum walk, and analyze the dynamics of such a model on some simple systems.  While this will not improve drastically our previous knowledge this does give us a better understanding of simple interactions.
 
+Note that this chapter takes results from Childs, Gosset, and Webb \cite{MPQW,BHQMA}, and improves some of the results from those papers as well.  We will mention explicitly where the results in this thesis improve previous results.
 
-\todo{a lot more citations}
 
 \section{Multi-particle quantum walk}
 
@@ -316,7 +312,7 @@ For example, if $\mathcal{U}_0^{2,2} = 2+\sqrt{2}$ then two particles with momen
 
 \subsubsection{Nearest-neighbor interaction}
 
-\todo{if time, find perfect reflection with good momenta}
+%\todo{if time, find perfect reflection with good momenta}
 
 For a multi-particle quantum walk with nearest-neighbor interactions, $\mathcal{V}(|r|)=\mathcal{U}_1^{1,1}\delta_{|r|,1}$ and $C=1$.  In this case the eigenvalue equations for $|\psi(p_1;p_2)\rangle$ at $r=-1$, $r=1$, and $r=0$ are
 \begin{align}
@@ -358,13 +354,43 @@ where in the last step we used the fact that $\langle\psi(p_1;p_2')|\psi(p_1;p_2
 
 \section{Wave-packet scattering}
 
-Now that we have an understanding of the two-particle scattering eigenstates on an infinite path, we will want to understand the time-evolution of wave-packets on the infinite path.  In particular, if we initially have a product state corresponding to two Gaussian wave-packets traveling towards each other, how does the time-evolved state look?
+Now that we have an understanding of the two-particle scattering eigenstates on an infinite path, we will want to understand the time-evolution of wave-packets on the infinite path.  In particular, if we initially have a product state corresponding to two wave-packets traveling towards each other, how does the time-evolved state look?
 
 We would expect that the two wave-packets would simply evolve forward in time, where the center of the wave-packets each move with a speed $2\sin k_i$, possibly acquiring a phase if they move past each other.  It turns out that this is exactly what happens, but proving the fact is a little complicated. 
 
-\todo{put everything inside margins!}
+As this was a major component of \cite{MPQW}, a bound for this scattering behavior was proven using square wave-packets.
+\begin{theorem}[Childs, Gosset, W \cite{MPQW}]Let $H^{(2)}$ be a two-particle Hamiltonian of the form \eq{MPQW_H_defn} with interaction range at most $d$, i.e., $\mathcal{V}(|r|)=0$ for all $|r|>d$. Let $\theta_{\pm}(p_1;p_2)$ be given by equation \eq{delta_pm}. Define $\theta=\theta_{\pm}({\pi}/{4},{3\pi}/{8})$. Let $L\in\NN$, let $M\in\{d+1,d+2,\ldots\}$, and define
+\begin{align}
+|\chi_{z,k}\rangle & =  \frac{1}{\sqrt{L}}\sum_{x=z-L}^{z-1}e^{ikx}|x\rangle\\
+|\psi(0)\rangle & =  \frac{1}{\sqrt{2}}\left(|\chi_{-M,-\frac{\pi}{2}}\rangle|\chi_{M+L+1,\frac{\pi}{4}}\rangle 
+	\pm |\chi_{M+L+1,\frac{\pi}{4}}\rangle|\chi_{-M,-\frac{\pi}{2}}\rangle\right).
+\end{align}
+Let $c_{0}$ be a constant independent of $L$. Then, for all $0\leq t\leq c_{0}L$, we have
+\[
+\left\Vert e^{-iH^{(2)}t}|\psi(0)\rangle-|\alpha(t)\rangle\right\Vert =\OO(L^{-{1}/{4}}),
+\]
+where 
+\begin{equation}
+|\alpha(t)\rangle=\sum_{x,y}a_{xy}(t)|x,y\rangle,
+\end{equation}
+$a_{xy}(t)=\pm a_{yx}(t)$ for $x \ne y$, and, for $x\leq y$, 
+\begin{align}
+a_{xy}(t) & =  \frac{1}{\sqrt{2}L}e^{-\sqrt{2}it}\left[e^{-i \pi x/2} e^{i \pi y/4} F(x,y,t) 
+    \pm e^{i\theta} e^{i \pi x/4} e^{-i \pi y/2} F(y,x,t) \right]
+\label{eq:a_xy}
+\end{align}
+where
+\begin{align}
+F(u,v,t) & =  \begin{cases}
+	1 & \text{if }u-2 \lfloor t \rfloor\in\{-M-L,\ldots,-M-1\}\text{ and }v+2\left\lfloor \frac{t}{\sqrt{2}}
+	\right\rfloor \in\{M+1,\ldots,M+L\}\\
+	0 & \text{otherwise.}\end{cases}
+\end{align}
+\end{theorem}
 
-Along these lines, this section is focused on proving the following lemma discussing wave-packet propagation:
+Note that this was sufficient for their purposes, but the square wave-packets were most likely not optimal in terms of the resulting error.  In particular, one would expect something like a Gaussian wave-packet to have better error bounds.  
+
+Along these lines, this section is focused on proving the following lemma discussing wave-packet propagation using Gaussian wave-packets:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{theorem}
 Let $H^{(2)}$ be a two-particle Hamiltonian of the form \eq{MPQW_H_defn} with interaction range at most $d$.  Let $\theta_{\pm}(p_1;p_2)$ be given by equation \eq{delta_pm} (with associated $\theta_{\pm}(k_1,k_2)$).  Let $k_1\in (-\pi,0)$ and let $k_2 \in (0,\pi)$, let $L,\mu, \nu \in \NN$ with $L>0$ and and let $\sigma > 0$.  Let us then define the states
@@ -417,7 +443,8 @@ and then inspect each of these two terms individually.  We can then see
 \begin{align}
  &\sum_{\substack{x,y=\max\{\mu(t),\nu(t)\}-L\\y-x > d}}^{\min\{\mu(t),\nu(t)\}+L}  e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2 + (y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x}e^{i (k_2 - k_1) y}\nonumber\\
  &\qquad = \sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x}\sum_{y = x+d+1}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(y-\mu(t))^2+(y-\nu(t))^2}{2\sigma^2}} e^{i (k_2 - k_1) y}\\
- &\qquad = \sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x} e^{-\frac{(\mu(t)-\nu(t))^2}{4\sigma^2} }\sum_{y=x+d+1}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(y - \frac{\mu(t)+\nu(t)}{2})^2}{\sigma^2}} e^{i (k_2-k_1)y}.\label{eq:diagonal_term_overlap_single}
+ &\qquad = \sum_{x=\max\{\mu(t),\nu(t)\}-L}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(x-\mu(t))^2 + (x-\nu(t))^2}{2\sigma^2}} e^{i (k_1 - k_2) x} e^{-\frac{(\mu(t)-\nu(t))^2}{4\sigma^2}} \nonumber\\
+ &\qquad \qquad \times\sum_{y=x+d+1}^{\min\{\mu(t),\nu(t)\}+L} e^{-\frac{(y - \frac{\mu(t)+\nu(t)}{2})^2}{\sigma^2}} e^{i (k_2-k_1)y}.\label{eq:diagonal_term_overlap_single}
 \end{align}
 Now, this second sum is simply a finite Gaussian approximation related to the $h$ function from \chap{scattering_on_graphs}, with an offset from the center.  From this, we have
 \begin{align}
@@ -484,10 +511,14 @@ While this is a rather complicated expression, if we break the terms into smalle
   &\qquad\qquad+\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y < x-r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i \big(\frac{k_1 + k_2}{2} +\frac{p_1}{2} \big)(x+y)}\nonumber\\
   &\qquad\qquad \times\Big(e^{i\big(\theta_{\pm}(k_1,k_2) - \theta_\pm(p_1;p_2)\big)} e^{i \big(\frac{k_1 - k_2}{2} + p_2 \big) (x-y)} \pm  e^{i\theta_{\pm}(k_1,k_2) }e^{i (\frac{k_1-k_2}{2} - p_2 )(x-y)} \Big)\Bigg]\\
   &\qquad = \gamma e^{-2it (\cos(k_1) + \cos(k_2))} \Bigg[ \sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{y=\nu(t)-L}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y} \nonumber\\ 
-  &\qquad\qquad + \Big(e^{i(\theta_{\pm}(k_1,k_2) - \theta_{\pm}(p_1;p_2))} - 1\Big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y>x+r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y}\nonumber\\
-  &\qquad\qquad \pm \Big(e^{-i\theta_{\pm}(p_1;p_2)}\delta_{\mu(t)\leq\nu(t)} + e^{i  \theta_{\pm}(k_1,k_2)}\delta_{\mu(t) > \nu(t)}\Big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{y=\nu(t)-L}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
-  &\qquad\qquad \pm \delta_{\mu(t)\leq \nu(t)} \big( e^{i\theta_{\pm}(k_1,k_2)} - e^{-i\theta_{\pm}(p_1;p_2)}\big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y< x-r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
-  &\qquad\qquad \pm \delta_{\mu(t)> \nu(t)} \big( e^{-i\theta_{\pm}(p_1;p_2)} - e^{i\theta_{\pm}(k_1,k_2)}\big)\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y> x+r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
+  &\qquad\qquad + \Big(e^{i(\theta_{\pm}(k_1,k_2) - \theta_{\pm}(p_1;p_2))} - 1\Big)\nonumber\\
+  &\qquad\qquad\qquad\times\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y>x+r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y}\nonumber\\
+  &\qquad\qquad \pm \Big(e^{-i\theta_{\pm}(p_1;p_2)}\delta_{\mu(t)\leq\nu(t)} + e^{i  \theta_{\pm}(k_1,k_2)}\delta_{\mu(t) > \nu(t)}\Big)\nonumber\\
+  &\qquad\qquad\qquad\times\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{y=\nu(t)-L}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma^2} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
+  &\qquad\qquad \pm \delta_{\mu(t)\leq \nu(t)} \big( e^{i\theta_{\pm}(k_1,k_2)} - e^{-i\theta_{\pm}(p_1;p_2)}\big)\nonumber\\
+  &\qquad\qquad\qquad\times\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y< x-r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
+  &\qquad\qquad \pm \delta_{\mu(t)> \nu(t)} \big( e^{-i\theta_{\pm}(p_1;p_2)} - e^{i\theta_{\pm}(k_1,k_2)}\big)\nonumber\\
+  &\qquad\qquad\qquad\times\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\y> x+r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}} e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\nonumber\\
   &\qquad\qquad -\sum_{x=\mu(t)-L}^{\mu(t)+L} \sum_{\substack{y=\nu(t)-L\\|x-y|\leq r}}^{\nu(t)+L} e^{-\frac{(x-\mu(t))^2}{2\sigma} - \frac{(y-\nu(t))^2}{2\sigma^2}}\bigg( e^{i (k_1 + \frac{p_1}{2} + p_2)x}e^{i(k_2 + \frac{p_1}{2} - p_2)y} \nonumber\\
   &\qquad\qquad \pm \Big(e^{-i\theta_{\pm}(p_1;p_2)}\delta_{\mu(t)\leq\nu(t)} + e^{i  \theta_{\pm}(k_1,k_2)}\delta_{\mu(t) > \nu(t)}\Big) e^{i (k_1 + \frac{p_1}{2} - p_2)x}e^{i(k_2 + \frac{p_1}{2} + p_2)y}\bigg)\Bigg].\label{eq:alpha_scat_ip}
 \end{align}
@@ -495,7 +526,8 @@ While this expansion takes up much more room than before, it nicely organizes ea
 
 With a decent understanding of these inner products, we can now define a Gaussian approximation to our assumed approximation of the time-evolved states.  In particular, since most of the norm is contained on terms proportional to a product of $h_L^\sigma(\theta)$, our approximated time-evolved states will be centered about those $p_1$ and $p_2$ such that the $\theta \approx 0$.  Explicitly, let us then define the states
 \begin{align}
-  \ket{w(t)} &= \eta e^{ - 2 i t (\cos k_1 + \cos k_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2}\big)} e^{i  \phi_2 (\mu(t) - \nu(t))} e^{ -\frac{ \sigma^2 \phi_1^2}{4}} e^{ -\sigma^2 \phi_2^2} \ket{\scat(p_1 + \phi_1; p_2 + \phi_2)}_{\pm}
+  \ket{w(t)} &= \eta e^{ - 2 i t (\cos k_1 + \cos k_2)} \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1 d\phi_2}{4\pi^2} e^{i \phi_1 \big(\frac{\mu(t) + \nu(t)}{2}\big)} e^{i  \phi_2 (\mu(t) - \nu(t))} \nonumber\\
+  &\qquad\qquad \times e^{ -\frac{ \sigma^2 \phi_1^2}{4}} e^{ -\sigma^2 \phi_2^2} \ket{\scat(p_1 + \phi_1; p_2 + \phi_2)}_{\pm}
 \end{align} 
 where
 \begin{align}
@@ -736,7 +768,7 @@ Note that the constant in our bound only arises from the term corresponding to o
 %  Trying
 
 
-\section{MPQW with positive-semidefinite interactions}
+\section{MPQW with positive-semidefinite interactions}\label{sec:MPQW_pos}
 
 Up to this point, we have studied MPQW with near-arbitrary finite-range interactions.  In particular, while the exact phase $\theta_\pm(k_1,k_2)$ from \sec{two_particle_scattering} depends on the particular interaction, the overall framework for the scattering does not rely on the interaction.  If we want to relate the eigenvalues of a MPQW with $N$ particles to that of the same walk with $N+1$ particles, we will need to have some additional restrictions on the interaction.
 
@@ -859,11 +891,11 @@ which is the dimension of the entire Hilbert space.  As such, we have that the v
 Note that this theorem remains true if we restrict ourselves to the symmetric or antisymmetric subspaces, but note that the dimension of the relevant Hilbert spaces becomes much smaller.
 
 
-\section{Simulation of MPQW on a quantum computer}
-
-As this thesis is about the computational power of various many-body systems, we would like to place an upper bound on the computational resources necessary in order to compute various problems related to the walk.  This can be done by showing how to simulate the interaction on a given initial state to high probability.
-
-As one might expect, we will show that a universal quantum computer can simulate an $N$-particle quantum walk.  The main idea will be to note that our Hamiltonians are sparse, and thus can be simulated using standard techniques.
+%\section{Simulation of MPQW on a quantum computer}
+%
+%As this thesis is about the computational power of various many-body systems, we would like to place an upper bound on the computational resources necessary in order to compute various problems related to the walk.  This can be done by showing how to simulate the interaction on a given initial state to high probability.
+%
+%As one might expect, we will show that a universal quantum computer can simulate an $N$-particle quantum walk.  The main idea will be to note that our Hamiltonians are sparse, and thus can be simulated using standard techniques.
 
 
 \section{Conclusions and extensions}

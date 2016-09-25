@@ -14,40 +14,40 @@
 \chapter{Scattering gadgets}
 \label{chap:scattering_gadgets}
 
-\todo{fix everything!}
+At this point, we have from \chap{scattering_on_graphs} the basic framework used or scattering on graphs.  However, everything from the chapter is a theoretical construction, where we are given a graph with a particular scattering behavior; nothing was mentioned about finding such graphs.  This chapter is dedicated to this idea of finding gadgets with particular scattering behavior, or showing that they cannot exist.
 
 
-\subsection{Momentum dependent actions}
-
-While the NAND tree algorithm gives a good example of how graph scattering can work as an algorithmic tool, in that the scattering evaluates a binary function, the scattering behavior was relatively simple: a particle transmits or reflects.  However, we can use similar ideas in order to have nontrivial scattering behavior, by creating graphs that have different behaviors at different momenta, or that perfectly transmits to some subset of the attached paths (i.e., a generalization of perfect transmission to multiple semi-infinite paths).
-
-\todo{Should I include schematic pictures of these gadgets?  I'm not sure if that would improve readability}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{R/T gadgets}
-
-The easiest thing we could hope for is the same behavior as in the NAND tree algorithm, with two attached paths and at some fixed momenta the wavepacket either completely transmits, or it completely reflects.  However, we will utilize a single graph with several different momenta.
-
-In particular, these reflection/transmission (R/T) gadgets will have two sets of momenta.   One set will have perfect transmission, while the other will have perfect reflection.  While these gadgets have relatively simple scattering behavior, they can be used to filter particular momenta, or as building blocks in more complicated gadgets.  Additionally, the simple behavior will allow us to show that certain scattering behaviors are not possible.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{Momentum Switches}
-
-We can generalize the idea of R/T gadgets to multiple semi-infinite paths, so that the gadget has a kind of routing behavior.  In particular, we can attempt to construct graphs with three attached semi-infinite paths, in which when a wavepacket is incident along one particular path, it either perfectly transmits to the second path, or it perfectly transmits to the third path, depending on the incident momenta.  In this way, we construct something like a momentum dependent railroad switch, sending different wavepackets to different locations.
-
-These momentum switches are extremely useful, as they will allow us to construct much more interesting momentum dependent behavior.  By using two of these gadgets in series (with the paths 2 and 3 connected to each other), we can then place a single obstacle along only one of the paths.  Since only those momenta that travel along that particular path are incident on the additional obstacle, we can use this to do something like applying a momentum dependent phase.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Encoded unitary}
-
-While the above two gadgets can be thought to have one input but two output paths, we can generalize this idea to having multiple input paths.  In particular, if we have two input and two output paths, we can encode a logical qubit in a dual-rail encoding (i.e., one path corresponds to a state $\ket{0}$, while the other corresponds to a state $\ket{1}$).  If we can ensure that wavepackets incident along the input paths always transmit to the output paths, we can think of this as applying a unitary gate to the encoded qubit.
-
-In particular, by constructing a gadget whose $S$-matrix at a particular momentum is block diagonal, with two zero blocks along the diagonal, we have that a wavepacket at that momenta always transmits from the input to the output vertices.  Additionally, as the $S$-matrix is itself unitary, we have that the $2\times2$ block matrix that corresponds to the transmitted amplitudes is also unitary, and thus we have applied a unitary operation to the encoded qubit.  
-
-
+%\subsection{Momentum dependent actions}
+%
+%While the NAND tree algorithm gives a good example of how graph scattering can work as an algorithmic tool, in that the scattering evaluates a binary function, the scattering behavior was relatively simple: a particle transmits or reflects.  However, we can use similar ideas in order to have nontrivial scattering behavior, by creating graphs that have different behaviors at different momenta, or that perfectly transmits to some subset of the attached paths (i.e., a generalization of perfect transmission to multiple semi-infinite paths).
+%
+%\todo{Should I include schematic pictures of these gadgets?  I'm not sure if that would improve readability}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\subsubsection{R/T gadgets}
+%
+%The easiest thing we could hope for is the same behavior as in the NAND tree algorithm, with two attached paths and at some fixed momenta the wavepacket either completely transmits, or it completely reflects.  However, we will utilize a single graph with several different momenta.
+%
+%In particular, these reflection/transmission (R/T) gadgets will have two sets of momenta.   One set will have perfect transmission, while the other will have perfect reflection.  While these gadgets have relatively simple scattering behavior, they can be used to filter particular momenta, or as building blocks in more complicated gadgets.  Additionally, the simple behavior will allow us to show that certain scattering behaviors are not possible.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\subsubsection{Momentum Switches}
+%
+%We can generalize the idea of R/T gadgets to multiple semi-infinite paths, so that the gadget has a kind of routing behavior.  In particular, we can attempt to construct graphs with three attached semi-infinite paths, in which when a wavepacket is incident along one particular path, it either perfectly transmits to the second path, or it perfectly transmits to the third path, depending on the incident momenta.  In this way, we construct something like a momentum dependent railroad switch, sending different wavepackets to different locations.
+%
+%These momentum switches are extremely useful, as they will allow us to construct much more interesting momentum dependent behavior.  By using two of these gadgets in series (with the paths 2 and 3 connected to each other), we can then place a single obstacle along only one of the paths.  Since only those momenta that travel along that particular path are incident on the additional obstacle, we can use this to do something like applying a momentum dependent phase.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\subsection{Encoded unitary}
+%
+%While the above two gadgets can be thought to have one input but two output paths, we can generalize this idea to having multiple input paths.  In particular, if we have two input and two output paths, we can encode a logical qubit in a dual-rail encoding (i.e., one path corresponds to a state $\ket{0}$, while the other corresponds to a state $\ket{1}$).  If we can ensure that wavepackets incident along the input paths always transmit to the output paths, we can think of this as applying a unitary gate to the encoded qubit.
+%
+%In particular, by constructing a gadget whose $S$-matrix at a particular momentum is block diagonal, with two zero blocks along the diagonal, we have that a wavepacket at that momenta always transmits from the input to the output vertices.  Additionally, as the $S$-matrix is itself unitary, we have that the $2\times2$ block matrix that corresponds to the transmitted amplitudes is also unitary, and thus we have applied a unitary operation to the encoded qubit.  
+%
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Constructing graphs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,7 +70,7 @@ This problem is still rather complicated when we work with arbirtary graphs with
   \centering
   \tikzsetnextfilename{SG_reversal_orig}
   \input{../tikz/SG_reversal_orig.tex}
-  \caption{A type 1 R/T gadget.  Vertices of $G_0$ that are not part of the periphery $P = \{p_1,\ldots,p_n\}$ are not shown.}
+  \caption[A type 1 R/T gadget]{A type 1 R/T gadget.  Vertices of $G_0$ that are not part of the periphery $P = \{p_1,\ldots,p_n\}$ are not shown.}
   \label{fig:reversal_orig}
 \end{figure}
 
@@ -177,7 +177,7 @@ As a first example, suppose $G_0$ is a finite path of length $l_1+l_2-2$ connect
   \centering
   \tikzsetnextfilename{SG_RT_path}
   \input{../tikz/SG_RT_path.tex}
-  \caption{An R/T gadget built from a path of length $l_1+l_2-2$. }
+  \caption[An R/T gadget from a path]{An R/T gadget built from a path of length $l_1+l_2-2$. }
   \label{fig:RT_path}
 \end{figure}
 
@@ -214,7 +214,7 @@ with eigenvalue $2 \cos(2 \pi m/r)$, where $m\in [r]$. For each momentum $k=-2 \
   \centering
   \tikzsetnextfilename{SG_RT_cycle}
   \input{../tikz/SG_RT_cycle.tex}
-  \caption{An R/T gadget built from an $r$-cycle.}
+  \caption[An R/T gadget from a cycle]{An R/T gadget built from an $r$-cycle.}
   \label{fig:RT_cycle}
 \end{figure}
 
@@ -249,7 +249,7 @@ Explicitly, the R/T gadget $\widehat{G}^\leftrightarrow$ is obtained by taking t
     \input{../tikz/SG_reversal_changed.tex}
     \label{fig:reversal_changed}
    }
-   \caption{\subfig{reversalRT}  A type 2 R/T gadget, (i.e., a type 1 gadget with $|P| = 1$).  \subfig{reversal_changed}  The R/T gadget $\widehat{G}^\leftrightarrow$ reversing the reflection and transmission sets of \subfig{reversalRT}.}
+   \caption[Type 2 R/T Gadget and Reversal R/T gadget]{\subfig{reversalRT}  A type 2 R/T gadget, (i.e., a type 1 gadget with $|P| = 1$).  \subfig{reversal_changed}  The R/T gadget $\widehat{G}^\leftrightarrow$ reversing the reflection and transmission sets of \subfig{reversalRT}.}
    \label{fig:reversal}
 \end{figure}
 
@@ -294,7 +294,7 @@ Intuitively, the momentum switch acts the same as a railroad switch.  For moment
   \centering
   \tikzsetnextfilename{SG_gen_mom_con}
   \input{../tikz/SG_gen_mom_con.tex}
-  \caption{A momentum switch $\hat G^\prec$ built from a type 2 R/T gadget and its reversal.}
+  \caption[Constructed momentum switch]{A momentum switch $\hat G^\prec$ built from a type 2 R/T gadget and its reversal.}
   \label{fig:gen_mom_con}
 \end{figure}
 
@@ -379,18 +379,14 @@ Namely, if we use a dual-rail encoding for a qubit, and think of one pair of sem
 
 While the general problem is difficult, we might be able to guide our search for specific unitaries.  As a particular example, any one-qubit unitary with a zero-entry will allow us to work with disconnected graphs, and focus on finding a two-terminal gadgets with perfect transmission coefficients.  If we find two such gadgets such that the ratio between their transmission coefficients are the same as the ratio of the entries in the unitary, we can thus implement the unitary.
 
-
-\todo{maybe make a picture of this?}
-
 In the most trivial non-trivial example, we can use this idea to implement an $X$ gate at all momentum by using two length-two paths, where the input terminal for logical $z$ connects to the output terminal of logical $1+z$.  For a slightly less trivial example, note that for any momentum $k$ we can always implement an encoded $\diag\{1,e^{i k}\}$ by using as our graph gadget $\widehat{G}$ a path of length $3$.  Both unitaries are essentially just a relabeling of the vertices, but they are still useful computationally.  
 
-\todo{make $e^{ik}$ gadget}
 
 Later in this thesis we will describe a scheme for arbitrary quantum computation using scattering theory as the basic computational tool.  While the scheme makes no reference to a particular momenta, it does require that there are a set of graph gadgets at the correct momenta implementing a universal gate set.  As such, we will want to show that the set of momenta satisfying this assumption is non-empty.
 
 \subsubsection{Universal gate set for $-\frac{\pi}{2}$}
 
-Since the energy corresponding to momentum $-\frac{\pi}{2}$ is zero, the eigenvalue equations for this gadget are slightly easier than average to manipulate.  Additionally, this was the momentum used in \cite{FGG07} in their algorithm for the AND-OR tree.
+Since the energy corresponding to momentum $-\frac{\pi}{2}$ is zero, the eigenvalue equations for this gadget are slightly easier than average to manipulate.  Additionally, this was the momentum used in \cite{FGG08} in their algorithm for the AND-OR tree.
 
 Note that the the graph in \fig{pi_2_had} and \fig{pi_2_had_planar} both implement a Hadamard gate for a qubit encoded at momentum $-\frac{\pi}{2}$, but that the graph in \fig{pi_2_had_planar} is planar.  In particular, \fig{pi_2_had} has a scattering matrix of the form \eq{encoded_scat}, with
 \begin{equation}
@@ -415,7 +411,7 @@ while \fig{pi_2_had_planar} implements
     \input{../tikz/SG_pi_2_had_planar}
     \label{fig:pi_2_had_planar}
    }
-  \caption{Two gates that implement an encoded Hadamard at $-\frac{\pi}{4}$.  \subfig{pi_2_had}  A simple gate.  \subfig{pi_2_had_planar}  More complicated but planar gate.}
+  \caption[Hadamard gadget at $\frac{\pi}{2}$]{Two gates that implement an encoded Hadamard at $-\frac{\pi}{4}$.  \subfig{pi_2_had}  A simple gate.  \subfig{pi_2_had_planar}  More complicated but planar gate.}
    \label{fig:pi_2_universal}
 \end{figure}
 
@@ -438,7 +434,7 @@ As such an example, we can use the diagonal graph depicted in \fig{pi_2_nonCliff
   \centering
   \tikzsetnextfilename{SG_pi_2_nonClifford}
   \input{../tikz/SG_pi_2_nonClifford}
-  \caption{Graph implementing a non-Clifford gate at $k = -\frac{\pi}{2}$.
+  \caption[Non-clifford gadget at $\frac{\pi}{2}$]{Graph implementing a non-Clifford gate at $k = -\frac{\pi}{2}$.
     \label{fig:pi_2_nonClifford}}
 \end{figure}
 
@@ -464,7 +460,7 @@ In particular, Childs found that the two gadgets in \fig{pi_4_universal} impleme
     \input{../tikz/SG_pi_4_basis_change.tex}
     \label{fig:pi_4_basis_change}
    }
-   \caption{Encoded one-qubit gates at $k = -\frac{\pi}{4}$.  \subfig{pi_4_phase}  A phase gate.  \subfig{pi_4_basis_change}  Basis-changing gate.}
+   \caption[Universal gadget set at $\frac{\pi}{4}$]{Encoded one-qubit gates at $k = -\frac{\pi}{4}$.  \subfig{pi_4_phase}  A phase gate.  \subfig{pi_4_basis_change}  Basis-changing gate.}
    \label{fig:pi_4_universal}
 \end{figure}
 
@@ -500,7 +496,7 @@ In particular, note that the simple shifted diagonal gadget described in the beg
   \centering
   \tikzsetnextfilename{SG_pi_3_universal}
   \input{../tikz/SG_pi_3_universal}
-  \caption{A non-clifford gate used for universal computation at $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$.}
+  \caption[Non-clifford gadget at $\frac{\pi}{3}$ and $\frac{2\pi}{3}$]{A non-clifford gate used for universal computation at $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$.}
   \label{fig:pi_3_universal}
 \end{figure}
 
@@ -516,14 +512,11 @@ The graph in \fig{pi_3_universal} has an $S$-matrix with perfect transmission at
   \end{pmatrix}
 \end{align}
 
-\subsection{Other momenta}
-
-While the previous sections have given us nice
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Various facts about scattering}
+\section{Sufficient and disallowed scattering behavior}
 
 While the previous constructions yield graphs with particular behavior which will be useful when attempting to construct scattering algorithms, we will also want to understand some simple relations between graphs and their respective scattering matrices.  In particular, understanding what properties are necessary in order to have a given scattering matrix, and understanding the relation between various the scattering matrices of various momenta will be useful in constructing additional scattering graphs.
 
@@ -590,7 +583,7 @@ By repeated use of this lemma, we can then reduce any graph used as a scattering
 
 So far, all of our constructions have generally assumed that the scattering behavior that we want does exist.  Hence, if we simply search over large enough graphs, we will eventually find a graph that implements our desired scattering behavior.
 
-However, it turns out that in some cases this is not a valid assumption.  In particular, there exist pairs of momenta for which no R/T gadget can be constructed.  The main idea is that for specific momentum, there exists a basis for the scattering states in which all amplitudes are taken from a field extension of the rationals.  If two momenta are related by a Galois conjugation over this field, then perfect reflection at one momenta implies perfect reflection at the second.  
+However, it turns out that in some cases this is not a valid assumption.  In particular, there exist pairs of momenta for which no R/T gadget can be constructed.  The main idea is that for specific momentum, there exists a basis for the scattering states in which all amplitudes are taken from a field extension of the rationals.  If two momenta are related by a Galois conjugation over this field, then perfect reflection at one momenta implies perfect reflection at the second.  Note that this is a result in \cite{MomSwitches}.
 
 As an illuminating example, we will use those states with momenta $k= -\frac{\pi}{4}$ and $p = - \frac{3\pi}{4}$.  For the two momenta, the corresponding energy is $2 \sqrt{2}$ or $-2\sqrt{2}$, and in this case the Galois conjugation is simply replacing $\sqrt{2}$ by $-\sqrt{2}$. 
 
@@ -729,22 +722,28 @@ This is a $-\sqrt{d}$-eigenvector of $H$, which can be confirmed using the fact 
 
 As particular cases, we can take $k = -\frac{\pi}{4}$, where $d = 2$.  In this case, we have that there does not exist an $R/T$ gadget splitting $k$ and $-\frac{3\pi}{4}$.   Similarly, it is possible to show that $k = -\frac{\pi}{6}$ can be written in a basis with entries over $\QQ[\sqrt{3}]$, and thus there does not exist a R/T gadget between $k$ and $-\frac{5\pi}{6}$. 
 
-\subsubsection{Approximate R/T gadget}
-
-\todo{I never particularly liked this bit, and I'll think I'll include it later if I have the time}
-
-
-%%%%%%%%%%%%%%%%%%%
-\subsection{Laplacians vs adjacency matrix}
-
-\todo{If I have time, write this section.  The basic idea is similar to proof removing self-loops from the graph for the BH model.  In particular, in order to turn a degree 3 graph into a 3-regular graph, we use three copies of the original graph.  For each degree-2 vertex $u$ in the original graph, we add another vertex $u_0$ to the overall graph, and add edges from all three $u_i$ for $i\in[3]$ to $u_0$.  For each degree-1 vertex, we do this twice.  Note that for each eigenstate of the original graph, there are two with nearly the same amplitudes.  We can then use these for our scattering eigenstates}
-
+%\subsubsection{Approximate R/T gadget}
+%
+%\todo{I never particularly liked this bit, and I'll think I'll include it later if I have the time}
+%
+%
+%%%%%%%%%%%%%%%%%%%%
+%\subsection{Laplacians vs adjacency matrix}
+%
+%\todo{If I have time, write this section.  The basic idea is similar to proof removing self-loops from the graph for the BH model.  In particular, in order to turn a degree 3 graph into a 3-regular graph, we use three copies of the original graph.  For each degree-2 vertex $u$ in the original graph, we add another vertex $u_0$ to the overall graph, and add edges from all three $u_i$ for $i\in[3]$ to $u_0$.  For each degree-1 vertex, we do this twice.  Note that for each eigenstate of the original graph, there are two with nearly the same amplitudes.  We can then use these for our scattering eigenstates}
+%
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions and extensions}
+
+At this point, we have a large number of graph gadgets that each implement different scattering behavior.  We have found several sets of gadgets that implement universal sets of single-qubit gates at particular momentum, and we can construct momentum switches between many different momenta.  
+
+Additionally, we have also shown that some scattering behavior cannot exist.  While this means that certain schemes cannot be simplified, this result is of independent theoretical interest.  Further, it also allows us to stop searching for graphs with these behaviors.  It would be interesting to extend our results on the impossibility, however, and give a large set of disallowed scattering behaviors.
+
+While these form a nice foundation, more research can always be done in these fields.  Ideally, giving an explicit algorithm that constructs a graph with a particular scattering behavior, or says that such a graph doesn't exist, would be of great interest.  Even if such an algorithm took an exponential amount of time, this would be a theoretical achievement since we don't know whether this problem is currently decidable.  Less ambitiously, if we could construct such an algorithm for a restricted set of graphs, such as that given for type 1 and type 2 R/T gadgets, but generalized to multiple input and outputs, we would be very useful for computations involving graph scattering.  
 
 \biblio{}
 

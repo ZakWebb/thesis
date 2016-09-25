@@ -16,7 +16,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Quantum walk is an intuitive framework for developing quantum algorithms, inspired by the classical model of random walk.  This framework has lead to examples of exponential speedups over classical computation \cite{CCDFGS03}, as well as optimal algorithms for element distinctness \cite{Amb07} and formula evaluation \cite{FGG08}.  We have also seen examples of this in \chap{scattering_on_graphs} and \chap{scattering_gadgets}, as graph scattering can be seen as a restricted form of quantum walk.
+
 
 With all of these algorithmic uses (and thinking of the title to this thesis), we would then wonder at the computational power of quantum walk.   We already know that this model is contained in \BQP from \chap{scattering_on_graphs}, and thus can only be as powerful as a quantum computer, but we would also like to give a lower bound on its power.  Using the ideas of graph scattering, Childs \cite{Chi09} was able to show that the model of continuous-time quantum walk is universal for quantum computation. (Childs later showed that the discrete-time model was also universal by giving a method to simulate a continuous-time quantum walk via a discrete-time quantum walk in \cite{Chi10}, but this universality was shown directly by Lovett, et.al. soon after in \cite{LCETK10}.)  In this chapter, we will again show the universality of quantum walk, using the tools of \chap{scattering_on_graphs} and \chap{scattering_gadgets}.  
 
@@ -28,8 +28,8 @@ The eventual goal of this chapter is to simulate a given circuit $\mathcal{C}_X 
 
 
 
-\todo{Make many figures (after writeup of other chapters)}
-\todo{Explict encodings for different momenta}
+%\todo{Make many figures (after writeup of other chapters)}
+%\todo{Explict encodings for different momenta}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -44,7 +44,7 @@ With our eventual goal of simulating an entire circuit via graph scattering, we 
 
 In our endeavour to simulate a circuit, we will first need to encode the logical state of the circuit into a state on some simple graph.  Taking motivation from the literature, we will encode our logical system in a dual-rail encoding on two long paths.  In particular, a single qubit will correspond to two infinite paths, with a single wave-packet at some specified momentum $k$ traveling along one of the two paths.  If the particle is located on the first (top) path, then the encoded qubit is in the logical state $\ket{0}$, while if the particle is on the second (bottom) path then the encoded qubit is in the logical state $\ket{1}$.  Schematically, this can be seen in \fig{wavetrain_encoding}.
 
-\todo{change figure to Gaussian as opposed to square?}
+%\todo{change figure to Gaussian as opposed to square?}
 
 \begin{figure}
   \centering
@@ -59,7 +59,7 @@ In our endeavour to simulate a circuit, we will first need to encode the logical
     \input{../tikz/SP_u_wavetrain1.tex}
     \label{fig:wavetrain1}
    }
-  \caption{A qubit is encoded using single-particle wave packets at momentum $k$.  \subfig{wavetrain0} An encoded $\ket{0}$.  \subfig{wavetrain1} An encoded $\ket{1}$.}
+  \caption[Quantum walk qubit encoding]{A qubit is encoded using single-particle wave packets at momentum $k$.  \subfig{wavetrain0} An encoded $\ket{0}$.  \subfig{wavetrain1} An encoded $\ket{1}$.}
   \label{fig:wavetrain_encoding}
 \end{figure}
 
@@ -94,7 +94,7 @@ For specific $\mu$, $L$, $\sigma$, and $t$, we the have from \thm{single_particl
 
 
 
-\todo{make graph?}
+%\todo{make graph?}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,7 +110,7 @@ To do this, we will apply our truncation lemma (\lem{truncation}), as it was des
   \centering
   \tikzsetnextfilename{SP_u_single_qubit_scattering_graph}
   \input{../tikz/SP_u_single_qubit_scattering_graph.tex}
-  \caption{A graph $G(K)$ used to perform a single-qubit gate on an encoded qubit. }
+  \caption[Single qubit $G(K)$]{A graph $G(K)$ used to perform a single-qubit gate on an encoded qubit. }
   \label{fig:single_qubit_scattering_graph}
 \end{figure}
 
@@ -213,7 +213,7 @@ Essentially, \lem{single_qubit_encoded_computation} tells us that even when trun
   \centering
   \tikzsetnextfilename{SP_u_single_particle_cartoon}
   \input{../tikz/SP_u_single_particle_cartoon.tex}
-  \caption{A single-qubit gate $U$ acts on an encoded qubit. The wave packet starts on the paths on the left-hand side of the figure, a distance $\alpha\mu$ from the ends of the paths (for some constant $\alpha$). After time $\frac{\mu}{\sin |k|}$ the logical gate has been applied and the wave packet has traveled a distance $2\mu$.}
+  \caption[Single-qubit quantum walk cartoon]{A single-qubit gate $U$ acts on an encoded qubit. The wave packet starts on the paths on the left-hand side of the figure, a distance $\alpha\mu$ from the ends of the paths (for some constant $\alpha$). After time $\frac{\mu}{\sin |k|}$ the logical gate has been applied and the wave packet has traveled a distance $2\mu$.}
   \label{fig:single_particle_cartoon}
 \end{figure}
 
@@ -223,13 +223,13 @@ Essentially, \lem{single_qubit_encoded_computation} tells us that even when trun
 
 Now that we have a good approximation for the time evolution of a scattering event on a finite-sized graph, we can expand our results to multiple scattering events.  In particular, if we can guarantee that the eventual graph corresponding to a given circuit locally looks like $G(K)$ for each unitary in the circuit, we will be able to use the results of \lem{single_qubit_encoded_computation} iteratively.  Essentially, if the graph is two semi-infinite paths with regularly spaced scattering obstacles, our previous results will still apply.
 
-\todo{make a figure}
+%\todo{make a figure}
 
 Along these lines, let us assume that a single-qubit circuit $\mathcal{C}$ is composed of $g$ unitaries, where the $i$th unitary applied is given by $U_i$.  Moreover, let us assume that at a momentum $k$, the graphs $\widehat{G}_i$ have scattering matrices of the form \eq{unitary_s_matrix} corresponding to the unitary $U_i$ (i.e., at momentum $k$, the graph $\widehat{G}_i$ implements an encoded $U_i$).  We can then construct a graph $G_{\mathcal{C}}$ which we will use to compute the circuit $\mathcal{C}$ using wave-packets at momentum $k$. 
 
 The graph $G_{\mathcal{C}}$ is constructed by combining the $G_i(K)$ into a single graph (where $G_i(K)$ is defined in \sec{SP_1_single_qubit_unitary}) by associating the output paths of $G_i(K)$ with the input paths of $G_{i+1}(K)$.  Assuming that the vertices of $G_i(K)$ are labeled as $(u,i)$, this essentially means that most of the vertices along the long paths have two labels, $(x,3, i)$ and $(K+1 -x,i+1)$ or $(x,4,i)$ and $(K+1-x,2,i+1)$.  Equivalently, the graph $G_{\mathcal{C}}$ can be constructed by removing the input paths (paths $1$ and $2$) for all the $G_i(K)$ (except for $G_1(K)$), shortening each of the terminal paths by 1 (except for $G_g(K)$), and then connect the end of the paths for $G_i(K)$ to the input terminals of $G_{i+1}(K)$.
 
-\todo{make a simple figure}
+%\todo{make a simple figure}
 
 With this construction of $G_{\mathcal{C}}$, note that if we look only at the vertices supported within a distance of $K-2$ of $\widetilde{G_i}$, we actually have the graph $G_i(K-1)$.  As such, we will be able to use \lem{truncation} and \lem{single_qubit_encoded_computation} to determine the evolution while a Gaussian wave-packet is located near the graph $\widehat{G}_i$.  If we assume that the initial wave-packet is located in the correct position near $\widehat{G}_i$, we can iteratively apply this idea, where the ``input'' logical state for the $(i+1)$th scattering event is simply the ``output'' from the $i$th scattering event.  As such, the logical state after the $g$th scattering event will correspond to the logical state after the circuit $\mathcal{C}$ has been applied.  
 
@@ -352,7 +352,7 @@ As in \sec{SP_single_qubit_finite_graph}, we can then define $G_{VU}^n(K)$ as th
   \centering
   \tikzsetnextfilename{SP_block}
   \input{../tikz/SP_block.tex}
-  \caption{The intuitive idea for the graph simulating a single unitary.  Each $U_{x}$ for $x\in \FF_2^{n-1}$ is the same, and note that the output paths are flipped if the last bit is 1.}
+      \caption[Quantum walk multi-qubit unitary]{The intuitive idea for the graph simulating a single unitary.  Each $U_{x}$ for $x\in \FF_2^{n-1}$ is the same, and note that the output paths are flipped if the last bit is 1.}
   \label{fig:SP_block}
 \end{figure}
 
@@ -452,9 +452,9 @@ where $\kappa$ is depends on $k$ and the maximum degree of $G_{\mathcal{C}}$ (wh
 \end{align}
 exactly as in \sec{single_qubit_multi_gate_computation} and our error bound does not explicitly depend on $n$.  As such, if we take $L$ larger than $g^2\kappa^2 \log^2 (g\kappa)$ we find that the error can be made arbitrarily small, and thus we can simulate a particular $n$-qubit $g$-gate circuit with constant error via graph scattering on a graph of $\OO(2^n g^3 \log^2 g)$ vertices for a time $\OO(g^3\log^2 g)$.
 
-\subsection{Explicit examples}
+%\subsection{Explicit examples}
 
-\todo{include explicit mention of momenta for which this works}
+%\todo{include explicit mention of momenta for which this works}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

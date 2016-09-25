@@ -18,78 +18,86 @@
 %\section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-With our proof that the ground state problem for a single-particle quantum walk is \QMA-complete, we would now like to examine the corresponding problem for the multi-particle quantum walk.  The similarities between the two systems make us expect that very similar results will hold for the multi-particle case, but we will again need to examine the problem in a lot of detail.
+With our proof that the ground energy problem for a single-particle quantum walk is \QMA-complete, we will now investigate the related problem for MPQW.  The similarities between the two systems, as well as the well-known difficulty in analyzing many-body systems, gives good intuition that this problem is hard, but the actual proof requires a lot of detail.
 
-In particular, the \QMA-completeness for the single particle walk was relatively straightforward, in that there is really only one particle to deal with.  Because of this, we understand the dynamics and can exactly analyze the system on which things interact, leading to exact solutions for the energies of the resulting Hamiltonian.  With the MPQW, a full analysis is currently beyond our knowledge, and our universality construction relied on a reduction to the cases with at most two interacting particles.  In order to show that finding the ground energy of a MPQW is \QMA-complete using our techniques, we'd need to again reduce to the case of a small number of particles.
+In particular, the \QMA-hardness proof for quantum walk was relatively straightforward, as the requisite circuit-to-Hamiltonian mapping is a simple extension to well-known techniques.  Further, we understand the dynamics of the Hamiltonians derived from a given circuit, leading to exact solutions for the energies.  With the MPQW, a full analysis of the dynamics is currently beyond our knowledge, and our universality construction from \chap{MP_universality} relied on a reduction to the cases with at most two interacting particles.  In order to show that finding the ground energy of a MPQW is \QMA-hard, our techniques will again heavily rely on the cases with a small number of particles.
 
-To make this reduction, we will show that the problem is \QMA-hard when restricted to the problem where the interaction term adds (almost) no energy to the ground state, so that the ground state is contained within the span of single-particle states that don't overlap.  With this restriction, we will still have correlations between many particles, but we will be able to analyze the correlations and determine the corresponding ground energy.
+Our proof of \QMA-hardness will actually show that the the MPQW ground energy problem is \QMA-hard when restricted to instances where the ground state nearly minimizes both the interaction and movement terms of the Hamiltonian.  By restricting ourselves to these frustration-free states, we will show that ground state is nearly contained within the span of single-particle states that don't overlap.  With this restriction, we will still have correlations between many particles, but we will be able to perform an analysis using only a bounded number of particles.  
 
+In particular, we will construct a basic graph $g_0$ that only supports single-particle states in our frustration-free subspace.  We then connect these graphs to build more complicated entanglement structure between particles, until we construct graphs for which the n-particle frustration-free ground space contains an encoded subspace of history states, plus some unwanted states.  We then show how to transform a given graph to remove these unwanted states from the ground space, without changing the energy gap greatly.
 
-Our proof strategy, using repeated applications of the Nullspace Projection Lemma, is analogous to that of reference \cite{KKR04}, where the so-called Projection Lemma was used similarly. Our technique has the advantage of not requiring the terms we add to our Hamiltonian to have ``unphysical'' problem-size dependent coefficients (it also has this advantage over the method of perturbative gadgets \cite{KKR04,JF08}). This allows us to prove results about the ``physically realistic'' Bose-Hubbard Hamiltonian. A similar technique based on Kitaev's Geometric Lemma was used recently in reference \cite{GN13} (however, that method is slightly more computation intensive, requiring a lower bound on $\gamma(H_{B})$ as well as bounds on $\gamma(H_{A})$ and $\gamma(H_{B}|_{S})$).
+Our proof strategy, using repeated applications of the Nullspace Projection Lemma (\lem{npl}), is analogous to that of reference \cite{KKR04}, where the so-called Projection Lemma was used similarly. Our technique has the advantage of not requiring the terms we add to our Hamiltonian to have ``unphysical'' problem-size dependent coefficients (it also has this advantage over the method of perturbative gadgets \cite{KKR04}). This allows us to prove results about the ``physically realistic'' Bose-Hubbard Hamiltonian. A similar technique based on Kitaev's Geometric Lemma was used recently in reference \cite{GN13} (however, that method is slightly more computation intensive, requiring a lower bound on $\gamma(H_{B})$ as well as bounds on $\gamma(H_{A})$ and $\gamma(H_{B}|_{S})$).
+
+Additionally, note that this chapter is essentially a combination of Childs, Gosset, and Webb's \cite{BHQMA} and \cite{XYQMA}.  In particular, the proof structure is identical to that of \cite{BHQMA}, with some modifications to the proof that arose in \cite{XYQMA}.  However, the previous results only applied to onsite-interactions corresponding to the Bose-Hubbard model with positive interactions.  The proof in this chapter is a generalization to arbitrary positive-semidefinite constant-range interactions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{MPQW Hamiltonian ground-energy problem}
 
-In order to make things precise, we will fix a particular finite-range interaction, and show that with this fixed interaction, the resulting question is \QMA-complete to solve.  In particular let $\mathcal{U}$ be an interaction with finite support and no negative coefficients.  For a particular graph $G$, we can then define a Hamiltonian on such a graph as
-\todo{find a correct way to define $\mathcal{U}$}
-\begin{equation}
-H_{f,G} = \sum_{(i,j)\in E(G)} a_ia_j + a_j a_i + \sum_{i,j\in V(G)} U_{d(i,j)}(n_i,n_j) = H_{G,\text{move}} + H_{G,\text{int}}.
-\end{equation}
-Note that because of the positivity restrictions placed on $\mathcal{U}$, we have that $H_{G,\text{int}}$ is positive semi-definite, and thus the ground energy of $H_{f,G}$ is at least the ground energy of $H_{G,\text{move}}$.
+Before we begin constructing various graphs, and determining the eigenvalues of the MPQW on these graphs, it will be useful to define the problem statement that we want to prove hard.  Along these lines, we will also need to determine the interactions for which our proof will hold.
 
-With this particular interaction, we can then construct the corresponding problem. 
+Our proof strategy heavily relies on combining positive-semidefinite matrices, and analyzing the resulting ground space and eigenvalue gaps.  Additionally, we will often want to guarantee that adding a particle to a given graph can only increase its energy.  These are all the requirements we discussed in \sec{MPQW_pos} in \chap{MPQW}.
 
-Note that these Hamiltonians actually act on an infinite dimensional Hilbert space, in that the number of particles is unbounded.  In order to reduce the complexity of these problems to a reasonable amount, we restrict our attention to a particular number of particles.  Once again, as each term in the Hamiltonian preserves the number of particles, we have that $H_{\mathcal{U},G}$ decomposes into blocks with a particular particle number, and we represent these blocks as $\overline{H}_{\mathcal{U},G}^N$.  
+Along these lines, let $\mathcal{U}$ be an interaction with maximum range $\dmax$, satisfying the conditions that for all $0\leq d\leq \dmax$ and all $x,y\in \NN^+$,
+\begin{align}
+  0 \leq \mathcal{U}_d(x,y) \leq \mathcal{U}_d(x+1,y).
+\end{align}
+We also want to guarantee that there exists two constants $\gamma$ and $\nu$ such that $\Vert H_{\mathcal{U},G}^N \Vert \leq \gamma N^\nu$, so that the energy can only grow polynomially.  With these interactions, we can now construct the problem of interest. 
 
-\begin{problem}[$\mathcal{U}$-interaction MPQW Hamiltonion]
-  Given as input a $K$-vertex graph $G$, a number of particles $N$, a real number $c$, and a precision parameter $\epsilon = 1/T$, where the positive integers $N$ and $T$ are given in unary, and the graph $G$ is given as its adjacency matrix (a $K\times K$ symmetric $0$-$1$ matrix), the $\mathcal{U}$-interaction MPQW Hamiltonian problem is to determine whether the smallest eigenvalue of $\overline{H}_{\mathcal{U},G}^N$ is at most $c$ or is at least $c+\epsilon$, with a promise that one of these two cases hold.
+\begin{problem}[$\mathcal{U}$-interaction MPQW Hamiltonian]
+  Given as input a $K$-vertex graph $G$, a number of particles $N$, a real number $c$, and a precision parameter $\epsilon = 1/T$, where the positive integers $N$ and $T$ are given in unary, and the graph $G$ is given as its adjacency matrix (a $K\times K$ symmetric $0$-$1$ matrix), the $\mathcal{U}$-interaction MPQW Hamiltonian problem is to determine whether the smallest eigenvalue of $H_{\mathcal{U},G}^N$ is at most $c$ or is at least $c+\epsilon$, with a promise that one of these two cases hold.
 \end{problem}
+
+Note that we can modify this problem statement to only include symmetric (or anti-symmetric) states, and it will be called the $\mathcal{U}$-interaction (anti-)symmetric MPQW Hamiltonian problem.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{MPQW Hamiltonian is contained in \QMA}
 \label{sec:containment_in_QMA}
 
-To prove that $\mathcal{U}$-interaction MPQW Hamiltonian problem is contained in \QMA, we provide a verification algorithm satisfying the requirements of \defn{QMA}. In the Definition this algorithm is specified by a circuit involving only one measurement of the output qubit at the end of the computation. The procedure we describe below, which contains intermediate measurements in the computational basis, can be converted into a verification circuit of the desired form by standard techniques.
+The proof that the $\mathcal{U}$-interaction MPQW Hamiltonian problem is contained in \QMA is rather straightforward, since we can simulate evolution by the Hamiltonian $H_{\mathcal{U},G}^N$, as was shown in \chap{MPQW}.  In particular, we can use phase estimation in order to approximate the energy with high probability.
 
-We are given an instance specified by $G$, $N$, $c$, and $\epsilon$. We are also given an input state $|\phi\rangle$ of $n_{\text{input}}$ qubits, where $n_{\text{input}}=\lceil \log_{2}D_{N}\rceil $ and $D_{N}$ is the dimension of $\mathcal{Z}_{N}(G)$ as given in equation \eq{DN}. Note, using the inequality $\binom{a}{b} \leq a^{b}$ in equation \eq{DN}, that $n_{\text{input}}=\mathcal{O}(K\log\left(N+K\right))$, where $K=|V|$ is the number of vertices in the graph $G$. We embed $\mathcal{Z}_{N}(G)$ into the space of $n_{\text{input}}$ qubits straightforwardly as the subspace spanned by the first $D_{N}$ standard basis vectors (with lexicographic ordering, say). The first step of the verification procedure is to measure the projector onto this space $\mathcal{Z}_{N}(G)$. If the measurement outcome is $1$ then the resulting state $|\phi^{\prime}\rangle$ is in $\mathcal{Z}_{N}(G)$ and we continue; otherwise we reject.
+More concretely, we are given an instance specified by $G$, $N$, $c$, and $\epsilon$. We are also given an input state $|\phi\rangle$ of $n_{\text{input}}$ qubits, where $n_{\text{input}}=\lceil \log_{2}|V(G)|^N\rceil $.  Note that $n_{\text{input}}=\mathcal{O}(N\log\left(K\right))$, where $K=|V|$ is the number of vertices in the graph $G$. We embed $\CC^{|V(G)|^N}$ into the space of $n_{\text{input}}$ qubits straightforwardly as the subspace spanned by the first $|V(G)|^N$ standard basis vectors (with lexicographic ordering, say). 
 
-In the second step of the verification procedure, the goal is to measure $\bar{H}_{G}^{N}$ in the state $|\phi^{\prime}\rangle$. The Hamiltonian $\bar{H}_{G}^{N}$ is sparse and efficiently row-computable, with norm
+The first step of the verification procedure is to measure $H_{\mathcal{U},G}^{N}$ in the state $|\phi^{\prime}\rangle$. The Hamiltonian $H_{\mathcal{U},G}^{N}$ is sparse and efficiently row-computable, with norm
 \begin{equation}
-\left\Vert \bar{H}_{G}^{N}\right\Vert \leq\left\Vert H_{G}^{N}\right\Vert \leq N\left\Vert A(G)\right\Vert +\left\Vert \sum_{k\in V}\hat{n}_{k}\left(\hat{n}_{k}-1\right)\right\Vert \leq NK+N^{2}.
+  \left\Vert H_{G}^{N}\right\Vert \leq \gamma N^\nu.
 \end{equation}
-We use phase estimation (see for example \cite{CEMM98}) to estimate the energy of $|\phi^{\prime}\rangle$, using sparse Hamiltonian simulation \cite{AT03} to approximate evolution according to $\bar{H}_{G}^{N}$. We choose the parameters of the phase estimation so that, with probability at least $\frac{2}{3}$, it produces an approximation $E$ of the energy with error at most $\frac{\epsilon}{4}$. This can be done in time $\poly(N,K,\frac{1}{\epsilon})$. If $E\leq c+\frac{\epsilon}{2}$ then we accept; otherwise we reject.
+We use phase estimation (see for example \cite{CEMM98}) to estimate the energy of $|\phi\rangle$, using sparse Hamiltonian simulation \cite{AT03} to approximate evolution according to $H_{\mathcal{U},G}^{N}$. We choose the parameters of the phase estimation so that, with probability at least $\frac{2}{3}$, it produces an approximation $E$ of the energy with error at most $\frac{\epsilon}{4}$. This can be done in time $\poly(N,K,\frac{1}{\epsilon})$. If $E\leq c+\frac{\epsilon}{2}$ then we accept; otherwise we reject.
 
-We now show that this verification procedure satisfies the completeness and soundness requirements of \defn{QMA}. For a yes instance, an eigenvector of $\bar{H}_{G}^{N}$ with eigenvalue $e\leq c$ is accepted by this procedure as long as the energy $E$ computed in the phase estimation step has the desired precision. To see this, note that we measure $\left|E-e\right|\leq\frac{\epsilon}{4}$, and hence $E\leq c+\frac{\epsilon}{4}$, with probability at least $\frac{2}{3}$.  For a no instance, write $|\phi^{\prime}\rangle\in\mathcal{Z}_{N}(G)$ for a state obtained after passing the first step. The value $E$ computed by the subsequent phase estimation step satisfies $E\geq c+\frac{3\epsilon}{4}$ with probability at least $\frac{2}{3}$, in which case the state is rejected. From this we see that the probability of accepting a no instance is at most $\frac{1}{3}$.
+We now show that this verification procedure satisfies the completeness and soundness requirements of \defn{QMA}. For a yes instance, an eigenvector of $H_{\mathcal{U},G}^{N}$ with eigenvalue $e\leq c$ is accepted by this procedure as long as the energy $E$ computed in the phase estimation step has the desired precision. To see this, note that we measure $\left|E-e\right|\leq\frac{\epsilon}{4}$, and hence $E\leq c+\frac{\epsilon}{4}$, with probability at least $\frac{2}{3}$.  For a no instance, the value $E$ computed by the phase estimation step satisfies $E\geq c+\frac{3\epsilon}{4}$ with probability at least $\frac{2}{3}$, in which case the state is rejected. From this we see that the probability of accepting a no instance is at most $\frac{1}{3}$.
 
+Note that the problem remains in \QMA when we restrict ourselves to the (anti-)symmetric subspace.  The verification procedure remains nearly the same, except that we measure a projector onto the (anti-)symmetric subspace on $\ket{\phi}$ before we perform phase estimation.  In a yes case, Merlin provides an (anti-)symmetric state, and this test always passes.  In a no case, if this test passes, we are then checking the energy of an (anti-)symmetric state, which fails the energy test with high probability.
 
-
+With all of this, we then have that the $\mathcal{U}$-interaction MPQW Hamiltonian problem is contained within \QMA.
 
 
 %%%%%%%%%%%%
-\subsubsection{\QMA-hard problem}
+\subsection{\QMA-hard problem}
 
-With all of these definitions floating around, it will then be useful to actually define the basic problem that we will show is \QMA-hard.  In particular, we have that for any positive integer $\alpha$, the following problem:
+While the $\mathcal{U}$-interaction MPQW Hamiltonian problem is the natural problem relating to the ground energy of a MPQW, we will prove that a restricted version of this problem is \QMA hard.  Namely, if we restrict ourselves to those Hamiltonians that minimize both the interaction and movement terms, we can more easily analyze the $N$-particle ground space.
 
-\begin{problem}[$\alpha$-frustration-free$\mathcal{U}$-interaction MPQW Hamiltonian]
-  We are given as input a $K$-vertex simple graph $G$, a number of particles $N\leq K$, and a precision parameter $\epsilon = 1/T$, where the positive integers $N$ and $T \geq 4K$ are given in unary, and the graph $G$ is given as its adjacency matrix (a $K\times K$ symmetric $0$-$1$ matrix). We arp promised that either $\lambda_N^1(G) \leq \epsilon^\alpha$ (a yes instance), or else that $\lambda_N^1(G) \geq \epsilon + \epsilon^\alpha$ (a no instance) and we are asked to decide which is the case.
+As such, remember from \chap{MPQW} that for a given graph $G$, we define the positive-semidefinite matrix $H_{\mathcal{U}}(G,N)$ by
+\begin{align}
+  H_{\mathcal{U}}(G,N) &= \sum_{w=1}^{N} \big( A(G) - \mu(G)\big)^{(w)} + \sum_{d=0}^{\dmax} \sum_{\substack{u,v\in V(G)\\d(u,v) = d}} \mathcal{U}_d(\hat{n}_u,\hat{n}_v),
+\end{align}
+and that $\lambda_N^i(G)$ is the $i$-th smallest eigenvalue of $H_{\mathcal{U}}(G,N)$.
+
+\begin{problem}[Frustration-free $\mathcal{U}$-interaction MPQW Hamiltonian]
+  We are given as input a $K$-vertex simple graph $G$, a number of particles $N\leq K$, and a precision parameter $\epsilon = 1/T$, where the positive integers $N$ and $T \geq 4K$ are given in unary, and the graph $G$ is given as its adjacency matrix (a $K\times K$ symmetric $0$-$1$ matrix). We are promised that either $\lambda_N^1(G) \leq \epsilon$ (a yes instance), or else that $\lambda_N^1(G) \geq 2\epsilon $ (a no instance) and we are asked to decide which is the case.
 \end{problem}
 
-Note that for each interaction type, this is an infinite family of problems.  The positive integer $\alpha$ parameterizes how much the yes cases can deviate from a true frustration-free case.  The reason that we define the problem in such a way is that it will facilitate the reduction found in \chap{spin_ground}.
-
-Note that this is a special case of the $\mathcal{U}$-interaction MPQW Hamiltonian, with $c = N\mu(G) + \epsilon^\alpha$.  As such, if we show that the $\alpha$-frustration free $\mathcal{U}$-interaction MPQW Hamiltonian problem is \QMA-hard, we will also show that the non-frustration-free problem is \QMA-complete.
-
+Note that this is a special case of the $\mathcal{U}$-interaction MPQW Hamiltonian, with $c = N\mu(G) + \epsilon$.  As such, if we show that the Frustration-free $\mathcal{U}$-interaction MPQW Hamiltonian problem is \QMA-hard, we will also show that the non-frustration-free problem is \QMA-complete.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Useful graph primitives}\label{sec:graph_primitives}
 
-At this point, we will want to construct a graph for which our \QMA-hardness result will hold.  As such, we will at this point restrict our attention to a particular interaction, $\mathcal{U}$.  While the idea behind the construction of these graphs will not change, the exact graph will depend on both the largest distance for which there is a non-zero interaction.  We will want to construct a foundational graph that does not have a two-particle ground state, and also we will want to ensure that our connections between these building blocks will not have multiple particles interacting except on specially chosen building blocks.
+At this point, we will want to construct the graph for which our \QMA-hardness result will hold.  As such, we will at this point restrict our attention to a particular interaction, $\mathcal{U}$ and omit the corresponding subscripts.  While the idea behind the construction of these graphs will not change depending on the interaction, the exact graph we construct will depend on the largest distance for which there is a non-zero interaction.  We will want to construct a foundational graph that does not have a two-particle ground state, and also we will want to ensure that any connections between these building blocks in the larger graphs will only allow for particular interactions.
 
-As such, let us assume that the minimum distance that the interaction $\mathcal{U}$ has non-zero interactions is $\dmin$, while the maximum distance is $\dmax$.  Our graph will only depend on $\dmax$, but it will be useful to also know $\dmin$.  We will also assume that $\mathcal{U}_{\dmin}^{(1,1)} > 0$, so that there is some energy penalty if two particles are at a distance $\dmin$ (assuming that $\dmin > 0$ --- otherwise we will assume that $\mathcal{U}_0^{2} > 0$).
+Let us then assume that the minimum distance that the interaction $\mathcal{U}$ has non-zero interactions is $\dmin$, while the maximum distance is $\dmax$.  Our graph will only depend on $\dmax$, but it will be useful to also know $\dmin$.  We will also assume that $\mathcal{U}_{\dmin}^{(1,1)} > 0$, so that there is some energy penalty if two particles are at a distance $\dmin$ (assuming that $\dmin > 0$ --- otherwise we will assume that $\mathcal{U}_0^{2} > 0$).
 
 Additionally, we will want the eventual graph to be a simple graph, so that there is always at most a single edge between two vertices and no self-loops.  Unfortunately, our proof strategy will involve adding many positive semi-definite terms to the adjacency matrix, which correspond to adding in edges and self-loops.  As such, we will instead force every vertex in the graph to contain a self-loop, so that by removing all of the self loops we only shift the energy levels by a constant amount.  Keep this in mind, as the eventual graph is defined.
 
-With all of this said, however, this section will only define some useful foundational graphs that will be used in the final construction of the graph.  All of these graphs will be constant sized, and we will show a spanning set for their single-particle and two-particle ground states.  By construction, they will not have any three-particle frustration-free states.
+With all of this said, however, this section only define some useful building blocks that will be used in the final construction of the graph for a given circuit.  All of these graphs will be constant sized, and we will show a spanning set for their single-particle and two-particle ground states.  By construction, they will not have any three-particle frustration-free states.
 
 %%%%%%%%%%%%%%%
 \subsection{Gate graphs}\label{sec:gate_graphs}
@@ -147,7 +155,7 @@ where each vertex is labeled by a computational basis state in the Hilbert space
   \centering
   \tikzsetnextfilename{MP_g_0}
   \input{../tikz/MP_G_0.tex}
-  \caption{The graph $g_{0}$ for the case $\dmax \leq 1$.  Vertices are arranged with each ray corresponding to a specific time $t$ proceeding clockwise, with the outer 8 vertices corresponding to logical $0$ and the inner 8 corresponding to logical $1$, with the further breakdown into 8 vertices corresponding to the ancillary register.  The difference in color for some edges is an attempt to highlight those edges corresponding to the penalty term (bottom of the figure) and the circuit (top left of the figure).  \label{fig:g_0}}
+  \caption[The graph $g_0$]{The graph $g_{0}$ for the case $\dmax \leq 1$.  Vertices are arranged with each ray corresponding to a specific time $t$ proceeding clockwise, with the outer 8 vertices corresponding to logical $0$ and the inner 8 corresponding to logical $1$, with the further breakdown into 8 vertices corresponding to the ancillary register.  The difference in color for some edges is an attempt to highlight those edges corresponding to the penalty term (bottom of the figure) and the circuit (top left of the figure).  \label{fig:g_0}}
 \end{figure}
 
 We can then use the results of \chap{SP_ground} to calculate the smallest eigenvalue of $A(g_0)$, the corresponding eigenvectors, and the eigenvalue gap.  In particular, we have that the smallest eigenvalue is 
@@ -312,7 +320,7 @@ We use several different graphs closely related to the graph $g_0$, with some de
   \input{../tikz/MP_diagram_element1}
   \label{fig:diagram_element1}
 }
-\caption{Diagram elements from which a gate diagram is constructed. Each diagram element is a schematic representation of the graph $g_{0}$ shown
+\caption[Diagram elements]{Diagram elements from which a gate diagram is constructed. Each diagram element is a schematic representation of the graph $g_{0}$ shown
 in \fig{g_0}. 
 \label{fig:diagram_elements}}
 \end{figure}
@@ -446,7 +454,7 @@ Sometimes it is convenient to draw the input nodes on the right-hand side of a d
 \centering 
 \tikzsetnextfilename{MP_simple_gate_diagram}
 \input{../tikz/MP_simple_gate_diagram.tex}
-\caption{A gate diagram with two diagram elements labeled $q=1$ (left) and $q=2$ (right).
+\caption[Diagram element example]{A gate diagram with two diagram elements labeled $q=1$ (left) and $q=2$ (right).
 \label{fig:simple_gate_diagram}}
 \end{figure}
 
@@ -646,7 +654,7 @@ $h_{\mathcal{E}}$ is given by \eq{h_edges}, $h_{\mathcal{S}}$ is given by \eq{h_
 \tikzsetnextfilename{MP_W_gadget_schematic}
 \input{../tikz/MP_W_gadget_schematic.tex}
 \label{fig:W_gadget_gate_schematic}}
-\caption{\subfig{W_gadget_gate_diagram} The gate diagram for the move-together gadget.  Note the four labeled nodes, $\alpha$, $\beta$, $\gamma$, and $\delta$, which have no attached edges.  \subfig{W_gadget_gate_schematic} A schematic representation for a move-together gadget, with the four labeled nodes corresponding to the four labeled nodes of \subfig{W_gadget_gate_diagram}. \label{fig:W_gadget}} 
+\caption[Move-together gadget]{\subfig{W_gadget_gate_diagram} The gate diagram for the move-together gadget.  Note the four labeled nodes, $\alpha$, $\beta$, $\gamma$, and $\delta$, which have no attached edges.  \subfig{W_gadget_gate_schematic} A schematic representation for a move-together gadget, with the four labeled nodes corresponding to the four labeled nodes of \subfig{W_gadget_gate_diagram}. \label{fig:W_gadget}} 
 \end{figure}
 
 We begin by solving for the single-particle ground states, i.e., the eigenvectors of \eq{move_together_adj} with eigenvalue $e_{1}=-1-3\sqrt{2}$.  Note that we can solve for the states with $a=0$ and $a=1$ separately, since
@@ -846,7 +854,7 @@ with $\tilde U\in\{\II,H,HT\}$, we associate $U$ with the gate diagram shown in 
   \tikzsetnextfilename{MP_GVcnot}
   \input{../tikz/MP_GVcnot.tex}
   \label{fig:GVcnot}}
-\caption{\subfig{GVucnotcomplete} Gadget for the
+\caption[Two-qubit gadget]{\subfig{GVucnotcomplete} Gadget for the
  two-qubit unitary $U=\CNOT_{12}(\tilde U\otimes\II)$ with $\tilde U\in \{1,H,HT\}$. \subfig{GVucnot} A schematic encoding for $U=\CNOT_{12}(\tilde U\otimes \II)$, where the eight labeled nodes correspond to the eight labeled nodes of \subfig{GVucnotcomplete}.
 \subfig{GVcnot} For the $U=\CNOT_{21}$ gate (first qubit is the target), we use the same gate graph as in \subfig{GVucnot} with $\tilde U=1$, but with a different location for the eight labeled nodes.}
 \label{fig:GVcnot_tot}
@@ -1168,7 +1176,7 @@ of states with single-particle reduced density matrices in the ground space of $
 \centering
   \tikzsetnextfilename{MP_GVbdy}
   \input{../tikz/MP_GVbdy.tex}
-  \caption{The gate diagram for the boundary gadget is obtained from \fig{GVucnotcomplete} by setting $\tilde U=1$ and adding 6 self-loops.  Note that this is actually the boundary gadget with penalty, as we include the node $\gamma$.}
+  \caption[Boundary gadget]{The gate diagram for the boundary gadget is obtained from \fig{GVucnotcomplete} by setting $\tilde U=1$ and adding 6 self-loops.  Note that this is actually the boundary gadget with penalty, as we include the node $\gamma$.}
   \label{fig:GVbdy}
 \end{figure}
 
@@ -1272,14 +1280,13 @@ Edges and self-loops in the gate diagram for $G$ are replaced by edges and self-
 \centering
   \tikzsetnextfilename{MP_replace_gate_diagram}
   \input{../tikz/MP_replace_gate_diagram.tex}
-\caption{The first step in constructing the gate diagram of $G^{\square}$
+\caption[Step 1 in $G^\square$ construction]{The first step in constructing the gate diagram of $G^{\square}$
 from that of $G$ is to replace each diagram element as shown. The
 four input nodes (black arrow) and four output nodes (grey arrow)
 on the left-hand side are identified with nodes on the right-hand
 side as shown.\label{fig:replace_gate_diagram}}
 \end{figure}
 
-\todo{fix these graphs}
 \begin{figure}
 \centering
 \subfloat[b][$\{q,s\}\in E(G^{\text{occ}}),\,q<s$]{
@@ -1299,7 +1306,7 @@ side as shown.\label{fig:replace_gate_diagram}}
   \tikzsetnextfilename{MP_add_edgesC}
   \input{../tikz/MP_add_edgesC.tex}
 }
-\caption{Edges and self-loops added in step 4 of the construction of the gate diagram of $G^{\square}$. When $\{q,s\}\in E(G^{\text{occ}})$ with $q<s$, we add two outgoing edges to $e_{ij}(q,s)$ as shown in \subfig{add_edgesA}. Note that if $q>s$ and $\{q,s\}\in E(G^{\text{occ}})$ then $e_{ij}(q,s)=e_{ji}(s,q)$. When $\{q,s\}\notin E(G^{\text{occ}})$ we add a self-loop and a single outgoing edge from $e_{ij}(q,s)$ as shown in \subfig{add_edgesB}. Each diagram element $d(q,s)$ has eight outgoing edges (four of which are added in step 4), as shown in \subfig{add_edgesC}.\label{fig:add_edges}}
+\caption[Step 4 in $G^\square$ construction]{Edges and self-loops added in step 4 of the construction of the gate diagram of $G^{\square}$. When $\{q,s\}\in E(G^{\text{occ}})$ with $q<s$, we add two outgoing edges to $e_{ij}(q,s)$ as shown in \subfig{add_edgesA}. Note that if $q>s$ and $\{q,s\}\in E(G^{\text{occ}})$ then $e_{ij}(q,s)=e_{ji}(s,q)$. When $\{q,s\}\notin E(G^{\text{occ}})$ we add a self-loop and a single outgoing edge from $e_{ij}(q,s)$ as shown in \subfig{add_edgesB}. Each diagram element $d(q,s)$ has eight outgoing edges (four of which are added in step 4), as shown in \subfig{add_edgesC}.\label{fig:add_edges}}
 \end{figure}
 
 The set of diagram elements in the gate graph for $G^{\square}$ is indexed by
@@ -1372,13 +1379,13 @@ We provide an example of this construction in \fig{example_G_Gtilde} (which show
   \tikzsetnextfilename{MP_example_G_GtildeB}
   \input{../tikz/MP_example_G_GtildeB.tex}
 }
-\caption{An example \subfig{example_G_GtildeA} Gate diagram for a gate graph $G$ and \subfig{example_G_GtildeB} Occupancy constraints graph $G^{\text{occ}}$. In the text we describe how these two ingredients are mapped to a gate graph $G^{\square}$; the gate diagram for $G^{\square}$ is shown in \fig{big_example_G_square}.\label{fig:example_G_Gtilde}}
+\caption[Example occupancy constraints]{An example \subfig{example_G_GtildeA} Gate diagram for a gate graph $G$ and \subfig{example_G_GtildeB} Occupancy constraints graph $G^{\text{occ}}$. In the text we describe how these two ingredients are mapped to a gate graph $G^{\square}$; the gate diagram for $G^{\square}$ is shown in \fig{big_example_G_square}.\label{fig:example_G_Gtilde}}
 \end{figure}
 
 \begin{figure}
   \tikzsetnextfilename{MP_big_example_G_square}
   \input{../tikz/MP_big_example_G_square.tex}
-\caption{The gate diagram for $G^{\triangle}$ (only solid lines) and $G^{\square}$ (including dotted lines) derived from the example gate graph $G$ and occupancy constraints graph $G^{\text{occ}}$ from \fig{example_G_Gtilde}. The gate diagram for $G^{\diamondsuit}$ is obtained from that of $G^{\triangle}$ by removing all edges (but leaving the undotted self-loops).\label{fig:big_example_G_square}}
+\caption[$G^\square$ example]{The gate diagram for $G^{\triangle}$ (only solid lines) and $G^{\square}$ (including dotted lines) derived from the example gate graph $G$ and occupancy constraints graph $G^{\text{occ}}$ from \fig{example_G_Gtilde}. The gate diagram for $G^{\diamondsuit}$ is obtained from that of $G^{\triangle}$ by removing all edges (but leaving the undotted self-loops).\label{fig:big_example_G_square}}
 \end{figure}
 
 
@@ -1530,7 +1537,7 @@ Continuing in this manner, we can compute the principal submatrix of \eq{restric
   \tikzsetnextfilename{MP_mat_els_for_a_blockB}
   \input{../tikz/MP_mat_els_for_a_blockB.tex}
 }
-\caption{\label{fig:mat_els_for_a_block}}
+\caption[$G^\triangle$ block representation]{\label{fig:mat_els_for_a_block}}
 \end{figure}
 
 For each triple $(z,a,q)$ with $z,a\in\FF_2$ and $q\in[R]$, define
@@ -2083,7 +2090,7 @@ where $\gamma_{\square}$ depends only on the interaction $\mathcal{U}$, and we h
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Constructing the graph for a give circuit}\label{sec:graph_construction}
+\section{Constructing the graph for a given circuit}\label{sec:graph_construction}
 
 In order to prove that bounding the ground energy of a MPQW on some graph $G_X$ is as hard as bounding the maximal acceptance probability of a circuit $\mathcal{C}_X$, we will need to somehow relate the ground energy of $G_X$ to the maximal acceptance probability for the circuit $\mathcal{C}_X$.  
 
@@ -2207,7 +2214,7 @@ Following the convention described in \sec{verification_circuit}, we take qubit 
   \label{fig:GX}
 }
 
-\caption{Step-by-step construction of the gate diagram for $G_X$ for the three-qubit example circuit described in the text. 
+\caption[Step-by-step construction of $G_X$]{Step-by-step construction of the gate diagram for $G_X$ for the three-qubit example circuit described in the text. 
 \subfig{G1} The gate diagram for $G_{1}$.
 \subfig{G2} Add edges in all rows except the first to obtain the gate diagram for $G_{2}$.
 \subfig{G3} Add edges in the first row to obtain the gate diagram for $G_{3}$.
@@ -2584,7 +2591,7 @@ We now define the notion of a configuration for general $n$. Informally, we can 
 \node at (2*2.618+.31+.3,2.75) {\huge $2$};
 \node at (5*2.618+.718+.3,.75) {\huge $1$};
 }}
-\caption{Diagrammatic depictions of configurations for the example where $G_1$ is the gate graph from \fig{G1}. The Figures show the locations of each of the three particles in the gate graph.  The number in the figure indicates a single-particle state corresponding to that particle and the two numbers within an ellipse corresponds to a two-particle state, with the top particle corresponding to the first particle.
+\caption[Diagrammatic depictions of configurations]{Diagrammatic depictions of configurations for the example where $G_1$ is the gate graph from \fig{G1}. The Figures show the locations of each of the three particles in the gate graph.  The number in the figure indicates a single-particle state corresponding to that particle and the two numbers within an ellipse corresponds to a two-particle state, with the top particle corresponding to the first particle.
 \subfig{configA} $((1,1,1),(2,2,0),(3,3,0),123)$.
 \subfig{configB} $(2,(3,1,1),312)$.
 \subfig{configC} $((1,1,1),(2,0,1),(3,3,0),213)$.
@@ -4005,16 +4012,48 @@ Now choosing $\mathcal{K}$ (the constant in the statement of \thm{g_x_with_oc_to
 
 \section{Proof of \QMA-hardness}
 
-Now that we have 
+At this point, we do not yet have a proof of \QMA-hardness of the Frustration-free $\mathcal{U}$-interaction Hamiltonian, but we have the tools necessary for the proof.  We have from \thm{g_x_with_oc_to_acceptance} that for each circuit $\mathcal{C}_X$ of the form specified by \sec{verification_circuit}, there exists a graph $G_X$ such that the corresponding $N$-particle ground energy is related to the acceptance probability when certain occupancy constraints are satisfied, and we have from \lem{oc} a transformation on graphs with occupancy constraints to graphs such that the $N$-particle ground state $G^\square$ is polynomially related to that of the original graph with occupancy constraints.  Combining these two results nearly gives us our \QMA-hardness result.
+
+Along these lines, let $X$ be an instance of a problem in \QMA, with length-$M$ verification circuit $\mathcal{C}_X$.  Note that we can assume that this verification circuit is of the form specified by \sec{verification_circuit}, as well as assuming the circuit has exponentially small error.  Let $G_X$ and $G_X^{\text{occ}}$ be the gate-graph and occupancy constraints built out of the circuit $\mathcal{C}_X$ as described in \sec{graph_construction}.  Note that the graph $G_X$ has $88(M+2n-2)$ diagram elements.  We then have from \thm{g_x_with_oc_to_acceptance} that if $X$ is a yes instance, we have that $\lambda_n^1(G_X,G_X^\text{occ}) \leq 2^{-|X|}$, while if $X$ is a no instance, then $\lambda_n^1(G_X,G_X^{\text{occ}}) \geq \mathcal{K}/(n^4M^4)$.
+
+If we now use \lem{oc} on the graph $G_X$ with occupancy constraints $G_\text{occ}$, we construct a graph $G_X^{\square}$ with at most $70000(M+2n)^2$ diagram elements.  Further, if $X$ is a yes instance, then we have $\lambda_n^1 (G_X^\square)  \leq 2^{-|X|}$, while if $X$ is a no instance, we have that 
+\begin{align}
+  \lambda_n^1(G_X^\square) \geq \frac{\gamma_\square \mathcal{K}}{n^4 M^4 \big(88(M+2n)\big)^{9+\nu}}.
+\end{align}
+While this bound is very small, it is only polynomial which will suffice for our purposes.
+
+Additionally, note that $G_X^\square$ has self-loops on every vertex, by construction.  Let us then define the graph $\overline{G}_X^\square = G_X^\square - \II$.  Note that 
+\begin{align}
+  H(\overline{G}_X^\square,N) = H(G_X^\square,N) - N\II,
+\end{align}
+and thus the two Hamiltonians only differ by a constant energy shift (which does depend on the number of particles).  As such, we have that $\lambda_N^1(\overline{G}_X^\square) = \lambda_N^1(G_X^\square)$.  Further, we have that $\overline{G}_X^\square$ is a simple graph, which we will use to show the \QMA-hardness of the Frustration-free $\mathcal{U}$-interaction MPQW.
+
+In particular, let us define the precision parameter 
+\begin{align}
+  \epsilon = \frac{\gamma_\square \mathcal{K}}{4n^4 M^4 \big(88(M+2n)\big)^{9+\nu}},
+\end{align}
+and let us investigate the Frustration-free $\mathcal{U}$-interaction MPQW instance given by $\epsilon$, $N$, and $\overline{G}_X^\square$.  Note that $\epsilon^{-1}$ is clearly at least $4$ times $|V(\overline{G}_X^\square)|$. If $X$ is a yes instance, we are guaranteed that 
+\begin{align}
+  \lambda_N^1(\overline{G}^\square_X) \leq \frac{1}{2^{|X|}} \leq \epsilon
+\end{align}
+for large enough $|X|$, and thus the corresponding instance of the Frustration-free $\mathcal{U}$-interaction is also a yes instance.  If $X$ is a no instance, we have that
+\begin{align}
+    \lambda_N^1(\overline{G}^\square_X) \geq  \frac{\gamma_\square \mathcal{K}}{n^4 M^4 \big(88(M+2n)\big)^{9+\nu}} \geq 2\epsilon
+\end{align}
+and the corresponding instance of the Frustration-free $\mathcal{U}$-interaction is also a no instance. Hence, we have that Frustration-free $\mathcal{U}$-interaction is \QMA-hard.
+
+
 
 
 \section{Discussion and open problems}
 
-While these results generalized the problem of the Bose-Hubbard model to arbitrary interactions between bosons, it leaves open the related question of fermions.  I would expect that our proof would naturally extend to fermions as well, but the extensions where too extensive to finish in time for this thesis.
+At this point, we have shown that the MPQW ground energy problem for any increasing and non-negative interaction is \QMA-complete.  The method is rather complicated, using using a frustration-free guarantee to create a ground space with a particular form, and then transforming it once again in order to remove some unwanted ground states. 
 
-Making the eventual graph regular.
+While this result is helpful in that it gives a bound on the ability to compute ground states of interacting particles, our requirements on the interaction leave open the possibility that this ground state is computable for more complicated interactions.  This seems unlikely, but these additional interactions will require a novel method in order to prove their complexity.
 
-Remove the restriction to fixed particle number.  Currently, this corresponds to 
+Additionally, it might be of interest to see whether we can further restrict the graph.  We were already able to make the graph simple, as the construction in \cite{BHQMA} required self-loops while this construction does not.  In particular, we almost have that the graphs are 8-regular, as the only vertices of the graph that don't have 8 edges are those to which we explicitly add a self-loop.  If we could determine a method to remove these unwanted single-particle states from the ground space without explicitly using self-loops, we would then have this regular restriction on the graphs.
+
+One very large thing to remove is our restriction on the particle number.  Right now, our problem statement requires us to know the number of particles interacting on the graph, whereas the MPQW is defined for all number of vertices. While the Hamiltonian does preserve particle number, it might be that adding or removing a single particle decreases the energy.  Further, one of the key attributes of this interaction Hamiltonian is the fact that all of the movement terms are identical (namely, 1).  Our assumption on the number of particles can be thought of as a large penalty for any other particle number, thus removing this identically powered interaction.
 
 \biblio
 
