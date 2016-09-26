@@ -26,7 +26,7 @@ Our proof of \QMA-hardness will actually show that the the MPQW ground energy pr
 
 In particular, we will construct a basic graph $g_0$ that only supports single-particle states in our frustration-free subspace.  We then connect these graphs to build more complicated entanglement structure between particles, until we construct graphs for which the n-particle frustration-free ground space contains an encoded subspace of history states, plus some unwanted states.  We then show how to transform a given graph to remove these unwanted states from the ground space, without changing the energy gap greatly.
 
-Our proof strategy, using repeated applications of the Nullspace Projection Lemma (\lem{npl}), is analogous to that of reference \cite{KKR04}, where the so-called Projection Lemma was used similarly. Our technique has the advantage of not requiring the terms we add to our Hamiltonian to have ``unphysical'' problem-size dependent coefficients (it also has this advantage over the method of perturbative gadgets \cite{KKR04}). This allows us to prove results about the ``physically realistic'' Bose-Hubbard Hamiltonian. A similar technique based on Kitaev's Geometric Lemma was used recently in reference \cite{GN13} (however, that method is slightly more computation intensive, requiring a lower bound on $\gamma(H_{B})$ as well as bounds on $\gamma(H_{A})$ and $\gamma(H_{B}|_{S})$).
+Our proof strategy, using repeated applications of the Nullspace Projection Lemma (\lem{NPL}), is analogous to that of reference \cite{KKR04}, where the so-called Projection Lemma was used similarly. Our technique has the advantage of not requiring the terms we add to our Hamiltonian to have ``unphysical'' problem-size dependent coefficients (it also has this advantage over the method of perturbative gadgets \cite{KKR04}). This allows us to prove results about the ``physically realistic'' Bose-Hubbard Hamiltonian. A similar technique based on Kitaev's Geometric Lemma was used recently in reference \cite{GN13} (however, that method is slightly more computation intensive, requiring a lower bound on $\gamma(H_{B})$ as well as bounds on $\gamma(H_{A})$ and $\gamma(H_{B}|_{S})$).
 
 Additionally, note that this chapter is essentially a combination of Childs, Gosset, and Webb's \cite{BHQMA} and \cite{XYQMA}.  In particular, the proof structure is identical to that of \cite{BHQMA}, with some modifications to the proof that arose in \cite{XYQMA}.  However, the previous results only applied to onsite-interactions corresponding to the Bose-Hubbard model with positive interactions.  The proof in this chapter is a generalization to arbitrary positive-semidefinite constant-range interactions.
 
@@ -64,7 +64,7 @@ The first step of the verification procedure is to measure $H_{\mathcal{U},G}^{N
 \end{equation}
 We use phase estimation (see for example \cite{CEMM98}) to estimate the energy of $|\phi\rangle$, using sparse Hamiltonian simulation \cite{AT03} to approximate evolution according to $H_{\mathcal{U},G}^{N}$. We choose the parameters of the phase estimation so that, with probability at least $\frac{2}{3}$, it produces an approximation $E$ of the energy with error at most $\frac{\epsilon}{4}$. This can be done in time $\poly(N,K,\frac{1}{\epsilon})$. If $E\leq c+\frac{\epsilon}{2}$ then we accept; otherwise we reject.
 
-We now show that this verification procedure satisfies the completeness and soundness requirements of \defn{QMA}. For a yes instance, an eigenvector of $H_{\mathcal{U},G}^{N}$ with eigenvalue $e\leq c$ is accepted by this procedure as long as the energy $E$ computed in the phase estimation step has the desired precision. To see this, note that we measure $\left|E-e\right|\leq\frac{\epsilon}{4}$, and hence $E\leq c+\frac{\epsilon}{4}$, with probability at least $\frac{2}{3}$.  For a no instance, the value $E$ computed by the phase estimation step satisfies $E\geq c+\frac{3\epsilon}{4}$ with probability at least $\frac{2}{3}$, in which case the state is rejected. From this we see that the probability of accepting a no instance is at most $\frac{1}{3}$.
+We now show that this verification procedure satisfies the completeness and soundness requirements of the complexity class \QMA. For a yes instance, an eigenvector of $H_{\mathcal{U},G}^{N}$ with eigenvalue $e\leq c$ is accepted by this procedure as long as the energy $E$ computed in the phase estimation step has the desired precision. To see this, note that we measure $\left|E-e\right|\leq\frac{\epsilon}{4}$, and hence $E\leq c+\frac{\epsilon}{4}$, with probability at least $\frac{2}{3}$.  For a no instance, the value $E$ computed by the phase estimation step satisfies $E\geq c+\frac{3\epsilon}{4}$ with probability at least $\frac{2}{3}$, in which case the state is rejected. From this we see that the probability of accepting a no instance is at most $\frac{1}{3}$.
 
 Note that the problem remains in \QMA when we restrict ourselves to the (anti-)symmetric subspace.  The verification procedure remains nearly the same, except that we measure a projector onto the (anti-)symmetric subspace on $\ket{\phi}$ before we perform phase estimation.  In a yes case, Merlin provides an (anti-)symmetric state, and this test always passes.  In a no case, if this test passes, we are then checking the energy of an (anti-)symmetric state, which fails the energy test with high probability.
 
@@ -102,20 +102,9 @@ With all of this said, however, this section only define some useful building bl
 %%%%%%%%%%%%%%%
 \subsection{Gate graphs}\label{sec:gate_graphs}
 
-
-\todo{rewrite this introduction}
 In this section we define a class of graphs (\emph{gate graphs}) and a diagrammatic notation for them (\emph{gate diagrams}) that will allow us to more easily construct the graphs that will be used in our proofs.  Additionally, we will also discuss the MPQW Hamiltonian acting on these graphs, with a particular emphasis on the low-energy states.  We will eventually use this characterization of the low energy states on these small graphs to analyze and give bounds on the low energy states of the more complicated graphs corresponding to particular gate diagrams.
 
-Every gate graph is constructed using a specific, finite-sized graph $g_{0}$ as a building block that only depends on the interaction range of the interaction Hamiltonian for the MPQW.  This building block is shown in \fig{g_0} (in the specific instance of for graphs with $\dmin <= 1$ and discussed in \sec{g_0_graph}).  These graphs are designed so that in the low energy sector, each copy of $g_0$ can only contain a single particle at a time, so that we can force particles to occupy certain states.  Additionally, the low energy states correspond to the history states of a simple single-qubit circuits, as described in \chap{SP_universality}.
-
-\todo{fix this part}
-In \sec{FF_State} we discuss the ground states of the Bose-Hubbard model on gate graphs. For any gate graph $G$, the smallest eigenvalue $\mu(G)$ of the adjacency matrix $A(G)$ satisfies $\mu(G)\geq-1-3\sqrt{2}$. It is convenient to define the constant
-\begin{equation}
-e_{1}=-1-3\sqrt{2}.\label{eq:e1_defn}
-\end{equation}
-When $\mu(G)=e_{1}$ we say $G$ is an $e_{1}$-gate graph. We focus on the frustration-free states of $e_1$-gate graphs (recall from \defn{FF_states} that $|\phi\rangle\in \mathcal{Z}_N(G)$ is frustration free iff $H(G,N)|\phi\rangle=0$). We show that all such states live in a convenient subspace (called $\mathcal{I}(G,N)$) of the $N$-particle Hilbert space. This subspace has the property that no two (or more) particles ever occupy vertices of the same copy of $g_{0}$. The restriction to this subspace makes it easier to analyze the ground space.
-
-In \sec{Occupancy-constraints} we consider a class of subspaces that, like $\mathcal{I}(G,N)$, are defined by a set of constraints on the locations of $N$ particles in an $e_{1}$-gate graph $G$. We state an ``Occupancy Constraints Lemma'' (proven in \app{Occupancy-Constraints-Lemma}) that relates a subspace of this form to the ground space of the Bose-Hubbard model on a graph derived from $G$.
+Every gate graph is constructed using a specific, finite-sized graph $g_{0}$ as a building block that only depends on the interaction range of the interaction Hamiltonian for the MPQW.  This building block is shown in \fig{g_0} (in the specific instance of for graphs with $\dmax <= 1$ and discussed in \sec{g_0_graph}).  These graphs are designed so that in the low energy sector of the MPQW Hamiltonian, each copy of $g_0$ can only contain a single particle at a time without incurring an energy penalty, which will allow us to force the form of the ground state.  Additionally, the single-particle ground states of $A(g_0)$ correspond to the history-states of a simple computation, which we will use to eventually construct graphs computing more interesting quantities.  
 
 
 \subsubsection{The graph $g_0$}\label{sec:g_0_graph}
@@ -183,7 +172,7 @@ which is constant for all interactions with a given $\dmax$.
 Note that the amplitudes of $|\psi_{z,0}\rangle$ in the above basis contain the result of computing either the identity, Hadamard, or $HT$ gate acting on the ``input'' state $|z\rangle$, while the amplitudes $\ket{\psi_{z,1}}$ corresponds to the result of the identity, Hadamard or $\overline{HT}$ gate acting on the ``input'' state.  Additionally, this information is repeated at least $8$ times, once for each copy of $\mathcal{C}_0$.
 
 
-With these bounds on the single particle eigenvalues and their corresponding eigenstates, we can now show that the graph $g_{0}$ has no two-particle frustration-free states. By \lem{increase_part_number}, it follows that $g_0$ has no $N$-particle frustration-free states for $N\geq 2$.  While we would like this to be true for all interactions, in the case of only onsite interactions ($\dmax =0$) no anti-symmetric state is penalized and thus there is a $4$-particle frustration-free state.  However, we show that this is the only case for which this is true, and further that if we restrict ourselves to the symmetric subspace, we again have that there are no frustration-free two-particle states.
+With these bounds on the single particle eigenvalues and their corresponding eigenstates, we can now show that the graph $g_{0}$ has no two-particle frustration-free states. By \lem{MPQW_particle_number_eigenvalues}, it follows that $g_0$ has no $N$-particle frustration-free states for $N\geq 2$.  While we would like this to be true for all interactions, in the case of only onsite interactions ($\dmax =0$) no anti-symmetric state is penalized and thus there is a $4$-particle frustration-free state.  However, we show that this is the only case for which this is true, and further that if we restrict ourselves to the symmetric subspace, we again have that there are no frustration-free two-particle states.
 
 \begin{lemma}
 \label{lem:2particle}If $\dmax > 0$, then $\lambda_{2}^{1}(g_{0})>0$ for all states.  If $\dmax = 0$, then when restricted to symmetric states, $\lambda_2^{1}(g_0) >0$.
@@ -549,7 +538,7 @@ where $|\overline{\psi_{z,a}}\rangle$ is given by equations \eq{psi0m} and \eq{p
 %because the self-loop penalizes the basis vectors $|\psi_{0,a}^{1}\rangle$. On the output nodes of diagram element $1$, the encoded qubit is in the state where either $HT$ (if $a=0$) or its complex conjugate (if $a=1$) has been applied. The edges in the gate diagram ensure that the encoded qubit on the input nodes of diagram element 2 is minus the state on the output nodes of diagram element $1$.
 %\end{example}
 %
-%In this example, each single-particle ground state encodes a single-qubit computation. Later we show how $N$-particle frustration-free states on $e_{1}$-gate graphs can encode computations on $N$ qubits. Recall from \defn{FF_states} that a state $|\Gamma\rangle\in\mathcal{Z}_{N}(G)$ is said to be frustration free iff $H(G,N)|\Gamma\rangle=0.$ Note that $H(G,N)\geq0$, so an $N$-particle frustration-free state is necessarily a ground state. Putting this together with \lem{increase_part_number}, we see that the existence of an $N$-particle frustration-free state implies
+%In this example, each single-particle ground state encodes a single-qubit computation. Later we show how $N$-particle frustration-free states on $e_{1}$-gate graphs can encode computations on $N$ qubits. Recall from \defn{FF_states} that a state $|\Gamma\rangle\in\mathcal{Z}_{N}(G)$ is said to be frustration free iff $H(G,N)|\Gamma\rangle=0.$ Note that $H(G,N)\geq0$, so an $N$-particle frustration-free state is necessarily a ground state. Putting this together with \lem{MPQW_particle_number_eigenvalues}, we see that the existence of an $N$-particle frustration-free state implies
 %\begin{equation}
 %\lambda_{N}^{1}(G)=\lambda_{N-1}^{1}(G)=\ldots=\lambda_{1}^{1}(G)=0,
 %\end{equation}
@@ -603,7 +592,7 @@ where $|\overline{\psi_{z,a}}\rangle$ is given by equations \eq{psi0m} and \eq{p
 %\begin{equation}
 %H(G_{\mathrm{rem}},N)|\Gamma\rangle=0.\label{eq:Grem_gamma}
 %\end{equation}
-%Since each of the $R$ components of $G_{\mathrm{rem}}$ is an identical copy of $g_{0}$, the eigenvalues and eigenvectors of $H(G_{\mathrm{rem}},N)$ are characterized by \lem{BH_disconnected_graphs} (along with knowledge of the eigenvalues and eigenvectors of $g_{0}$). By \lem{2particle} and \lem{increase_part_number}, no component has a two- (or more) particle frustration-free state. Combining these two facts, we see that in an $N$-particle frustration-free state, every component of $G_{\mathrm{rem}}$ must contain either $0$ or $1$ particles, and the nullspace of $H(G_{\mathrm{rem}},N)$ is the space $\mathcal{I}(G,N).$ From equation \eq{Grem_gamma} we get $|\Gamma\rangle\in\mathcal{I}(G,N)$.
+%Since each of the $R$ components of $G_{\mathrm{rem}}$ is an identical copy of $g_{0}$, the eigenvalues and eigenvectors of $H(G_{\mathrm{rem}},N)$ are characterized by \lem{BH_disconnected_graphs} (along with knowledge of the eigenvalues and eigenvectors of $g_{0}$). By \lem{2particle} and \lem{MPQW_particle_number_eigenvalues}, no component has a two- (or more) particle frustration-free state. Combining these two facts, we see that in an $N$-particle frustration-free state, every component of $G_{\mathrm{rem}}$ must contain either $0$ or $1$ particles, and the nullspace of $H(G_{\mathrm{rem}},N)$ is the space $\mathcal{I}(G,N).$ From equation \eq{Grem_gamma} we get $|\Gamma\rangle\in\mathcal{I}(G,N)$.
 %\end{proof}
 %
 %Note that if $\mathcal{I}(G,N)$ is empty then \lem{FF_characterization} says that $G$ has no $N$-particle frustration-free states. For example, this holds for any $e_{1}$-gate graph $G$ whose gate diagram has $R<N$ diagram elements.
@@ -617,16 +606,13 @@ where $|\overline{\psi_{z,a}}\rangle$ is given by equations \eq{psi0m} and \eq{p
 
 \subsection{Gadgets}\label{sec:gadgets}
 
-\todo{rewrite this, removing the examples stuff}
+Now that we have a formalism for our diagram elements, we will want to use it to construct actual diagrams.  In particular, we will use our formalism to construct graphs that will have two-particle frustration-free states corresponding to the history state of a simple two-qubit unitary, and no three-particle frustration-free state.  We will eventually use these gadgets to construct a much larger graph with a more interesting ground state, but we first need these building blocks.
 
-In \ex{As-an-example} we saw how a single-particle ground state can encode a single-qubit computation. In this Section we see how a two-particle frustration-free state on a suitably designed $e_{1}$-gate graph can encode a two-qubit computation. We design specific $e_{1}$-gate graphs (called \emph{gadgets}) that we use in \sec{From-circuits-to} to prove that these ground state problems for the MPQW are QMA-hard. For each gate graph we discuss, we show that the smallest eigenvalue of its adjacency matrix is $e_{1}$ and we solve for all of the frustration-free states.
+We first design a gate graph where, in any two-particle frustration-free state, the locations of the particles are synchronized that we call ``move-together'' gadgets.  We then design gadgets for two-qubit gates using four move-together gadgets, one for each two-qubit computational basis state. Finally, we describe a small modification of a two-qubit gate gadget called the ``boundary gadget.''
 
-We first design a gate graph where, in any two-particle frustration-free state, the locations of the particles are synchronized.  We then design gadgets for two-qubit gates using four move-together gadgets, one for each two-qubit computational basis state. Finally, we describe a small modification of a two-qubit gate gadget called the ``boundary gadget.''
-
-In important piece of these gadgets will be the inclusion of $\II_{(1,0)}^{(1,0)}$ diagram elements to separate the locations of particles.  With these separations, we will only ever need to analyze the case when particles occupy the same diagram element, as these identity elements ensure that for the states that we care about, particles are always located at a distance more than $\dmax$.
+An important piece of these gadgets will be the inclusion of $\II_{(1,0)}^{(1,0)}$ diagram elements to separate the locations of particles.  With these separations, we will only ever need to analyze the case when particles occupy the same diagram element, as these identity elements ensure that for the states that we care about, particles are always located at a distance more than $\dmax$.
 
 \subsubsection{The move-together gadget}
-
 
 
 The gate diagram for the \emph{move-together gadget} is shown in \fig{W_gadget}. Using equation \eq{adj_gate_graph}, we write the adjacency matrix of the corresponding gate graph $G_W$ as 
@@ -796,14 +782,14 @@ which is a superposition of the states $|\Phi_{a,b}^\pm\rangle.$
 
 Note that the above analysis holds completely if we restrict ourselves to symmetric states, and thus if $\dmax = 0$, we end up with the same results except that we only care about the states $\ket{\Phi_{a,b}^+}$, as they span the symmetric nullspace.
 
-Finally, we prove that there are no frustration-free ground states of the Bose-Hubbard model on $G_{W}$ with more than two particles. By \lem{increase_part_number},
+Finally, we prove that there are no frustration-free ground states of the Bose-Hubbard model on $G_{W}$ with more than two particles. By \lem{MPQW_particle_number_eigenvalues},
 it suffices to prove that there are no frustration-free three-particle states.
 
 Suppose (for a contradiction) that $|\Gamma\rangle\in\mathcal{H}(G_{W})^{\otimes 3}$ is a normalized three-particle frustration-free state. Write 
 \begin{equation}
 |\Gamma\rangle=\sum D_{(i,a),(j,b),(k,c)}|\chi_{i,a}\rangle|\chi_{j,b}\rangle|\chi_{k,c}\rangle.
 \end{equation}
-Note that each reduced density matrix of $|\Gamma\rangle$ on two of the three subsystems must have all of its support on two-particle frustration-free states (see the remark following \lem{FF_characterization}), i.e., on the states $|\Phi_{a,b}\rangle$. Using this fact for the subsystem consisting of the first two particles, we see in particular that
+Note that each reduced density matrix of $|\Gamma\rangle$ on two of the three subsystems must have all of its support on two-particle frustration-free states, i.e., on the states $|\Phi_{a,b}\rangle$. Using this fact for the subsystem consisting of the first two particles, we see in particular that
 \begin{equation}
 (i,j)\notin\{(1,3),(3,1),(2,4),(4,2)\}\quad\Longrightarrow\quad D_{(i,a),(j,b),(k,c)}=0\label{eq:ij_constraint1}
 \end{equation}
@@ -972,7 +958,7 @@ states on $G_U$  for any $\dmax >0$ and there are no $N$-particle symmetric frus
 
 Let us first show that the states $\ket{T_{z_1,a,z_2,b}^{U,\pm}}$ are contained within the nullspace of $H(G_U,2)$.   We we can expand these states in terms of the $\ket{\psi^q_{z,a}}$ for $q\in[32]$ and $\ket{\chi_{j,a}^{xy}}$, and see that the state $\ket{T_{z_1,a,z_2,b}^{U,\pm}}$ has no support on pairs of adjacent diagram elements, unless possibly both particles are contained in a single move-together gadget.   In particular, whenever one particle is in state $\ket{\psi^q_{z,a}}$ (and thus localized to the diagram element $q$), the other particle is located on a diagram element separated from the first by at least one additional diagram element.  The only difficult case to check is when both particles are in move-together gadgets, but the structure of the states $\ket{T_{z_1,a,z_2,b}^{U,\pm}}$ is such that either the particles are in separate move-together gadgets (and thus on states with support at a distance much larger than $k$), or the two particles are in a state within the span of $\ket{\Phi_{a,b}^{\pm}}$ and thus by \lem{Wgadget_lemma} are not penalized by the interaction term.  Altogether, we have that the states $\ket{T_{z_1,a,z_2,b}^{U,\pm}}$ are contained in the nullspace of the interaction Hamiltonian, and thus are frustration-free.
 
-Now let us show that any state in the nullspace of $H(G_U,2)$ are within the span of the states $\ket{T_{z_1,a,z_2,b}^{U,\pm}}$. Using \lem{FF_characterization}, we can write any two-particle frustration-free state as 
+Now let us show that any state in the nullspace of $H(G_U,2)$ are within the span of the states $\ket{T_{z_1,a,z_2,b}^{U,\pm}}$. Noting that all reduced states of a frustration-free state must also be frustration-free, we can write any two-particle frustration-free state as 
 \begin{equation}
   |\Theta\rangle=\sum_{z,a,x,b\in \{0,1\}}\sum_{I,J\in [4]}B_{\left(z,a,I\right),\left(x,b,J\right)}|\rho_{z,a}^{I,U}\rangle|\rho_{x,b}^{J,U}\rangle
 \label{eq:thetastate},
@@ -985,7 +971,7 @@ for all $x,z,a,b\in\{0,1\}$ and $q\in[88]$, and if $\dmax = 0$ we will use the a
 \begin{equation}
 B_{\left(z,a,I\right),\left(x,b,J\right)}=B_{\left(x,b,J\right),\left(z,a,I\right)}. \label{eq:sym_B}
 \end{equation}
- To enforce equation \eq{ff_condition} we consider the diagram elements $q\in [32]$ (as labeled in \fig{GVucnot_complete}) separately from the other $56$ diagram elements (those inside the move-together gadgets). 
+ To enforce equation \eq{ff_condition} we consider the diagram elements $q\in [32]$ (as labeled in \fig{GVucnotcomplete}) separately from the other $56$ diagram elements (those inside the move-together gadgets). 
 
 Using equation \eq{ff_condition} with $q\in \{1,2,3,4,7,8\}$ and $x,z,a,b\in\FF_2$ gives
 \begin{equation}
@@ -1001,7 +987,7 @@ for $a,b \in \{0,1\}$, while $q=6$, $x=0$, and $z=1$ gives
 \end{equation}
 Note that we can use the same equations with $x = 1$ and $z=0$ to see that $B_{(1,a,2),(0,b,1)} = B_{(1,a,1),(0,b,2)} = 0$ as well.  If we then  apply equation \eq{ff_condition} with $q=5$ or $q=6$  and other choices for $x$ and $z$, or for any or $9\leq q \leq 32$, we find that the equation does not lead to any additional independent constraints on the state $|\Theta\rangle$.
 
-Now consider the constraint \eq{ff_condition} for diagram elements inside the move-together gadgets in \fig{GVucnot_complete}. Let $\Pi_{xy}$ be the projector onto two-particle states where both particles are located at vertices contained within the move-together gadget labeled $xy\in \{00,01,10,11\}$. Using the results of \lem{Wgadget_lemma}, we see that for diagram elements inside the move-together gadgets, \eq{ff_condition} is satisfied if and only if 
+Now consider the constraint \eq{ff_condition} for diagram elements inside the move-together gadgets in \fig{GVucnotcomplete}. Let $\Pi_{xy}$ be the projector onto two-particle states where both particles are located at vertices contained within the move-together gadget labeled $xy\in \{00,01,10,11\}$. Using the results of \lem{Wgadget_lemma}, we see that for diagram elements inside the move-together gadgets, \eq{ff_condition} is satisfied if and only if 
 \begin{equation}
 \Pi_{xy}|\Theta\rangle\in \mathrm{span}\big\{|\chi_{1,a}^{xy}\rangle|\chi_{3,b}^{xy}\rangle \pm |\chi_{3,b}^{xy}\rangle|\chi_{1,a}^{xy}\rangle  +|\chi_{2,a}^{xy}\rangle|\chi_{4,b}^{xy}\rangle \pm |\chi_{4,b}^{xy}\rangle |\chi_{2,a}^{xy}\rangle, \; a,b\in \{0,1\}\big\}.
 \end{equation}
@@ -1091,11 +1077,11 @@ This is the general solution to equations \eq{thetastate}--\eq{ff_condition}, so
 
 Note that the above analysis only uses \lem{Wgadget_lemma}, and thus if $\dmax = 0$ and we restrict ourselves to the symmetric states, the entire computation follows.  Further, we also have that only the states $\ket{T_{z,a,w,b}^{U,+}}$ are symmetric, and thus these states span the symmetric subspace.
 
-Finally, we show that there are no three-particle frustration-free states (for any $\dmax$). By \lem{increase_part_number}, this implies that there are no frustration-free states for more than two particles. Suppose (to reach a contradiction) that $|\Gamma\rangle$ is a normalized three-particle frustration-free state. Write
+Finally, we show that there are no three-particle frustration-free states (for any $\dmax$). By \lem{MPQW_particle_number_eigenvalues}, this implies that there are no frustration-free states for more than two particles. Suppose (to reach a contradiction) that $|\Gamma\rangle$ is a normalized three-particle frustration-free state. Write
 \begin{equation}
 |\Gamma\rangle=\sum E_{(x,a,q),(y,b,r),(z,c,s)}|\rho_{x,a}^{q}\rangle|\rho_{y,b}^{r}\rangle|\rho_{z,c}^{s}\rangle
 \end{equation}
-and note that each reduced density matrix of $|\Gamma\rangle$ on two of the three subsystems must have all of its support on two-particle frustration-free states (see the remark following \lem{FF_characterization}). As the two-particle ground space is supported on states of the form
+and note that each reduced density matrix of $|\Gamma\rangle$ on two of the three subsystems must have all of its support on two-particle frustration-free states. As the two-particle ground space is supported on states of the form
 \begin{equation}
   \ket{\rho_{x,a}^r}\ket{\rho_{z,b}^{q}}
 \end{equation}
@@ -1150,7 +1136,7 @@ The most simple type of \emph{boundary gadget} will be one without penalties.  T
   \Big).
 \end{align}
 
-The second type of boundary gadget with penalties, is shown in \fig{GVbdy_complete}.  Again the gate diagram is obtained from \fig{GVucnotcomplete} by adding self-loops, but we also change the $q=8$ element from a  $\II_{(0,0)}^{(1,1)}$ element to a $\II_{(0,1)}^{(1,1)}$ diagram element.  In particular, we have that its adjacency matrix is
+The second type of boundary gadget with penalties, is shown in \fig{GVbdy}.  Again the gate diagram is obtained from \fig{GVucnotcomplete} by adding self-loops, but we also change the $q=8$ element from a  $\II_{(0,0)}^{(1,1)}$ element to a $\II_{(0,1)}^{(1,1)}$ diagram element.  In particular, we have that its adjacency matrix is
 \begin{equation}
   A(G_{\text{bnd,pen}})=A(G_{\text{bnd}}) - 2\sum_{j\in[8]} \ketbra{8,1,6k+2,j,+}{8,1, 6k+2,j,+}
 \end{equation}
@@ -1520,7 +1506,7 @@ We can now compute the matrix elements between states from the same block. For e
     =\frac{1}{8k}.
 \end{align}
 Continuing in this manner, we can compute the principal submatrix of \eq{restriction_h_triangle} corresponding to the set $\mathcal{W}_{(z,a,q)}$. A diagrammatic representation of this matrix is shown in \fig{mat_els_for_a_blockA}. In the figure each vertex is associated with a state in the block and the weight on a given edge is the matrix element between the two states associated with vertices joined by that edge. The diagonal matrix elements are described by the weights on the self-loops. The matrix described by \fig{mat_els_for_a_blockA} is the same for each block.
-\todo{fix this figure for the correct values $1/8k$}
+
 
 \begin{figure}
 \centering
@@ -2153,8 +2139,7 @@ Thus we map any circuit over the gate set \eq{standard_gate_ste} into the prescr
 For any $n$-qubit, $M$-gate verification circuit $\mathcal{C}_{X}$ of the form described in \sec{verification_circuit}, we associate a gate graph $G_X$. The gate diagram for $G_X$ is built using the gadgets described in \sec{graph_primitives}; specifically, we use $M$ two-qubit gadgets and $2(n-1)$ boundary gadgets. Since each two-qubit gadget and each boundary gadget contains $88$ diagram elements, the total number of diagram elements in $G_X$ is $R=88(M+2n-2)$.
 
 
-\todo{fix this paragraph}
-We now present the construction of the gate diagram for $G_X$.  We also describe some gate graphs obtained as intermediate steps that are used in our analysis in \sec{Proof-of-Theorem}. The reader may find this description easier to follow by looking ahead to \fig{step-by-step}, which illustrates this construction for a specific $3$-qubit circuit.
+We now present the construction of the gate diagram for $G_X$.  We also describe some gate graphs obtained as intermediate steps that are used in our analysis in \sec{g_x_proof}. The reader may find this description easier to follow by looking ahead to \fig{step-by-step}, which illustrates this construction for a specific $3$-qubit circuit.
 
 \begin{enumerate}
   \item \textbf{Draw a grid} with columns labeled $j=0,1,\ldots,M+1$ and rows labeled $i=1,\ldots,n$ (this grid is only used to help describe the diagram).
@@ -2410,13 +2395,13 @@ which is supported on vertices where $h_{1}$, $h_{2}$, $h_{\text{in},i}$, and $h
 \subsection{Multi-particle Hamiltonian}
 \label{sec:Building-up-the}
 
-We now outline the sequence of Hamiltonians considered in the following Sections and describe the relationships between them. As a first step, in \sec{Configurations-and-the} we exhibit a basis $\mathcal{B}_{n}$ for the nullspace of $H(G_{1},n)$ and we prove that its smallest nonzero eigenvalue is lower bounded by a positive constant. We then discuss the restriction
+We now outline the sequence of Hamiltonians considered in the following Sections and describe the relationships between them. As a first step, in \sec{configurations} we exhibit a basis $\mathcal{B}_{n}$ for the nullspace of $H(G_{1},n)$ and we prove that its smallest nonzero eigenvalue is lower bounded by a positive constant. We then discuss the restriction
 \begin{equation}
   H(G_{1},G_X^{\text{oc}},n)
   = H(G_{1},n)\big|_{\mathcal{I}\left(G_{1},G_X^{\text{oc}},n\right)}
 \label{eq:restriction}
 \end{equation}
-in \sec{Legal-configurations-and}, where we prove that a subset $\mathcal{B}_{\text{legal}}\subset\mathcal{B}_{n}$ is a basis for the nullspace of \eq{restriction}, and that its smallest nonzero eigenvalue is also lower bounded by a positive constant.
+in \sec{legal_config_basis}, where we prove that a subset $\mathcal{B}_{\text{legal}}\subset\mathcal{B}_{n}$ is a basis for the nullspace of \eq{restriction}, and that its smallest nonzero eigenvalue is also lower bounded by a positive constant.
 
 For the remainder of the proof we use the Nullspace Projection Lemma (\lem{NPL}) four times, using the decompositions 
 \begin{align}
@@ -2439,7 +2424,7 @@ Let $S_{k}$ be the nullspace of $H(G_{k},G_X^{\text{oc}},n)$ for $k=1,2,3,4$. Si
 \begin{equation}
 S_{4}\subseteq S_{3}\subseteq S_{2}\subseteq S_{1}\subseteq\mathcal{\mathcal{I}}\left(G_X,G_X^{\text{oc}},n\right).
 \end{equation}
-We solve for $S_1=\spn(\mathcal{B}_{\text{legal}})$ in \sec{Legal-configurations-and} and we characterize the spaces $S_2,S_3$, and $S_4$ in \sec{Frustration-free-states} in the course of applying our strategy. 
+We solve for $S_1=\spn(\mathcal{B}_{\text{legal}})$ in \sec{legal_config_basis} and we characterize the spaces $S_2,S_3$, and $S_4$ in \sec{frustation_free_legal_states} in the course of applying our strategy. 
 
 For example, to use the Nullspace Projection Lemma to lower bound the smallest nonzero eigenvalue of $H(G_{2},G_X^{\text{oc}},n)$, we consider the restriction 
 \begin{equation}
@@ -2457,7 +2442,7 @@ Analyzing these restrictions involves extensive computation of matrix elements, 
 
 
 
-\subsection{Configurations}
+\subsection{Configurations}\label{sec:configurations}
 
 In this Section we use \lem{BH_disconnected_graphs} to solve for the nullspace of $H(G_{1},n)$, i.e., the $n$-particle frustration-free states on $G_{1}$. \lem{BH_disconnected_graphs} describes how frustration-free states for $G_1$ are built out of frustration-free states for its components.
 
@@ -2656,7 +2641,7 @@ Each component of $G_{1}$ is either a two-qubit gadget or a boundary gadget (see
 
 \lem{BH_disconnected_graphs} also expresses each eigenvalue of $H(G_{1},n)$ as a sum of eigenvalues for its components. We use this fact to obtain the desired lower bound on the smallest nonzero eigenvalue. Our analysis proceeds on a case-by-case basis, depending on the occupation numbers for each component of $G_{1}$ (the values $N_{1},\ldots,N_{k}$ in \lem{BH_disconnected_graphs}).
 
-First consider any set of occupation numbers where some two-qubit gate gadget $J\in[M]$ contains 3 or more particles. By \lem{increase_part_number} and \lem{BH_disconnected_graphs}, any such eigenvalue is at least $\lambda_{3}^{1}(G_{U_J})$, which is a positive constant by \lem{2qub_gate}. Next consider a case where some boundary gadget contains more than one particle. The corresponding eigenvalues are similarly lower bounded by $\lambda_{2}^{1}(G_{\text{bnd}})$, which is also a positive constant by \lem{boundary_lemma}. Finally, consider a set of occupation numbers where each two-qubit gadget contains at most two particles and each boundary gadget contains at most one particle. The smallest eigenvalue with such a set of occupation numbers is zero. The smallest nonzero eigenvalue is either
+First consider any set of occupation numbers where some two-qubit gate gadget $J\in[M]$ contains 3 or more particles. By \lem{MPQW_particle_number_eigenvalues} and \lem{BH_disconnected_graphs}, any such eigenvalue is at least $\lambda_{3}^{1}(G_{U_J})$, which is a positive constant by \lem{2qub_gate}. Next consider a case where some boundary gadget contains more than one particle. The corresponding eigenvalues are similarly lower bounded by $\lambda_{2}^{1}(G_{\text{bnd}})$, which is also a positive constant by \lem{boundary_lemma}. Finally, consider a set of occupation numbers where each two-qubit gadget contains at most two particles and each boundary gadget contains at most one particle. The smallest eigenvalue with such a set of occupation numbers is zero. The smallest nonzero eigenvalue is either
 \begin{equation}
 \gamma(H(G_{U_J},1)),\,\gamma(H(G_{U_J},2))\text{ for some $J\in[M]$, or }\gamma(H(G_{\text{bnd}},1)).
 \end{equation}
@@ -3493,7 +3478,7 @@ We next present the matrix elements of $H_{\text{in},i}$ (for
 $i\in\{n_{\text{in}}+1,\ldots,n\}$) 
 
 \begin{mdframed}[frametitle=Matrix elements of $H_{\text{in},i}$]
-For each ancilla qubit $i\in\{n_{\text{in}}+1,\ldots,n\}$, define  $j_{\min,i}=\min\left\{ j\in[M]\colon s(j)=i\right\}$ to be the index of the first gate in the circuit that involves this qubit (recall from \sec{From-circuits-to} that we consider circuits where each ancilla qubit is involved in at least one gate). The operator $H_{\text{in},i}$ is diagonal in the basis \eq{phi_init_basis}, with entries
+For each ancilla qubit $i\in\{n_{\text{in}}+1,\ldots,n\}$, define  $j_{\min,i}=\min\left\{ j\in[M]\colon s(j)=i\right\}$ to be the index of the first gate in the circuit that involves this qubit (recall from \sec{verification_circuit} that we consider circuits where each ancilla qubit is involved in at least one gate). The operator $H_{\text{in},i}$ is diagonal in the basis \eq{phi_init_basis}, with entries
 \begin{equation}
 \langle j,\vec{d},\In(\vec{z}),\vec{a},\pi|H_{\text{in},i}|j,\vec{d},\In(\vec{z}),\vec{a},\pi\rangle=\begin{cases}
 \frac{1}{240} & j\leq j_{\min,i},\text{ }z_{i}=1,\text{ and }d_{i}=0\\
@@ -3618,9 +3603,9 @@ In going from the second to the third equality we use the fact that $j=j_{\max}$
 In the next-to-last line we use the fact that $[U_{J}(a_{1}),|0\rangle\langle0|_{2}]=0$ for $J>j_{\max}$. This confirms the result stated in equation \eq{hout_matels-1}.
 
 
-\subsection{Frustration-Free states}
+\subsection{Frustration-Free states}\label{sec:frustation_free_legal_states}
 
-Now that we have a thourough understanding of the various matrix elements between legal configurations, it will be useful to actually compute the eigenvalue gaps for these different Hamiltonians.  We will do so by looking at hypercubes, and connecting them in a particular manner.  Since most of the non-zero matrix elements are from some small set of values, our problem reduces to these graph problems, which then become tractable. 
+Now that we have a thorough understanding of the various matrix elements between legal configurations, it will be useful to actually compute the eigenvalue gaps for these different Hamiltonians.  We will do so by looking at hypercubes, and connecting them in a particular manner.  Since most of the non-zero matrix elements are from some small set of values, our problem reduces to these graph problems, which then become tractable. 
 
 This section actually proves the various bounds on the different ground spaces, and we proceed by finding the ground space of $H(G_i,G_x^{\text{oc}},n)$ iteratively, and bounding the eigenvalue gap for each $G_i$.
 
