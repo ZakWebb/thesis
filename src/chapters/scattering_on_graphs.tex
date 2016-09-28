@@ -15,7 +15,7 @@
 \label{chap:scattering_on_graphs}
 
 
-Since scattering is useful as an analytic tool near everywhere in physics \cite{RSScat}, one might at the usefulness of scattering in quantum information.  High energy physics uses scattering to probe atoms and molecules, but we would want to discretize the system for use in quantum information.  In this manner, we would replace the continuum by a discrete set of positions, and understand the evolution in such a model.
+As scattering has found use as an analytic tool for several disparate areas in physics \cite{RSScat}, one might wonder at its usefulness in quantum information.  High energy physics uses scattering to probe atoms and molecules, but we would want to discretize the system for use in quantum information.  In this manner, we would replace the continuum by a discrete set of positions, and understand the evolution in such a model.
 
 With this discretization, we are analyzing a system propagating on an infinite graph, and thus we can also think of this as the limit of a continuous time quantum walk to infinite graphs.  We know that quantum walks are useful algorithmic devices (e.g., \cite{CCDFGS03,Amb07}), and one might wonder whether these infinite systems can allow for intuitive algorithms.  It turns out that this answer is yes, and the original motivation for graph scattering was an algorithm using graph scattering to solve a problem for decision trees \cite{FG98}, which eventually led to an algorithm solving boolean formulas faster than any randomized classical computation \cite{FGG08}.  This algorithm was easily understood using the intuition from scattering, and thus graph scattering became a useful tool for understanding quantum walk algorithms.
 
@@ -54,7 +54,7 @@ If we then want to understand how this discretized system works, it will be usef
 \begin{align}
   \frac{d^2}{dx^2} f(x) = \lim_{h\rightarrow 0} \frac{f(x+h) - 2 f(x) - f(x-h)}{h^2}.
 \end{align}
-Since we were originally working in the continuum, we could let $h$ go to zero without any problems.  In our discretize world, however, there exists some smallest difference in $x$, namely 1.  As such, we have that in our discretized space, the operator corresponding to the second position derivative can be written as
+Since we were originally working in the continuum, we could let $h$ go to zero without any problems.  In our discretized world, however, there exists some smallest difference in $x$, namely 1.  As such, we have that in our discretized space, the operator corresponding to the second position derivative can be written as
 \begin{equation}
   \Delta^2 = \sum_{x=-\infty}^\infty \ket{x} \big(\bra{x-1} - 2 \bra{x} + \bra{x+1}\big) = \sum_{x=-\infty}^\infty \big(\ketbra{x}{x-1} + \ketbra{x}{x+1}\big) - 2 \II.
 \label{eq:discrete_second_derivative}
@@ -73,7 +73,7 @@ for all $x\in \ZZ$.  Taking motivation from the continuous case,  we then make t
 \begin{align}
   \braket{x+1}{\psi} + \braket{x-1}{\psi} = e^{i k } e^{i k x} + e^{-ik} e^{ikx} &= E_\psi e^{ik x} = E_\psi \braket{x}{\psi}  \\ E_\psi &= e^{ik} + e^{-i k} = 2 \cos(k).
 \end{align}
-If we then use the fact that $E_\psi$ must be real, and that the amplitudes should not diverge to infinity as $x\rightarrow \pm \infty$, we find that the only possible values of $k$ are between $[-\pi,\pi)$.    Hence, in analogy with the continuous case, the eigenbasis of the Hamiltonian corresponds to momentum states, but where the possible momenta only range over $[-\pi,\pi)$.  We represent this momentum state with momenta $k$ as $\ket{\tilde{k}}$.  Note that similar to the continuum, these momentum states are not technically in the relevant Hilbert space.  This won't won't be problematic for our purposes, but it can lead to some headaches
+If we then use the fact that $E_\psi$ must be real, and that the amplitudes should not diverge to infinity as $x\rightarrow \pm \infty$, we find that the only possible values of $k$ are between $[-\pi,\pi)$.    Hence, in analogy with the continuous case, the eigenbasis of the Hamiltonian corresponds to momentum states, but where the possible momenta only range over $[-\pi,\pi)$.  We represent this momentum state with momenta $k$ as $\ket{\tilde{k}}$.  Note that similar to the continuum, these momentum states are not technically in the relevant Hilbert space.  This will not be problematic for our purposes, but it can lead to some headaches
 
 Additionally, we can discuss the ``speed'' of these eigenstates, which is given by the derivative of the energy with respect to momentum.  We con then see that 
 \begin{equation}
@@ -81,7 +81,7 @@ Additionally, we can discuss the ``speed'' of these eigenstates, which is given 
 \end{equation}
 which is to be compared with $s \propto |k|$ for in the continuum case.  While the discretization does change the relationship between momentum, energy, and speed, if we restrict ourselves to small $k$ (so that the discretization is not noticeable), we recover the linear relationship.  In this way, as the distance between vertices grows smaller, we recover the continuum case.  
 
-One problem that is unique to our discretized system is that  there are an uncountable number of momentum states, while the position basis contains only a countable number of basis states.  It turns out that the resolution to this conundrum is that the two bases have different orthogonality conditions: the position basis elements are Kronecker delta orthogonal, while the momentum basis elements are Dirac $\delta$-function orthogonal.  Namely,
+One problem that is unique to our discretized system is that  there are an uncountable number of momentum states, while the position basis contains only a countable number of basis states.  It turns out that the resolution to this conundrum is that the two bases have different orthogonality conditions: the position basis elements are Kronecker delta orthogonal, while the momentum basis elements are Dirac $\delta$-function orthogonal.  Namely, if we quickly use some physicists math (instead of technically correct), we can see that
 \begin{equation}
   \braket{\tilde{k}}{\tilde{p}} = \sum_{x=-\infty}^\infty e^{- i k x} e^{i k p} = \sum_{x=-\infty}^\infty e^{i (p-k) x} = 2\pi \delta(p-k),
 \end{equation}
@@ -102,18 +102,18 @@ To solve this problem, we will connect graphs in such a way that far from our co
 
 With this construction, the eigenvalue equation must still be satisfied along the semi-infinite paths, and thus the form of the eigenstates along the paths must still be of the form $e^{i k x}$ for some $k$ and $x$.  However, we can no longer assume that $k$ is real, as the fact that the attached semi-infinite paths are only infinite in one direction allow for an exponentially decaying amplitudes along the paths.  Additionally, we can have nontrivial correlations between the amplitudes among the different paths, similar to the correlated reflection and transmission coefficients in the continuous case.
 
-Note that the topic of graph scattering has appeared previously in the literature.  Most of this section is not original work, and should be taken as background material.  In particular, these results are taken from \cite{FGG08, Chi09, CS11, CG12}.  I will also include 
+Note that the topic of graph scattering has appeared previously in the literature.  Most of this section is not original work, and should be taken as background material.  In particular, these results are taken from \cite{FGG08, Chi09, CS11, CG12}.  I will also include some novel research pertaining to scattering with Gaussian wavepackets, which can be found in \sec{SP_wavepacket_scattering}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Infinite path and a Graph}\label{sec:infinite_path_and_graph}
 
-In the most simple example, let us attached a graph $\widetilde{G}$ to an infinite path.  In particular, we assume that $\widetilde{G}$ is attached to a single vertex of the infinite path, and that the graph is attached by adding an edge from each vertex in $S\subset V(\widetilde{G})$ to one specific vertex of the infinite path, which we label $0$, as seen in \fig{path_and_graph}.  Calling this new graph $G$, the adjacency matrix of $G$, and thus the Hamiltonian for this scattering problem, can be seen to be
+In the most simple example, let us attach a graph $\widetilde{G}$ to an infinite path.  In particular, we assume that $\widetilde{G}$ is attached to a single vertex of the infinite path, and that the graph is attached by adding an edge from each vertex in $S\subset V(\widetilde{G})$ to one specific vertex of the infinite path, which we label $0$, as seen in \fig{path_and_graph}.  Calling this new graph $G$, the adjacency matrix of $G$, and thus the Hamiltonian for this scattering problem, can be seen to be
 \begin{equation}
   A(G) = A(\widetilde{G}) + \sum_{v\in S \subset V(\widetilde{G})} \ketbra{v}{0} + \ketbra{0}{v} + \sum_{x=-\infty}^\infty \ketbra{x}{x+1} + \ketbra{x+1}{x}.
 \end{equation}
 
-If we then want to inspect the eigenvectors of this Hamiltonian, we find that the eigenvalue equation remains unchanged for non-zero vertices on the path.  Hence, we can see that any eigenstate of the Hamiltonian must take the form $Ae^{i k x} + Be^{-i k x}$ for some $k$ along the infinite paths.  
+If we then want to inspect the eigenvectors of this Hamiltonian, we find that the eigenvalue equation remains unchanged for non-zero vertices on the path.  Hence, we can see that any eigenstate of the Hamiltonian must take the form $\alpha e^{i k x} + \beta e^{-i k x}$ for some $k$ along the infinite paths.  
 
 
 %%%%%%%%
@@ -143,35 +143,35 @@ These restrictions together show that these completely bound states have an extr
 
 In the second case, we could have that the eigenstate is normalizable, but is not confined to the graph $\widetilde{G}$.  In this case, we have that the amplitudes along the infinite paths must go to zero, but they must still be a sum of exponentials.  As such, we have that $\ket{\psi}$ must be of the form
 \begin{align}
-  \braket{x}{\psi} = A z^x
+  \braket{x}{\psi} = \alpha z^x
 \end{align} 
-for some $z\in (-1,1)\setminus \{0\}$ for all $x\in \NN$, so that the energy must be $z+ z^{-1}$ (the case for $z= 0$ forces $A = 0$, and we are in the first case).  Additionally, we can see that if $\ket{\phi}$ is the restriction of $\ket{\psi}$ to those vertices inside the graph $A(\widetilde{G})$, they must satisfy
+for some $z\in (-1,1)\setminus \{0\}$ for all $x\in \NN$, so that the energy must be $z+ z^{-1}$ (the case for $z= 0$ forces $\alpha = 0$, and we are in the first case).  Additionally, we can see that if $\ket{\phi}$ is the restriction of $\ket{\psi}$ to those vertices inside the graph $A(\widetilde{G})$, they must satisfy
 \begin{align}
-  A(\widetilde{G}) + A \sum_{v\in S} \ket{v}\braket{v}{\phi} = 2 \cos (k) \ket{\phi},
+  A(\widetilde{G}) + \alpha \sum_{v\in S} \ket{v}\braket{v}{\phi} = 2 \cos (k) \ket{\phi},
 \end{align}
 a modified version of the eigenvalue equation for the graph $A(\widetilde{G})$.
 
 Let us finally assume that the state is a scattering state.  Note that the eigenvalue of the state must be in the range $[-2,2]$, and that the form of the eigenstate along the paths must be scalar multiples of $e^{ikx}$ and $e^{-ikx}$, for some $k\in [-\pi, \pi]$.  Explicitly, the state must be of the form
 \begin{align}
-  \braket{x}{\psi} = \begin{cases} Ae^{i k x} + B e^{-i k x} & x \leq 0\\
-   C e^{i k x} + D e^{-i k x} & x\geq 0\end{cases}
+  \braket{x}{\psi} = \begin{cases} \alpha e^{i k x} + \beta e^{-i k x} & x \leq 0\\
+   \gamma  e^{i k x} + \delta e^{-i k x} & x\geq 0\end{cases}
 \end{align}
-where the additional edges at $x=0$ can change the coefficients of each $e^{ik}$.  However, we do have that $A + B=C +D$, since the amplitude at $0$ is single valued, and that the eigenvalue of this state is given by $2\cos(k)$.  Note that we have not yet determined the form of the eigenstate inside the graph $\widetilde{G}$, but if we define $\ket{\phi}$ to be the restriction of $\ket{\psi}$ to the finite graph $\widetilde{G}$, then $\ket{\phi}$ must satisfy the equation
+where the additional edges at $x=0$ can change the coefficients of each $e^{ik}$.  However, we do have that $\alpha + \beta = \gamma +\delta$, since the amplitude at $0$ is single valued, and that the eigenvalue of this state is given by $2\cos(k)$.  Note that we have not yet determined the form of the eigenstate inside the graph $\widetilde{G}$, but if we define $\ket{\phi}$ to be the restriction of $\ket{\psi}$ to the finite graph $\widetilde{G}$, then $\ket{\phi}$ must satisfy the equation
 \begin{equation}
-  A(G) \ket{\phi} + (A+ B)\sum_{v\in S} \ket{v}\braket{v}{\phi} = 2\cos(k) \ket{\phi},
+  A(G) \ket{\phi} + (\alpha + \beta)\sum_{v\in S} \ket{v}\braket{v}{\phi} = 2\cos(k) \ket{\phi},
 \end{equation}
 where the additional term arises from the fact that the vertices in $S$ are connected to the vertex $0$.  Finally, we have that
 \begin{equation}
-  2 \cos(k)\braket{0}{\psi} = Ae^{-ik} + B e^{ik} + C e^{i k} + D e^{-ik} + \sum_{v\in S} \braket{v}{\phi},
+  2 \cos(k)\braket{0}{\psi} = \alpha e^{-ik} + \beta e^{ik} + \gamma e^{i k} + \delta e^{-ik} + \sum_{v\in S} \braket{v}{\phi},
 \end{equation}
 since the eigenvalue equation must be satisfied at $0$.
 
-In the first two cases, we have that the state is highly localized to the area surrounding the graph $\widetilde{G}$, and thus they do not have a large effect on wavefunctions that originate far from the graph.  However, the aptly named scattering states can be used to determine the time evolution of these wave functions.  In particular, if we look at the case where $A = 1$ and $D = 0$,  we can see that
+In the first two cases, we have that the state is highly localized to the area surrounding the graph $\widetilde{G}$, and thus they do not have a large effect on wavefunctions that originate far from the graph.  However, the aptly named scattering states can be used to determine the time evolution of these wave functions.  In particular, if we look at the case where $\alpha = 1$ and $\delta = 0$,  we can see that
 \begin{align}
-  \braket{x}{\psi} = \begin{cases} e^{-ikx} + B e^{i kx} & x\leq 0\\
-  C e^{-ikx} & x \geq 0\end{cases}
+  \braket{x}{\psi} = \begin{cases} e^{-ikx} + \beta e^{i kx} & x\leq 0\\
+  \gamma e^{-ikx} & x \geq 0\end{cases}
 \end{align}
-so that $1+ B  =C$.  Note that this is reminiscent of a scattering state, with reflection amplitude $B$ and transmission amplitude $C$.  We can then take as intuition that these scattering states represent a wavepacket with momentum exactly $k$ traveling towards the graph $G$, and then scattering with these amplitudes.  We will use this intuition for our definitions of scattering on more general graphs. 
+so that $1+ \beta  =\gamma$.  Note that this is reminiscent of a scattering state, with reflection amplitude $B$ and transmission amplitude $\gamma$.  We can then take as intuition that these scattering states represent a wavepacket with momentum exactly $k$ traveling towards the graph $G$, and then scattering with these amplitudes.  We will use this intuition for our definitions of scattering on more general graphs. 
  
 %%%%%%%%%%%%%%%
 \subsection{General graphs}\label{sec:general_graphs}
@@ -182,7 +182,7 @@ Let us now turn our attention to scattering on more general graphs (and note tha
 \end{equation}
 where $A$ is an $N\times N$ matrix, $B$ is an $m\times N$ matrix, and $D$ is an $m\times m$ matrix.  When examining graph scattering, we will be interested in the graph $G$ given by the graph-join of $\widehat{G}$ and $N$ semi-infinite paths, with an additional edge between each of the first $N$ vertices of $\widehat{G}$ and the first vertex of one semi-infinite path.  A schematic example can be seen in \fig{basic_graph}.
 
-We shall label call the first $N$ vertices of the graph \emph{terminal vertices}, as they connect the semi-infinite paths to the finite graph $\widehat{G}$, and we shall label them as $(1,i)$, where $i\in[N]$.  Analogously, we will refer to the vertices on the $N$ semi-infinite paths as $(x,i)$ for $x\in \NN^+$ and $i\in[N]$, with the $i$ label referring to the particular semi-infinite path on which the vertex is labeled, while the label $x$ denotes the location along the path.  We also refer to the remaining $m$ vertices of $\widehat{G}$ as the \textit{internal vertices} of $\widehat{G}$, and label them as $w\in[m]$.  With this labeling of the vertices of $G$, the adjacency matrix of $G$ is then given by
+We shall label the first $N$ vertices of the graph \emph{terminal vertices}, as they connect the semi-infinite paths to the finite graph $\widehat{G}$, and we shall label them as $(1,i)$, where $i\in[N]$.  Analogously, we will refer to the vertices on the $N$ semi-infinite paths as $(x,i)$ for $x\in \NN^+$ and $i\in[N]$, with the $i$ label referring to the particular semi-infinite path on which the vertex is labeled, while the label $x$ denotes the location along the path.  We also refer to the remaining $m$ vertices of $\widehat{G}$ as the \textit{internal vertices} of $\widehat{G}$, and label them as $w\in[m]$.  With this labeling of the vertices of $G$, the adjacency matrix of $G$ is then given by
 \begin{equation}
   A(G) = A(\widehat{G}) + \sum_{j=1}^N \sum_{x=1}^\infty \big(\ketbra{x,j}{x+1,j} + \ketbra{x+1,j}{x,j}\big).
 \end{equation}
@@ -239,25 +239,25 @@ As the eigenvalue equation for these states are guaranteed to be satisfied along
 \end{align}
 where $\vec{\alpha} \in \CC^N$ and $\vec{\beta}\in \CC^m$.  Note that the amplitudes for a vertex $(x,i)$ is given by $\vec{\alpha}_i z^{x-1}$.  Note that we are implicitly assuming that $\vec{\alpha} \neq \vec{0}$, for in that case we are working with a confined bound state.  
 
-While there is no immediate reason to guess that the total number of bound states is finite, it has been shown that this number is indeed finite (see \cite{CG12} for a more thorough explanation, using Levinson's theorem for graphs).
+Since these bound states tend to have most of their support on a finite number of vertices (namely those vertices not contained on the long paths), one might guess that the total number of bound states is finite.  In fact, it can be shown that only a finite number of bound states exist, and that this number is related to something called the winding number of the $S$-matrix, but the proof is beyond the scope of this thesis. (See \cite{CG12} for a more thorough explanation, using Levinson's theorem for graphs). 
 
 %%%%
 \subsubsection{Scattering states}
 
 We finally reach the point of scattering states, or those unnormalizable eigenstates of the Hamiltonian.  We first assume that these states are orthogonal to all bound states, and in particular that we are orthogonal to all confined bound states, as this allows us to uniquely construct the scattering states (without this assumption, if there existed a confined bound state at the appropriate energy, then we could simply add any multiple of the confined bound state to get a different scattering state).
 
-Taking some intuition from the classical case, we will construct a set of states that correspond to sending a particle in towards the graph $\widehat{G}$ along one of the semi-infinite paths and understanding how it scatters off of the graph.  Namely, for each $i\in[N]$ we will assume that there exists a state with amplitude along the $i$-th path of the form $e^{i k x} + S_{i,i}(k)e^{-i k x}$ for $k\in (-\pi, 0)$, and that the rest of the paths have amplitudes given by $S_{i,q}(k)e^{ikx}$.  More concretely, we assume that the form of the states is given on the infinite paths by
+Taking some intuition from the classical case, we will construct a set of states that correspond to sending a particle in towards the graph $\widehat{G}$ along one of the semi-infinite paths and understanding how it scatters off of the graph.  Namely, for each $i\in[N]$ we will assume that there exists a state with amplitude along the $i$-th path of the form $e^{-i k x} + S_{i,i}(k)e^{i k x}$ for $k\in (-\pi, 0)$, and that the rest of the paths have amplitudes given by $S_{i,q}(k)e^{ikx}$.  More concretely, we assume that the form of the states is given on the infinite paths by
 \begin{equation}
   \braket{x,q}{\scat_{j}(k)} = \delta_{j,q} e^{-i k x} + S_{qj} e^{i k x}.\label{eq:scattering_amplitude_paths}
 \end{equation}
 We then need to see whether such an eigenstate exists.  In this case, note that $S_{qj}$ corresponds to the transmitted amplitude along the $q$-th path if the particle was incident along the $j$-th path.  In the continuous case, $S$ forms a unitary matrix, which essentially means that any incoming particle must also leave, and be distinguishable from a particle incident from a different direction.  This intuition will also hold in the discrete case, but we will show this later.
 
-If we continue to make the assumption that these states exist, we can also write the amplitudes of the $m$ interval vertices as a column vector, as $\vec{\psi}_i(k)$, in which $\vec{\psi}_{i}(k)$ is the projection of $\ket{\scat_j(k)}$ onto the internal vertices of $\widehat{G}$.  We can then collect these vectors into an $m\times N$ matrix, namely
+If we continue to make the assumption that these states exist, we can also write the amplitudes of the $m$ internal vertices as a column vector, as $\vec{\psi}_i(k)$, in which $\vec{\psi}_{i}(k)$ is the projection of $\ket{\scat_j(k)}$ onto the internal vertices of $\widehat{G}$.  We can then collect these vectors into an $m\times N$ matrix, namely
 \begin{equation}
   \Psi(k) := \begin{pmatrix} \vec{\psi}_1(k) & \vec{\psi}_2(k) & \cdots & \vec{\psi}_N(k)\end{pmatrix}
 \end{equation}
 
-Noting that the amplitudes for $\ket{\scat_j(k)}$ on the terminal vertices is given by $ e^{-i k}\delta_{j,q} + S_{qj}(k)e^{ik}$, we can then collect all of the eigenvalue equations for the vertices in $\widehat{G}$ (both internal and termal) as
+Noting that the amplitudes for $\ket{\scat_j(k)}$ on the terminal vertices is given by $ e^{-i k}\delta_{j,q} + S_{qj}(k)e^{ik}$, we can then collect all of the eigenvalue equations for the vertices in $\widehat{G}$ (both internal and terminal) as
 \begin{equation}
   \begin{pmatrix} A & B^\dag \\
     B & D\end{pmatrix} \begin{pmatrix}  e^{-i k} \II + S(k) e^{i k}\\ \Psi(k)\end{pmatrix} 
@@ -293,7 +293,7 @@ Putting this all together, we then have that the states $\ket{\scat_j(k)}$ exist
 %%%%
 \subsubsection{Half-bound states}
 
-As a limiting case for both the scattering states and the unconfined bound states, we have those states with $k = 0$ or $k= \pi$ (or equivalently with $z = \pm 1$).  In either case, the two momenta correspond to particles that don't move, but the states themselves are not normalizable.  They won't play much of a role in this thesis, but I did want to mention them.
+As a limiting case for both the scattering states and the unconfined bound states, we have those states with $k = 0$ or $k= \pi$ (or equivalently with $z = \pm 1$).  In either case, the two momenta correspond to particles that don't move, but the states themselves are not normalizable.  They will not play much of a role in this thesis, but I wanted to mention them for completeness.
 
 
 %%%%
@@ -383,7 +383,7 @@ With these matrix equations, we have a representation of the scattering matrix a
 \begin{equation}
   \gamma(z)^{-1} = \frac{1}{\det \gamma(z)} \adj \gamma (z)
 \end{equation}
-where $\adj \gamma (z)$ is the adjugate matrix of $\gamma(z)$, then by \eq{gamma_gives_S} we can then see that the entries of $\gamma(z)$, and thus the entries of $S(z)$ and $\Psi(z)$, are rational functions of $z$. 
+where $\adj \gamma (z)$ is the adjugate matrix of $\gamma(z)$ (which is defined as the operation satisfying the matrix equality $A \adj(A) = \det(A)\II$), then by \eq{gamma_gives_S} we can then see that the entries of $\gamma(z)$, and thus the entries of $S(z)$ and $\Psi(z)$, are rational functions of $z$. 
 
 With this fact, to show that the problems defining the states $\ket{\scat_j(k)}$ are a result of our analysis rather than intrinsic difficulties, we need only show that there are no poles in the matrix elements for $S(z)$ or $\Psi(z)$ for $z$ on the unit circle.  We actually have that for all such $z$, there is an upper bound on the norm of the scattering amplitudes, which might depend on the graph $\widehat{G}$.
 \begin{lemma}
@@ -569,14 +569,14 @@ Most of our results will be in regards to the scattering states, but having this
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Wavepacket scattering}
+\section{Wavepacket scattering}\label{sec:SP_wavepacket_scattering}
 
 Up until this point, we have taken as intuition that the scattering states correspond to an incoming wave packet at some momentum, and then scatterings with a corresponding $S$-matrix.  However, this is somewhat weird, in that the scattering states are eigenstates of the Hamiltonian, and thus do not change over time, while scattering states explicitly move.  
 
 In this section, we will show that our intuitive naming is useful.  In particular, we will show that preparing a wave packet centered at some momenta will scatter as the $S$-matrix of the corresponding scattering state.  Further, the shape of the wave packet will remain approximately the same.
 
-In \cite{MPQW}, Childs, Gosset, and W. proved a nice bound on the time-evolution of square wave packets.  These approximations were useful as the necessary mathematics involved in proving the related bounds only involved unweighted sums of amplitudes that were identical to the eigenstates of the corresponding Hamiltonians.  In particular, they were able to prove the following bound:
-\begin{theorem}[Childs, Gosset, W.\cite{MPQW}]
+In \cite{MPQW}, Childs, Gosset, and Webb proved an error bound for the time-evolution of square wave packets.  These approximations were useful as the necessary mathematics involved in proving the related bounds only involved unweighted sums of amplitudes that were identical to the eigenstates of the corresponding Hamiltonians.  In particular, they were able to prove the following bound:
+\begin{theorem}[Childs, Gosset, Webb\cite{MPQW}]
 Let $\widehat{G}$ be an $(N+m)$-vertex graph. Let $G$ be a graph obtained from $\widehat{G}$ by attaching semi-infinite paths to $N$ of its vertices, and let $S$ be the corresponding S-matrix.  Let $k\in(-\pi,0)$, $M,L\in\NN$, $j\in\{1,\ldots,N\}$, and
 \begin{equation}
   |\psi^{j}(0)\rangle=\frac{1}{\sqrt{L}}\sum_{x=M+1}^{M+L}e^{-ikx}|x,j\rangle.
@@ -597,9 +597,9 @@ R(l) & =  \begin{cases}
 \end{align}
 \end{theorem}
 
-While these bounds were sufficient for the purposes of their paper, as they only required polynomial versus exponential overhead, the bounds they proved where not the best possible.  Their use of square approximations was most likely not optimal in terms of the resulting errors.  
+While these bounds were sufficient for the purposes of their paper, as they only required polynomial versus exponential overhead, the bounds they proved where not the best possible.  Their use of square wave approximations was not optimal in terms of the resulting errors.  
 
-As such, this section is devoted to proving a corresponding bound on the scattering behavior of a Gaussian wave packet, instead of square wave packets.  We prove near quadratically better bounds than those of \cite{MPQW} in regards to the single-particle scattering, as the Guassian wave packets have nice dispersion properties, but unfortunately the proof becomes a little more complicated.  In particular, we prove the following lemma:
+As such, this section is devoted to proving a corresponding bound on the scattering behavior of a Gaussian wave packet, instead of square wave packets.  We prove near quadratically better bounds than those of \cite{MPQW} in regards to the single-particle scattering, as the Gaussian wave packets have nice dispersion properties, but unfortunately the proof becomes a little more complicated.  In particular, we prove the following lemma:
 \begin{theorem}
   Let $\widehat{G}$ be an $(N+m)$-vertex graph, let $G$ be the graph obtained from $\widehat{G}$ by attaching $N$ semi-infinite paths to the first $N$ of its vertices, and let $S$ be the corresponding $S$-matrix.  Let $\ket{\psi_j(0)}$ be a cut-off Gaussian distribution with momentum $k$ and standard deviation $\sigma$ centered at $\mu$, with the cut-off at a distance $L$ from the center.  Namely, let 
   \begin{equation}
@@ -617,12 +617,12 @@ As such, this section is devoted to proving a corresponding bound on the scatter
   \end{equation}
   If $\sigma = c_1 \frac{ L}{\sqrt{\log L}}$ for some constant $c_1 < \frac{1}{\sqrt{2}}$, we then have that for $0 < t < c_2 L$,  
   \begin{equation}
-    \norm{e^{-i A(G) t} \ket{\psi^j(0)} - \ket{\alpha^j (t)}} \in \OO \bigg(\sqrt{\frac{\log L}{L}} \bigg).,
+    \norm{e^{-i A(G) t} \ket{\psi^j(0)} - \ket{\alpha^j (t)}} \in \OO \bigg(\sqrt{\frac{\log L}{L}} \bigg).
   \end{equation}  
 \label{thm:single_particle_wavepacket_bound}
 \end{theorem}
 
-Note that this bound is extremely similar to that of \cite{MPQW}, albeit with a slightly more complicated definition for the approximate state.  However, when the wave packet is far from the 
+Note that this bound is extremely similar to that of \cite{MPQW}, albeit with a slightly more complicated definition for the approximate state.  However, when the wave packet is far from the graph $\widehat{G}$, the form of the approximating state is simply a truncated Gaussian.
 
 
 
@@ -633,7 +633,7 @@ Note that this bound is extremely similar to that of \cite{MPQW}, albeit with a 
 
 Before we delve into the proof of the wavepacket scattering, it will be useful to define a kind of discrete approximation to a Gaussian.  In particular, let us define the function
 \begin{equation}
-  h_L^\sigma(\phi) = \sum_{n = -L}^L e^{i \phi n} e^{-\frac{ x^2}{2\sigma^2}}. 
+  h_L^\sigma(\phi) = \sum_{n = -L}^L e^{i \phi n} e^{-\frac{ n^2}{2\sigma^2}}. 
   \label{eq:h_L_defn}
 \end{equation}
 This is closely related to the amplitude of the original wavepacket in \thm{single_particle_wavepacket_bound}, and will be used extensively in our proof.
@@ -698,7 +698,7 @@ We can then collect these bounds into a lemma, which we will reference several t
   \end{align}
 \end{lemma}
 
-In most of the cases we will use, the value of the $h$ function can be approximated by the equivalent value if we use a Guassian distribution over the continuum, plus some small error term that is exponential in either the standard deviation $\sigma$ or its inverse.  As such, we will generally take as intuition that these $h$ functions are Gaussians, which will allow us to construct approximations that are easier to work with.
+In most of the cases we will use, the value of the $h$ function can be approximated by the equivalent value if we use a Gaussian distribution over the continuum, plus some small error term that is exponential in either the standard deviation $\sigma$ or its inverse.  As such, we will generally take as intuition that these $h$ functions are Gaussians, which will allow us to construct approximations that are easier to work with.
 
 
 
@@ -856,7 +856,7 @@ works as an upper bound, while
   \gamma^{-2} &= h_{L}^{\sigma/\sqrt{2}}(0) = h_{\infty}^{\sigma/\sqrt{2}}(0) - \big( h_{L}^{\sigma/\sqrt{2}}(0) - h_\infty^{\sigma/\sqrt{2}}(0)\big) \geq \sqrt{\pi} \sigma - \frac{\sigma^2}{L} e^{-\frac{L^2}{\sigma^2}} \\
    &= \sqrt{\pi} \sigma \Big(1 - \frac{\sigma}{L\sqrt{\pi}} e^{ - \frac{L^2}{\sigma^2}}\Big) 
 \end{align}
-can be used as a lower bound.  However, these bounds are not particular nice to use and thus we will use the slightly weaker bounds of
+can be used as a lower bound.  However, these bounds are not particularly nice to use and thus we will use the slightly weaker bounds of
 \begin{align}
   \gamma^{-2} & \leq \sqrt{\pi}\sigma \big[ 1 + 3 e^{-\pi^2 \sigma^2}\big]\label{eq:gaussian_gamma_upper_bound}
 \end{align}
@@ -866,7 +866,7 @@ and
 \end{align}
 where we assume that $L > \sigma > 1$.
 
-From this, we have that the norm of 	$\ket{\alpha_j(t)}$ is within some constant times $\sigma^{-1}$ of 1 for all times $t$.
+From this, we have that the norm of 	$\ket{\alpha_j(t)}$ differs from 1 by  $\OO(\sigma^{-1})$ for all times $t$.
 
 
 \subsection{Proof of \thm{single_particle_wavepacket_bound}}

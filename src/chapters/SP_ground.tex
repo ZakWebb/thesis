@@ -14,7 +14,7 @@
 \chapter{Ground energy of quantum walk}
 \label{chap:SP_ground}
 
-While evolution according to some Hamiltonian is probably the most physically relevant question on could ask about a particular Hamiltonian, one could also ask about the ground energy of the Hamiltonian.  These minimization problems are a natural quantum analog of classical constraint satisfaction problems, and in a similar manner are often computationally intractable.  For many classes of Hamiltonians and suitable notions of approximation, these problems are \QMA-complete
+While time evolution according to a given Hamiltonian is probably the more obvious and physically relevant question one could ask when talking about the computational power of a given system, one could also ask about the difficulty in determining the ground energy of a given Hamiltonian.  These minimization problems are a natural quantum analog of classical constraint satisfaction problems, and in a similar manner are often computationally intractable.  For many classes of Hamiltonians and suitable notions of approximation, these problems are \QMA-complete
 
 In this chapter we will analyze the ground energy problem for Quantum Walk Hamiltonians, and show that this problem is \QMA-complete.  The proof strategy follows the usual structure of \QMA-completeness originally laid out by Kitaev \cite{KSV02}, in that we encode the evolution of a state under a circuit in the ground space of a quantum walk Hamiltonian.  There are a few small modifications to the usual circuit-to-Hamiltonian mapping to ensure that the resulting Hamiltonian is a 0-1 matrix, but the main point of this chapter is to give an introduction to \QMA-hardness proofs, as well as providing a \QMA-complete problem that might be more accessible to classical computer scientists.  
 
@@ -38,7 +38,7 @@ While this problem is inspired from quantum walks, it actually makes no referenc
 
 \subsection{Containment in \QMA}
 
-The proof that this problem is in \QMA follows the same pattern as most other Hamiltonian problems.  Using a sparse-Hamiltonian simulation algorithm (such as \cite{BACS07,BCK15}), we perform phase estimation \cite{CEMM98} on the provided state to approximate the energy.
+The proof that this problem is in \QMA{} follows the same pattern as most other Hamiltonian problems.  Using a sparse-Hamiltonian simulation algorithm (such as \cite{BACS07,BCK15}), we perform phase estimation \cite{CEMM98} on the provided state to approximate the energy.
 
 
 In the case that the smallest eigenvalue of the system is below $a$, the prover can provide the corresponding eigenvector encoded in a quantum state.  The phase estimation algorithm will then (with high probability) find this eigenvalue, and the system will accept.  If the smallest eigenvalue is above $a+\epsilon$, then no matter what state the prover provides, the phase estimation algorithm will project onto one of the eigenstates and determine the corresponding eigenvalue, which will necessarily be above $a+\epsilon$.
@@ -291,7 +291,7 @@ While this result is interesting in its own right --- as it shows that finding t
 
 As an additional problem, since the circuit-to-Hamiltonian map creates a 7-regular, simple graph, one might wonder if the removal of these conditions are necessary when the boundary terms are added.  This is obviously going to be necessary, as otherwise we would have that determining the lowest eigenvalue of a Laplacian is \QMA-complete, but it is a well known fact that the smallest eigenvalue of a Laplacian is zero.  
 
-As a possible extension to this result, note that the graphs construction in our proof of \QMA-hardness contain self-loops, as the terms penalizing the initial ancilla and output qubit are diagonal in the computational basis.  As graphs are usually defined without self-loops, it might be worthwhile finding a construction that results in a simple graph.
+As a possible extension to this result, note that the graphs constructed in our proof of \QMA-hardness contain self-loops, as the terms penalizing the initial ancilla and output qubit are diagonal in the computational basis.  As graphs are usually defined without self-loops, it might be worthwhile finding a construction that results in a simple graph.  It should be possible to do this using two copies of the constructed graph and apply a projector onto the anti-symmetric subspace between the two, but unfortunately I did not have enough time to explicitly calculate this.
 
 
 \biblio{}

@@ -15,25 +15,37 @@
 \label{chap:mathematical_preliminaries}
 
 
-Several topics in this thesis require a background that not all researcher will have experience in.  As this is a physics thesis, there will be some basic complexity theory definitions used throughout this thesis.  Additionally, several lemmas used in this manuscript might be of independent interest, as their applicability is not restricted to the various models studied in this thesis. 
+Several topics in this thesis require a background that not all researchers will have experience in.  As this is a physics thesis, here I review some basic complexity theory definitions used throughout this thesis.  Additionally, several lemmas used in this manuscript might be of independent interest, as their applicability is not restricted to the various models studied in this thesis. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mathematical notation}
 \label{sec:mathematical_notation}
 
-Perhaps the most simple point that I would like to raise before the thesis begins in ernest is the notation that I will use throughout the paper.  Much of the paper uses notation not necessarily standard in every area of physics or computer science, and I want to make sure that no confusion occurs.  I will assume that various notations that are common do not need to be described, such at $\HHH$ describing a Hilbert space, or that $\II$ describes a the identity operator on a particular Hilbert space.
+Perhaps the most simple point that I would like to raise before the thesis begins in earnest is the notation that I will use throughout the paper.  Much of the paper uses notation not necessarily standard in every area of physics or computer science, and I want to make sure that no confusion occurs.  I will assume that various notations that are common do not need to be described, such at $\HHH$ describing a Hilbert space, or that $\II$ describes a the identity operator on a particular Hilbert space.
 
 The first such notation will be for the shorthand definition of sets of particular size.  Namely,
 \begin{equation}
 [k] := \{1,2,\cdots, k\}.
 \end{equation}
-This is a set of size $k$, with the elements ordered and labeled by the integers from $1$ to $kk$.  We will often think of these as elements from $\ZZ_{k}$, with addition and multiplication defined over the integers modulo $k$.
+This is a set of size $k$, with the elements ordered and labeled by the integers from $1$ to $k$.  We will often think of these as elements from $\ZZ_{k}$, with addition and multiplication defined over the integers modulo $k$.
 
-As we will also be working with graphs, we will want to note that the letter $G$ usually denotes a particular graph.  Further, $A(G)$ describes the adjacency matrix of the graph $G$.  $V(G)$ then describes the vertex set of $G$, and $E(G)$ describes the edge set of $G$.  Note that this thesis will always deal with undirected graphs, with at most a single edge between vertices.  As such, the adjacency matrix $A(G)$ will be a symmetric 0-1 matrix.  We will at times want to work with a simple graph, in which self-loops do not occur, but unless otherwise specified a graph $G$ might contain self-loops.
+As we will also be working with graphs, we will want to note that the letter $G$ usually denotes a particular graph.  $V(G)$ then describes the vertex set of $G$, and $E(G)$ describes the edge set of $G$.  Note that this thesis will always deal with undirected graphs, with at most a single edge between vertices.  As such, the adjacency matrix (denoted $A(G)$) will be a symmetric $|V(G)|\times|V(G)|$ matrix, with entries given by 
+\begin{align}
+A(G)_{uv} = \begin{cases}
+ 1 & \{u,v\}\in E(G)\\
+ 0 & \text{otherwise}.
+\end{cases}
+\end{align}  Note that all entries of these adjacency matrices are either zero or one; this restriction on graphs forces them to be \emph{unweighted}, so that all edges are treated equally.  We might further restrict ourselves to graphs without any self-loops (diagonal entries in $A(G)$), which are called \emph{simple} graphs.
 
 Much of the work in this thesis, especially when describing the ground energy of a particular Hamiltonian, deals only with positive semi-definite operators. If $A$ is a positive semi-definite matrix, then $\gamma(A)$ will denote the smallest non-zero eigenvalue of $A$.   Note that if $A$ has a 0-eigenvalue, then this corresponds to the energy gap between the ground state and the first excited state, but if $A$ does not have a 0-eigenvalue then this is simply the smallest eigenvalue of $A$.
 
-Another notation to define is the restriction of an operator to a subspace.  Let us assume that $A$ acts on a Hilbert space $\HHH$, and that $\mathcal{S}$ is a subspace of $\HHH$.  We will then write the restriction of $A$ to the subspace $\mathcal{S}$ as $A\big|_\mathcal{S}$. 
+In a related note, we will need to describe various operator norms used throughout this thesis.  Unless otherwise specified, for a given Hermitian operator $A$, we will denote $\Vert H \Vert$ by the largest (in absolute value) eigenvalue of $H$ (this is often called the spectral or infinity norm).  Additionally, $\Vert H\Vert_{\alpha}$ will denote the $\alpha$-norm of $H$, which is defined as
+\begin{align}
+  \Vert H \Vert_\alpha := \Big( \sum_{i\in [N]} |\lambda_i|^\alpha \Big)^{1/\alpha},
+\end{align}
+where $\{\lambda_i\}_{i\in[N]}$ are the eigenvalues of $H$.
+
+Another notation to define is the restriction of an operator to a subspace.  Let us assume that $A$ acts on a Hilbert space $\HHH$, and that $\mathcal{S}$ is a subspace of $\HHH$.  We will then write the restriction of $A$ to the subspace $\mathcal{S}$ as $A\big|_\mathcal{S}$.  Note that this subspace might not be invariant under the action of $A$.
 
 
 Often this paper will want to investigate systems with many particles, and we will want an operator to only act nontrivially on one particle.  If we have a Hilbert space $\HHH_{\text{total}} = \HHH_{\text{single}}^{\otimes N}$ that consists of $N$ copies of some single Hilbert space, and if we have an operator $M$ that acts on $\HHH_{\text{single}}$, we can define an operator $M^{(w)}$ that acts nontrivially only on the $w$-th copy of $\HHH_{\text{single}}$, namely
@@ -78,7 +90,7 @@ This is a simple introduction, with a focus designed to make the rest of this th
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Languages and promise problems}
 
-The main foundation of computational complexity is in the classification of languages based on the requisited resources to determine whether some string is in a language.  Unfortunately, this requires the definition of many of these terms.  
+The main foundation of computational complexity is in the classification of languages based on the resources required to determine whether some given string is in a language.  Unfortunately, this requires the definition of many of these terms.  
 
 In particular, what exactly is a string?  Any person who has taken a basic programming class knows that a string is simply a word, but the mathematical definition is slightly more complicated.  In particular, we first need to define an alphabet, and then define a string over a particular alphabet.  
 \begin{definition}[Alphabet] An alphabet is a finite collection of symbols.
@@ -152,11 +164,15 @@ Once we have an understanding of what defines a relation, and how these are rela
 %%%
 \subsubsection{Classical complexity classes}
 
-  Perhaps the most well known question in computational complexity is the \PP{} vs \NP problem.  However, what exactly are these classes.  At a most basic level, one can think of \PP{} as those classification problems that have an efficient classical solution, while \NP{} are those that can be checked in an efficient manner.  
+  Perhaps the most well known question in computational complexity is the \PP{} vs \NP{} problem.  However, what exactly are these classes.  At a most basic level, one can think of \PP{} as those classification problems that have an efficient classical solution, while \NP{} are those that can be checked in an efficient manner.  
 
 
 \begin{definition}[\PP]
-  A promise problem $\AAA= (\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \PP{} if there exists a polynomial-time Turing Machine $M$ such that $M(x)$ accepts $x$ if and only if $x\in \AAA_{\text{yes}}$.
+  A promise problem $\AAA= (\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \PP{} if there exists a polynomial-time Turing Machine $M$ such that 
+ \begin{itemize}
+   \item If $x\in \AAA_{\text{yes}}$, then $M(x)$ accepts.
+   \item If $x\in \AAA_{\text{no}}$, then $M(x)$ rejects.
+ \end{itemize}
 \end{definition}
 
 Note that the Turing Machine $M$ is required to halt on all inputs, and thus this is exactly what we mean by a polynomial-computation.  Some simple examples of languages in \PP{} are whether the triple $(a,b,c)$ satisfies $ab = c$, and whether a particular list of values is sorted.
@@ -165,8 +181,8 @@ Note that the Turing Machine $M$ is required to halt on all inputs, and thus thi
 \begin{definition}[\NP]
   A promise problem $\AAA=(\AAA_{\text{yes}},\AAA_{\text{no}})$ is in the class \NP if there exists a polynomial $q$ and a polynomial-time Turing Machine $M$ such that
   \begin{itemize}
-    \item if $x\in \AAA_{\text{yes}}$, then there exists a string $y\in \Sigma^{q(|x|)}$ such that $M(x,y)$ accepts.
-    \item if $x\in \AAA_{\text{no}}$, then for all strings $y\in \Sigma^{q(|x|)}$, $M(x,y)$ rejects.
+    \item If $x\in \AAA_{\text{yes}}$, then there exists a string $y\in \Sigma^{q(|x|)}$ such that $M(x,y)$ accepts.
+    \item If $x\in \AAA_{\text{no}}$, then for all strings $y\in \Sigma^{q(|x|)}$, $M(x,y)$ rejects.
   \end{itemize}
 \end{definition}
 Essentially, a language is in \NP{} if a given string can be proven to be in the language.  This includes useful problems such as whether a given graph has a 3-coloring, whether an integer $p$ has at least $k$ prime factors, and all problems in \PP.
@@ -186,9 +202,9 @@ Intuitively, the idea behind Bounded-Error Quantum Polynomial Time (\BQP) consis
   \end{itemize}
 \end{definition}
 
-Note that $\AP(Q,\ket{psi})$ is the acceptance probability of a circuit $Q$, with input $\ket{\psi}$, given by
+Note that $\AP(Q,\ket{\psi})$ is the acceptance probability of a circuit $Q$, with input $\ket{\psi}$, given by
 \begin{align}
-  \AP(Q,\ket{psi})=\bra{\psi} Q^\dag (\ketbra{0}{0}\otimes \II) Q\ket{\psi}.
+  \AP(Q,\ket{\psi})=\bra{\psi} Q^\dag (\ketbra{0}{0}\otimes \II) Q\ket{\psi}.
 \end{align}
 From this, we have that the class \BQP{} does not always output the correct answer, but it does with a bounded probability. 
 
@@ -221,15 +237,15 @@ With these reductions in mind, a particular problem $\AAA$ is hard for a given c
 
 \section{Hamiltonian simulation}\label{sec:hamiltonian_simulation}
 
-Several times in this thesis, we will need to show how to simulate the evolution of a sparse, row-computable Hamiltonian on a given state $\ket{\phi}$ using a quantum circuit.  The state $\ket{\phi}$ might be an efficiently computable state, or it might be a provided to us in a \QMA-style procedure, but in either case we are really only interested in understanding the dynamics of the simulation.
+Several times in this thesis, we will need to show how to simulate the evolution of a sparse, row-computable Hamiltonian on a given state $\ket{\phi}$ using a quantum circuit.  The state $\ket{\phi}$ might be an efficiently computable state, or it might be provided to us in a \QMA-style procedure, but in either case we are really only interested in understanding the dynamics of the simulation.
 
 The problem of simulating Hamiltonian dynamics has been featured rather heavily in the literature, as it was the original motivation that Feynman gave for quantum computers \cite{Fey82,Fey85}.  In particular, Lloyd showed how to simulate sums of local operators \cite{Llo96}, and this idea was generalized by Aharanov and Ta-Shma to (efficiently computable) sparse Hamiltonians \cite{AT03}.  Since then, various schemes have improved the requirements on time \cite{BACS07,WBHS11,BC12}, as well as the dependence on the precision \cite{BCCKS14,BCCKS15} and various other avenues of research \cite{Chi09, PQSV11}, have managed to greatly improve our ability to simulate quantum dynamics.  
 
-While Hamiltonians that are a sum of local operations are relatively easy to understand, $d$-sparse Hamiltonians are relatively more complex.  The reason that much of the literature has focused on local Hamiltonians is that they are easy to specify, as we need only write down each of the local Hamiltonians.  In particular, they are succinct representations for Hamiltonians on an exponential-sized Hilbert space, such that each non-zero term of the Hamiltonian corresponding to a specific basis vector can be determined efficiently.  Additionally, these local-Hamiltonians are further restricted to only have non-zero transition amplitudes for states that satisfy some locality conditions, but for the purposes of simulation the succinctness property is what we care about.
+While Hamiltonians that are a sum of local operations are relatively easy to understand, $d$-sparse Hamiltonians are relatively more complex.  The reason that much of the literature has focused on local Hamiltonians is that they are easy to specify, as we need only write down each of the local Hamiltonians.  In particular, these are succinct representations for Hamiltonians on an exponential-sized Hilbert space, such that each non-zero term of the Hamiltonian corresponding to a specific basis vector can be determined efficiently.  Additionally, these local-Hamiltonians are further restricted to only have non-zero transition amplitudes for states that satisfy some locality conditions, but for the purposes of simulation the succinctness property is what we care about.
 
 Namely, the fact that a local Hamiltonian is succinctly representable is all that is used in the algorithms for simulating Hamiltonian dynamics.  As such, if we can generalize these properties, we can generalize the Hamiltonians that we can simulate.  A row-computable, $d$-spare matrix is such a generalization, in which each row of a given Hamiltonian has at most $d$ non-zero entries, and there exists some efficiently computable function $f_{i}(x)$ that outputs the value (and position) of the $i$th nonzero entry of the $x$th row.  Note that $k$-local Hamiltonians are $d$-sparse (for some $d$ depending on the local dimension and connectivity), and easily row-computable.
 
-The current state of the art simulation algorithms \cite{BCK15} uses several techniques, including quantum walk algorithms, simulations of linear combinations of unitaries, and Bessel functions, to simulate a given Hamiltonian, but their main result is the following
+A recent simulation algorithms \cite{BCK15} uses several techniques, including quantum walk algorithms, simulations of linear combinations of unitaries, and Bessel functions, to simulate a given Hamiltonian, but their main result is the following
 \begin{theorem}[Theorem 1 of \cite{BCK15}]\label{thm:hamiltonian_simulation}
 A $d$-sparse Hamiltonian $H$ acting on $n$ qubits can be simulated for time $t$ within error $\epsilon$ with
 \begin{align}
@@ -241,7 +257,7 @@ queries and
   \OO\Big( \tau \big[n + \log^{5/2} (\tau/\epsilon) \big] \frac{\log (\tau/\epsilon)}{\log\log(\tau/\epsilon)}\Big)
   \label{eq:hamiltonian_2qubit_bound}
 \end{align}
-additional $2$-qubit gates, where $\tau := d \Vert H \Vert_{\max} t$.
+additional $2$-qubit gates, where $\tau := d \Vert H \Vert t$.
 \end{theorem}
 Note that the theorem was proved in the black box model, where the function $f$ was provided via black box.  Assuming that $f$ is superlinear in both $n$ and $\log^{5/2}(\tau/\epsilon)$, the time-complexity for simulating such a Hamiltonian is simply the product of the complexity of $f$ with \eq{hamiltonian_query_bound}.  Note that if $f$ is efficient to compute, this is an efficient simulation of the Hamiltonian dynamics.
 
@@ -252,11 +268,11 @@ In addition to these various mathematical definitions, it will also be useful to
 %%%%%%%%%%%%%%%%%
 \subsection{Truncation Lemma}
 
-Perhaps the first such lemma we called the truncation lemma.  The idea behind this lemma is to approximate the evolution of a state under some particular Hamiltonian with another, where the differences between the two Hamiltonians only occur far from the support of the given state.  One would expect that since the state must evolve ``far'' in order to reach the differs between the two Hamiltonians, the evolution between the two will be close.  This lemma makes this intuition precise.  This lemma was shown by Childs, Gosset, and Webb in \cite{MPQW}.
+Perhaps the first such lemma we called the truncation lemma.  The idea behind this lemma is to approximate the evolution of a state under some particular Hamiltonian with another, where the differences between the two Hamiltonians only occur far from the support of the given state.  One would expect that since the state must evolve ``far'' in order to reach the differences between the two Hamiltonians, the evolution between the two will be close.  This lemma makes this intuition precise.  This lemma was shown by Childs, Gosset, and Webb in \cite{MPQW}.
 
 \begin{lemma}[Truncation Lemma]
 \label{lem:truncation}
-Let $H$ be a Hamiltonian acting on a Hilbertspace $\mathcal{H}$ and let $\ket{\Phi}\in\mathcal{H}$ be a normalized state. Let
+Let $H$ be a Hamiltonian acting on a Hilbert space $\mathcal{H}$ and let $\ket{\Phi}\in\mathcal{H}$ be a normalized state. Let
 $\mathcal{K}$ be a subspace of $\mathcal{H}$, let $P$ be the projector onto $\mathcal{K}$,
 and let $\tilde{H}=PHP$ be the Hamiltonian within this subspace. Suppose
 that, for some $T>0$, $W\in\{H,\tilde{H}\}$, $N_0\in\NN$,
@@ -267,7 +283,7 @@ e^{-iWt}|\Phi\rangle & = |\gamma(t)\rangle+|\epsilon(t)\rangle \text{ with }
 \end{align}
 and
 \begin{align}
-  (1-P) H^{r}|\gamma(t)\rangle & = 0 \text{ for all } r\in\{0,1,\ldots, N_0-1\}.
+  (1-P) H^{r}|\gamma(t)\rangle & = 0 \text{ for all } r\in\NN \text{ satisfying} r < N_0.
 \end{align}
 Then, for all $0\leq t \leq T$, 
 \begin{align}
@@ -277,12 +293,16 @@ Then, for all $0\leq t \leq T$,
 \end{align}
 \end{lemma}
 
-This lemma actually combines two different methods.  The first assumes some locality condition on the Hamiltonian, and uses a Taylor series to bound the error in approximating the evolution according to the truncation.
+The basic idea as that $\ket{\gamma(t)}$ well approximates the evolution of $\ket{\Phi}$ under one of $H$ or $\tilde{H}$, and thus also gives good approximation to the evolution according to the other Hamiltonian. 
+
+The proof of this lemma actually makes use of two different lemmas, one pertaining to the difference in evolution according to the Hamiltonians when the support of a given state is far from the differences, and one that bounds the accumulated error in a sequence of similar unitaries.
+
+The first lemma assumes some locality condition on the Hamiltonian, and uses a Taylor series to bound the error in approximating the evolution according to the truncation.
 \begin{proposition}
 \label{prop:trunc_prop}Let $H$ be a Hamiltonian acting on a Hilbert
 space $\mathcal{H}$, and let $\ket{\Phi}\in\mathcal{H}$ be a normalized state. Let
-$\mathcal{K}$ be a subspace of $\mathcal{H}$ such that there exists an $N_0\in\natural$
-so that for all $\ket{\alpha}\in \mathcal{K}^{\perp}$ and for all $n\in\{0,1,2,\ldots, N_0-1\}$, $\bra{\alpha}H^{n}\ket{\Phi}=0$.
+$\mathcal{K}$ be a subspace of $\mathcal{H}$ such that there exists an $N_0\in\NN$
+so that for all $\ket{\alpha}\in \mathcal{K}^{\perp}$ and for all $n\in\NN$ with $n< N_0$, $\bra{\alpha}H^{n}\ket{\Phi}=0$.
 Let $P$ be the projector onto $\mathcal{K}$ and let $\tilde{H}=PHP$ be
 the Hamiltonian within this subspace.  Then
 \begin{align}
@@ -371,7 +391,7 @@ Note that it would be slightly better to take a smaller value of $\eta$.  Howeve
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Nullspace Projection Lemma}
 
-When we discuss the ground spaces and ground energies of various Hamiltonians, we will often want to know what happens to the ground spaces and ground energies when two such Hamiltonians are added together (such as adding penalties enforcing particular initial states).  As such, the Nullspace Projection Lemma exactly discusses how such systems add together.  As far as I am aware this lemma was initially used (implicitly) by Mizel, et. al., \cite{MLM99}.  We then used this in our proof of the \QMA-completeness for the Bose-Hubbard model \cite{BHQMA}.  We then found a similar lemma by Alicki, et. al. \cite{AFH09}.  While the improvement is minor, this is a proof of the improved bound (and note that the improvement was left as a proof for the reader in the newer result).
+When we discuss the ground spaces and ground energies of various Hamiltonians, we will often want to know what happens to the ground spaces and ground energies when two such Hamiltonians are added together (such as adding penalties enforcing particular initial states).  As such, the Nullspace Projection Lemma exactly discusses how such systems add together.  As far as I am aware this lemma was initially used (implicitly) by Mizel, et al., \cite{MLM99}.  We then used this in our proof of the \QMA-completeness for the Bose-Hubbard model \cite{BHQMA}.  We then found a similar lemma by Alicki, et al. \cite{AFH09}.  While the improvement is minor, we state and prove this better lemma:
 \begin{lemma}[Nullspace Projection Lemma]
 Let $H_A$ and $H_B$ be positive semi-definite matrices.  Suppose that the nullspace, $S$, of $H_A$ is nonempty, and that 
 \begin{equation}

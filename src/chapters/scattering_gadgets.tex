@@ -14,7 +14,7 @@
 \chapter{Scattering gadgets}
 \label{chap:scattering_gadgets}
 
-At this point, we have from \chap{scattering_on_graphs} the basic framework used or scattering on graphs.  However, everything from the chapter is a theoretical construction, where we are given a graph with a particular scattering behavior; nothing was mentioned about finding such graphs.  This chapter is dedicated to this idea of finding gadgets with particular scattering behavior, or showing that they cannot exist.
+At this point, we have from \chap{scattering_on_graphs} the basic framework used or scattering on graphs.  However, everything from the chapter is a theoretical construction, where we are given a graph with a particular scattering behavior; nothing was mentioned about finding such graphs.  This chapter is dedicated to this idea of finding graphs with particular scattering behavior, or showing that they cannot exist.  These special graphs will be called \emph{scattering gadgets}.
 
 
 %\subsection{Momentum dependent actions}
@@ -56,7 +56,7 @@ At this point, we have from \chap{scattering_on_graphs} the basic framework used
 
 While we have shown that the scattering behavior of some given graph is easy to compute, finding graphs with a given behavior is much more difficult.  We don't even know whether such an operation is decidable, and thus finding an algorithm to construct a graph with a given $S$-matrix seems unlikely.  However, there are specific behaviors at particular momenta in which constructions are known, and exhaustive searches of small sized graphs have yielded graphs with nice scattering properties.  
 
-In particular, Andrew Childs found several gadgets in his paper proving the universality of quantum walks \cite{Chi09}.  After this result, Blumer, Underwood and Feder \cite{BUF11} performed an exhaustive search over all graphs with at most 9 vertices, finding those graphs that implement an encoded unitary at several momenta of interest.  Childs, Gosset, and Webb then constructed several gadgets in \cite{MPQW}.  This section is mainly based on \cite{MomSwitches}, a paper by Chlids, Gosset, Nagaj, Raha, and Webb, as it gives explicit constructions for gadgets with particular behavior.
+In particular, Andrew Childs found several gadgets in his paper proving the universality of quantum walks \cite{Chi09}.  After this result, Blumer, Underwood and Feder \cite{BUF11} performed an exhaustive search over all graphs with at most 9 vertices, finding those graphs that implement an encoded unitary at several momenta of interest.  Childs, Gosset, and Webb then constructed several gadgets in \cite{MPQW}.  This section is mainly based on \cite{MomSwitches}, a paper by Childs, Gosset, Nagaj, Raha, and Webb, as it gives explicit constructions for gadgets with particular behavior.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -283,7 +283,7 @@ To see that this is an eigenvector, observe that $g_0^{\leftrightarrow}$ is a di
 
 \subsection{Momentum switches}\label{sec:mom_switch}
 
-To construct a momentum switch between a given pair of momenta, it will be worthwhile to first construct two R/T gadgets between the momenta, with the two gadgets having swapped reflection and transmission sets.  We can then construct something like a railroad switch, by placing the two gadgets immediately after a 3-claw.  With this design, the incident wavepacket will only see one of the two outgoing paths, and the resulting $S$-matrix will be exactly what we want.
+To construct a momentum switch between a given pair of momenta, it will be worthwhile to first construct two R/T gadgets between the momenta, with the two gadgets having swapped reflection and transmission sets.  We can then construct something like a railroad switch, by placing the two gadgets immediately after a 3-claw (a four-vertex graph with three vertices connected to a central vertex).  With this design, the incident wavepacket will only see one of the two outgoing paths, and the resulting $S$-matrix will be exactly what we want.
 
 In particular, we can construct a momentum switch between the reflection and transmission sets $\mathcal{R}$ and $\mathcal{T}$ of a type 2 R/T gadget.  We attach the gadget and its reversal (defined in \sec{reversal}) to the leaves of a claw, as shown in \fig{gen_mom_con}.  Specifically, given a type 2 R/T gadget $\widehat{G}$, the corresponding momentum switch $\widehat{G}^{\prec}$ consists of a copy of $G_0$, a copy of $G_{0}^{\leftrightarrow}$, and a claw, with the three leaves of the claw acting as the terminal vertices.  Vertex $p$ of $G_0$ is connected to leaf $2$ of the claw, and vertices $w_1^{(1)},\ldots,w_r^{(1)}$ of $G_{0}^{\leftrightarrow}$ are each connected to leaf $3$ of the claw.
 
@@ -386,7 +386,7 @@ Later in this thesis we will describe a scheme for arbitrary quantum computation
 
 \subsubsection{Universal gate set for $-\frac{\pi}{2}$}
 
-Since the energy corresponding to momentum $-\frac{\pi}{2}$ is zero, the eigenvalue equations for this gadget are slightly easier than average to manipulate.  Additionally, this was the momentum used in \cite{FGG08} in their algorithm for the AND-OR tree.
+Since the energy corresponding to momentum $-\frac{\pi}{2}$ is zero, the eigenvalue equations for this gadget are slightly easier than average to manipulate.  Additionally, this was the momentum used in \cite{FGG08} in their algorithm for the AND-OR tree.  (Note that this universal gate set was not used in \cite{MPQW}, as the authors did not know of it at the time: this universal gate set is new.)
 
 Note that the the graph in \fig{pi_2_had} and \fig{pi_2_had_planar} both implement a Hadamard gate for a qubit encoded at momentum $-\frac{\pi}{2}$, but that the graph in \fig{pi_2_had_planar} is planar.  In particular, \fig{pi_2_had} has a scattering matrix of the form \eq{encoded_scat}, with
 \begin{equation}
@@ -486,7 +486,7 @@ With these examples, we then have a universal gate set for single-qubit unitarie
 
 \subsubsection{Universal gate set at $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$}
 
-While the previous two momenta are relevant for historical reasons, we would also like to show a universal gate set at other momentum.  By looking forward in the thesis, where we will be interested in two momenta moving along adjacent paths, it will be useful to have the two wave-functions move at the same speed, and thus will be interesting to study $k$ and $-\pi - k$ for some $k\in (-\pi,0)$.  A natural choice would be then to understand $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$, since they are nicely separated, and further we have an explicit momentum switch between the two momenta.
+While the previous two momenta are relevant for historical reasons, we would also like to show a universal gate set at other momentum.  By looking forward in the thesis, where we will be interested in two momenta moving along adjacent paths, it will be useful to have the two wave-functions move at the same speed, and thus will be interesting to study $k$ and $-\pi - k$ for some $k\in (-\pi,0)$.  A natural choice would be then to understand $-\frac{\pi}{3}$ and $-\frac{2\pi}{3}$, since they are nicely separated, and further we have an explicit momentum switch between the two momenta.  Note additionally that previous to this thesis, an explicit universal gate set was not known between these two momenta.
 
 Unfortunately, most gadgets in the Blumer, et. al., database for these two momenta are related to $e^{-i \pi/3}$, whereas most Clifford gates are related to $e^{i \pi/4}$, and thus we unfortunately don't know of a set of gadgets implementing a Clifford+T-gate set.  However, there are sufficient graphs in order to have a universal set, but it is one note widely used.
 
@@ -526,7 +526,7 @@ One of the most simple assumptions that could be made is that certain scattering
 
 If we restrict our attention to a finite number of rational momenta, however, this does not turn out to be the case.  We can show that any graph can be replaced by a degree-three graph with a identical scattering behavior at some fixed momenta.  In particular, we will show that a single vertex can be replaced by a finite path while still satisfying the eigenvalue equation at the fixed momenta, where the length of the path is dependent on the fixed momenta.
 
-As degree two graphs are the graph joins of cycles and paths, degree three graphs are the smallest graphs to have nontrivial scattering behaviors.  This lemma shows that, in a certain sense, they are also all that are required.
+As degree two graphs are the graph joins of cycles and paths, degree three graphs are the smallest graphs to have nontrivial scattering behaviors.  This lemma shows that, in a certain sense, they are also all that are required.  Note that this result has not been published anywhere, although it has been known to the authors of \cite{MPQW} for some time.
 
 \begin{lemma} Let $\widehat{G}$ be a finite graph, and let $M$ be a finite set of rational multiples of $\pi$.  If $v\in V(G)$ is a degree $d$ vertex, there exists a graph $H$ that extends $G$ with the vertex $v$ being replaced by a degree-$(\lceil \frac{d}{2}\rceil +1)$ subgraph such that the scattering matrices at the momenta $k\in M$ are preserved.
 \label{lem:degree_reduction}
@@ -583,7 +583,7 @@ By repeated use of this lemma, we can then reduce any graph used as a scattering
 
 So far, all of our constructions have generally assumed that the scattering behavior that we want does exist.  Hence, if we simply search over large enough graphs, we will eventually find a graph that implements our desired scattering behavior.
 
-However, it turns out that in some cases this is not a valid assumption.  In particular, there exist pairs of momenta for which no R/T gadget can be constructed.  The main idea is that for specific momentum, there exists a basis for the scattering states in which all amplitudes are taken from a field extension of the rationals.  If two momenta are related by a Galois conjugation over this field, then perfect reflection at one momenta implies perfect reflection at the second.  Note that this is a result in \cite{MomSwitches}.
+However, it turns out that in some cases this is not a valid assumption.  In particular, there exist pairs of momenta for which no R/T gadget can be constructed.  The main idea is that for specific momentum, there exists a basis for the scattering states in which all amplitudes are taken from a field extension of the rationals.  If two momenta are related by a Galois conjugation over this field, then perfect reflection at one momenta implies perfect reflection at the second.  Note that this is a result in \cite{MomSwitches}, but this extends those results to more general sets of momenta, as opposed to focusing on a particular pair.
 
 As an illuminating example, we will use those states with momenta $k= -\frac{\pi}{4}$ and $p = - \frac{3\pi}{4}$.  For the two momenta, the corresponding energy is $2 \sqrt{2}$ or $-2\sqrt{2}$, and in this case the Galois conjugation is simply replacing $\sqrt{2}$ by $-\sqrt{2}$. 
 

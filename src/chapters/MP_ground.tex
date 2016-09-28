@@ -88,6 +88,8 @@ and that $\lambda_N^i(G)$ is the $i$-th smallest eigenvalue of $H_{\mathcal{U}}(
 
 Note that this is a special case of the $\mathcal{U}$-interaction MPQW Hamiltonian, with $c = N\mu(G) + \epsilon$.  As such, if we show that the Frustration-free $\mathcal{U}$-interaction MPQW Hamiltonian problem is \QMA-hard, we will also show that the non-frustration-free problem is \QMA-complete.
 
+Additionally, the argument could be made that this actually is not a completely frustration free Hamiltonian; exact frustration-freeness would require a ground energy that is exactly $N\mu(A(G))$.  However, if we could additionally guarantee that either the problem was exactly frustration free, or was bounded by some constant, our argument should still hold.  Allowing this little freedom in the ground energy does not make the problem significantly harder, but still keeps the spirit of the problem we are examining.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Useful graph primitives}\label{sec:graph_primitives}
 
@@ -154,7 +156,7 @@ We can then use the results of \chap{SP_ground} to calculate the smallest eigenv
 corresponding to a four dimensional ground space spanned by the states
 \begin{align}
   \ket{\psi_{z,0}} &= \frac{1}{\sqrt{8k}}\sum_{t=0}^{8k-1} \big(V_t V_{t-1} \cdots V_1\big) \ket{z} \ket{t} \ket{\omega}= \frac{1}{\sqrt{8k}}\sum_{t'=0}^{4k-1} \ket{z} \ket{2t'}\ket{\omega} + V_{2t' + 1} \ket{z} \ket{2t'+1}\ket{\omega}\label{eq:psi0m}\\
-  \ket{\psi_{z,1}} &= \frac{1}{\sqrt{8k}} \sum_{t'=0}^{4k-1} \ket{z}\ket{2t'} \ket{\overline{\omega}} + V_{2t'+1}* \ket{z} \ket{2t'+1} \ket{\overline{\omega}}\label{eq:psi1m},
+  \ket{\psi_{z,1}} &= \frac{1}{\sqrt{8k}} \sum_{t'=0}^{4k-1} \ket{z}\ket{2t'} \ket{\overline{\omega}} + V_{2t'+1}^* \ket{z} \ket{2t'+1} \ket{\overline{\omega}}\label{eq:psi1m},
 \end{align}
 where
 \begin{align}
@@ -283,7 +285,6 @@ Combining all of this together, we have that if $\dmax > 0$, then the nullspace 
 
 We use several different graphs closely related to the graph $g_0$, with some depicted in \fig{diagram_elements}.  We call these figures \emph{diagram elements}, which are also the simplest examples of \emph{gate diagram}, which we will define shortly.  The idea behind these graphs is to encode a single qubit computation, complete with inputs and outputs. 
 
-\todo{fix diagram element graphs}
 
 \begin{figure}
 \centering
@@ -491,8 +492,6 @@ Indeed, to show that a given gate graph $G$ is an $e_{1}$-gate graph, it suffice
 \end{equation}
 where $|\overline{\psi_{z,a}}\rangle$ is given by equations \eq{psi0m} and \eq{psi1m} under the transform of \eq{phi_copy_transform}. The coefficients in the superposition are then constrained by equations \eq{h_s_0} and \eq{h_e_0}.
 
-
-\todo{fix frustration free stuff}
 
 %
 %\subsubsection{Frustration-free states for a given interaction range}
@@ -1156,7 +1155,7 @@ with $z,a\in\FF_2$.  Additionally, there are no two- (or more) particle frustrat
 \end{equation}
 of states with single-particle reduced density matrices in the ground space of $A(G_{\text{bnd}})$.  We summarize these results as follows.
 
-\todo{fix figure}
+
 %%%%%%%%%%%%%%%%
 \begin{figure}
 \centering
@@ -1196,8 +1195,6 @@ We will get around this problem via a lemma that we call the \emph{occupancy con
 \label{sec:occupancy_constraints}
 
 With the idea of excluding certain two-particle states from the ground space of a quantum walk on a gate graph, we will somehow need to encode these constraints.  To do so, let us assume that $G$ is a gate graph with $R$ diagram elements (of some type).  We will then define $G^{\text{occ}}$ to be a graph with $R$ vertices, where the vertices of $G^{\text{occ}}$ correspond to the diagram elements of $G$.  The edge set of $G^{\text{occ}}$ is then defined to encode the occupancy constraints of $G$, namely there exists an edge between two vertices of $G^{\text{occ}}$ if and only if we want to exclude those states from the ground-space of $G$ where two particles are supported on the corresponding diagram elements of $G$.  In this way, we can easily encode our requisite occupancy constraints: simply add an edge in the graph $G^{\text{occ}}$.
-
-\todo{find whatever section we defined frustration-free stuff, and reference}
 
 With these occupancy constraints well defined, it will also be useful to define the frustration-free ground space that also respects these constraints.  In particular, remember that for a particular gate graph $G$, we defined the $N$-particle frustration-free ground space of the gate graph without edges between the diagram elements and without self-loops as
 \begin{equation}
@@ -1350,7 +1347,7 @@ Note that $G^{\triangle}=G^{\square}$ whenever the gate diagram for $G$ contains
 
 We provide an example of this construction in \fig{example_G_Gtilde} (which shows a gate graph and an occupancy constraints graph) and \fig{big_example_G_square} (which describes the derived gate graphs $G^{\square}$, $G^{\triangle}$, and $G^{\diamondsuit}$).
 
-\todo{completely fix these example graphs}
+%\todo{completely fix these example graphs}
 
 \begin{figure}
 \centering
@@ -1569,8 +1566,7 @@ We first rewrite the matrix in a slightly different basis obtained by multiplyin
 \end{equation}
 where the state associated with each vertex on one side of a bipartition of the graph is multiplied by $-1$; these are the phases appearing in equation \eq{phi_z_a_q}. Changing to this basis replaces the weight $\frac{1}{8k}$ on each edge in \fig{mat_els_for_a_blockA} by $-\frac{1}{8k}$ and does not change the weights on the self-loops. The resulting matrix is $\frac{1}{8k}L_{0}$, where $L_{0}$ is the Laplacian matrix of the graph shown in \fig{mat_els_for_a_blockB}. 
 
-Now we use the fact that the Laplacian of any connected graph has smallest eigenvalue zero, with a unique eigenvector equal to the all-ones vector.
-\todo{Find a citation for this claim}. Hence for each block we get an eigenvector in the nullspace of \eq{restriction_h_triangle}) given by \eq{phi_z_a_q}. Ranging over all $z,a\in\FF_2$ and $q\in[R]$ gives the claimed basis for the $e_1$-energy ground space of $A(G^{\triangle})$.
+Now we use the fact that the Laplacian of any connected graph has smallest eigenvalue zero, with a unique eigenvector equal to the all-ones vector. Hence for each block we get an eigenvector in the nullspace of \eq{restriction_h_triangle}) given by \eq{phi_z_a_q}. Ranging over all $z,a\in\FF_2$ and $q\in[R]$ gives the claimed basis for the $e_1$-energy ground space of $A(G^{\triangle})$.
 
 To prove the lower bound on the eigenvalue gap, we use the Nullspace Projection Lemma (\lem{NPL}) with 
 \begin{equation}
@@ -1622,9 +1618,7 @@ for $\dmax > 0$, and if $\dmax = 0$ we will show that when restricted to symmetr
 \begin{align}
   \mathcal{I}_{\triangle}^{\Sym} &=  \big\{ \Sym ( \ket{\Phi}) \; : \; \ket{\Phi} \in \mathcal{I}_{\triangle}\big\}.
 \end{align}
-Note that $\mathcal{I}_{\triangle}$ is very similar to $\mathcal{I}(G,G^{\text{occ}},N)$ (from equation \eq{occup_space_defn}) but with each single-particle state $|\psi_{z,a}^{q}\rangle\in\mathcal{Z}_{N}(G)$ replaced by $|\phi_{z,a}^{q}\rangle\in\mathcal{Z}_{N}(G^{\triangle})$ (with the same similarity for the symmetric states).
-
-\todo{Change from $\mathcal{Z}$ to something else}
+Note that $\mathcal{I}_{\triangle}$ is very similar to $\mathcal{I}(G,G^{\text{occ}},N)$ (from equation \eq{I_Goc_n}) but with each single-particle state $|\psi_{z,a}^{q}$ replaced by $|\phi_{z,a}^{q}\rangle$ (with the same similarity for the symmetric states).  In particular, we will construct a graph that enforces our occupancy constraints!
 
 \begin{lemma}
 \label{lem:The-nullspace-of_H_triangle}The nullspace of $H(G^{\triangle},N)$ is $\mathcal{I}_{\triangle}$ as defined in equation \eq{I_triangle} for $\dmax >0$, or when restricted to symmetric states the nullspace of $H(G^\triangle,N)$ is $\mathcal{I}_\triangle^{\Sym}$. In either case, its smallest nonzero eigenvalue is 
@@ -1747,7 +1741,7 @@ From the proof of \lem{A(G_triangle)}, the eigenvector with smallest eigenvalue 
 \end{equation}
 is an eigenvector of \eq{restriction to script R} with eigenvalue $\sum_{j=1}^{N}\theta_{u_j}.$ Furthermore, states corresponding to different choices of $u_{1},\ldots,u_{N}$ are orthogonal, and ranging over all $\dim(\mathcal{I}_{\diamondsuit}(\mathcal{N}))$ choices we get every eigenvector in the block. The smallest eigenvalue within the block is $N\theta_{1}=0$ and there are $N!$ vectors in the nullspace, given by
 \begin{equation}
-  \ket{\Phi_\mathcal{N}^{\pi}} := |\phi_{y_{\pi(1)},c_{\pi(1)}}^{s_{\pi(1)}}\rangle|\phi_{y_{\pi(2)},c_{\pi(2)}}^{s_{\pi(2)}}\rangle\ldots|\phi_{y_{\pi(N)},c_{\pi(N)}}^{s_{\pi(N)}},\label{eq:vector_type1}
+  \ket{\Phi_\mathcal{N}^{\pi}} := |\phi_{y_{\pi(1)},c_{\pi(1)}}^{s_{\pi(1)}}\rangle|\phi_{y_{\pi(2)},c_{\pi(2)}}^{s_{\pi(2)}}\rangle\ldots|\phi_{y_{\pi(N)},c_{\pi(N)}}^{s_{\pi(N)}}\rangle,\label{eq:vector_type1}
 \end{equation}
 where $\pi \in S_N$, and where $|\phi_{z,a}^{q}\rangle=|\phi_{z,a}^{q}(1)\rangle$. The smallest nonzero eigenvalue of \eq{restriction to script R} within the block is $(N-1)\theta_{1}+\theta_{2}=\theta_{2}\geq\frac{c_{\diamondsuit}}{R^{2}}$, as expected.  If we restrict ourselves to the symmetric states, this nullspace becomes 1-dimensional, but we still have the same bounds on the eigenvalue gap.
 
@@ -2162,7 +2156,7 @@ initialized to $|0\rangle$.
 % at the start of the computation. 
 Following the convention described in \sec{verification_circuit}, we take qubit $2$ to be the output qubit. (In this example the circuit is not meant to compute anything interesting; its only purpose is to illustrate our method of constructing a gate graph).
 
-\todo{fix figure!}
+%\todo{fix figure!}
 
 \begin{figure}
 \centering \subfloat[][]{ 

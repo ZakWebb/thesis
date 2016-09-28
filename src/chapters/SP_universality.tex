@@ -18,7 +18,7 @@
 
 
 
-With all of these algorithmic uses (and thinking of the title to this thesis), we would then wonder at the computational power of quantum walk.   We already know that this model is contained in \BQP from \chap{scattering_on_graphs}, and thus can only be as powerful as a quantum computer, but we would also like to give a lower bound on its power.  Using the ideas of graph scattering, Childs \cite{Chi09} was able to show that the model of continuous-time quantum walk is universal for quantum computation. (Childs later showed that the discrete-time model was also universal by giving a method to simulate a continuous-time quantum walk via a discrete-time quantum walk in \cite{Chi10}, but this universality was shown directly by Lovett, et.al. soon after in \cite{LCETK10}.)  In this chapter, we will again show the universality of quantum walk, using the tools of \chap{scattering_on_graphs} and \chap{scattering_gadgets}.  
+With all of these algorithmic uses (and thinking of the title to this thesis), we would then wonder at the computational power of quantum walk.   We already know that this model is contained in \BQP{} from \chap{scattering_on_graphs}, and thus can only be as powerful as a quantum computer, but we would also like to give a lower bound on its power.  Using the ideas of graph scattering, Childs \cite{Chi09} was able to show that the model of continuous-time quantum walk is universal for quantum computation. (Childs later showed that the discrete-time model was also universal by giving a method to simulate a continuous-time quantum walk via a discrete-time quantum walk in \cite{Chi10}, but this universality was shown directly by Lovett, et al. soon after in \cite{LCETK10}.)  In this chapter, we will again show the universality of quantum walk, using the tools of \chap{scattering_on_graphs} and \chap{scattering_gadgets}.  
 
 In particular, we have from \chap{scattering_gadgets} several scattering gadgets whose scattering behavior can be viewed as an encoded single qubit gate.  Using our results on the scattering behavior of finite-length wave-packets from \thm{single_particle_wavepacket_bound} and our finite truncation of Hamiltonians from \lem{truncation}, we will show how to implement single-qubit gates using finite graphs.  We will then show how to combine these single-qubit gates to have multiple scattering events to encode an entire computation.
 
@@ -89,7 +89,7 @@ where $U$ is a specific $2\times 2$ unitary matrix.  Note that if we label the f
 More explicitly, we will have four semi-infinite paths, and we will label the four paths by $0_{\text{in}}$, $1_{\text{in}}$, $0_{\text{out}}$, and $1_{\text{out}}$ (where this labeling of the paths is the same as in equation \eq{unitary_s_matrix}).  (This graph is similar to that of \fig{single_qubit_scattering_graph}, except with semi-infinite paths.) We assume that the wave-packet encoding a qubit travels toward the graph $\widehat{G}$ along the two paths $0_{\text{in}}$ and $1_{\text{in}}$.  Far from the graph the evolution of this wavepacket is nearly identical to that of an infinite path, and thus our encoded qubit is well defined.  As the wavepacket scatters through the graph $\widehat{G}$, the state of the qubit is not well defined, but after scattering, most of the amplitude is on the $0_{\text{out}}$ and $1_{\text{out}}$ paths, and is in the form of an encoded qubit. 
 
 
-For specific $\mu$, $L$, $\sigma$, and $t$, we the have from \thm{single_particle_wavepacket_bound} that the outgoing wave-packet for the two computational basis states is well approximated by the wave-packet corresponding to the state $U \ket{z}$.  If we remember that the form of the wave-packet doesn't depend on the value of the initial encoded qubit, we can see that the evolution of the two basis states interfere, and thus for \text{any} encoded state $\ket{\phi}$, the outgoing wavepacket is well approximated by the encoded $U\ket{\phi}$.  This is exactly what we were looking for.
+For specific $\mu$, $L$, $\sigma$, and $t$, we then have from \thm{single_particle_wavepacket_bound} that the outgoing wave-packet for the two computational basis states is well approximated by the wave-packet corresponding to the state $U \ket{z}$.  If we remember that the form of the wave-packet doesn't depend on the value of the initial encoded qubit, we can see that the evolution of the two basis states interfere, and thus for \text{any} encoded state $\ket{\phi}$, the outgoing wavepacket is well approximated by the encoded $U\ket{\phi}$.  This is exactly what we were looking for.
 
 
 
@@ -452,80 +452,82 @@ where $\kappa$ is depends on $k$ and the maximum degree of $G_{\mathcal{C}}$ (wh
 \end{align}
 exactly as in \sec{single_qubit_multi_gate_computation} and our error bound does not explicitly depend on $n$.  As such, if we take $L$ larger than $g^2\kappa^2 \log^2 (g\kappa)$ we find that the error can be made arbitrarily small, and thus we can simulate a particular $n$-qubit $g$-gate circuit with constant error via graph scattering on a graph of $\OO(2^n g^3 \log^2 g)$ vertices for a time $\OO(g^3\log^2 g)$.
 
+Note that Child's original universality result for quantum walk \cite{Chi09} required a time of $\OO(g^4)$ for the evolution, and only succeeded with a probability of $\Omega(1/g^4)$.  However, his results also had a simpler initial state, and the error bounds of his construction might not be optimal.  If we use some of his results on constructing our initial state via momentum filtering (without explicitly going through the calculations), we might expect that this is at least a factor of $g$ improvement from the time-evolution of the states.
+
 %\subsection{Explicit examples}
 
 %\todo{include explicit mention of momenta for which this works}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{comment}
-\section{Universality via single-particle scattering}
-
-\todo{I'm not happy with the wording of much of this section}
-
-
-Thus far, we have shown how to simulate the application of a quantum circuit on a computational basis state, when a circuit is of a particular form.  This nearly shows that quantum walk is universal for quantum computation, but to make things precise we need to explicitly define a decision problem.
-
-\todo{Change definition of problem?}
-As such, let us define the problem \QWE:
-\begin{problem}[\QWE] Given a $d$-sparse, row-computable simple graph $G$ on $\Theta(2^n)$ vertices, an efficiently preparable initial state $\ket{\phi_{\text{init}}^G}$, a subset of the vertices $\mathcal{V}_{\text{accept}}$ (for which membership is easily verified), and a time $T \in \poly(n)$, determine whether
-\begin{itemize}
-   \item $\bra{\phi_{\text{init}}^G} e^{i A(G) T} \Pi_{\mathcal{V}} e^{-i A(G)T} \ket{\phi_{\text{init}}^G} \geq \frac{2}{3}$ (a yes instance), or
-   \item $\bra{\phi_{\text{init}}^G} e^{i A(G) T} \Pi_{\mathcal{V}} e^{-i A(G)T} \ket{\phi_{\text{init}}^G} \leq \frac{1}{3}$ (a no instance),
-\end{itemize}
-where we are guaranteed that one case holds.
-\end{problem}
-
-Note that the efficient preparation of $\ket{\phi_{\text{init}}^G}$, and the fact that membership $\mathcal{V}$ is easily verified, are used to insure that the bulk of the computational power arises from the time evolution on $G$, and that we are not hiding the computation in the preparation of the initial state or in our measurements.
-
-\subsection{Simulation of a quantum circuit}
-
-Let us first show that an arbitrary quantum circuit can be simulated by the time evolution of an efficiently specifiable state on a succinctly represented graph.  This is the point at which we will use our graph scattering techniques.  
-
-In particular, choose some $k\in (-\pi,0)$ for which a universal set of quantum scattering gates are known (such as those in \sec{explicit_encodings}, and let $\mathcal{C}_x$ be a circuit corresponding to the \QCircVer{} instance $x$, where $\mathcal{C}_x$ can be decomposed into a sequence of one- and two-qubit gates from the universal gate set $\mathcal{S}_{k}$ and controlled-not gates.  We assume that the circuit $\mathcal{C}_x$ acts on $m$ qubits (where $m\in \poly(n)$), and that the circuit satisfies:
-\begin{itemize}
-  \item if $x\in$ \QCircVer, then $\pr(\mathcal{C}_x,0^m) > 1-2^{-|x|}$,
-  \item if $x\notin$ \QCircVer, then $\pr(\mathcal{C}_x,0^m) < 2^{-|x|}$.
-\end{itemize}
-In other words, with high probability the circuit $\mathcal{C}_x$ computes whether the instance $x$ is in \QCircVer.
-
-Note that we almost have from \sec{multi_qubit_computations} that such a simulation is possible, we just need to ensure that the unitary $\mathcal{C}_x$ has the decomposition required, that the associated graph is $d$-sparse and row-computable, that the initial state is efficiently preparable, and that the subset of vertices corresponding to an accepting computation is easily verifiable.
-
-For the first problem, note that we can easily change the circuit $\mathcal{C}_x$ into a circuit of the form described in \sec{multi_qubit_computations} by doubling the number of unitaries in the circuit.  In particular, if $\mathcal{C}_x = U_g U_{g-1} \cdots U_{1}$, the quantum walk will simulate the circuit $\mathcal{D}_x = V_g V_{g-1} \cdots V_1$, where 
-\begin{align}
-  V_j = \begin{cases}
-    U_j \II^{(1)}_{2} & U_j \text{ is a 2-qubit gate}\\
-    \II_{4}^{(1,2)} U_j & U_j \text{ is a 1-qubit gate}.
-  \end{cases}
-\end{align}
-In this manner, $\mathcal{D}_x$ is an alternating sequence of $1$- and $2$-qubit gates.  For a given $L$, we can thus use the construction of \sec{multi_qubit_computations} for the graph $\mathcal{D}_x$.
-
-To see that the Hamiltonian corresponding to $G_{\mathcal{D}_x}(K)$ is $d$-sparse, note that the Hamiltonian simply corresponds to the adjacency matrix of the graph.  As such, the sparsity is exactly equal to the maximum degree of the graph, which is bounded by some constant $\dmax$, which depends on the scattering gadgets for the momentum $k$. 
-
-To see that the graph is row-computable, note that our construction already gives us the ability to efficiently determine the neighbors of a vertex.  Given a vertex's label, we can easily determine its location in the graph, and in particular determine whether it is located along a path or within a copy of $\widehat{G}_j$ for some $j\in[g]$.  If the vertex is on a path, then its only neighbors are the two vertices immediately before and immediately after it on the path (i.e, $(x,\mathbf{z},j)$ is connected to $(x\pm 1, \mathbf{z},j)$).  If a vertex is an internal vertex within a copy of $\widehat{G}_j$ we ca easily determine its neighbors in $\widehat{G}_j$, and thus determine its neighbors in the total graph.  The only small difficulty arises if a vertex is a terminal vertex of some copy of $\widehat{G}_j$, but in this case we can efficiently determine the path to which it is connected, along with the vertices within the copy of $\widehat{G}_j$.  Hence, $G_{\mathcal{D}_x}(K)$ is row-computable.
-
-As for the initial state, note that the construction of \sec{multi_qubit_computations} only has non-zero amplitude on $2L + 1$ vertices, which only depends on $\mathcal{C}$ in terms of the length.  This is both efficiently specifiable and constructable. 
-
-Finally, we have that the states corresponding to an accepting computation are easy to check; they are those vertices on the final ($g+1$) long paths with the first qubit in logical state 1.
-
-Putting this together, we can then use the results of \sec{multi_qubit_computations} to show that any \QCircVer{} instance can be reduced to an instance of \QWE.  Hence, \QWE{}  is \BQP-hard.
-
-\subsection{Simulation of a quantum walk}
-
-Let us now show that \QWE{} is in \BQP.  It relatively easily follows from \thm{Hamiltonian_simulation}, since we simply need to evolve a given Hamiltonian for the time $T$, and then measure in the computational basis.
-
-In particular, the fact that the initial state is efficiently preparable means that there exists a quantum circuit $\mathcal{C}_{\text{prep}}$ that prepares the given initial state from the state $\ket{0^n}$, possibly including some ancilla states.  Moreover, the quantum circuit only consists of $\poly(|x|)$ one- and two-qubit gates, since the state is efficiently preparable.  (Note that this bound depends on the efficiency of the given instance.)
-
-From the initial state, we can then use \thm{Hamiltonian_simulation} to evaluate the quantum walk Hamiltonian for the time $T$.  Since the Hamiltonian is $d$-sparse, and since the Hamiltonian is an adjacency matrix, we have that its maximal eigenvalue is at most $d$.  Assuming that we want to perform the simulation with error $1/10$, we can then simulate the evolution of the quantum walk in an efficient manner.  (Again, the efficiency depends on the given instance.)
-
-Finally, the quantum circuit can measure the state of the system in the vertex basis.  If the measured vertex belongs to $\mathcal{K}$ (a post-processing procedure that can be done efficiently), then the circuit accepts.  Otherwise, the circuit rejects.
-
-As the quantum walker fails with probability at most $\frac{1}{3}$ (i.e., accepts the state for a yes instance with probability at least $\frac{2}{3}$, and accepts a no-instance with probability at most $\frac{1}{3}$), with the error arising from the simulation we still have that the yes and no instances of our simulations have a constant acceptance gap.  Hence, we have that \QWE{} is in \BQP.
-
-Put together with our results using scattering, we then have that \QWE{} is \BQP-complete, or that quantum walks are universal for quantum computation.
-
-\end{comment}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{comment}
+%\section{Universality via single-particle scattering}
+%
+%\todo{I'm not happy with the wording of much of this section}
+%
+%
+%Thus far, we have shown how to simulate the application of a quantum circuit on a computational basis state, when a circuit is of a particular form.  This nearly shows that quantum walk is universal for quantum computation, but to make things precise we need to explicitly define a decision problem.
+%
+%\todo{Change definition of problem?}
+%As such, let us define the problem \QWE:
+%\begin{problem}[\QWE] Given a $d$-sparse, row-computable simple graph $G$ on $\Theta(2^n)$ vertices, an efficiently preparable initial state $\ket{\phi_{\text{init}}^G}$, a subset of the vertices $\mathcal{V}_{\text{accept}}$ (for which membership is easily verified), and a time $T \in \poly(n)$, determine whether
+%\begin{itemize}
+%   \item $\bra{\phi_{\text{init}}^G} e^{i A(G) T} \Pi_{\mathcal{V}} e^{-i A(G)T} \ket{\phi_{\text{init}}^G} \geq \frac{2}{3}$ (a yes instance), or
+%   \item $\bra{\phi_{\text{init}}^G} e^{i A(G) T} \Pi_{\mathcal{V}} e^{-i A(G)T} \ket{\phi_{\text{init}}^G} \leq \frac{1}{3}$ (a no instance),
+%\end{itemize}
+%where we are guaranteed that one case holds.
+%\end{problem}
+%
+%Note that the efficient preparation of $\ket{\phi_{\text{init}}^G}$, and the fact that membership $\mathcal{V}$ is easily verified, are used to insure that the bulk of the computational power arises from the time evolution on $G$, and that we are not hiding the computation in the preparation of the initial state or in our measurements.
+%
+%\subsection{Simulation of a quantum circuit}
+%
+%Let us first show that an arbitrary quantum circuit can be simulated by the time evolution of an efficiently specifiable state on a succinctly represented graph.  This is the point at which we will use our graph scattering techniques.  
+%
+%In particular, choose some $k\in (-\pi,0)$ for which a universal set of quantum scattering gates are known (such as those in \sec{explicit_encodings}, and let $\mathcal{C}_x$ be a circuit corresponding to the \QCircVer{} instance $x$, where $\mathcal{C}_x$ can be decomposed into a sequence of one- and two-qubit gates from the universal gate set $\mathcal{S}_{k}$ and controlled-not gates.  We assume that the circuit $\mathcal{C}_x$ acts on $m$ qubits (where $m\in \poly(n)$), and that the circuit satisfies:
+%\begin{itemize}
+%  \item if $x\in$ \QCircVer, then $\pr(\mathcal{C}_x,0^m) > 1-2^{-|x|}$,
+%  \item if $x\notin$ \QCircVer, then $\pr(\mathcal{C}_x,0^m) < 2^{-|x|}$.
+%\end{itemize}
+%In other words, with high probability the circuit $\mathcal{C}_x$ computes whether the instance $x$ is in \QCircVer.
+%
+%Note that we almost have from \sec{multi_qubit_computations} that such a simulation is possible, we just need to ensure that the unitary $\mathcal{C}_x$ has the decomposition required, that the associated graph is $d$-sparse and row-computable, that the initial state is efficiently preparable, and that the subset of vertices corresponding to an accepting computation is easily verifiable.
+%
+%For the first problem, note that we can easily change the circuit $\mathcal{C}_x$ into a circuit of the form described in \sec{multi_qubit_computations} by doubling the number of unitaries in the circuit.  In particular, if $\mathcal{C}_x = U_g U_{g-1} \cdots U_{1}$, the quantum walk will simulate the circuit $\mathcal{D}_x = V_g V_{g-1} \cdots V_1$, where 
+%\begin{align}
+%  V_j = \begin{cases}
+%    U_j \II^{(1)}_{2} & U_j \text{ is a 2-qubit gate}\\
+%    \II_{4}^{(1,2)} U_j & U_j \text{ is a 1-qubit gate}.
+%  \end{cases}
+%\end{align}
+%In this manner, $\mathcal{D}_x$ is an alternating sequence of $1$- and $2$-qubit gates.  For a given $L$, we can thus use the construction of \sec{multi_qubit_computations} for the graph $\mathcal{D}_x$.
+%
+%To see that the Hamiltonian corresponding to $G_{\mathcal{D}_x}(K)$ is $d$-sparse, note that the Hamiltonian simply corresponds to the adjacency matrix of the graph.  As such, the sparsity is exactly equal to the maximum degree of the graph, which is bounded by some constant $\dmax$, which depends on the scattering gadgets for the momentum $k$. 
+%
+%To see that the graph is row-computable, note that our construction already gives us the ability to efficiently determine the neighbors of a vertex.  Given a vertex's label, we can easily determine its location in the graph, and in particular determine whether it is located along a path or within a copy of $\widehat{G}_j$ for some $j\in[g]$.  If the vertex is on a path, then its only neighbors are the two vertices immediately before and immediately after it on the path (i.e, $(x,\mathbf{z},j)$ is connected to $(x\pm 1, \mathbf{z},j)$).  If a vertex is an internal vertex within a copy of $\widehat{G}_j$ we ca easily determine its neighbors in $\widehat{G}_j$, and thus determine its neighbors in the total graph.  The only small difficulty arises if a vertex is a terminal vertex of some copy of $\widehat{G}_j$, but in this case we can efficiently determine the path to which it is connected, along with the vertices within the copy of $\widehat{G}_j$.  Hence, $G_{\mathcal{D}_x}(K)$ is row-computable.
+%
+%As for the initial state, note that the construction of \sec{multi_qubit_computations} only has non-zero amplitude on $2L + 1$ vertices, which only depends on $\mathcal{C}$ in terms of the length.  This is both efficiently specifiable and constructable. 
+%
+%Finally, we have that the states corresponding to an accepting computation are easy to check; they are those vertices on the final ($g+1$) long paths with the first qubit in logical state 1.
+%
+%Putting this together, we can then use the results of \sec{multi_qubit_computations} to show that any \QCircVer{} instance can be reduced to an instance of \QWE.  Hence, \QWE{}  is \BQP-hard.
+%
+%\subsection{Simulation of a quantum walk}
+%
+%Let us now show that \QWE{} is in \BQP.  It relatively easily follows from \thm{Hamiltonian_simulation}, since we simply need to evolve a given Hamiltonian for the time $T$, and then measure in the computational basis.
+%
+%In particular, the fact that the initial state is efficiently preparable means that there exists a quantum circuit $\mathcal{C}_{\text{prep}}$ that prepares the given initial state from the state $\ket{0^n}$, possibly including some ancilla states.  Moreover, the quantum circuit only consists of $\poly(|x|)$ one- and two-qubit gates, since the state is efficiently preparable.  (Note that this bound depends on the efficiency of the given instance.)
+%
+%From the initial state, we can then use \thm{Hamiltonian_simulation} to evaluate the quantum walk Hamiltonian for the time $T$.  Since the Hamiltonian is $d$-sparse, and since the Hamiltonian is an adjacency matrix, we have that its maximal eigenvalue is at most $d$.  Assuming that we want to perform the simulation with error $1/10$, we can then simulate the evolution of the quantum walk in an efficient manner.  (Again, the efficiency depends on the given instance.)
+%
+%Finally, the quantum circuit can measure the state of the system in the vertex basis.  If the measured vertex belongs to $\mathcal{K}$ (a post-processing procedure that can be done efficiently), then the circuit accepts.  Otherwise, the circuit rejects.
+%
+%As the quantum walker fails with probability at most $\frac{1}{3}$ (i.e., accepts the state for a yes instance with probability at least $\frac{2}{3}$, and accepts a no-instance with probability at most $\frac{1}{3}$), with the error arising from the simulation we still have that the yes and no instances of our simulations have a constant acceptance gap.  Hence, we have that \QWE{} is in \BQP.
+%
+%Put together with our results using scattering, we then have that \QWE{} is \BQP-complete, or that quantum walks are universal for quantum computation.
+%
+%\end{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Discussion and extensions}
 
@@ -535,9 +537,9 @@ While this is a novel proof of the universality of quantum walk, both the result
 
 Additionally, the discussion in this chapter has essentially been plug-and-play for the momentum $k$, assuming that a set of universal scattering gadgets are known for the momentum in question.  However, we have only found these gadgets for a small set of momenta, described in \sec{gadgets_unitary}.  One might be able to extend this proof to work for all momenta, if we could find a set of gadgets that work for all momenta.  It might also be possible to show that this construction does not work for some momentum, although I think that unlikely.
 
-As a possible extension of this work, the permutation of the underlying paths corresponding to a two-qubit unitary plays a key part in our encoded gates.  However, these permutations are intrinsically non-planar (assuming that there are more than three non-identity 2-qubit gates).  One might ask whether \text{any} planar graph could be used to encode a computation, or whether non-planarity is required to capture the entire power of quantum walk.  In a similar manner, one might ask what other properties of the underlying graph are needed to maintain the same computational power.  While this is not necessary for any physical reason (since the exponential size of the graph is infeasible to construct in reality), there might be some relation between different graph properties and their use as a computational tool.
+As a possible extension of this work, the permutation of the underlying paths corresponding to a two-qubit unitary plays a key part in our encoded gates.  However, these permutations are intrinsically non-planar (assuming that there are more than three non-identity 2-qubit gates).  One might ask whether \text{any} planar graph could be used to encode a computation, or whether non-planarity is required to capture the entire power of quantum walk.  I would expect this non-planarity to be required even to simulate a classical computation.  In a similar manner, one might ask what other properties of the underlying graph are needed to maintain the same computational power.  While this is not necessary for any physical reason (since the exponential size of the graph is infeasible to construct in reality), there might be some relation between different graph properties and their use as a computational tool.
 
-Additionally, our current construction assumes no errors, and error-correction cannot trivially be implemented in our scheme.  We are unsure how error correction could be implemented using this construction, since both non-local measurements and measurements in the middle of the computation seem rather difficult.  Further, one of the inherent properties of quantum walk is the lack of a time-dependent Hamiltonian; most current error correction methods seem contrary to the spirit of quantum walk.  As such, including some kind of error correction naturally in our graph scattering (or quantum walk in general) would be of great help in the applications toward universality.  This might also help us in \chap{MP_universality}, as we use similar methods to show the universality of multi-qubit quantum walk.
+Additionally, our current construction assumes no errors, and error-correction cannot trivially be implemented in our scheme.  We are unsure how error correction could be implemented using this construction, since both non-local measurements and measurements in the middle of the computation seem rather difficult.  Further, one of the inherent properties of quantum walk is the lack of a time-dependent Hamiltonian; most current error correction methods seem contrary to the spirit of quantum walk.  As such, including some kind of error correction naturally in our graph scattering (or quantum walk in general) would be of great help for this architecture to actually be used as a vehicle for quantum computation.  This would additionally help us in \chap{MP_universality}, as we use similar methods to show the universality of multi-qubit quantum walk.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

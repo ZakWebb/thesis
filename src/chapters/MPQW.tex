@@ -45,9 +45,9 @@ Now that we have a Hilbert space for the $N$-particle quantum walk, we still nee
 \begin{align}
   H_{\text{mov}}^N = \sum_{w\in [N]} A(G)^{(w)} \label{eq:MPQW_movement}
 \end{align}
-where $B^{(w)}$ is the operator that acts on $N$ particles as $B$ on the $w$th particle and $\II$ on the rest.  With such a Hamiltonian, the evolution operator decomposes into a product of commuting terms, where each term acts as the single particle evolution for a different particle, exactly as we want.
+where for a given single-particle operator $B$, we represent by $B^{(w)}$ the operator that acts on $N$ particles as $B$ on the $w$th particle and $\II$ on the rest.  With such a Hamiltonian, the evolution operator decomposes into a product of commuting terms, where each term acts as the single particle evolution for a different particle, exactly as we want.
 
-While this definition of an $N$-particle quantum walk does nicely generalize that of a single-particle quantum walk, it is not any more interesting than the original single-particle walk.  In particular, the eigenstates of \eq{MPQW_movement} easily decompose into product states, where each of the individual particles are in an eigenstate of $A(G)$.  Such a system is only as computationally powerful as that of a single-particle system, since we can simulate the $N$-particle system via $N$ single-particle evolutions.  To get around this, we will thus want to force some interaction between the particles. We will also want to ensure that we capture the intuitive structure of particle interactions from the continuum, so that our model makes sense as a quantum walk.  Note that in the continuum, the interaction between particles only depends on the distance between the particles.  This translation invariance can have several different abstractions to a general graph, but on a one dimensional lattice we would expect the interaction to only depend on the distance between the particles, as measured by the shortest path between vertices.
+While this definition of an $N$-particle quantum walk does nicely generalize that of a single-particle quantum walk, it is not any more interesting than the original single-particle walk.  In particular, the eigenstates of \eq{MPQW_movement} easily decompose into product states, where each of the individual particles are in an eigenstate of $A(G)$.  Such a system is only as computationally powerful as that of a single-particle system, since we can simulate the $N$-particle system via $N$ single-particle evolutions.  To get around this, we will thus want to force some interaction between the particles. We will also want to ensure that we capture the intuitive structure of particle interactions from the continuum, so that our model makes sense as a quantum walk.  Note that in the continuum, the interaction strength only depends on the distance between the particles.  This translation invariance can have several different abstractions to a general graph (which could be thought of as something related to the Bohm-Aharanov effect), but on a one dimensional lattice we would expect the interaction to only depend on the distance between the particles, as measured by the shortest path between vertices.
 
 We will take this requirement on the infinite path and use it for all vertices.  Further, we will assume some finite range of interaction, so that particles with large physical separation don't interact.   Namely, let us choose some $\dmax \in \NN$ to be the finite range of the interaction, and then choose $d+1$ symmetric polynomials in two variables, $U_{d}$, for $0\leq d \leq \dmax$.  Additionally, assuming that we know that there are a total of $N$ particles, let $\hat{n}_v$ for $v\in V(G)$ be the operator that counts the number of particles at vertex $v$, explicitly given by 
 \begin{align}
@@ -106,7 +106,7 @@ While \eq{MPQW_H_defn} is a well defined mathematical object for a given graph $
 
 \subsubsection{Bose-Hubbard model}
 
-The Bose-Hubbard model on a graph, where the particles are taken to be bosons, and there is a given onsite interaction between the particles in probably the first interaction that falls into our class of interactions.  In particular, we have that in the second quantized basis, the Hamiltonian for the Bose-Hubbard model on a graph $G$ is usually given by 
+The Bose-Hubbard model on a graph, where the particles are taken to be bosons, and there is a given onsite interaction between the particles is probably the first interaction that falls into our class of interactions.  In particular, we have that in the second quantized basis, the Hamiltonian for the Bose-Hubbard model on a graph $G$ is usually given by 
 \begin{align}
   H_{G}^{\text{BH}} = t_{\text{hop}} \sum_{i,j\in V(G)} A(G)_{ij} a_i^\dag a_j + J_\text{int} \sum_{k\in V(G)} n_k (n_k - 1), \label{eq:BH_H_Fock}
 \end{align}
@@ -123,7 +123,7 @@ This is simply a rescaling by $t_{\text{hop}}$ of a Hamiltonian the form \eq{MPQ
 
 \subsubsection{Nearest-neighbor interactions}
 
-While the Bose-Hubbard model (and onsite-interactions in general) are a well studied phenomenon, they unfortunately do not affect anti-symmetric states at all.  As such, if we want an interaction that will change the structure of the entire Hilbert space, we will need to increase our $\dmax$ to at least 1, arriving at the nearest neighbor interactions.  
+While the Bose-Hubbard model (and onsite-interactions in general) is a well studied model, no onsite-interaction affects the anti-symmetric states at all.  As such, if we want an interaction that will change the structure of the entire Hilbert space, we will need to increase our $\dmax$ to at least 1, arriving at nearest neighbor interactions.  
 
 While there are many different interactions with $\dmax = 1$, probably the most simple is given by $\mathcal{U}_0 = 0$ and 
 \begin{align}
@@ -131,7 +131,7 @@ While there are many different interactions with $\dmax = 1$, probably the most 
 \end{align}
 With this interaction, we then have that the corresponding MPQW Hamiltonian is given by
 \begin{align}
-  H_{G}^{\text{NN},N} = \sum_{w\in [N]} A(G)^{(w)} +  \gamma \sum_{\substack{ \{u,v\}\in E(G)}}\hat{n}_u,\hat{n}_v
+  H_{G}^{\text{NN},N} = \sum_{w\in [N]} A(G)^{(w)} +  \gamma \sum_{\substack{ \{u,v\}\in E(G)}}\hat{n}_u\hat{n}_v
 \end{align}
 
 %
@@ -536,7 +536,7 @@ p_1 &= - k_1 - k_2 & p_2 & = \frac{k_2 - k_1}{2} &
 \end{align}
 and $\delta$ is a constant that we will define later.  While the states $\ket{w(t)}$ are not exactly normalized, we have that
 \begin{align}
-   \braket{w(t)}{w(t)} &= \eta^2 \iint_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2}  e^{ -\sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2 \big)} &= 1  - \frac{\eta^2}{\pi^2} \int_\delta^{\infty} \int_{\delta}^\infty d\phi_1d\phi_2 e^{ - \sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2\big)}\label{eq:w_norm}\\
+   \braket{w(t)}{w(t)} &= \eta^2 \int_{-\delta}^\delta \int_{-\delta}^\delta \frac{d\phi_1d\phi_2}{4\pi^2}  e^{ -\sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2 \big)} &= 1  - \frac{\eta^2}{\pi^2} \int_\delta^{\infty} \int_{\delta}^\infty d\phi_1d\phi_2 e^{ - \sigma^2 \big(\frac{\phi_1^2}{2} + 2 \phi_2^2\big)}\label{eq:w_norm}\\
    & \geq  1 - \frac{1}{\pi \delta^2 \sigma^2}e^{- \frac{5 \sigma^2 \delta^2}{2}},
 \end{align}
 and as the second term on the right hand side of \eq{w_norm} is non-negative, we have that $\braket{w(t)}{w(t)} \leq 1$.

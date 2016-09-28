@@ -38,7 +38,7 @@ To expand our encoding to multiple qubits, we then add additional paths, but we 
 
 Note that each qubit has its own momentum: while we could require each particle to be encoded at the same momentum, our eventual construction of a multi-qubit entangling gate requires at least two different momenta.  Because of this, we will label each qubits momentum $k_i$, but we will eventually have that most will be equal to some particular value.  One problem that this will lead to is a possible difference in speeds; given the fact that the momenta is explicitly related to the speed of propagation for a given wave-packet, we will need to ensure that the wave-packets move together through the graph.
 
-With the general idea for the encodings out of the way, we will need to explicitly define our states.  In particular, for each qubit we want to simulate, let us assume that there are two infinite paths, where the vertices are labeled as $(x,z,i)$, for $x\in \ZZ$, $z\in \FF_2$ and $i\in[n]$.  Note that the infinite assumption won't be necessary 
+With the general idea for the encodings out of the way, we will need to explicitly define our states.  In particular, for each qubit we want to simulate, let us assume that there are two infinite paths, where the vertices are labeled as $(x,z,i)$, for $x\in \ZZ$, $z\in \FF_2$ and $i\in[n]$.  Note that the infinite assumption is not necessary for our encoding, but it allows us to explicitly (and easily) write down the eigenstates of the Hamiltonian.
 
 Recall from \chap{SP_universality} and \chap{MPQW} that for a given $\sigma$, cutoff length $L$, and momentum $k$, that we used states of the form
 \begin{align}
@@ -77,7 +77,7 @@ and where we assume that the labeling of the four terminal vertices proceeds as 
 
 When we add additional qubits, however, things differ from the single-particle case.  In \chap{SP_universality}, our simulation of a single-qubit unitary on $n$ qubits required $2^{n-1}$ copies of the graph gadget $\widehat{G}$ in order to implement the logical gate, corresponding to the computational basis states of all the qubits that the particular unitary does not effect.  For our multi-particle encoding, only a single copy of the graph is used, and it is placed as an obstacle on the pair of paths corresponding to the qubit on which the gate is to be applied, while the rest of the qubits simply remain unimpeded.  
 
-Assuming that the graph $G$ we use to simulate is of this form, and if the qubits are encoded as in \sec{MP_qubit_encoding} with momenta traveling towards the gadget $\widehat{G}$, we can use \lem{disconnected_MPQW} and \thm{single_particle_wavepacket_bound} to see that the time-evolved state corresponds to the encoded logical state after the unitary $U$ is applied to the appropriate question (modulo some error and details about the encoded logical state at different times).  The intuitive idea behind this scattering behavior is represented schematically in \todo{find fig}.
+Assuming that the graph $G$ we use to simulate is of this form, and if the qubits are encoded as in \sec{MP_qubit_encoding} with momenta traveling towards the gadget $\widehat{G}$, we can use \lem{disconnected_MPQW} and \thm{single_particle_wavepacket_bound} to see that the time-evolved state corresponds to the encoded logical state after the unitary $U$ is applied to the appropriate question (modulo some error and details about the encoded logical state at different times).  
 
 \subsection{Finite graphs for single-qubit gates}
 
@@ -150,7 +150,7 @@ In particular, we have
 \begin{proof}
   Note that the states $\ket{\phi(t)}$ all have the particles supported on different components of $G$, and thus by \lem{disconnected_MPQW} we have that
   \begin{align}
-    e^{-i H_G^N t} \ket{\phi(0)} &= \prod_{\ell=1}^n \big( e^{-i A(G_\ell)t}\big)^{(\ell)} \ket{phi(0)},
+    e^{-i H_G^N t} \ket{\phi(0)} &= \prod_{\ell=1}^n \big( e^{-i A(G_\ell)t}\big)^{(\ell)} \ket{\phi(0)},
   \end{align}
 where $G_\ell$ is the component on which the $\ell$-th particle is located.  However, we have that each of these unitaries commute, and
   \begin{align}
@@ -552,7 +552,7 @@ To combing the graphs for the unitaries $U_i$, for each $i < m$, we remove the r
 
 We can think of this in another manner, in that instead of removing the vertices, we simply identify the vertex $(i,x,j,z)$ (where $i$ identifies which unitary the vertex belongs to) with the vertex $(i+1,x-4L,j,z)$ if $j\neq n$ (where we assume that the unitary $U_i$ and $U_{i+1}$ are both single-qubit unitaries that do not affect qubit $j$).  We have a similar results for $j=n$, except that $(i,x,n,z)$ is identified with $(i+1,1- 2M(k_2) + x,z)$.  In the case where $U_i$ is a two-qubit unitary, we have a similar result.
 
-Let the resulting graph be called $G_{X}$
+Let the resulting graph be called $G_{X}$.
 
 \begin{figure}
   \centering
@@ -605,7 +605,7 @@ From this, if we then choose
 \end{align}
 we can make the error in the evolution constant. (Note that we used our bound on $\Vert H_(G_X)^n\Vert$ in the logarithm.)  From this, we then have that the total number of vertices of our graph will be $\OO(m^3 n^3 \Vert H_{G_X}^n \Vert^2 \log(m n))$ and the total evolution time will be $\OO(m^3 n^2 \Vert H_{G_X}^n \Vert^2 \log(m n))$.  In the case of the Bose-Hubbard model and the most simple nearest-neighbor interactions, we have that $\Vert H_{G_X}^n\Vert \leq \gamma n^2$, and these bounds become $\OO( m^3 n^7 \log(mn))$ and $\OO(m^3 n^6 \log(mn))$.
 
-I would like to point out that this is a near quadratic improvement over the results of Childs, Gosset, and Webb \cite{MPQW}.  This occurred by the novel analysis using Gaussian states.
+I would like to point out that this is a near quadratic improvement over the results of Childs, Gosset, and Webb \cite{MPQW}, where they were able to prove that the requisite number of vertices was bounded by $\OO(m^5 n^5 \Vert H_{G_X}^n\Vert ^4)$ with a required time of $\OO(m^5n^4\Vert H_{G_X}^n\Vert ^4)$.  This occurred by the novel analysis using Gaussian states which decreased the size of $L$ by an almost quadratic factor.
 
 \subsection{Universality}
 
